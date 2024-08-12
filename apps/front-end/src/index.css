@@ -1,0 +1,11 @@
+@import "tailwindcss/base";
+@import "maplibre-gl/dist/maplibre-gl.css";
+
+@import "tailwindcss/components";
+/* @import "./custom-components.css"; */
+
+@import "tailwindcss/utilities";
+
+.maplibregl-popup-content {
+  @apply rounded-md p-0 shadow-lg;
+}
