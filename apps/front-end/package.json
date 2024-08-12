@@ -1,7 +1,7 @@
 {
   "name": "mykomap-react",
   "version": "4.0.0",
-  "description": "A web application for mapping initiatives in the Solidarity Economy",
+  "description": "A React web application for mapping initiatives in the Solidarity Economy",
   "author": "Digital Commons Cooperative",
   "private": true,
   "type": "module",
@@ -17,7 +17,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@nazka/map-gl-js-spiderfy": "file:../map-gl-js-spiderfy",
+    "@nazka/map-gl-js-spiderfy": "github:DigitalCommons/map-gl-js-spiderfy#improvements-for-mykomap",
     "@reduxjs/toolkit": "^2.0.1",
     "@types/geojson": "^7946.0.14",
     "maplibre-gl": "^4.5.2",
