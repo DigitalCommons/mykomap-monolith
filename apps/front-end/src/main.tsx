@@ -10,7 +10,21 @@ import "./index.css"
 //
 // The key in the DSN needs to be defined in the .env (or .env.*) files, that are loaded
 // by Vite via the dotenv library. https://vitejs.dev/guide/env-and-mode
-Sentry.init({ dsn: `https://${import.meta.env.VITE_GLITCHTIP_KEY}@app.glitchtip.com/7707` })
+Sentry.init({
+  dsn: `https://${import.meta.env.VITE_GLITCHTIP_KEY}@app.glitchtip.com/7707`,
+
+  // Use Vite's concept of mode to set the environment for Glitchtip
+  // (Mode != NODE_ENV, see https://vitejs.dev/guide/env-and-mode#modes)
+  environment: import.meta.env.MODE,
+  
+  // Enable automatic instrumentation
+  integrations: [
+    Sentry.browserTracingIntegration(),
+  ],
+  
+  // Use finer control of sent transactions in development mode.
+  tracesSampleRate: import.meta.env.MODE == 'development' ? 1.0 : 0,
+})
 
 const container = document.getElementById("root")
 
