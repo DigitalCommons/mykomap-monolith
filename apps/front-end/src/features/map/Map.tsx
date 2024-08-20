@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { createMap } from "./mapSetup";
 import { useAppSelector } from "../../app/hooks";
 import { selectSearch, selectVisibleIds } from "../filter/filterSlice";
-import allFeatures, { filteredFeatures } from "../../data/geojson";
+import allFeatures, { getFilteredFeatures } from "../../data/geojson";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 
 const Map = () => {
@@ -22,7 +22,7 @@ const Map = () => {
 
     if (search) {
       console.log(`Found ${visibleIds.length} features that matched`);
-      features = filteredFeatures(visibleIds);
+      features = getFilteredFeatures(visibleIds);
     } else {
       features = allFeatures;
     }

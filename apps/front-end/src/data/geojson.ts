@@ -50,7 +50,7 @@ const data = generateGeoJSONFeatures(500000);
  * @param ids Sorted array of feature IDs
  * @returns Array of GeoJSON features with matching IDs
  */
-export const filteredFeatures = (
+export const getFilteredFeatures = (
   ids: string[],
 ): GeoJSON.Feature<GeoJSON.Point>[] => {
   const filtered = [];
