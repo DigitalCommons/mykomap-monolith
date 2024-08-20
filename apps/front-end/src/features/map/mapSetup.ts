@@ -5,57 +5,17 @@ import {
   NavigationControl,
   Popup,
   MapLayerMouseEvent,
-  MapGeoJSONFeature,
 } from "maplibre-gl";
 // @ts-ignore
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
+import features from "../../data/geojson";
 
 const baseUri = "https://base.uri/";
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
 let geojsonSourceLoaded = false;
-
-const generateGeoJSON = (
-  pointCount: number,
-): GeoJSON.FeatureCollection<GeoJSON.Point> => {
-  const minLat = -90,
-    rangeLat = 180,
-    minLng = -180,
-    rangeLng = 360;
-
-  const features: GeoJSON.Feature<GeoJSON.Point>[] = Array.from(
-    { length: pointCount },
-    (_v, k) => ({
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        coordinates: [
-          minLng + Math.random() * rangeLng,
-          minLat + Math.random() * rangeLat,
-        ],
-      },
-      properties: {
-        Name: `Marker ${k}`,
-        Identifier: (Math.random() + 1).toString(36).substring(7),
-      },
-    }),
-  );
-
-  // Duplicate some coordinates randomly so we can simulate spidering
-  for (let i = 1; i < pointCount * 0.7; i++) {
-    if (Math.random() < 0.8) {
-      features[i].geometry.coordinates =
-        features[i - 1].geometry.coordinates.slice();
-    }
-  }
-
-  return {
-    type: "FeatureCollection",
-    features,
-  };
-};
 
 const getPopup = (name: string): string => {
   return `
@@ -142,7 +102,7 @@ export const createMap = (): MapLibreMap => {
   const map = new MapLibreMap({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
-    minZoom: 1.1,
+    minZoom: 1.3,
     maxZoom: 18,
     bounds: [
       [-180, -59.9],
@@ -153,7 +113,10 @@ export const createMap = (): MapLibreMap => {
   map.on("load", () => {
     map.addSource("initiatives-geojson", {
       type: "geojson",
-      data: generateGeoJSON(500000),
+      data: {
+        type: "FeatureCollection",
+        features,
+      },
       buffer: 0,
       cluster: true,
       clusterMaxZoom: 19,
@@ -161,13 +124,13 @@ export const createMap = (): MapLibreMap => {
     });
 
     map.on("sourcedata", (e) => {
-      if (
-        !geojsonSourceLoaded &&
-        e.isSourceLoaded &&
-        e.sourceId === "initiatives-geojson"
-      ) {
-        geojsonSourceLoaded = true;
-        console.log("Added GeoJSON source");
+      if (e.isSourceLoaded && e.sourceId === "initiatives-geojson") {
+        if (geojsonSourceLoaded) {
+          console.log("Updated GeoJSON source");
+        } else {
+          geojsonSourceLoaded = true;
+          console.log("Added GeoJSON source");
+        }
       }
     });
 
