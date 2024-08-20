@@ -19,6 +19,7 @@
   "dependencies": {
     "@nazka/map-gl-js-spiderfy": "github:DigitalCommons/map-gl-js-spiderfy#improvements-for-mykomap",
     "@reduxjs/toolkit": "^2.0.1",
+    "@sentry/browser": "^8.26.0",
     "@types/geojson": "^7946.0.14",
     "maplibre-gl": "^4.5.2",
     "maplibregl-spiderfier": "github:ohrie/maplibre-spiderfier",
