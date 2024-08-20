@@ -20,9 +20,8 @@ const Map = () => {
   useEffect(() => {
     let features;
 
-    console.log(`Filtering features with IDs ${visibleIds}`);
-
     if (search) {
+      console.log(`Found ${visibleIds.length} features that matched`);
       features = filteredFeatures(visibleIds);
     } else {
       features = allFeatures;
