@@ -1,0 +1,12 @@
+{
+  "name": "@mykomap/back-end",
+  "version": "4.0.0",
+  "description": "Server API for Mykomap application clients",
+  "author": "Digital Commons Cooperative",
+  "homepage": "https://digitalcommons.github.io/mykomap-monolith",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+}
