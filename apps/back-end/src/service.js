@@ -1,6 +1,51 @@
 // implementation of the operations in the openapi specification
+import fs from 'node:fs';
+import path from 'node:path';
 
+// Helper functions
+
+function assertBase64(value, errorMsg) {
+  if (!value.match(/^[A-Z0-9_-]+$/i)) // URL-safe base64 (RFC4648 sect 5)
+    throw new Error(errorMsg);
+}
+
+function assertQName(value, errorMsg) {
+  // Not quite a full qname check but it'll do for now
+  if (!value.match(/^[A-Z0-9_-]+:[A-Z0-9_-]+$/i)) // two base64 uris joined with ':'
+    throw new Error(errorMsg);
+}
+
+function assertPathExists(value, errorMsg) {
+  if (!fs.existsSync(value))
+    throw new Error(errorMsg);
+}
+
+  
+
+// Service route implementations
 export class Service {
+  constructor({options = {}}) {
+    this.options = options;
+
+    // Validation
+    if (options.dataRoot == undefined) // deliberately loose check
+      throw new Error('mandatory dataRoot option is not defined');
+    
+    if (!fs.existsSync(options.dataRoot))
+      throw new Error(`defined dataRoot option refers to non-existing path: '${options.dataRoot}'`);
+  }
+  
+  _sendJson(req, reply, components, errorMsg) {
+    const dataPath = path.join(this.options.dataRoot, ...components) + '.json';
+    req.log.debug(`dataPath is '${dataPath}`);
+    assertPathExists(dataPath, errorMsg);
+    
+    const stream = fs.createReadStream(dataPath, 'utf8');
+    reply.header('Content-Type', 'application/json');
+    reply.send(stream);
+    
+    return reply;
+  }
 
   // Operation: dataset
   // URL: /dataset/:datasetId
@@ -35,8 +80,10 @@ export class Service {
   //
 
   async dataset(req, reply) {
-    console.log("dataset", req.params);
-    return [];
+    const id = req.params.datasetId;
+    assertBase64(id, `invalid datasetId`);
+
+    return this._sendJson(req, reply, ['datasets', id], `unknown datasetId`);
   }
 
   // Operation: datasetSearch
@@ -80,8 +127,20 @@ export class Service {
   //
 
   async datasetSearch(req, reply) {
-    console.log("datasetSearch", req.params);
-    return [];
+    const { datasetId } = req.params;
+    const { filter, text } = req.query;
+    
+    assertBase64(datasetId, `invalid datasetId`);
+    filter?.forEach(uri => assertQName(uri, `invalid filter`));
+
+    const encodedText = encodeURIComponent(text ?? '');
+    
+    return this._sendJson(
+      req,
+      reply,
+      ['datasets', datasetId, 'search', ...filter, 'text', encodedText],
+      `search failed`
+    );
   }
 
   // Operation: datasetItem
@@ -114,7 +173,16 @@ export class Service {
   //
 
   async datasetItem(req, reply) {
-    console.log("datasetItem", req.params);
-    return { id: "dummyg" };
+    const {datasetId, datasetItemId} = req.params;
+    
+    assertBase64(datasetId, `invalid datasetId`);
+    assertBase64(datasetItemId, `invalid datasetItemId`);
+
+    return this._sendJson(
+      req,
+      reply,
+      ['datasets', datasetId, 'items', datasetItemId],
+      `item retrieve failed`
+    );
   }
 }

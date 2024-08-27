@@ -4,13 +4,19 @@ import { Security } from "./security.js";
 import { Service } from "./service.js";
 const localFile = (fileName) => new URL(fileName, import.meta.url).pathname;
 
-const pluginOptions = {
-  specification: localFile("../api/mykomap-openapi.json"),
-  serviceHandlers: new Service(),
-  securityHandlers: new Security(),
+const mykomapOpts = {
+  dataRoot: process.env.SERVER_DATA_ROOT ?? 'data',
 };
 
+
 export default async function (fastify, opts) {
+  const pluginOptions = {
+    specification: localFile("../api/mykomap-openapi.json"),
+    serviceHandlers: new Service({
+      options: mykomapOpts,
+    }),
+    securityHandlers: new Security(),
+  };
   fastify.register(openapiGlue, { ...pluginOptions, ...opts });
 }
 
