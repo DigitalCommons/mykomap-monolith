@@ -11,13 +11,13 @@ import service from "../service.js";
 const specification = "../openApi.json";
 
 const opts = {
-	specification,
-	service,
+  specification,
+  service,
 };
 //
 // Operation: dataset
 // URL: /dataset/:datasetId
-// summary:	obtains a dataset
+// summary:  obtains a dataset
 // req.params
 //   type: object
 //   properties:
@@ -48,21 +48,21 @@ const opts = {
 //
 
 test("testing dataset", async (t) => {
-	const fastify = Fastify();
-	fastify.register(fastifyPlugin, opts);
+  const fastify = Fastify();
+  fastify.register(fastifyPlugin, opts);
 
-	const res = await fastify.inject({
-		method: "GET",
-		url: "/dataset/:datasetId",
-		payload: undefined,
-		headers: undefined,
-	});
-	assert.equal(res.statusCode, 200);
+  const res = await fastify.inject({
+    method: "GET",
+    url: "/dataset/:datasetId",
+    payload: undefined,
+    headers: undefined,
+  });
+  assert.equal(res.statusCode, 200);
 });
 
 // Operation: datasetSearch
 // URL: /dataset/:datasetId/search
-// summary:	obtains a list of dataset entries satisfying the search criteria supplied
+// summary:  obtains a list of dataset entries satisfying the search criteria supplied
 // req.params
 //   type: object
 //   properties:
@@ -101,21 +101,21 @@ test("testing dataset", async (t) => {
 //
 
 test("testing datasetSearch", async (t) => {
-	const fastify = Fastify();
-	fastify.register(fastifyPlugin, opts);
+  const fastify = Fastify();
+  fastify.register(fastifyPlugin, opts);
 
-	const res = await fastify.inject({
-		method: "GET",
-		url: "/dataset/:datasetId/search",
-		payload: undefined,
-		headers: undefined,
-	});
-	assert.equal(res.statusCode, 200);
+  const res = await fastify.inject({
+    method: "GET",
+    url: "/dataset/:datasetId/search",
+    payload: undefined,
+    headers: undefined,
+  });
+  assert.equal(res.statusCode, 200);
 });
 
 // Operation: datasetItem
 // URL: /dataset/:datasetId/item/:datasetItemId
-// summary:	obtains a dataset item by its  unique ID
+// summary:  obtains a dataset item by its  unique ID
 // req.params
 //   type: object
 //   properties:
@@ -143,14 +143,14 @@ test("testing datasetSearch", async (t) => {
 //
 
 test("testing datasetItem", async (t) => {
-	const fastify = Fastify();
-	fastify.register(fastifyPlugin, opts);
+  const fastify = Fastify();
+  fastify.register(fastifyPlugin, opts);
 
-	const res = await fastify.inject({
-		method: "GET",
-		url: "/dataset/:datasetId/item/:datasetItemId",
-		payload: undefined,
-		headers: undefined,
-	});
-	assert.equal(res.statusCode, 200);
+  const res = await fastify.inject({
+    method: "GET",
+    url: "/dataset/:datasetId/item/:datasetItemId",
+    payload: undefined,
+    headers: undefined,
+  });
+  assert.equal(res.statusCode, 200);
 });

@@ -5,19 +5,19 @@ import { Service } from "./service.js";
 const localFile = (fileName) => new URL(fileName, import.meta.url).pathname;
 
 const pluginOptions = {
-	specification: localFile("./openApi.json"),
-	serviceHandlers: new Service(),
-	securityHandlers: new Security(),
+  specification: localFile("./openApi.json"),
+  serviceHandlers: new Service(),
+  securityHandlers: new Security(),
 };
 
 export default async function (fastify, opts) {
-	fastify.register(openapiGlue, { ...pluginOptions, ...opts });
+  fastify.register(openapiGlue, { ...pluginOptions, ...opts });
 }
 
 export const options = {
-	ajv: {
-		customOptions: {
-			strict: false,
-		},
-	},
+  ajv: {
+    customOptions: {
+      strict: false,
+    },
+  },
 };
