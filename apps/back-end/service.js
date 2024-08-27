@@ -36,7 +36,7 @@ export class Service {
 
   async dataset(req, reply) {
     console.log("dataset", req.params);
-    return { key: "value" };
+    return [];
   }
 
   // Operation: datasetSearch
@@ -81,7 +81,7 @@ export class Service {
 
   async datasetSearch(req, reply) {
     console.log("datasetSearch", req.params);
-    return { key: "value" };
+    return [];
   }
 
   // Operation: datasetItem
@@ -115,6 +115,6 @@ export class Service {
 
   async datasetItem(req, reply) {
     console.log("datasetItem", req.params);
-    return { key: "value" };
+    return { id: "dummyg" };
   }
 }
