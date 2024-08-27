@@ -6,13 +6,13 @@ import { strict as assert } from "node:assert/strict";
 import { test } from "node:test";
 import Fastify from "fastify";
 import fastifyPlugin from "../index.js";
-import service from "../service.js";
+import { Service } from "../service.js";
 
-const specification = "../openApi.json";
+import specification from "../openApi.json" with { type: "json" };
 
 const opts = {
   specification,
-  service,
+  serviceHandlers: new Service(),
 };
 //
 // Operation: dataset
