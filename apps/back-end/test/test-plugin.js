@@ -6,9 +6,13 @@ import { strict as assert } from "node:assert/strict";
 import { test } from "node:test";
 import Fastify from "fastify";
 import fastifyPlugin from "../src/index.js";
-import { Service } from "../src/service.js";
+import path from "node:path";
 
-const opts = {};
+const opts = {
+  serviceOptions: {
+    dataRoot: path.join(import.meta.dirname, 'data'),
+  },
+};
 
 //
 // Operation: dataset
@@ -49,7 +53,7 @@ test("testing dataset", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/:datasetId",
+    url: "/dataset/some-file",
     payload: undefined,
     headers: undefined,
   });
@@ -102,7 +106,7 @@ test("testing datasetSearch", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/:datasetId/search",
+    url: "/dataset/some-file/search?filter=a:foo",
     payload: undefined,
     headers: undefined,
   });
@@ -144,7 +148,7 @@ test("testing datasetItem", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/:datasetId/item/:datasetItemId",
+    url: "/dataset/some-file/item/blah",
     payload: undefined,
     headers: undefined,
   });
