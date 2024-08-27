@@ -5,10 +5,10 @@
 import { strict as assert } from "node:assert/strict";
 import { test } from "node:test";
 import Fastify from "fastify";
-import fastifyPlugin from "../index.js";
-import { Service } from "../service.js";
+import fastifyPlugin from "../src/index.js";
+import { Service } from "../src/service.js";
 
-import specification from "../openApi.json" with { type: "json" };
+import specification from "../api/mykomap-openapi.json" with { type: "json" };
 
 const opts = {
   specification,

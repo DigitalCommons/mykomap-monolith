@@ -5,7 +5,7 @@ import { Service } from "./service.js";
 const localFile = (fileName) => new URL(fileName, import.meta.url).pathname;
 
 const pluginOptions = {
-  specification: localFile("./openApi.json"),
+  specification: localFile("../api/mykomap-openapi.json"),
   serviceHandlers: new Service(),
   securityHandlers: new Security(),
 };

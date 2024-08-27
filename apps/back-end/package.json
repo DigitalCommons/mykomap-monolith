@@ -7,9 +7,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "fastify start --options index.js",
+    "start": "fastify start --options src/index.js",
     "test": "c8 node --test test/test-*.js",
-    "dev": "fastify start -l debug -P --options index.js"
+    "dev": "fastify start -l debug -P --options src/index.js"
   },
   "dependencies": {
     "@seriousme/openapi-schema-validator": "^2.2.1",
