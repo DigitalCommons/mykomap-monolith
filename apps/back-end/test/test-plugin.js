@@ -8,12 +8,8 @@ import Fastify from "fastify";
 import fastifyPlugin from "../src/index.js";
 import { Service } from "../src/service.js";
 
-import specification from "../api/mykomap-openapi.json" with { type: "json" };
+const opts = {};
 
-const opts = {
-  specification,
-  serviceHandlers: new Service(),
-};
 //
 // Operation: dataset
 // URL: /dataset/:datasetId
