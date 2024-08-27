@@ -1,0 +1,219 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Mykomap basic data and search API",
+		"description": "This is a basic API for Mykomap application clients",
+		"contact": {
+			"email": "hello@digitalcommons.coop"
+		},
+		"license": {
+			"name": "Apache 2.0",
+			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+		},
+		"version": "0.1.0"
+	},
+	"servers": [
+		{
+			"url": "https://virtserver.swaggerhub.com/SWAGGERHUBWULEE/mykomap-search/0.1.0",
+			"description": "SwaggerHub API Auto Mocking"
+		}
+	],
+	"tags": [
+		{
+			"name": "developers",
+			"description": "Operations available to regular developers"
+		}
+	],
+	"paths": {
+		"/dataset/{datasetId}": {
+			"get": {
+				"tags": [
+					"developers"
+				],
+				"summary": "obtains a dataset",
+				"description": "Obtains a dataset by its ID, which by passing in the appropriate options, might be in different formats\n",
+				"operationId": "dataset",
+				"parameters": [
+					{
+						"name": "datasetId",
+						"in": "path",
+						"description": "uniquely specifies the dataset wanted",
+						"required": true,
+						"style": "simple",
+						"explode": false,
+						"schema": {
+							"$ref": "#/components/schemas/DatasetId"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "the dataset matching the supplied criteria",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Dataset"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "bad input parameter"
+					},
+					"404": {
+						"description": "no such dataset"
+					}
+				}
+			}
+		},
+		"/dataset/{datasetId}/search": {
+			"get": {
+				"tags": [
+					"developers"
+				],
+				"summary": "obtains a list of dataset entries satisfying the search criteria supplied",
+				"description": "Obtains a dataset by its ID, which by passing in the appropriate options, might be in different formats\n",
+				"operationId": "datasetSearch",
+				"parameters": [
+					{
+						"name": "datasetId",
+						"in": "path",
+						"description": "uniquely specifies the dataset wanted",
+						"required": true,
+						"style": "simple",
+						"explode": false,
+						"schema": {
+							"$ref": "#/components/schemas/DatasetId"
+						}
+					},
+					{
+						"name": "text",
+						"in": "query",
+						"description": "a text fragment to match",
+						"required": false,
+						"style": "form",
+						"explode": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "filter",
+						"in": "query",
+						"description": "uniquely specifies the taxonomy filter items wanted",
+						"required": false,
+						"style": "form",
+						"explode": true,
+						"schema": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "the dataset IDs matching the supplied criteria",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/DatasetItemId"
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "bad input parameter"
+					},
+					"404": {
+						"description": "no such dataset"
+					}
+				}
+			}
+		},
+		"/dataset/{datasetId}/item/{datasetItemId}": {
+			"get": {
+				"tags": [
+					"developers"
+				],
+				"summary": "obtains a dataset item by its  unique ID",
+				"description": "Obtains a dataset item by its ID, and the dataset's ID.\n",
+				"operationId": "datasetItem",
+				"parameters": [
+					{
+						"name": "datasetId",
+						"in": "path",
+						"description": "uniquely specifies the dataset wanted",
+						"required": true,
+						"style": "simple",
+						"explode": false,
+						"schema": {
+							"$ref": "#/components/schemas/DatasetId"
+						}
+					},
+					{
+						"name": "datasetItemId",
+						"in": "path",
+						"description": "uniquely specifies the dataset item wanted",
+						"required": true,
+						"style": "simple",
+						"explode": false,
+						"schema": {
+							"$ref": "#/components/schemas/DatasetItemId"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "the dataset item matching the supplied criteria",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DatasetItem"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "bad input parameter"
+					},
+					"404": {
+						"description": "no such dataset item"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Location": {
+				"maxItems": 2,
+				"minItems": 2,
+				"type": "array",
+				"items": {
+					"type": "number",
+					"format": "float32"
+				}
+			},
+			"DatasetId": {
+				"type": "string"
+			},
+			"DatasetItemId": {
+				"type": "string"
+			},
+			"DatasetItem": {
+				"type": "object"
+			},
+			"Dataset": {
+				"type": "array",
+				"items": {
+					"$ref": "#/components/schemas/Location"
+				}
+			}
+		}
+	}
+}
