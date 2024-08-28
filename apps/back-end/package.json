@@ -13,6 +13,7 @@
     "dev": "fastify start -l debug -P --options src/index.js"
   },
   "dependencies": {
+    "@mykomap/common": "*",
     "@seriousme/openapi-schema-validator": "^2.2.1",
     "close-with-grace": "^2.1.0",
     "fastify-openapi-glue": "^4.7.0",
