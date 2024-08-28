@@ -2,7 +2,7 @@
 import openapiGlue from "fastify-openapi-glue";
 import { Security } from "./security.js";
 import { Service } from "./service.js";
-const localFile = (fileName) => new URL(fileName, import.meta.url).pathname;
+import specification from "@mykomap/common";
 
 const serviceOptions = {
   dataRoot: process.env.SERVER_DATA_ROOT ?? 'data',
@@ -11,7 +11,7 @@ const serviceOptions = {
 
 export default async function (fastify, opts) {
   const pluginOptions = {
-    specification: localFile("../api/mykomap-openapi.json"),
+    specification,
     serviceHandlers: new Service({
       options: opts.serviceOptions,
     }),
