@@ -6,7 +6,7 @@ monorepo
   |- frontend
   |- backend
       |- Map class instance for each config that needs a deployed backend
-      |- Single Hapi server shared across all maps
+      |- Single Fastify server shared across all maps
 |- libs
   |- initiative-filter library for search/filter(imported in BE and some FE builds)
   |- shared types
