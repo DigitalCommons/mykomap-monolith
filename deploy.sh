@@ -21,6 +21,8 @@ set -vx
 #   - PROXY_PORT: the port number being proxied (e.g. '4000')
 #   - PROXY_PATH: the path being proxied (e.g. '/api')
 #   - BASE_URL_PATH # not actually used but might be in future?
+#   - GLITCHTIP_KEY
+#   - MAPTILER_API_KEY
 #   - DBUS_SESSION_BUS_ADDRESS: required for service management
 # - the back-end deploys a PM2 config $DEPLOY_DEST/back-end/ecosystem.config.js for `pm2 start`
 # - FIXME the user can write to DEPLOY_DEST, WWW_ROOT
@@ -28,9 +30,9 @@ set -vx
 #
 # We don't assume a terminal or any interactivity.
 
-
 FE_DEST=$DEPLOY_DEST/front-end
-BE_DEST=$DEPLOY_DEST/back-end
+#BE_DEST=$DEPLOY_DEST/back-end
+BE_DEST=$PWD/apps/back-end # work around build glitches by running from source!
 DATA_DEST=$DEPLOY_DEST/data
 PM2_VERSION="^5.4"
 SYSTEMD_UNIT="$USERDIR/.config/systemd/user/pm2.service"
@@ -74,7 +76,7 @@ Environment=ASDF_DIR=/opt/asdf
 PIDFile=%h/.pm2/pm2.pid
 Restart=on-failure
 WorkingDirectory=$BE_DEST
-ExecStart=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 startOrReload ecosystem.config.json'
+ExecStart=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 startOrReload pm2/ecosystem.config.json'
 ExecReload=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 reload all'
 ExecStop=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 kill'
 
@@ -89,27 +91,40 @@ cp .tool-versions "$DEPLOY_DEST"
   cd apps/front-end
   npm ci
   rm -rf dist/
+
+  echo >.env
+  chmod 0600 .env # ensure secrets are secret-ish
+  # FIXME these shouldn't be hardwired!
+  cat >>.env <<EOF
+VITE_GLITCHTIP_KEY=${GLITCHTIP_KEY:?}
+VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
+EOF
+  
   npm run build
   #npm deploy "$FE_DEST"
-  cp -a --copy-contents dist/. "$FE_DEST" # the . is significant
+  #cp -a --copy-contents dist/. "$FE_DEST" # the . is significant
 )
 ( # back end
   cd apps/back-end
   npm ci
-  rm -rf dist/
-  npm run build
+  # this section doesn't work because of ESM/CJS glitches in the build
+  # rm -rf dist/
+  # npm run build 
   # npm deploy "$BE_DEST"
-  cp -a --copy-contents dist/. "$BE_DEST" # the . is significant
-  cat >"$BE_DEST/.env" <<EOF
+  # cp -a --copy-contents dist/. "$BE_DEST" # the . is significant
+
+  echo >"$BE_DEST/.env"
+  chmod 0600 "$BE_DEST/.env" # ensure secrets are secret-ish  
+  cat >>"$BE_DEST/.env" <<EOF
 SERVER_DATA_ROOT=$DATA_DEST
 FASTIFY_PORT=$PROXY_PORT
 #   root address?
 EOF
-
+  
   (
     cd "$BE_DEST"
     pm2 flush
-    pm2 startOrReload ecosystem.config.json
+    pm2 startOrReload pm2/ecosystem.config.json
     
     # FIXME Do we need to pm2 save?
   )

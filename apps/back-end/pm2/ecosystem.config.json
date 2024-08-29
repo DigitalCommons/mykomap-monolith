@@ -2,7 +2,7 @@
   "apps": [
     {
       "name": "mykomap/back-end",
-      "script": "./server.js"
+      "script": "npm run start"
     }
   ]
 }
