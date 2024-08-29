@@ -24,7 +24,6 @@ set -vx
 #   - GLITCHTIP_KEY
 #   - MAPTILER_API_KEY
 #   - DBUS_SESSION_BUS_ADDRESS: required for service management
-# - the back-end deploys a PM2 config $DEPLOY_DEST/back-end/ecosystem.config.js for `pm2 start`
 # - FIXME the user can write to DEPLOY_DEST, WWW_ROOT
 #   - or else, the proxy pass and WWW roots have been defined already
 #
@@ -34,8 +33,7 @@ FE_DEST=$DEPLOY_DEST/front-end
 #BE_DEST=$DEPLOY_DEST/back-end
 BE_DEST=$PWD/apps/back-end # work around build glitches by running from source!
 DATA_DEST=$DEPLOY_DEST/data
-PM2_VERSION="^5.4"
-SYSTEMD_UNIT="$USERDIR/.config/systemd/user/pm2.service"
+SYSTEMD_UNIT="$USERDIR/.config/systemd/user/mykomap-backend.service"
 [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]] && {
   die "no user session found? DBUS_SESSION_BUS_ADDRESS unset."
 }
@@ -50,35 +48,26 @@ mkdir -vp "${FE_DEST}" "${BE_DEST}" "${DATA_DEST}"
 asdf plugin add nodejs || true
 asdf install
 
-# FIXME if nodejs is updated, need to restart pm2
-#  pm2 unstartup pm2 startup
-
-# Install pm2 compatible with 5.4 (being fairly specific deliberately)
-# asdf will shim this so it works
-npm install -g "pm2@$PM2_VERSION"
-
 # Install systemd unit
 mkdir -p "${SYSTEMD_UNIT%/*}"
 cat >"$SYSTEMD_UNIT" <<EOF
 [Unit]
-Description=PM2 process manager for %u
-Documentation=https://pm2.keymetrics.io/
+Description=Mykomap back-end process manager for %u
+Documentation=https://github.com/DigitalCommons/mykomap-monolith/
 After=network.target
 
 [Service]
-Type=forking
+Type=exec
 LimitNOFILE=infinity
 LimitNPROC=infinity
 LimitCORE=infinity
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-Environment=PM2_HOME=%h/.pm2
 Environment=ASDF_DIR=/opt/asdf
-PIDFile=%h/.pm2/pm2.pid
+EnvironmentFile=$BE_DEST/.env
 Restart=on-failure
 WorkingDirectory=$BE_DEST
-ExecStart=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 startOrReload pm2/ecosystem.config.json'
-ExecReload=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 reload all'
-ExecStop=bash -c '. "$ASDF_DIR/asdf.sh" && pm2 kill'
+ExecStart=bash -c '. "$ASDF_DIR/asdf.sh" && npm run start:attached'
+ExecReload=kill -HUP \$MAINPID
 
 [Install]
 WantedBy=default.target
@@ -121,13 +110,6 @@ FASTIFY_PORT=$PROXY_PORT
 #   root address?
 EOF
   
-  (
-    cd "$BE_DEST"
-    pm2 flush
-    pm2 startOrReload pm2/ecosystem.config.json
-    
-    # FIXME Do we need to pm2 save?
-  )
 )
 
 # FIXME this needs perms! And root user ownership. Delegate to caller for now.
@@ -143,6 +125,6 @@ EOF
 
 ( # This needs a user session, which this script should have been started with.
   systemctl --user daemon-reload # loads any new configs
-  systemctl --user enable pm2
-  systemctl --user start pm2
+  systemctl --user enable mykomap-backend
+  systemctl --user start mykomap-backend
 )
