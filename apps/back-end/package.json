@@ -9,6 +9,7 @@
   "scripts": {
     "build": "vite build --ssr src/server.js --outDir dist && cp pm2/* dist",
     "start": "fastify start --options src/index.js",
+    "start:attached": "node src/server.js",
     "test": "c8 node --test test/test-*.js",
     "dev": "fastify start -l debug -P --options src/index.js"
   },
