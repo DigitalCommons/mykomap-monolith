@@ -7,63 +7,63 @@ export type Location = [
 
 export type DatasetId = string;
 
-export type DatasetItemId = string;
+export type DatasetItemId = number;
 
 export type DatasetItem = {
-    [key: string]: unknown;
+  [key: string]: unknown;
 };
 
 export type Dataset = Array<Location>;
 
 export type DatasetData = {
-    path: {
-        /**
-         * uniquely specifies the dataset wanted
-         */
-        datasetId: DatasetId;
-    };
+  path: {
+    /**
+     * uniquely specifies the dataset wanted
+     */
+    datasetId: DatasetId;
+  };
 };
 
-export type DatasetResponse = (Dataset);
+export type DatasetResponse = Dataset;
 
-export type DatasetError = (unknown);
+export type DatasetError = unknown;
 
 export type DatasetSearchData = {
-    path: {
-        /**
-         * uniquely specifies the dataset wanted
-         */
-        datasetId: DatasetId;
-    };
-    query?: {
-        /**
-         * uniquely specifies the taxonomy filter items wanted
-         */
-        filter?: Array<(string)>;
-        /**
-         * a text fragment to match
-         */
-        text?: string;
-    };
+  path: {
+    /**
+     * uniquely specifies the dataset wanted
+     */
+    datasetId: DatasetId;
+  };
+  query?: {
+    /**
+     * uniquely specifies the taxonomy filter items wanted
+     */
+    filter?: Array<string>;
+    /**
+     * a text fragment to match
+     */
+    text?: string;
+  };
 };
 
-export type DatasetSearchResponse = (Array<DatasetItemId>);
+export type DatasetSearchResponse = Array<DatasetItemId>;
 
-export type DatasetSearchError = (unknown);
+export type DatasetSearchError = unknown;
 
 export type DatasetItemData = {
-    path: {
-        /**
-         * uniquely specifies the dataset wanted
-         */
-        datasetId: DatasetId;
-        /**
-         * uniquely specifies the dataset item wanted
-         */
-        datasetItemId: DatasetItemId;
-    };
+  path: {
+    /**
+     * uniquely specifies the dataset wanted
+     */
+    datasetId: DatasetId;
+    /**
+     * uniquely specifies the dataset item wanted
+     */
+    datasetItemId: DatasetItemId;
+  };
 };
 
-export type DatasetItemResponse = (DatasetItem);
+export type DatasetItemResponse = DatasetItem;
 
-export type DatasetItemError = (unknown);
+export type DatasetItemError = unknown;
