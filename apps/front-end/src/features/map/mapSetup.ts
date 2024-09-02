@@ -78,23 +78,23 @@ const onMarkerHover = (
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
-  const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-  const name = feature.properties?.Name;
+  // const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+  // const name = feature.properties?.Name;
 
-  // Shift the popup up a bit so it doesn't cover the marker
-  const popupOffset: [number, number] = offset
-    ? [offset[0], offset[1] - 20]
-    : [0, -20];
+  // // Shift the tooltip up a bit so it doesn't cover the marker
+  // const popupOffset: [number, number] = offset
+  //   ? [offset[0], offset[1] - 20]
+  //   : [0, -20];
 
-  tooltip?.remove();
-  tooltip = new Popup({
-    closeButton: false,
-    maxWidth: "none",
-  })
-    .setLngLat(coordinates)
-    .setHTML(getTooltip(name))
-    .addTo(map)
-    .setOffset(popupOffset);
+  // tooltip?.remove();
+  // tooltip = new Popup({
+  //   closeButton: false,
+  //   maxWidth: "none",
+  // })
+  //   .setLngLat(coordinates)
+  //   .setHTML(getTooltip(name))
+  //   .addTo(map)
+  //   .setOffset(popupOffset);
 
   map.getCanvas().style.cursor = "pointer";
 };
