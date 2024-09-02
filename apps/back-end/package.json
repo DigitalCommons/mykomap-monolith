@@ -10,9 +10,10 @@
     "build": "vite build --ssr src/server.js --outDir dist",
     "start": "fastify start --options src/index.js",
     "test": "c8 node --test test/test-*.js",
-    "dev": "fastify start -l debug -P --options src/index.js"
+    "dev": "cross-env NODE_ENV=development nodemon -e js -w src src/server.js"
   },
   "dependencies": {
+    "@fastify/cors": "^9.0.1",
     "@mykomap/common": "*",
     "@seriousme/openapi-schema-validator": "^2.2.1",
     "close-with-grace": "^2.1.0",
@@ -24,8 +25,10 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "c8": "^10.1.2",
+    "cross-env": "^7.0.3",
     "fastify": "^4.28.1",
     "fastify-cli": "^6.3.0",
+    "nodemon": "^3.1.4",
     "vite": "^5.4.2"
   }
 }

@@ -1,28 +1,38 @@
 import closeWithGrace from "close-with-grace";
-import dotenv from "dotenv";
 import Fastify from "fastify";
-import plugin from "./index.js";
-import { options } from "./index.js";
+import cors from "@fastify/cors";
+import plugin, { options } from "./index.js";
+
+let app;
 
 // delay is the number of milliseconds for the graceful close to finish
 closeWithGrace(
   { delay: process.env.FASTIFY_CLOSE_GRACE_DELAY || 500 },
   async ({ signal, err, manual }) => {
-    if (err) app.log.error(err);
-    await app.close();
+    if (err) {
+      app?.log?.error(err);
+      console.error(err);
+    }
+    await app?.close();
   },
 );
 
 const start = async () => {
-  const fastify = Fastify({
-    logger: true,
+  app = Fastify({
+    logger: {
+      level: process.env.NODE_ENV === "development" ? "debug" : "info",
+    },
+  });
+
+  await app.register(cors, {
+    origin: process.env.NODE_ENV === "development" && ["http://localhost:5173"],
   });
 
   try {
-    fastify.register(plugin, options);
-    await fastify.listen({ port: process.env.FASTIFY_PORT || 3000 });
+    await app.register(plugin, options);
+    await app.listen({ port: process.env.FASTIFY_PORT || 3000 });
   } catch (err) {
-    fastify.log.error(err);
+    app.log.error(err);
     process.exit(1);
   }
 };
