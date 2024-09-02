@@ -1,3 +1,5 @@
+import { dataset } from "../services";
+
 const generateGeoJSONFeatures = (
   pointCount: number,
 ): GeoJSON.Feature<GeoJSON.Point>[] => {
@@ -23,8 +25,8 @@ const generateGeoJSONFeatures = (
         ],
       },
       properties: {
-        Name: `Marker ${k}`,
-        Identifier: ids[k],
+        name: `Marker ${k}`,
+        id: ids[k],
       },
     }),
   );
@@ -40,33 +42,41 @@ const generateGeoJSONFeatures = (
   return features;
 };
 
-const data = generateGeoJSONFeatures(500000);
+/** Lazy load the data once into this variable */
+let features: GeoJSON.Feature<GeoJSON.Point>[] | undefined = undefined;
+
+const featuresPromise =
+  features ??
+  dataset({ path: { datasetId: "test-500000" } })
+    .then((response) => {
+      const locations = response.data ?? [];
+      features = locations.map((location, index) => ({
+        type: "Feature",
+        geometry: { type: "Point", coordinates: location },
+        properties: { id: index }, // id is the index of original array
+      }));
+      // We want this data to be immutable
+      return features;
+    })
+    .catch((error) => {
+      console.error("Error getting test-500000 dataset", error);
+      features = [];
+      return features;
+    });
 
 /**
- * Since we know feature IDs are sorted, we can filter the array in O(n) rather than O(n^2). The
- * array that is returned contains references to the original data, so shouldn't use a lot of extra
- * memory.
+ * The array that is returned contains references to the original data, so shouldn't use a lot of
+ * extra memory.
  *
- * @param ids Sorted array of feature IDs
- * @returns Array of GeoJSON features with matching IDs
+ * @param ids Array of N ids (indexes of the features array) to filter
+ * @returns Array of N GeoJSON features with the given ids
  */
-export const getFilteredFeatures = (
-  ids: string[],
-): GeoJSON.Feature<GeoJSON.Point>[] => {
-  const filtered = [];
-  let searchIndex = 0;
-
-  for (const id of ids) {
-    while (searchIndex < data.length) {
-      if (data[searchIndex]?.properties?.Identifier === id) {
-        filtered.push(data[searchIndex]);
-        searchIndex++;
-        break;
-      }
-      searchIndex++;
-    }
-  }
+export const getFilteredFeatures = async (
+  ids: number[],
+): Promise<GeoJSON.Feature<GeoJSON.Point>[]> => {
+  const features = await featuresPromise;
+  const filtered = ids.map((id) => features[id]);
   return filtered;
 };
 
-export default data;
+export default featuresPromise;

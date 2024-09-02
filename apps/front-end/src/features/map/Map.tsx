@@ -1,12 +1,12 @@
 import { useRef, useEffect } from "react";
 import { createMap } from "./mapSetup";
 import { useAppSelector } from "../../app/hooks";
-import { selectSearch, selectVisibleIds } from "../filter/filterSlice";
-import allFeatures, { getFilteredFeatures } from "../../data/geojson";
+import { selectText, selectVisibleIds } from "../filter/filterSlice";
+import featuresPromise, { getFilteredFeatures } from "../../data/geojson";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 
 const Map = () => {
-  const search = useAppSelector(selectSearch);
+  const searchText = useAppSelector(selectText);
   const visibleIds = useAppSelector(selectVisibleIds);
   const map = useRef<MapLibreMap | null>(null);
 
@@ -18,13 +18,19 @@ const Map = () => {
   }, []);
 
   useEffect(() => {
+    updateMapData().catch((error) => {
+      console.error("Failed to update map data", error);
+    });
+  }, [visibleIds]);
+
+  const updateMapData = async () => {
     let features;
 
-    if (search) {
+    if (searchText) {
       console.log(`Found ${visibleIds.length} features that matched`);
-      features = getFilteredFeatures(visibleIds);
+      features = await getFilteredFeatures(visibleIds);
     } else {
-      features = allFeatures;
+      features = await featuresPromise;
     }
 
     console.log("Rendering data in MapLibreGL");
@@ -33,7 +39,7 @@ const Map = () => {
       type: "FeatureCollection",
       features,
     });
-  }, [visibleIds]);
+  };
 
   return (
     <div

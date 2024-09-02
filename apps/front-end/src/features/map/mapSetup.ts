@@ -10,22 +10,27 @@ import {
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
-import features from "../../data/geojson";
+import featuresPromise from "../../data/geojson";
+import { datasetItem } from "../../services";
 
 const baseUri = "https://base.uri/";
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
 let geojsonSourceLoaded = false;
 
-const getPopup = (name: string): string => {
+const getPopup = async (id: number): Promise<string> => {
+  const item = await datasetItem({
+    path: { datasetId: "test-500000", datasetItemId: id },
+  });
   return `
     <div class="m-0 flex flex-row h-56 w-[35vw] p-0">
       <div class="scrolling-touch max-h-100 w-2/3 overflow-y-auto rounded-md bg-white px-6 py-4">
-        <h2 class="font-bold text-xl mb-1">${name}</h2>
+        <h2 class="font-bold text-xl mb-1">${item?.data?.name}</h2>
+        <p class="font-light text-sm my-2 mx-0">${item?.data?.desc}</p>
       </div>
       
       <div class="flex-grow w-1/3 overflow-y-auto rounded-r-md bg-gray-200 px-6 py-4">
-        <p class="font-light text-sm my-2 mx-0">Fetch other details with backend API...</p>
+        <p class="font-light text-sm my-2 mx-0">Render other details here...</p>
       </div>
     </div>
   `;
@@ -40,18 +45,17 @@ const disableRotation = (map: MapLibreMap) => {
   map.touchZoomRotate.disableRotation();
 };
 
-const onMarkerClick = (
+const onMarkerClick = async (
   map: MapLibreMap,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
   const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-  const identifier = feature.properties?.Identifier;
-  const name = feature.properties?.Name;
-  const uri = `${baseUri}${identifier}`;
+  const id = feature.properties?.id;
+  const uri = `${baseUri}${id}`;
 
-  console.log(`Clicked initiative ${identifier} ${coordinates}`);
-  const content = getPopup(name);
+  console.log(`Clicked initiative ${id} ${coordinates}`);
+  const content = await getPopup(id);
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
@@ -110,7 +114,8 @@ export const createMap = (): MapLibreMap => {
     ],
   });
 
-  map.on("load", () => {
+  map.on("load", async () => {
+    const features = await featuresPromise;
     map.addSource("initiatives-geojson", {
       type: "geojson",
       data: {
@@ -255,7 +260,7 @@ export const createMap = (): MapLibreMap => {
           .queryRenderedFeatures(undefined, {
             layers: ["unclustered-point"],
           })
-          .map((f) => `${baseUri}${f?.properties["Identifier"]}`);
+          .map((f) => `${baseUri}${f?.properties.id}`);
 
         if (!uri || !visibleFeatureUris.includes(uri)) {
           // close the popup if the feature is no longer visible

@@ -1,20 +1,19 @@
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { searchForString, selectSearch } from "./filterSlice";
+import { selectText, setText, performSearch } from "./filterSlice";
 
 const SearchBar = () => {
   const dispatch = useAppDispatch();
-  const search = useAppSelector(selectSearch);
-  const [searchInput, setSearchInput] = useState(search);
+  const searchText = useAppSelector(selectText);
 
   const onChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    setSearchInput(e.currentTarget.value);
+    dispatch(setText(e.currentTarget.value));
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(`Searching for ${searchInput}`);
-    dispatch(searchForString(searchInput));
+    console.log(`Searching for ${searchText}`);
+    dispatch(performSearch());
   };
 
   return (
@@ -42,7 +41,7 @@ const SearchBar = () => {
           id="search-input"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder="Search for initiatives..."
-          value={searchInput}
+          value={searchText}
           autoComplete="off"
           onChange={onChange}
         />

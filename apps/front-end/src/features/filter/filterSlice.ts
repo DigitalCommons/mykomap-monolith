@@ -1,37 +1,57 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import allFeatures from "../../data/geojson";
+import { datasetSearch } from "../../services";
 
 export interface FilterSliceState {
-  search: string;
-  visibleIds: string[];
+  text: string;
+  visibleIds: number[];
+  status: string;
 }
 
 const initialState: FilterSliceState = {
-  search: "",
+  text: "",
   visibleIds: [],
+  status: "idle",
 };
 
 export const filterSlice = createAppSlice({
   name: "filter",
   initialState,
   reducers: (create) => ({
-    searchForString: create.reducer((state, action: PayloadAction<string>) => {
-      const searchString = action.payload.toLowerCase();
-      state.search = searchString;
-      state.visibleIds = allFeatures
-        .filter((feature) =>
-          feature?.properties?.Name.toLowerCase().includes(searchString),
-        )
-        .map((feature) => feature!!.properties!!.Identifier);
+    setText: create.reducer((state, action: PayloadAction<string>) => {
+      state.text = action.payload;
     }),
+    performSearch: create.asyncThunk(
+      async (_, thunkApi) => {
+        const { filter } = thunkApi.getState() as { filter: FilterSliceState };
+        const response = await datasetSearch({
+          path: { datasetId: "test-500000" },
+          query: { text: filter.text.toLowerCase() },
+        });
+        // The value we return becomes the `fulfilled` action payload
+        return response.data;
+      },
+      {
+        pending: (state) => {
+          state.status = "loading";
+        },
+        fulfilled: (state, action) => {
+          state.status = "idle";
+          state.visibleIds = action.payload ?? [];
+        },
+        rejected: (state) => {
+          state.status = "failed";
+          state.visibleIds = [];
+        },
+      },
+    ),
   }),
   selectors: {
-    selectSearch: (filter) => filter.search,
+    selectText: (filter) => filter.text,
     selectVisibleIds: (filter) => filter.visibleIds,
   },
 });
 
-export const { searchForString } = filterSlice.actions;
+export const { setText, performSearch } = filterSlice.actions;
 
-export const { selectSearch, selectVisibleIds } = filterSlice.selectors;
+export const { selectText, selectVisibleIds } = filterSlice.selectors;
