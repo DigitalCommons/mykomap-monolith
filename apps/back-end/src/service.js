@@ -131,15 +131,15 @@ export class Service {
     const { filter, text } = req.query;
     
     assertBase64(datasetId, `invalid datasetId`);
-    filter?.forEach(uri => assertQName(uri, `invalid filter`));
+    filter?.forEach((uri) => assertQName(uri, `invalid filter`));
 
-    const encodedText = encodeURIComponent(text ?? '');
-    
+    const encodedText = encodeURIComponent(text ?? "");
+
     return this._sendJson(
       req,
       reply,
-      ['datasets', datasetId, 'search', ...filter, 'text', encodedText],
-      `search failed`
+      ["datasets", datasetId, "search", ...(filter ?? []), "text", encodedText],
+      `search failed`,
     );
   }
 
