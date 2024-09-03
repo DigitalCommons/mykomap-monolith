@@ -45,7 +45,15 @@ const generateGeoJSONFeatures = (
 /** Lazy load the data once into this variable */
 let features: GeoJSON.Feature<GeoJSON.Point>[] | undefined = undefined;
 
-const datasetId = "test-500000";
+const urlParams = new URLSearchParams(window.location.search);
+const datasetId = urlParams.get('datasetId') ?? '';
+if (datasetId === '') {
+  console.warn("No datasetId parameter given, so no dataset can be loaded");
+  features = [];
+}
+else {
+  console.info("Loading dataset ID "+datasetId);
+}
 
 const featuresPromise =
   features ??
