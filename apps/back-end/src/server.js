@@ -15,6 +15,9 @@ const corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 // The TCP port to the webserver should listen on
 const listenPort = process.env.FASTIFY_PORT || 3000;
 
+// The API path prefix to set.
+const apiPathPrefix = process.env.API_PATH_PREFIX || '/';
+
 const start = async () => {
   const app = Fastify({
     logger: {
@@ -42,7 +45,7 @@ const start = async () => {
     });
 
     // Register the API routes
-    await app.register(plugin, options);
+    await app.register(plugin, { ...options, prefix: apiPathPrefix });
 
     // Start listening
     await app.listen({ port: listenPort });

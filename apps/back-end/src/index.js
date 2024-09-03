@@ -19,7 +19,10 @@ export default async function (fastify, opts) {
     }),
     securityHandlers: new Security(),
   };
-  fastify.register(openapiGlue, { ...pluginOptions, ...opts });
+  // Ignore the path prefix if one is set, as it is handled upstream.
+  // If we do it here it gets doubled up!
+  const prefix = undefined;
+  fastify.register(openapiGlue, { ...pluginOptions, ...opts, prefix });
 }
 
 export const options = {
