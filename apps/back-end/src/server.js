@@ -6,6 +6,11 @@ import plugin, { options } from "./index.js";
 // Set the number of milliseconds required for a graceful close to complete
 const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
 
+// Define the origin(s) for the purposes of CORS.
+// This environment variable will be interpreted as a space-delimited list of
+// URLs, which the Access-Control-Allow-Origin CORS header should allow.
+// @fastify/cors will add an onRequest hook and a wildcard options route for this.
+const corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 
 const start = async () => {
   const app = Fastify({
@@ -30,7 +35,7 @@ const start = async () => {
     // Register CORS plugin - this is primarily to allow the back end to
     // be on a different host/port.
     await app.register(cors, {
-      origin: process.env.NODE_ENV === "development" && ["http://localhost:5173"],
+      origin: corsOrigin,
     });
 
     // Register the API routes
