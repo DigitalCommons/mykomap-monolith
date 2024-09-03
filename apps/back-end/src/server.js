@@ -12,6 +12,9 @@ const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
 // @fastify/cors will add an onRequest hook and a wildcard options route for this.
 const corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 
+// The TCP port to the webserver should listen on
+const listenPort = process.env.FASTIFY_PORT || 3000;
+
 const start = async () => {
   const app = Fastify({
     logger: {
@@ -42,7 +45,7 @@ const start = async () => {
     await app.register(plugin, options);
 
     // Start listening
-    await app.listen({ port: process.env.FASTIFY_PORT || 3000 });
+    await app.listen({ port: listenPort });
     
   } catch (err) {
     app.log.error(err);
