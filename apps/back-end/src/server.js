@@ -3,39 +3,48 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import plugin, { options } from "./index.js";
 
-let app;
+// Set the number of milliseconds required for a graceful close to complete
+const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
 
-// delay is the number of milliseconds for the graceful close to finish
-closeWithGrace(
-  { delay: process.env.FASTIFY_CLOSE_GRACE_DELAY || 500 },
-  async ({ signal, err, manual }) => {
-    if (err) {
-      app?.log?.error(err);
-      console.error(err);
-    }
-    await app?.close();
-  },
-);
 
 const start = async () => {
-  app = Fastify({
+  const app = Fastify({
     logger: {
       level: process.env.NODE_ENV === "development" ? "debug" : "info",
     },
   });
 
-  await app.register(cors, {
-    origin: process.env.NODE_ENV === "development" && ["http://localhost:5173"],
-  });
+  // This closes the application with a delay to clear up.
+  closeWithGrace(
+    { delay: closeGraceDelay },
+    async ({ signal, err, manual }) => {
+      if (err) {
+        app?.log?.error(err);
+        console.error(err);
+      }
+      await app?.close();
+    },
+  );
 
   try {
+    // Register CORS plugin - this is primarily to allow the back end to
+    // be on a different host/port.
+    await app.register(cors, {
+      origin: process.env.NODE_ENV === "development" && ["http://localhost:5173"],
+    });
+
+    // Register the API routes
     await app.register(plugin, options);
+
+    // Start listening
     await app.listen({ port: process.env.FASTIFY_PORT || 3000 });
+    
   } catch (err) {
     app.log.error(err);
     process.exit(1);
   }
 };
+
 
 // Run the server!
 start();
