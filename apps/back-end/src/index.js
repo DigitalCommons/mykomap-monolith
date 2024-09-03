@@ -8,9 +8,8 @@ import specification from "@mykomap/common";
 dotenv.config();
 
 const serviceOptions = {
-  dataRoot: process.env.SERVER_DATA_ROOT ?? 'data',
+  dataRoot: process.env.SERVER_DATA_ROOT ?? "data",
 };
-
 
 export default async function (fastify, opts) {
   const pluginOptions = {

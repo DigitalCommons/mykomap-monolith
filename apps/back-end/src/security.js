@@ -5,5 +5,4 @@ export class Security {
     // schemes will contain securitySchemes as found in the openapi specification
     console.log("Initialize:", JSON.stringify(schemes));
   }
-
 }
