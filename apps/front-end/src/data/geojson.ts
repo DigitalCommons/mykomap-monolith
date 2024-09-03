@@ -45,9 +45,11 @@ const generateGeoJSONFeatures = (
 /** Lazy load the data once into this variable */
 let features: GeoJSON.Feature<GeoJSON.Point>[] | undefined = undefined;
 
+const datasetId = "test-500000";
+
 const featuresPromise =
   features ??
-  dataset({ path: { datasetId: "test-500000" } })
+  dataset({ path: { datasetId } })
     .then((response) => {
       const locations = response.data ?? [];
       features = locations.map((location, index) => ({
@@ -59,7 +61,7 @@ const featuresPromise =
       return features;
     })
     .catch((error) => {
-      console.error("Error getting test-500000 dataset", error);
+      console.error(`Error getting dataset with ID ${datasetId}`, error);
       features = [];
       return features;
     });
