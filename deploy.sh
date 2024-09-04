@@ -125,5 +125,6 @@ EOF
 ( # This needs a user session, which this script should have been started with.
   systemctl --user daemon-reload # loads any new configs
   systemctl --user enable mykomap-backend
+  systemctl --user is-active --quiet mykomap-backend && systemctl --user restart mykomap-backend # if already running, restart
   systemctl --user start mykomap-backend
 )
