@@ -35,7 +35,8 @@ BE_DEST=$PWD/apps/back-end # work around build glitches by running from source!
 DATA_DEST=$DEPLOY_DEST/data
 SYSTEMD_UNIT="$USERDIR/.config/systemd/user/mykomap-backend.service"
 [[ -z "$DBUS_SESSION_BUS_ADDRESS" ]] && {
-  die "no user session found? DBUS_SESSION_BUS_ADDRESS unset."
+  echo "no user session found? DBUS_SESSION_BUS_ADDRESS unset."
+  exit 1
 }
 
 mkdir -vp "${DEPLOY_DEST:?}"
