@@ -59,9 +59,6 @@ After=network.target
 
 [Service]
 Type=exec
-LimitNOFILE=infinity
-LimitNPROC=infinity
-LimitCORE=infinity
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 Environment=ASDF_DIR=/opt/asdf
 EnvironmentFile=$BE_DEST/.env
