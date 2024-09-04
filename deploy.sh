@@ -85,6 +85,7 @@ cp .tool-versions "$DEPLOY_DEST"
   chmod 0600 .env # ensure secrets are secret-ish
   # FIXME these shouldn't be hardwired!
   cat >>.env <<EOF
+VITE_API_URL=/api
 VITE_GLITCHTIP_KEY=${GLITCHTIP_KEY:?}
 VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
 EOF
