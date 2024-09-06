@@ -108,5 +108,6 @@
   "include": [
     "**/*.ts",
     "**/*.js",
+    "**/mykomap-openapi.json"
   ],
 }

@@ -14,5 +14,5 @@ export default defineConfig({
     },
     target: "esnext",
   },
-  plugins: [dts()], // emit TS declaration files
+  plugins: [dts({ include: ["**/*.ts", "**/*.js"] })], // emit TS declaration files
 });
