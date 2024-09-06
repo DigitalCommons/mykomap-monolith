@@ -6,7 +6,8 @@
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
   "private": true,
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/common.js",
+  "types": "./dist/src/index.d.ts",
   "scripts": {
     "clean": "rimraf node_modules",
     "build": "vite build",
