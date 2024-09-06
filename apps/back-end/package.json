@@ -27,12 +27,14 @@
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
     "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.5.4",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
     "fastify": "^4.28.1",
     "fastify-cli": "^6.3.0",
     "nodemon": "^3.1.4",
     "rimraf": "^6.0.1",
+    "typescript": "^5.5.4",
     "vite": "^5.4.2",
     "vite-node": "^2.0.5"
   }
