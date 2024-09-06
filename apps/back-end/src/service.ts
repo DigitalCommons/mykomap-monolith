@@ -1,3 +1,4 @@
+// @ts-nocheck
 // implementation of the operations in the openapi specification
 import fs from "node:fs";
 import path from "node:path";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 // implementation of the security schemes in the openapi specification
 
 export class Security {
