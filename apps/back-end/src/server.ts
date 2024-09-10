@@ -1,7 +1,8 @@
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import plugin, { options } from "./index.js";
+import apiPlugin, { options } from "./index.js";
+export { apiPlugin, options as apiOptions }; // For use as a library
 
 // Set the number of milliseconds required for a graceful close to complete
 const closeGraceDelay = Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500;
@@ -18,7 +19,7 @@ const listenPort = Number(process.env.FASTIFY_PORT) || 3000;
 // The API path prefix to set.
 const apiPathPrefix = process.env.API_PATH_PREFIX || '/';
 
-const start = async () => {
+export const start = async () => {
   const app = Fastify({
     logger: {
       level: process.env.NODE_ENV === "development" ? "debug" : "info",
@@ -28,7 +29,7 @@ const start = async () => {
   // This closes the application with a delay to clear up.
   closeWithGrace(
     { delay: closeGraceDelay },
-    async ({ signal, err, manual }) => {
+    async ({ signal: _signal, err, manual: _manual }) => {
       if (err) {
         app?.log?.error(err);
         console.error(err);
@@ -56,7 +57,7 @@ const start = async () => {
     });
 
     // Register the API routes
-    await app.register(plugin, { ...options, prefix: apiPathPrefix });
+    await app.register(apiPlugin, { ...options, prefix: apiPathPrefix });
 
     // Start listening
     await app.listen({ port: listenPort });
@@ -66,7 +67,3 @@ const start = async () => {
     process.exit(1);
   }
 };
-
-
-// Run the server!
-start();
