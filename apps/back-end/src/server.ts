@@ -1,11 +1,10 @@
-// @ts-nocheck
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
 import plugin, { options } from "./index.js";
 
 // Set the number of milliseconds required for a graceful close to complete
-const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
+const closeGraceDelay = Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500;
 
 // Define the origin(s) for the purposes of CORS.
 // This environment variable will be interpreted as a space-delimited list of
@@ -14,7 +13,7 @@ const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
 const corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 
 // The TCP port to the webserver should listen on
-const listenPort = process.env.FASTIFY_PORT || 3000;
+const listenPort = Number(process.env.FASTIFY_PORT) || 3000;
 
 // The API path prefix to set.
 const apiPathPrefix = process.env.API_PATH_PREFIX || '/';
@@ -41,7 +40,9 @@ const start = async () => {
   // This avoids EADDRINUSE errors caused when vite-node's HMR tries to
   // restart the server when the old one is still running.
   // https://github.com/vitest-dev/vitest/issues/2334
+  // @ts-ignore // seems  to be a bug in vite that this is not defined
   if (import.meta.hot) {
+    // @ts-ignore
     import.meta.hot.on("vite:beforeFullReload", () => {
       app.close();
     });  
