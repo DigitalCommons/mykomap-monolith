@@ -11,6 +11,11 @@ export default defineConfig({
   server: {
     open: true,
   },
+  test: {
+    globals: true,
+    environment: "node",
+    mockReset: true,
+  },  
   base: "./",
   root,
 });
