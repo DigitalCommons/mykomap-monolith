@@ -38,6 +38,15 @@ const start = async () => {
     },
   );
 
+  // This avoids EADDRINUSE errors caused when vite-node's HMR tries to
+  // restart the server when the old one is still running.
+  // https://github.com/vitest-dev/vitest/issues/2334
+  if (import.meta.hot) {
+    import.meta.hot.on("vite:beforeFullReload", () => {
+      app.close();
+    });  
+  }
+
   try {
     // Register CORS plugin - this is primarily to allow the back end to
     // be on a different host/port.
