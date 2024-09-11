@@ -9,6 +9,15 @@ const root = dirname(path);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [dts()],
+  build: {
+    lib: {
+      // Could also be a dictionary or array of multiple entry points
+      entry: fileURLToPath(import.meta.resolve("./src/server.ts")),
+      name: "@mykomap/back-end",
+      formats: ["es"],
+      fileName: "back-end",
+    },
+  },
   server: {
     open: true,
   },
