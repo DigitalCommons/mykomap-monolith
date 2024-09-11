@@ -6,10 +6,10 @@
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
   "private": true,
   "type": "module",
-  "main": "dist/server.js",
+  "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
-    "build": "vite build --ssr src/server.ts --outDir dist",
+    "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",
     "start:attached": "npm run start",
     "test": "vitest run",

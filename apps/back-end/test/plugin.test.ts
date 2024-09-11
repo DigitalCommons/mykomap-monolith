@@ -6,7 +6,7 @@
 
 import { expect, test } from "vitest";
 import Fastify from "fastify";
-import fastifyPlugin from "../src/index.js";
+import fastifyPlugin from "../src/pluginApi";
 import path from "node:path";
 
 const opts = {

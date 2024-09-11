@@ -12,7 +12,7 @@ export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
-      entry: fileURLToPath(import.meta.resolve("./src/server.ts")),
+      entry: fileURLToPath(import.meta.resolve("./src/index.ts")),
       name: "@mykomap/back-end",
       formats: ["es"],
       fileName: "back-end",
