@@ -4,6 +4,7 @@
     "libs/*"
   ],
   "scripts": {
+    "clean": "npm run clean --workspaces",
     "dev": "npm run dev --workspaces",
     "front-end:": "npm run --workspace=@mykomap/front-end",
     "back-end:": "npm run --workspace=@mykomap/back-end"
