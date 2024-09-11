@@ -8,6 +8,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf dist node_modules",
+    "predev": "cross-env NODE_ENV=development npm -w ../back-end run build",
     "dev": "cross-env NODE_ENV=development tsx --tsconfig tsconfig.node.json --watch --watch-path=src --watch-path=../back-end/src/ server.ts",
     "start": "vite",
     "build": "tsc && vite build",
