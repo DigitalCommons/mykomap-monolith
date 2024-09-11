@@ -10,10 +10,10 @@
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
     "build": "vite build --ssr src/server.ts --outDir dist",
-    "start": "node dist/server.js",
+    "start": "node ./start.js",
     "start:attached": "npm run start",
     "test": "vitest run",
-    "dev": "vite-node -w src/server.ts"
+    "dev": "vite-node -w start.ts"
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
