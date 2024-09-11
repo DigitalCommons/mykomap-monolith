@@ -3,12 +3,15 @@
   "version": "4.0.0",
   "description": "Common definitions shared by @mykomap/front-end and @mykomap/back-end",
   "author": "Digital Commons Cooperative",
-  "homepage": "https://digitalcommons.github.io/mykomap-monolith",    
+  "homepage": "https://digitalcommons.github.io/mykomap-monolith",
   "private": true,
   "type": "module",
   "main": "src/index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "rimraf": "^6.0.1"
+  },
   "scripts": {
+    "clean": "rimraf node_modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }
