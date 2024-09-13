@@ -18,8 +18,9 @@ const themeOptions: ThemeOptions = {
   typography: {
     button: {
       textTransform: "none",
-      fontWeight: 600,
+      fontWeight: 400,
       color: "#fff",
+      fontSize: "14px",
     },
   },
   components: {
@@ -27,6 +28,10 @@ const themeOptions: ThemeOptions = {
       styleOverrides: {
         root: {
           borderRadius: "var(--border-radius-small)",
+          // "&.Mui-disabled": {
+          //   backgroundColor: "var(--color-neutral-light)",
+          //   color: "fuchsia",
+          // },
         },
         // Primary button styles
         containedPrimary: {

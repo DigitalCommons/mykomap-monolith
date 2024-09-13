@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { userEvent, within } from "@storybook/test";
-import StandardButton from "./StandardButton"; // eslint-ignore-line
+import StandardButton from "./StandardButton";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../../theme/theme";
 import GlobalCSSVariables from "../../../theme/GlobalCSSVariables";
