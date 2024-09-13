@@ -25,7 +25,7 @@ export default defineConfig({
     globals: true,
     environment: "node",
     mockReset: true,
-  },  
+  },
   base: "./",
   root,
 });

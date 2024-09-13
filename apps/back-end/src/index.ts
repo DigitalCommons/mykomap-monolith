@@ -17,7 +17,7 @@ const corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 const listenPort = Number(process.env.FASTIFY_PORT) || 3000;
 
 // The API path prefix to set.
-const apiPathPrefix = process.env.API_PATH_PREFIX || '/';
+const apiPathPrefix = process.env.API_PATH_PREFIX || "/";
 
 export const start = async () => {
   const app = Fastify({
@@ -46,7 +46,7 @@ export const start = async () => {
     // @ts-ignore
     import.meta.hot.on("vite:beforeFullReload", () => {
       app.close();
-    });  
+    });
   }
 
   try {
@@ -61,7 +61,6 @@ export const start = async () => {
 
     // Start listening
     await app.listen({ port: listenPort });
-    
   } catch (err) {
     app.log.error(err);
     process.exit(1);

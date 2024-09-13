@@ -11,7 +11,7 @@ import path from "node:path";
 
 const opts = {
   serviceOptions: {
-    dataRoot: path.join(import.meta.dirname, 'data'),
+    dataRoot: path.join(import.meta.dirname, "data"),
   },
 };
 
