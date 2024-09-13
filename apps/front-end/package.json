@@ -22,7 +22,10 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@hey-api/client-fetch": "^0.2.4",
+    "@mui/material": "^6.0.2",
     "@nazka/map-gl-js-spiderfy": "github:DigitalCommons/map-gl-js-spiderfy#improvements-for-mykomap",
     "@reduxjs/toolkit": "^2.0.1",
     "@sentry/browser": "^8.26.0",
@@ -39,6 +42,7 @@
     "@storybook/addon-interactions": "^8.2.9",
     "@storybook/addon-links": "^8.2.9",
     "@storybook/addon-onboarding": "^8.2.9",
+    "@storybook/addon-themes": "^8.3.0",
     "@storybook/blocks": "^8.2.9",
     "@storybook/react": "^8.2.9",
     "@storybook/react-vite": "^8.2.9",

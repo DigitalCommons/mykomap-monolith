@@ -1,3 +1,3 @@
-import specification from "../api/mykomap-openapi.json" with { type: "json" };
+import specification from "../api/mykomap-openapi.json" assert { type: "json" };
 
 export default specification;
