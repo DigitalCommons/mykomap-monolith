@@ -15,10 +15,16 @@ npx degit reduxjs/redux-templates/packages/vite-template-redux my-app
 
 ## Scripts
 
-- `dev`/`start` - start dev server and open browser
-- `build` - build for production
-- `preview` - locally preview production build
-- `test` - launch test runner
+- `dev` - Start dev server. This serves both the front- and back-end
+  apps together, with HMR. You may wish to set the .env variable
+  `SERVER_DATA_ROOT` (e.g. to `test/data`) in order for the back-end
+  to find suitable data.
+- `start` - Start dev server and open browser. This only serves the
+  front-end app, with HMR.
+- `build` - Build for production
+- `preview` - Locally preview production build. This serves the
+  front-end app only.
+- `test` - Launch test runner
 
 ## Inspiration
 
