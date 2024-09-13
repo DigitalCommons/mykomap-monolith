@@ -1,10 +1,11 @@
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import plugin, { options } from "./index.js";
+import apiPlugin, { options } from "./pluginApi.js";
+export { apiPlugin, options as apiOptions }; // For use as a library
 
 // Set the number of milliseconds required for a graceful close to complete
-const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
+const closeGraceDelay = Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500;
 
 // Define the origin(s) for the purposes of CORS.
 // This environment variable will be interpreted as a space-delimited list of
@@ -13,12 +14,12 @@ const closeGraceDelay = process.env.FASTIFY_CLOSE_GRACE_DELAY || 500;
 const corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 
 // The TCP port to the webserver should listen on
-const listenPort = process.env.FASTIFY_PORT || 3000;
+const listenPort = Number(process.env.FASTIFY_PORT) || 3000;
 
 // The API path prefix to set.
-const apiPathPrefix = process.env.API_PATH_PREFIX || '/';
+const apiPathPrefix = process.env.API_PATH_PREFIX || "/";
 
-const start = async () => {
+export const start = async () => {
   const app = Fastify({
     logger: {
       level: process.env.NODE_ENV === "development" ? "debug" : "info",
@@ -28,7 +29,7 @@ const start = async () => {
   // This closes the application with a delay to clear up.
   closeWithGrace(
     { delay: closeGraceDelay },
-    async ({ signal, err, manual }) => {
+    async ({ signal: _signal, err, manual: _manual }) => {
       if (err) {
         app?.log?.error(err);
         console.error(err);
@@ -36,6 +37,17 @@ const start = async () => {
       await app?.close();
     },
   );
+
+  // This avoids EADDRINUSE errors caused when vite-node's HMR tries to
+  // restart the server when the old one is still running.
+  // https://github.com/vitest-dev/vitest/issues/2334
+  // @ts-ignore // seems  to be a bug in vite that this is not defined
+  if (import.meta.hot) {
+    // @ts-ignore
+    import.meta.hot.on("vite:beforeFullReload", () => {
+      app.close();
+    });
+  }
 
   try {
     // Register CORS plugin - this is primarily to allow the back end to
@@ -45,17 +57,12 @@ const start = async () => {
     });
 
     // Register the API routes
-    await app.register(plugin, { ...options, prefix: apiPathPrefix });
+    await app.register(apiPlugin, { ...options, prefix: apiPathPrefix });
 
     // Start listening
     await app.listen({ port: listenPort });
-    
   } catch (err) {
     app.log.error(err);
     process.exit(1);
   }
 };
-
-
-// Run the server!
-start();

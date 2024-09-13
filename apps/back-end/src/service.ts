@@ -1,44 +1,86 @@
 // implementation of the operations in the openapi specification
+import { FastifyReply, FastifyRequest } from "fastify";
 import fs from "node:fs";
 import path from "node:path";
 
 // Helper functions
 
-function assertBase64(value, errorMsg) {
+function assertBase64(value: string, errorMsg: string): void {
   if (!value.match(/^[A-Z0-9_-]+$/i))
     // URL-safe base64 (RFC4648 sect 5)
     throw new Error(errorMsg);
 }
 
-function assertQName(value, errorMsg) {
+function assertQName(value: string, errorMsg: string): void {
   // Not quite a full qname check but it'll do for now
   if (!value.match(/^[A-Z0-9_-]+:[A-Z0-9_-]+$/i))
     // two base64 uris joined with ':'
     throw new Error(errorMsg);
 }
 
-function assertPathExists(value, errorMsg) {
+function assertPathExists(value: string, errorMsg: string): void {
   if (!fs.existsSync(value)) throw new Error(errorMsg);
+}
+
+// Validates a query parameters / parameters of a FastifyRequest, and returns
+// the result, or a default value.
+//
+// If given, the default value avoids the absence of the named property
+// raising an error.  A default value of `null` will allow nulls or undefined values.
+//
+// The returned value could still be some other type in principle, so
+// you still need to check or coerce it at runtime on return, even if there is a default.
+function getValue(
+  req: FastifyRequest,
+  which: "params" | "query",
+  prop: string,
+  defaultValue: unknown = undefined,
+): unknown {
+  let value: unknown;
+  if (typeof req[which] === "object") {
+    const values = req[which] as Record<string, unknown>;
+    value = values[prop];
+  }
+  if (value !== undefined && value !== null) return value;
+
+  if (defaultValue === undefined)
+    throw new Error("no datasetId parameter found in request");
+
+  return defaultValue;
+}
+
+export interface ServiceOptions {
+  // The path to the root directory of the canned data to use
+  dataRoot?: string;
 }
 
 // Service route implementations
 export class Service {
-  constructor({ options = {} }) {
-    this.options = options;
+  public readonly options: ServiceOptions;
+
+  constructor({ options }: { options?: ServiceOptions } = {}) {
+    //{ options: ServiceOptions = {} }) {
+    this.options = options ?? {};
 
     // Validation
-    if (options.dataRoot == undefined)
+    if (this.options.dataRoot == undefined)
       // deliberately loose check
       throw new Error("mandatory dataRoot option is not defined");
 
-    if (!fs.existsSync(options.dataRoot))
+    if (!fs.existsSync(this.options.dataRoot))
       throw new Error(
-        `defined dataRoot option refers to non-existing path: '${options.dataRoot}'`,
+        `defined dataRoot option refers to non-existing path: '${this.options.dataRoot}'`,
       );
   }
 
-  _sendJson(req, reply, components, errorMsg) {
-    const dataPath = path.join(this.options.dataRoot, ...components) + ".json";
+  _sendJson(
+    req: FastifyRequest,
+    reply: FastifyReply,
+    components: Array<string>,
+    errorMsg: string,
+  ) {
+    const dataPath =
+      path.join(this.options.dataRoot ?? "", ...components) + ".json";
     req.log.debug(`dataPath is '${dataPath}`);
     assertPathExists(dataPath, errorMsg);
 
@@ -80,12 +122,16 @@ export class Service {
   //   '404':
   //     description: no such dataset
   //
+  async dataset(req: FastifyRequest, reply: FastifyReply) {
+    const datasetId = String(getValue(req, "params", "datasetId"));
+    assertBase64(datasetId, `invalid datasetId`);
 
-  async dataset(req, reply) {
-    const id = req.params.datasetId;
-    assertBase64(id, `invalid datasetId`);
-
-    return this._sendJson(req, reply, ["datasets", id], `unknown datasetId`);
+    return this._sendJson(
+      req,
+      reply,
+      ["datasets", datasetId],
+      `unknown datasetId`,
+    );
   }
 
   // Operation: datasetSearch
@@ -128,19 +174,24 @@ export class Service {
   //     description: no such dataset
   //
 
-  async datasetSearch(req, reply) {
-    const { datasetId } = req.params;
-    const { filter, text } = req.query;
+  async datasetSearch(req: FastifyRequest, reply: FastifyReply) {
+    const datasetId = String(getValue(req, "params", "datasetId"));
+    const filter = getValue(req, "query", "filter", []);
+    const text = String(getValue(req, "query", "text", ""));
 
     assertBase64(datasetId, `invalid datasetId`);
-    filter?.forEach((uri) => assertQName(uri, `invalid filter`));
 
-    const encodedText = encodeURIComponent(text ?? "");
+    // Partly this is here to make TS happy...
+    const filter2 = filter instanceof Array ? filter : [filter];
+
+    filter2.forEach((uri) => assertQName(uri, `invalid filter`));
+
+    const encodedText = encodeURIComponent(text);
 
     return this._sendJson(
       req,
       reply,
-      ["datasets", datasetId, "search", ...(filter ?? []), "text", encodedText],
+      ["datasets", datasetId, "search", ...filter2, "text", encodedText],
       `search failed`,
     );
   }
@@ -174,8 +225,9 @@ export class Service {
   //     description: no such dataset item
   //
 
-  async datasetItem(req, reply) {
-    const { datasetId, datasetItemId } = req.params;
+  async datasetItem(req: FastifyRequest, reply: FastifyReply) {
+    const datasetId = String(getValue(req, "params", "datasetId"));
+    const datasetItemId = String(getValue(req, "params", "datasetItemId"));
 
     assertBase64(datasetId, `invalid datasetId`);
     assertBase64(datasetItemId, `invalid datasetItemId`);
