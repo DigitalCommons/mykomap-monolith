@@ -3,20 +3,22 @@
 ```
 monorepo
 |- apps
-  |- frontend
-  |- backend
+  |- @mykomap/front-end
+  |- @mykomap/back-end
       |- Map class instance for each config that needs a deployed backend
       |- Single Fastify server shared across all maps
 |- libs
-  |- initiative-filter library for search/filter(imported in BE and some FE builds)
-  |- shared types
-  |- Swagger API specs
-  |- map-configs, a folder for each map containing:
-      |- config.js ... includes flag for whether to use search/filter in FE or BE
-      |- json files
-      |- CSVs
+  |- @mykomap/common
+      |- search/filter code (imported in BE and some FE builds)
+      |- API ts-rest contract + OpenAPI spec
+  |- @mykomap/variants, a folder for each map containing:
+      |- config.ts ... includes flag for whether to use search/filter in FE or BE
+      |- popup.ts (with an aim to commonalise this code and configure within config.ts)
 ```
 
 ## Ideas
-- Use pnpm workspaces to define and share dependencies https://dev.to/lico/react-monorepo-setup-tutorial-with-pnpm-and-vite-react-project-ui-utils-5705
-- Use git subtree, so we can publish sub-folders of the monorepo as independent repos that others can use?
+
+- Use monorepo manager (e.g. Nx, Turborepo) to manage builds
+- Use git subtree, so we can publish sub-folders of the monorepo as independent repos that others
+  can use. We can set this up later if required, but for now try to ensure repositories are not
+  tightly coupled unecessarily.

@@ -8,5 +8,8 @@
     "dev": "npm run dev --workspaces",
     "front-end:": "npm run --workspace=@mykomap/front-end",
     "back-end:": "npm run --workspace=@mykomap/back-end"
+  },
+  "devDependencies": {
+    "editorconfig": "^2.0.0"
   }
 }
