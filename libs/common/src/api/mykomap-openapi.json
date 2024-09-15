@@ -1,0 +1,239 @@
+{
+  "openapi": "3.0.2",
+  "paths": {
+    "/dataset/{datasetId}": {
+      "get": {
+        "description": "Obtains a dataset by its ID, which by passing in the appropriate options, might be in different formats",
+        "summary": "obtains a dataset",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "datasetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "uniquely specifies the dataset wanted"
+          }
+        ],
+        "operationId": "dataset",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "number"
+                    },
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  "description": "the dataset matching the supplied ID"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "bad input parameter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "no such dataset"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dataset/{datasetId}/search": {
+      "get": {
+        "description": "Obtains an array of dataset item IDs, which match the search criteria supplied",
+        "summary": "obtains a list of dataset entries satisfying the search criteria supplied",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "datasetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "uniquely specifies the dataset wanted"
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "a text fragment to match",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "uniquely specifies the taxonomy filter items wanted",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "operationId": "datasetSearch",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "uniquely specifies the dataset item wanted"
+                  },
+                  "description": "the dataset IDs matching the supplied criteria"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "bad input parameter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "no such dataset"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dataset/{datasetId}/item/{datasetItemId}": {
+      "get": {
+        "description": "Obtains a single dataset item by its ID and the dataset's ID.",
+        "summary": "obtains a dataset item by its unique ID",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "datasetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "uniquely specifies the dataset wanted"
+          },
+          {
+            "name": "datasetItemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "uniquely specifies the dataset item wanted"
+          }
+        ],
+        "operationId": "datasetItem",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true,
+                  "description": "the dataset item matching the supplied ID"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "bad input parameter"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "no such dataset or dataset item"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/version": {
+      "get": {
+        "description": "Obtains version information about the backend Mykomap server, in the form of a JSON object",
+        "summary": "obtains Mykomap server version information",
+        "tags": [],
+        "parameters": [],
+        "operationId": "version",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {},
+                  "additionalProperties": true,
+                  "description": "information about the current Mykomap server version"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "info": {
+    "title": "Mykomap basic data and search API",
+    "description": "This is a basic API for Mykomap application clients",
+    "contact": {
+      "email": "hello@digitalcommons.coop"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "0.1.0"
+  }
+}

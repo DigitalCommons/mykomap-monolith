@@ -3,7 +3,7 @@ import openapiGlue, { FastifyOpenapiGlueOptions } from "fastify-openapi-glue";
 import * as dotenv from "dotenv";
 import { Security } from "./security.js";
 import { Service, ServiceOptions } from "./service.js";
-import specification from "@mykomap/common";
+import { specification } from "@mykomap/common";
 import {
   FastifyInstance,
   FastifyPluginCallback,
