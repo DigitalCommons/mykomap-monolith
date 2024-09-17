@@ -7,8 +7,8 @@ extendZodWithOpenApi(z);
 const c = initContract();
 
 const Location = z.array(z.number()).min(2).max(2);
-const DatasetId = z.number().int();
-const DatasetItemId = z.string();
+const DatasetId = z.string();
+const DatasetItemId = z.number().int();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
 const VersionInfo = z.object({}).passthrough();
@@ -29,7 +29,7 @@ export const contract = c.router({
     description:
       "Obtains a dataset by its ID, which by passing in the appropriate options, might be in different formats",
     pathParams: z.object({
-      datasetId: z.number().int().openapi({
+      datasetId: DatasetId.openapi({
         description: "uniquely specifies the dataset wanted",
       }),
     }),
