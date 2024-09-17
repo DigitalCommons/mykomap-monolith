@@ -1,4 +1,4 @@
-import { dataset } from "../services";
+import { getDataset } from "../services";
 
 const generateGeoJSONFeatures = (
   pointCount: number,
@@ -46,27 +46,29 @@ const generateGeoJSONFeatures = (
 let features: GeoJSON.Feature<GeoJSON.Point>[] | undefined = undefined;
 
 const urlParams = new URLSearchParams(window.location.search);
-const datasetId = urlParams.get('datasetId') ?? '';
-if (datasetId === '') {
+const datasetId = urlParams.get("datasetId") ?? "";
+if (datasetId === "") {
   console.warn("No datasetId parameter given, so no dataset can be loaded");
   features = [];
-}
-else {
-  console.info("Loading dataset ID "+datasetId);
+} else {
+  console.info("Loading dataset ID " + datasetId);
 }
 
 const featuresPromise =
   features ??
-  dataset({ path: { datasetId } })
+  getDataset({ params: { datasetId } })
     .then((response) => {
-      const locations = response.data ?? [];
-      features = locations.map((location, index) => ({
-        type: "Feature",
-        geometry: { type: "Point", coordinates: location },
-        properties: { id: index }, // id is the index of original array
-      }));
-      // We want this data to be immutable
-      return features;
+      if (response.status === 200) {
+        const locations = response.body ?? [];
+        features = locations.map((location, index) => ({
+          type: "Feature",
+          geometry: { type: "Point", coordinates: location },
+          properties: { id: index }, // id is the index of original array
+        }));
+        return features;
+      } else {
+        throw new Error(`Status code ${response.status}`);
+      }
     })
     .catch((error) => {
       console.error(`Error getting dataset with ID ${datasetId}`, error);

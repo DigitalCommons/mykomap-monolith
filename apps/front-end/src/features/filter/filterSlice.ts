@@ -1,6 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import { datasetSearch } from "../../services";
+import { searchDataset } from "../../services";
 
 export interface FilterSliceState {
   text: string;
@@ -24,12 +24,15 @@ export const filterSlice = createAppSlice({
     performSearch: create.asyncThunk(
       async (_, thunkApi) => {
         const { filter } = thunkApi.getState() as { filter: FilterSliceState };
-        const response = await datasetSearch({
-          path: { datasetId: "test-500000" },
+        const response = await searchDataset({
+          params: { datasetId: "test-500000" },
           query: { text: filter.text.toLowerCase() },
         });
-        // The value we return becomes the `fulfilled` action payload
-        return response.data;
+        if (response.status === 200) {
+          return response.body;
+        } else {
+          throw new Error(`Failed search, status code ${response.status}`);
+        }
       },
       {
         pending: (state) => {
