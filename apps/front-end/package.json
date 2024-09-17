@@ -24,7 +24,6 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
-    "@hey-api/client-fetch": "^0.2.4",
     "@mykomap/common": "*",
     "@nazka/map-gl-js-spiderfy": "github:DigitalCommons/map-gl-js-spiderfy#improvements-for-mykomap",
     "@reduxjs/toolkit": "^2.0.1",
