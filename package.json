@@ -5,7 +5,6 @@
   ],
   "scripts": {
     "clean": "npm run clean --workspaces && rimraf node_modules",
-    "dev": "npm run dev --workspaces",
     "front-end:": "npm run --workspace=@mykomap/front-end",
     "back-end:": "npm run --workspace=@mykomap/back-end"
   },
