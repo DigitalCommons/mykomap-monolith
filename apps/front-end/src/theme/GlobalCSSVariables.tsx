@@ -10,6 +10,13 @@ const rootVariables = {
   "--color-text": "#707070",
   "--color-neutral-light": "#F1F1F1",
   "--border-radius-small": "7px",
+  "--spacing-xsmall": "4px",
+  "--spacing-small": "8px",
+  "--spacing-medium": "16px",
+  "--spacing-large": "24px",
+  "--spacing-xlarge": "32px",
+  "--spacing-xxlarge": "40px",
+  "--spacing-xxxlarge": "48px",
 };
 
 const GlobalCSSVariables: FC = () => {
