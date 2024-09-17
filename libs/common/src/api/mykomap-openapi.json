@@ -16,7 +16,7 @@
             }
           }
         ],
-        "operationId": "dataset",
+        "operationId": "getDataset",
         "responses": {
           "200": {
             "description": "200",
@@ -87,7 +87,7 @@
             }
           }
         ],
-        "operationId": "datasetSearch",
+        "operationId": "searchDataset",
         "responses": {
           "200": {
             "description": "200",
@@ -144,7 +144,7 @@
             }
           }
         ],
-        "operationId": "datasetItem",
+        "operationId": "getDatasetItem",
         "responses": {
           "200": {
             "description": "200",
@@ -183,7 +183,7 @@
         "summary": "obtains Mykomap server version information",
         "tags": [],
         "parameters": [],
-        "operationId": "version",
+        "operationId": "getVersion",
         "responses": {
           "200": {
             "description": "200",
