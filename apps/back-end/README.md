@@ -6,9 +6,22 @@ the OpenApi specifation in [openApi.json](openApi.json)
 
 In this directory use:
 + "npm install" to install its dependencies
-+ "npm start" to start fastify using fastify-cli
-+ "npm run dev" to start fastify using fastify-cli with logging to the console
-+ "npm test" to run tests
++ "npm run dev" to start the server in development mode, with vite-node for hot module replacement
++ "npm build" to transpile the server to javascript in dist/server.js
++ "npm start" to start the built server for running as a service
++ "npm test" to run the tests
 
 note: the auto generated test scaffolding does not contain any data yet !
 
+In all cases, the server mounts the API at the top-level path, unless
+the plug-in is passed a the `prefix` option when registering it.
+
+
+You may want to set an environment variable `SERVER_DATA_ROOT` to
+define the path to find the canned data on. It defaults to `data`,
+which does not exist by default, but setting it to
+`SERVER_DATA_ROOT=test/data` will make it use the dummy data packaged
+for the tests.  Of course, you can supply another directory and your own data.
+
+Alternatively this option can be set via the API plugin's option
+`serviceOptions.dataRoot`.
