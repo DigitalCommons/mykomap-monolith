@@ -12,9 +12,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            },
-            "description": "uniquely specifies the dataset wanted"
+              "type": "string"
+            }
           }
         ],
         "operationId": "dataset",
@@ -32,8 +31,7 @@
                     },
                     "minItems": 2,
                     "maxItems": 2
-                  },
-                  "description": "the dataset matching the supplied ID"
+                  }
                 }
               }
             }
@@ -42,9 +40,7 @@
             "description": "400",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "bad input parameter"
-                }
+                "schema": {}
               }
             }
           },
@@ -52,9 +48,7 @@
             "description": "404",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "no such dataset"
-                }
+                "schema": {}
               }
             }
           }
@@ -72,14 +66,12 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            },
-            "description": "uniquely specifies the dataset wanted"
+              "type": "string"
+            }
           },
           {
             "name": "text",
             "in": "query",
-            "description": "a text fragment to match",
             "schema": {
               "type": "string"
             }
@@ -87,7 +79,6 @@
           {
             "name": "filter",
             "in": "query",
-            "description": "uniquely specifies the taxonomy filter items wanted",
             "schema": {
               "type": "array",
               "items": {
@@ -105,10 +96,8 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "string",
-                    "description": "uniquely specifies the dataset item wanted"
-                  },
-                  "description": "the dataset IDs matching the supplied criteria"
+                    "type": "integer"
+                  }
                 }
               }
             }
@@ -117,9 +106,7 @@
             "description": "400",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "bad input parameter"
-                }
+                "schema": {}
               }
             }
           },
@@ -127,9 +114,7 @@
             "description": "404",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "no such dataset"
-                }
+                "schema": {}
               }
             }
           }
@@ -147,18 +132,16 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
-            },
-            "description": "uniquely specifies the dataset wanted"
+              "type": "string"
+            }
           },
           {
             "name": "datasetItemId",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
-            },
-            "description": "uniquely specifies the dataset item wanted"
+              "type": "integer"
+            }
           }
         ],
         "operationId": "datasetItem",
@@ -170,8 +153,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {},
-                  "additionalProperties": true,
-                  "description": "the dataset item matching the supplied ID"
+                  "additionalProperties": true
                 }
               }
             }
@@ -180,9 +162,7 @@
             "description": "400",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "bad input parameter"
-                }
+                "schema": {}
               }
             }
           },
@@ -190,9 +170,7 @@
             "description": "404",
             "content": {
               "application/json": {
-                "schema": {
-                  "description": "no such dataset or dataset item"
-                }
+                "schema": {}
               }
             }
           }
@@ -214,8 +192,7 @@
                 "schema": {
                   "type": "object",
                   "properties": {},
-                  "additionalProperties": true,
-                  "description": "information about the current Mykomap server version"
+                  "additionalProperties": true
                 }
               }
             }
