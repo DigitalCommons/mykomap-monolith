@@ -114,6 +114,9 @@ It assumes that:
    accessible to the Apache user. (Typically this means that `~$USER`
    home directory has the "execute" flag set allowing the `www-data`
    user group or global access; perhaps by `chmod ~$USER a+x`.)
+ - The user has had linger mode enabled (`loginctl enable-linger
+   $USER`) to ensure that its DBUS session starts on boot, for use by
+   user-mode systemd services.
 
 The steps:
 
@@ -134,7 +137,6 @@ The steps:
     
     systemctl reload apache2
     
-    loginctl enable-linger $USER # Ensure the users DBUS session starts on boot
 
 #### Step 2: setup as the application user
 
