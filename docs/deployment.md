@@ -166,7 +166,7 @@ The steps:
 The `deploy.sh` script will do the rest, including writing the `.env`
 files in the applications, which should never be stored in source control.
 
-### Subsequent updates
+### How to make subsequent updates
 
 After the initial install, deploying updates is simpler.
 
