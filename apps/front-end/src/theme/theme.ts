@@ -1,5 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 import type { ThemeOptions } from "@mui/material/styles";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const themeOptions: ThemeOptions = {
   palette: {
@@ -74,6 +75,9 @@ const themeOptions: ThemeOptions = {
       },
     },
     MuiSelect: {
+      defaultProps: {
+        IconComponent: ExpandMoreIcon,
+      },
       styleOverrides: {
         root: {
           width: "100%",
@@ -97,6 +101,15 @@ const themeOptions: ThemeOptions = {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          marginTop: "var(--spacing-small)",
+          borderRadius: "var(--border-radius-small)",
+          border: "2px solid var(--color-primary-light)",
         },
       },
     },

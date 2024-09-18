@@ -49,6 +49,14 @@ const SelectBox = ({
         onClose={handleClose}
         MenuProps={{
           id: `${selectId}-menu`,
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "left",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "left",
+          },
         }}
         {...props}
       >
