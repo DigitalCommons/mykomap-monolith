@@ -9,18 +9,39 @@ Conceptually, installation of these applications require:
 - deploy the data in the path expected by the back-end
 - reverse-proxying the back end to be accessible on the same domain as the front end
 
-## Deploying on a DCC server, manually
+## How to install
 
-DCC deployment uses a Linux server running Apache, an appropriate
-installation of NodeJS, with SystemD that supports user-mode
-services. A dedicated user is used to deploy the application, and this
-is exposed to Apache via configuration.
+### On a DCC Server
 
-This situation currently set up via some Ansible playbooks in the DCC
-`technology-and-infrastructure` project. The instructions following
-assume this context.
+Although the application could be deployed in various scenarios in
+principle, this is the only case we specifically cater for now.
 
-For the descriptions below, we make the following assumptions for generality:
+#### What a DCC Server provides
+
+The parts relevant here are, broadly:
+- A Ubuntu Linux server.
+- With the Apache webserver.
+- The NodeJS runtime (using [ASDF][asdf], the version of NodeJS can be
+  specified in the app with [`.tool-versions`][asdf-config])
+- User-mode SystemD services.
+- A dedicated user for the application.
+
+[asdf]: https://asdf-vm.com/
+[asdf-config]: https://asdf-vm.com/manage/configuration.html
+
+Without going into too much detail, this situation is currently set up
+via some Ansible playbooks in the DCC
+[technology-and-infrastructure][t-i] project. 
+
+The following instructions following assume this context.
+
+[t-i]: https://github.com/DigitalCommons/technology-and-infrastructure
+
+#### Definitions, for convenience
+
+For the descriptions below, we use the following placeholders for
+generality. (We write them in the style of environment variables, but
+you can equally see them as just labels.)
 
  - `$SERVER` is the ssh URI used for the hostname being deployed to.
  - `$USER` is the user being deployed to on that host.
@@ -40,8 +61,14 @@ Examples, at the time of writing, of the typical case for these are:
     DEPLOY_ENV=/home/$USER/gitworking/deploy.env
     DATA_DIR=/home/$USER/deploy/data
 
-Likewise, an example of the contents of the file `$DEPLOY_ENV`, but
-with actual secret values redacted:
+#### Environment variables for deployment
+
+The `$DEPLOY_ENV` file defines some *actual* environment variables
+which the deployment process will use. What those are set to will
+depend on your situation, so this is just a guide. 
+
+An example of the contents of a `$DEPLOY_ENV` file, but with secret
+values redacted:
 
     export USERDIR=/home/$USER
     export DEPLOY_DEST=$USERDIR/deploy
@@ -60,13 +87,18 @@ be set in principle be if you are logged in as that user - but in
 practise is not. This is needed for the deploy script to run
 `systemctl` in user-mode.*
    
+*Note: These variables don't strictly have to be defined in a file,
+it's just convenient for this illustration. You could supply them via
+other mechanisms.*
 
-### Install
 
-All these steps assume that `$DEPLOY_ENV` has been created and
-populated appropriately, as per the example above.
+### How to install for the first time
 
-#### With elevated privileges
+*Note: All these steps assume that the variables described above has
+been created and populated in a file `$DEPLOY_ENV` appropriately, as
+per the example above.*
+
+#### Step 1: setup with elevated privileges
 
 This step requires elevated privileges, but as it is specific to this
 application it is not performed via Ansible.
@@ -104,7 +136,7 @@ The steps:
     
     loginctl enable-linger $USER # Ensure the users DBUS session starts on boot
 
-#### As the application user
+#### Step 2: setup as the application user
 
     # source this file to get the shared configuration
     . $DEPLOY_ENV
@@ -134,13 +166,19 @@ The steps:
 The `deploy.sh` script will do the rest, including writing the `.env`
 files in the applications, which should never be stored in source control.
 
-### Update
+### Subsequent updates
 
-The update process goes like this, and should be done as the application user:
+After the initial install, deploying updates is simpler.
+
+*Note, we assume `$DEPLOY_ENV` defines our environment, as before.*
+
+Log in as the application user:
 
     ssh $SERVER      # log-in as root
     su - $USER       # change to the target user
-    
+
+Then perform the update:
+
     cd $GIT_WORKING  # change to the deployed directory
     . $DEPLOY_ENV    # set the configuration
     git pull         # typically you will need to update the source files in some way
