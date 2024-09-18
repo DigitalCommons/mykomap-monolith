@@ -81,7 +81,7 @@ values redacted:
 *Note: paths here should be absolute - relative paths will not work in
 general.*
 
-*Note, the environment variables `USER` and `UID` should already be
+*Note: the environment variables `USER` and `UID` should already be
 set by your shell by default.  `DBUS_SESSION_BUS_ADDRESS` should also
 be set in principle be if you are logged in as that user - but in
 practise is not. This is needed for the deploy script to run
@@ -172,7 +172,7 @@ files in the applications, which should never be stored in source control.
 
 After the initial install, deploying updates is simpler.
 
-*Note, we assume `$DEPLOY_ENV` defines our environment, as before.*
+*Note: we assume `$DEPLOY_ENV` defines our environment, as before.*
 
 Log in as the application user:
 
