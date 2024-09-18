@@ -46,13 +46,12 @@ const generateGeoJSONFeatures = (
 let features: GeoJSON.Feature<GeoJSON.Point>[] | undefined = undefined;
 
 const urlParams = new URLSearchParams(window.location.search);
-const datasetId = urlParams.get('datasetId') ?? '';
-if (datasetId === '') {
+const datasetId = urlParams.get("datasetId") ?? "";
+if (datasetId === "") {
   console.warn("No datasetId parameter given, so no dataset can be loaded");
   features = [];
-}
-else {
-  console.info("Loading dataset ID "+datasetId);
+} else {
+  console.info("Loading dataset ID " + datasetId);
 }
 
 const featuresPromise =
