@@ -25,6 +25,36 @@ const themeOptions: ThemeOptions = {
     },
   },
   components: {
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          width: "100%",
+          backgroundColor: "var(--color-primary)",
+          borderRadius: "0",
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          height: "100px",
+          width: "100px",
+          textTransform: "none",
+          fontWeight: 400,
+          fontSize: "14px",
+          color: "#ffffffcc",
+          backgroundColor: "var(--color-primary)",
+          transition: "ease-in 0.25s",
+          "&.Mui-selected": {
+            color: "#fff",
+            backgroundColor: "var(--color-primary-light)",
+          },
+          "& .MuiTab-icon": {
+            marginBottom: "var(--spacing-small)",
+          },
+        },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -48,6 +78,19 @@ const themeOptions: ThemeOptions = {
           color: "#fff",
           "&:hover": {
             backgroundColor: "var(--color-secondary-light)",
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: "var(--color-primary-light)",
+          padding: 0,
+          borderRadius: "unset",
+          transition: "none",
+          "&:hover": {
+            backgroundColor: "transparent",
           },
         },
       },

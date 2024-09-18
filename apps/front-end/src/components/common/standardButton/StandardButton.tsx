@@ -6,6 +6,7 @@ interface ButtonProps {
   color?: "primary" | "secondary";
   children: React.ReactNode;
   disabled?: boolean;
+  buttonAction?: () => void;
 }
 
 const StandardButton = ({
@@ -13,10 +14,17 @@ const StandardButton = ({
   color,
   children,
   disabled = false,
+  buttonAction,
   ...props
 }: ButtonProps) => {
   return (
-    <Button variant={variant} color={color} disabled={disabled} {...props}>
+    <Button
+      variant={variant}
+      color={color}
+      onClick={buttonAction}
+      disabled={disabled}
+      {...props}
+    >
       {children}
     </Button>
   );
