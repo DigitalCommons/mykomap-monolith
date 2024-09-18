@@ -19,6 +19,7 @@
     "@fastify/cors": "^9.0.1",
     "@mykomap/common": "*",
     "@seriousme/openapi-schema-validator": "^2.2.1",
+    "@ts-rest/fastify": "^3.51.0",
     "close-with-grace": "^2.1.0",
     "fastify-openapi-glue": "^4.7.0",
     "fastify-plugin": "^4.5.1",
