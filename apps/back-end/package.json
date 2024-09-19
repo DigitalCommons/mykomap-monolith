@@ -9,6 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
+    "prebuild": "npm -w ../../libs/common run build",
     "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",
     "start:attached": "npm run start",
