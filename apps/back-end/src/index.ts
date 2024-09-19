@@ -1,8 +1,8 @@
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
-import apiPlugin, { options } from "./pluginApi.js";
-export { apiPlugin, options as apiOptions }; // For use as a library
+import apiPlugin from "./pluginApi.js";
+export { apiPlugin }; // For use as a library
 
 // Set the number of milliseconds required for a graceful close to complete
 const closeGraceDelay = Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500;
@@ -56,8 +56,13 @@ export const start = async () => {
       origin: corsOrigin,
     });
 
+    // Mykomap API options
+    const opts = {
+      dataRoot: process.env.SERVER_DATA_ROOT ?? "data",
+    };
+
     // Register the API routes
-    await app.register(apiPlugin, { ...options, prefix: apiPathPrefix });
+    await app.register(apiPlugin, { mykomap: opts, prefix: apiPathPrefix });
 
     // Start listening
     await app.listen({ port: listenPort });
