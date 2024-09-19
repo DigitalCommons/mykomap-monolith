@@ -17,6 +17,7 @@ const rootVariables = {
   "--spacing-xlarge": "32px",
   "--spacing-xxlarge": "40px",
   "--spacing-xxxlarge": "48px",
+  "--panel-width-desktop": "450px",
 };
 
 const GlobalCSSVariables: FC = () => {

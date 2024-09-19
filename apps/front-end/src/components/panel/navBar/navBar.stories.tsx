@@ -3,8 +3,8 @@ import { fn } from "@storybook/test";
 import { userEvent, within } from "@storybook/test";
 import NavBar from "./navBar";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "../../theme/theme";
-import GlobalCSSVariables from "../../theme/GlobalCSSVariables";
+import theme from "../../../theme/theme";
+import GlobalCSSVariables from "../../../theme/GlobalCSSVariables";
 
 const meta = {
   title: "NavBar",

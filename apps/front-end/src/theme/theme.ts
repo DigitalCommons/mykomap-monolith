@@ -23,6 +23,11 @@ const themeOptions: ThemeOptions = {
       color: "#fff",
       fontSize: "14px",
     },
+    h1: {
+      fontSize: "30px",
+      textAlign: "left",
+      fontWeight: 500,
+    },
   },
   components: {
     MuiTabs: {
@@ -177,6 +182,9 @@ const themeOptions: ThemeOptions = {
     },
     MuiDrawer: {
       styleOverrides: {
+        root: {
+          backgroundColor: "transparent",
+        },
         paper: {
           width: "240px",
           color: "var(--color-text)",
