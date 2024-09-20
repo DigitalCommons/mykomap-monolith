@@ -91,7 +91,7 @@ export class Service {
     return reply;
   }
 
-  // Operation: dataset
+  // Operation: getDataset
   // URL: /dataset/:datasetId
   // summary:  obtains a dataset
   // req.params
@@ -122,7 +122,7 @@ export class Service {
   //   '404':
   //     description: no such dataset
   //
-  async dataset(req: FastifyRequest, reply: FastifyReply) {
+  async getDataset(req: FastifyRequest, reply: FastifyReply) {
     const datasetId = String(getValue(req, "params", "datasetId"));
     assertBase64(datasetId, `invalid datasetId`);
 
@@ -134,7 +134,7 @@ export class Service {
     );
   }
 
-  // Operation: datasetSearch
+  // Operation: searchDataset
   // URL: /dataset/:datasetId/search
   // summary:  obtains a list of dataset entries satisfying the search criteria supplied
   // req.params
@@ -174,7 +174,7 @@ export class Service {
   //     description: no such dataset
   //
 
-  async datasetSearch(req: FastifyRequest, reply: FastifyReply) {
+  async searchDataset(req: FastifyRequest, reply: FastifyReply) {
     const datasetId = String(getValue(req, "params", "datasetId"));
     const filter = getValue(req, "query", "filter", []);
     const text = String(getValue(req, "query", "text", ""));
@@ -196,7 +196,7 @@ export class Service {
     );
   }
 
-  // Operation: datasetItem
+  // Operation: getDatasetItem
   // URL: /dataset/:datasetId/item/:datasetItemId
   // summary:  obtains a dataset item by its  unique ID
   // req.params
@@ -225,7 +225,7 @@ export class Service {
   //     description: no such dataset item
   //
 
-  async datasetItem(req: FastifyRequest, reply: FastifyReply) {
+  async getDatasetItem(req: FastifyRequest, reply: FastifyReply) {
     const datasetId = String(getValue(req, "params", "datasetId"));
     const datasetItemId = String(getValue(req, "params", "datasetItemId"));
 

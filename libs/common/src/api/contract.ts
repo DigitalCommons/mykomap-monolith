@@ -22,7 +22,7 @@ export const schemas = {
 };
 
 export const contract = c.router({
-  dataset: {
+  getDataset: {
     method: "GET",
     path: "/dataset/:datasetId",
     summary: "obtains a dataset",
@@ -45,7 +45,7 @@ export const contract = c.router({
       }),
     },
   },
-  datasetSearch: {
+  searchDataset: {
     method: "GET",
     path: "/dataset/:datasetId/search",
     summary:
@@ -77,7 +77,7 @@ export const contract = c.router({
       }),
     },
   },
-  datasetItem: {
+  getDatasetItem: {
     method: "GET",
     path: "/dataset/:datasetId/item/:datasetItemId",
     summary: "obtains a dataset item by its unique ID",
@@ -103,7 +103,7 @@ export const contract = c.router({
       }),
     },
   },
-  version: {
+  getVersion: {
     method: "GET",
     path: "/version",
     summary: "obtains Mykomap server version information",
