@@ -56,9 +56,15 @@ export const contract = c.router({
       text: z.string().optional().openapi({
         // description: "a text fragment to match",
       }),
-      filter: z.array(z.string()).optional().openapi({
-        // description: "uniquely specifies the taxonomy filter items wanted",
-      }),
+      // Promote singular parameters to arrays (so that a single filter is possible!),
+      // see https://github.com/ts-rest/ts-rest/issues/290#issuecomment-1658983510
+      filter: z
+        .array(z.string())
+        .or(z.string().transform((v: string) => [v]))
+        .optional()
+        .openapi({
+          // description: "uniquely specifies the taxonomy filter items wanted",
+        }),
     }),
     pathParams: z.object({
       datasetId: DatasetId.openapi({
