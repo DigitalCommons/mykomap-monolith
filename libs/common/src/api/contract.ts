@@ -12,6 +12,7 @@ const DatasetItemId = z.coerce.number().int();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
 const VersionInfo = z.object({}).passthrough();
+const ErrorInfo = z.object({ message: z.string() }).passthrough();
 
 export const schemas = {
   Location,
@@ -37,10 +38,10 @@ export const contract = c.router({
       200: Dataset.openapi({
         // description: "the dataset matching the supplied ID",
       }),
-      400: z.void().openapi({
+      400: ErrorInfo.openapi({
         // description: "bad input parameter",
       }),
-      404: z.void().openapi({
+      404: ErrorInfo.openapi({
         // description: "no such dataset",
       }),
     },
@@ -75,10 +76,10 @@ export const contract = c.router({
       200: z.array(DatasetItemId).openapi({
         // description: "the dataset item IDs matching the supplied criteria",
       }),
-      400: z.void().openapi({
+      400: ErrorInfo.openapi({
         // description: "bad input parameter",
       }),
-      404: z.void().openapi({
+      404: ErrorInfo.openapi({
         // description: "no such dataset",
       }),
     },
@@ -101,10 +102,10 @@ export const contract = c.router({
       200: DatasetItem.openapi({
         // description: "the dataset item matching the supplied ID",
       }),
-      400: z.void().openapi({
+      400: ErrorInfo.openapi({
         // description: "bad input parameter",
       }),
-      404: z.void().openapi({
+      404: ErrorInfo.openapi({
         // description: "no such dataset or dataset item",
       }),
     },
