@@ -1,6 +1,9 @@
+import { TsRestResponseError } from "@ts-rest/core";
 import { RouterImplementation } from "@ts-rest/fastify";
 import { contract } from "@mykomap/common";
-import { FastifyPluginOptions } from "fastify";
+import { FastifyPluginOptions, FastifyReply, FastifyRequest } from "fastify";
+import fs from "node:fs";
+import path from "node:path";
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
@@ -18,6 +21,49 @@ export interface MykomapRouterConfig extends FastifyPluginOptions {
 type Contract = typeof contract;
 
 //////////////////////////////////////////////////////////////////////
+// Helper functions
+
+// Helper functions
+
+/** A predicate testing for URL-safe base64 string (RFC4648 sect 5) */
+function validBase64(value: string): boolean {
+  return !!value.match(/^[A-Z0-9_-]+$/i);
+}
+
+/** A predicate testing for a well-formed QName string */
+function validQName(value: string): boolean {
+  // Not quite a full qname check but it'll do for now (FIXME)
+  return !!value.match(/^[A-Z0-9_-]+:[A-Z0-9_-]+$/i);
+}
+
+/** Send a JSON file verbatim as Fastify's reply
+ *
+ * This function sends the file as a stream attached to the reply, which avoids
+ * the need to load the file - which is potentially very large - deserialise it
+ * from JSON, and then re-serialise it back to JSON.
+ *
+ * One consequence of this is that the content cannot be validated. You must
+ * supply pre-validated files!
+ *
+ * @return true on success, false if the path doesn't correspond to a valid file
+ * (in which case nothing can be sent).If successful, the reply will have
+ * been modified to have an `application/json` content type, and the file
+ * content attached as a stream. This reply can be returned from the handler
+ * instead of a JSON object.
+ */
+function sendJson(req: FastifyRequest, reply: FastifyReply, file: string) {
+  req.log.debug(`data file path is '${file}`);
+
+  if (!fs.existsSync(file)) return false;
+
+  const stream = fs.createReadStream(file, "utf8");
+  reply.header("Content-Type", "application/json");
+  reply.send(stream);
+
+  return true;
+}
+
+//////////////////////////////////////////////////////////////////////
 
 /**
  * Constructor for the MykoMap API router implementation.
@@ -33,32 +79,109 @@ type Contract = typeof contract;
 export function MykomapRouter(
   opts: MykomapRouterConfig,
 ): RouterImplementation<Contract> {
+  // Validation
+  if (opts?.mykomap?.dataRoot == undefined)
+    // deliberately loose check
+    throw new Error("mandatory dataRoot option is not defined");
+
+  if (!fs.existsSync(opts.mykomap.dataRoot))
+    throw new Error(
+      `the dataRoot plugin option is set but refers to a non-existing path: `+
+        `'${opts.mykomap.dataRoot}'.`,
+    );
+
+  // Concatenates the path components into an absolute file path
+  const filePath = (...components: string[]): string => {
+    const p = path.join(opts.mykomap.dataRoot ?? "", ...components) + ".json";
+    return p;
+  };
+
   // Construct and return the implementation object
   return {
-    async getDataset(req) {
-      return {
-        body: [[1, 1]],
-        status: 201,
-      };
+    async getDataset({ params: { datasetId }, request, reply }) {
+      // Validate the parameters some more
+
+      if (!validBase64(datasetId))
+        throw new TsRestResponseError(contract.getDataset, {
+          status: 401,
+          body: { message: `invalid datasetId: '${datasetId}'` },
+        });
+
+      if (!sendJson(request, reply, filePath("datasets", datasetId)))
+        throw new TsRestResponseError(contract.getDataset, {
+          status: 404,
+          body: { message: `unknown datasetId '${datasetId}'` },
+        });
+
+      return reply;
     },
 
-    async searchDataset(req) {
-      return {
-        body: [1],
-        status: 201,
-      };
+    async searchDataset({
+      params: { datasetId },
+      query: { filter, text },
+      request,
+      reply,
+    }) {
+      if (!validBase64(datasetId))
+        throw new TsRestResponseError(contract.searchDataset, {
+          status: 401,
+          body: { message: `invalid datasetId: '${datasetId}'` },
+        });
+
+      const filter2 = filter ?? [];
+      const invalidUris = filter2.filter((uri) => !validQName(uri));
+      if (invalidUris.length > 0)
+        throw new TsRestResponseError(contract.searchDataset, {
+          status: 400,
+          body: { message: `invalid filters: ${invalidUris}` },
+        });
+
+      const components = ["datasets", datasetId, "search", ...filter2, "text"];
+      if (text !== undefined) components.push(encodeURIComponent(text));
+
+      if (!sendJson(request, reply, filePath(...components)))
+        return {
+          status: 200,
+          body: [],
+        };
+
+      return reply;
     },
 
-    async getDatasetItem(req) {
-      return {
-        body: "FIXME",
-        status: 201,
-      };
+    async getDatasetItem({
+      params: { datasetId, datasetItemId },
+      request,
+      reply,
+    }) {
+      if (!validBase64(datasetId))
+        throw new TsRestResponseError(contract.getDatasetItem, {
+          status: 401,
+          body: { message: `invalid datasetId: '${datasetId}'` },
+        });
+      if (datasetItemId < 0)
+        throw new TsRestResponseError(contract.getDatasetItem, {
+          status: 401,
+          body: { message: `invalid datasetItemId: '${datasetItemId}'` },
+        });
+
+      if (
+        !sendJson(
+          request,
+          reply,
+          filePath("datasets", datasetId, "items", String(datasetItemId)),
+        )
+      )
+        throw new TsRestResponseError(contract.getDatasetItem, {
+          status: 404,
+          body: { message: `item retrieve failed` },
+        });
+
+      return reply;
     },
 
     async getVersion(req) {
       return {
-        body: "FIXME",
+        body: { version: "FIXME" },
         status: 201,
       };
     },
