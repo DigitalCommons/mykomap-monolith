@@ -8,7 +8,7 @@ const c = initContract();
 
 const Location = z.array(z.number()).min(2).max(2);
 const DatasetId = z.string();
-const DatasetItemId = z.number().int();
+const DatasetItemId = z.coerce.number().int();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
 const VersionInfo = z.object({}).passthrough();
