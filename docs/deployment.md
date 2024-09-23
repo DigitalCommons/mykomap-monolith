@@ -9,14 +9,15 @@ Conceptually, installation of these applications require:
 - deploy the data in the path expected by the back-end
 - reverse-proxying the back end to be accessible on the same domain as the front end
 
-## How to install
+This document describes the required steps to achieve the above, either for a first
+time install or an update.
 
-### On a DCC Server
+## DCC Server specifics
 
-Although the application could be deployed in various scenarios in
-principle, this is the only case we specifically cater for now.
+*Note: Although the application could be deployed in various scenarios in
+principle, this is the only case we specifically cater for now.*
 
-#### What a DCC Server provides
+### What a DCC Server provides
 
 The parts relevant here are, broadly:
 - A Ubuntu Linux server.
@@ -37,7 +38,7 @@ The following instructions following assume this context.
 
 [t-i]: https://github.com/DigitalCommons/technology-and-infrastructure
 
-#### Definitions, for convenience
+### Definitions, for convenience
 
 For the descriptions below, we use the following placeholders for
 generality. (We write them in the style of environment variables, but
@@ -61,7 +62,7 @@ Examples, at the time of writing, of the typical case for these are:
     DEPLOY_ENV=/home/$USER/gitworking/deploy.env
     DATA_DIR=/home/$USER/deploy/data
 
-#### Environment variables for deployment
+### Environment variables for deployment
 
 The `$DEPLOY_ENV` file defines some *actual* environment variables
 which the deployment process will use. What those are set to will
@@ -92,13 +93,13 @@ it's just convenient for this illustration. You could supply them via
 other mechanisms.*
 
 
-### How to install for the first time
+## How to install for the first time
 
 *Note: All these steps assume that the variables described above has
 been created and populated in a file `$DEPLOY_ENV` appropriately, as
 per the example above.*
 
-#### Step 1: setup with elevated privileges
+### Step 1: setup with elevated privileges
 
 This step requires elevated privileges, but as it is specific to this
 application it is not performed via Ansible.
@@ -138,7 +139,7 @@ The steps:
     systemctl reload apache2
     
 
-#### Step 2: setup as the application user
+### Step 2: setup as the application user
 
     # source this file to get the shared configuration
     . $DEPLOY_ENV
@@ -168,7 +169,7 @@ The steps:
 The `deploy.sh` script will do the rest, including writing the `.env`
 files in the applications, which should never be stored in source control.
 
-### How to make subsequent updates
+## How to make subsequent updates
 
 After the initial install, deploying updates is simpler.
 
@@ -188,4 +189,3 @@ Then perform the update:
 
 The `deploy.sh` script will do the rest, including writing the `.env`
 files in the applications, which should never be stored in source control.
-
