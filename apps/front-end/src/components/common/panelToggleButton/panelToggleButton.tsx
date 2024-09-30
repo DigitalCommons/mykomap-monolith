@@ -1,7 +1,6 @@
 import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 interface PanelToggleButtonProps {
   buttonAction: () => void;
@@ -33,7 +32,7 @@ const PanelToggleButton = ({
         },
       }}
     >
-      {isOpen ? <ArrowBackIosNewIcon /> : <ChevronRightIcon />}
+      {isOpen ? <ArrowBackIosNewIcon /> : <ArrowForwardIosIcon />}
     </IconButton>
   );
 };

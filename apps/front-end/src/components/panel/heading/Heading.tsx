@@ -11,8 +11,11 @@ const Heading = ({title, children}: HeadingProps) => {
   return (
     <Box
       sx={{
-        padding: "var(--spacing-large)",
+        padding: "var(--spacing-medium)",
         backgroundColor: "var(--color-neutral-light)",
+        "@media (min-width: 768px)": {
+          padding: "var(--spacing-large)",
+        },
       }}
     >
       <Typography

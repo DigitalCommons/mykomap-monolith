@@ -3,6 +3,15 @@ import type { ThemeOptions } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const themeOptions: ThemeOptions = {
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 768,
+      md: 900,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
   palette: {
     primary: {
       main: "#4D8C63",
@@ -36,17 +45,27 @@ const themeOptions: ThemeOptions = {
           width: "100%",
           backgroundColor: "var(--color-primary)",
           borderRadius: "0",
+          "& .MuiTabs-flexContainer": {
+            justifyContent: "center",
+          },
+          "@media (min-width: 768px)": {
+            "& .MuiTabs-flexContainer": {
+              justifyContent: "flex-start",
+            },
+          },
         },
       },
     },
     MuiTab: {
       styleOverrides: {
         root: {
-          height: "100px",
-          width: "100px",
+          height: "80px",
+          width: "25%",
+          minWidth: "unset",
+          maxWidth: "110px",
           textTransform: "none",
           fontWeight: 400,
-          fontSize: "14px",
+          fontSize: "12px",
           color: "#ffffffcc",
           backgroundColor: "var(--color-primary)",
           transition: "ease-in 0.25s",
@@ -56,6 +75,11 @@ const themeOptions: ThemeOptions = {
           },
           "& .MuiTab-icon": {
             marginBottom: "var(--spacing-small)",
+          },
+          "@media (min-width: 768px)": {
+            height: "100px",
+            width: "100px",
+            fontSize: "14px",
           },
         },
       },
