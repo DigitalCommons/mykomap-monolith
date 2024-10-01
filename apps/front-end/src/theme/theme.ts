@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import type { ThemeOptions } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
@@ -48,9 +48,9 @@ const themeOptions: ThemeOptions = {
           "& .MuiTabs-flexContainer": {
             justifyContent: "center",
           },
-          "@media (min-width: 768px)": {
+          "@media (min-width: 897px)": {
             "& .MuiTabs-flexContainer": {
-              justifyContent: "flex-start",
+              justifyContent: "flex-end",
             },
           },
         },
@@ -59,13 +59,13 @@ const themeOptions: ThemeOptions = {
     MuiTab: {
       styleOverrides: {
         root: {
-          height: "80px",
+          height: "40px",
           width: "25%",
           minWidth: "unset",
           maxWidth: "110px",
           textTransform: "none",
           fontWeight: 400,
-          fontSize: "12px",
+          fontSize: "0",
           color: "#ffffffcc",
           backgroundColor: "var(--color-primary)",
           transition: "ease-in 0.25s",
@@ -74,12 +74,19 @@ const themeOptions: ThemeOptions = {
             backgroundColor: "var(--color-primary-light)",
           },
           "& .MuiTab-icon": {
-            marginBottom: "var(--spacing-small)",
+            marginBottom: 0,
           },
-          "@media (min-width: 768px)": {
+          "@media (min-width: 897px)": {
             height: "100px",
             width: "100px",
             fontSize: "14px",
+          },
+          "@media screen and (min-height: 415px)": {
+            height: "80px",
+            fontSize: "12px",
+            "& .MuiTab-icon": {
+              marginBottom: "var(--spacing-small)",
+            },
           },
         },
       },

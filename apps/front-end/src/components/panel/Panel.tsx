@@ -14,7 +14,8 @@ const Panel = () => {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [panelVisible, setPanelVisible] = useState(false);
 
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMedium = useMediaQuery("(min-width: 897px)");
+  
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -35,6 +36,7 @@ const Panel = () => {
 
   const handleMapTapClick = () => {
     setPanelVisible(false); // Hide all panels when the Map tab is clicked
+    setSelectedTab(-1); // Select the Map tab
   };
 
   return (
@@ -49,7 +51,7 @@ const Panel = () => {
         }}
       >
         {/* Desktop view  */}
-        {!isMobile && (
+        {isMedium && (
           <Box>
             <Drawer
               variant="persistent"
@@ -90,7 +92,7 @@ const Panel = () => {
         )}
 
         {/* Mobile view  */}
-        {isMobile && (
+        {!isMedium && (
           <Box
             sx={{
               flexGrow: 1,

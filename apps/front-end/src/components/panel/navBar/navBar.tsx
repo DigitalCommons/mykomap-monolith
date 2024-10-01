@@ -16,7 +16,7 @@ interface NavBarProps {
 const NavBar = ({ onTabChange, onMapTabClick }: NavBarProps) => {
   const [selectedTab, setSelectedTab] = useState(0); // Track the selected tab
 
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const isMedium = useMediaQuery("(min-width: 897px)");
 
   const handleChange = (e: React.SyntheticEvent, selected: number) => {
     setSelectedTab(selected);
@@ -41,7 +41,7 @@ const NavBar = ({ onTabChange, onMapTabClick }: NavBarProps) => {
       }}
     >
       <Tabs value={selectedTab} onChange={handleChange}>
-        {isMobile && (
+        {!isMedium && (
           <Tab
             icon={<MapIcon />}
             label="Map"
