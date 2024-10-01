@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import SignpostIcon from "@mui/icons-material/Signpost";
@@ -7,22 +6,25 @@ import SearchIcon from "@mui/icons-material/Search";
 import MapIcon from "@mui/icons-material/Map";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
+import { useAppDispatch } from "../../../app/hooks";
+import { setSelectedTab } from "../../panel/panelSlice";
 
 interface NavBarProps {
   onTabChange?: (selected: number) => void;
   onMapTabClick?: () => void;
+  selectedTab?: number;
 }
 
-const NavBar = ({ onTabChange, onMapTabClick }: NavBarProps) => {
-  const [selectedTab, setSelectedTab] = useState(0); // Track the selected tab
-
+const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
+  const dispatch = useAppDispatch();
   const isMedium = useMediaQuery("(min-width: 897px)");
 
   const handleChange = (e: React.SyntheticEvent, selected: number) => {
-    setSelectedTab(selected);
     if (onTabChange) {
       onTabChange(selected);
     }
+    dispatch(setSelectedTab(selected));
+    console.log("selected", selected);
   };
 
   const handleMapTabClick = () => {

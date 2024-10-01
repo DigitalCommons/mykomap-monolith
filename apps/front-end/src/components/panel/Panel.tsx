@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import NavBar from "./navBar/navBar";
@@ -8,35 +7,49 @@ import CloseButton from "../common/closeButton/CloseButton";
 import AboutPanel from "./aboutPanel/AboutPanel";
 import DirectoryPanel from "./directoryPanel/DirectoryPanel";
 import SearchPanel from "./searchPanel/SearchPanel";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  setSelectedTab,
+  setPanelVisible,
+  togglePanel,
+  closePanel,
+  selectSelectedTab,
+  selectPanelVisible,
+  selectIsOpen,
+} from "./panelSlice";
 
 const Panel = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [panelVisible, setPanelVisible] = useState(false);
+  const dispatch = useAppDispatch();
+  const isOpen = useAppSelector(selectIsOpen);
+  const selectedTab = useAppSelector(selectSelectedTab);
+  const panelVisible = useAppSelector(selectPanelVisible);
 
   const isMedium = useMediaQuery("(min-width: 897px)");
-  
 
   const handleToggle = () => {
-    setIsOpen((prev) => !prev);
+    dispatch(togglePanel());
+    console.log("isOpen", isOpen);
   };
 
   const handleTabChange = (tab: number) => {
-    if (tab === -1) {
-      setPanelVisible(false); // Hide the panel if Map is selected
+    if (tab === 0) {
+      dispatch(setPanelVisible(false)); // Hide the panel if Map is selected
     } else {
-      setPanelVisible(true); // Show the panel if any other tab is selected
+      dispatch(setPanelVisible(true)); // Show the panel if any other tab is selected
     }
-    setSelectedTab(tab);
+    dispatch(setSelectedTab(tab));
+    console.log("tab", tab);
   };
 
   const handlePanelClose = () => {
-    setPanelVisible(false);
+    dispatch(closePanel());
+    dispatch(setSelectedTab(0));
+    console.log("panelVisible", panelVisible);
   };
 
   const handleMapTapClick = () => {
-    setPanelVisible(false); // Hide all panels when the Map tab is clicked
-    setSelectedTab(-1); // Select the Map tab
+    dispatch(setPanelVisible(false));
+    dispatch(setSelectedTab(0));
   };
 
   return (
@@ -79,7 +92,10 @@ const Panel = () => {
                   height: "100%",
                 }}
               >
-                <NavBar onTabChange={handleTabChange} />
+                <NavBar
+                  onTabChange={handleTabChange}
+                  selectedTab={selectedTab}
+                />
                 <Box sx={{ flexGrow: 1 }}>
                   {selectedTab === 0 && <DirectoryPanel />}
                   {selectedTab === 1 && <SearchPanel />}
@@ -122,6 +138,7 @@ const Panel = () => {
             >
               <NavBar
                 onTabChange={handleTabChange}
+                selectedTab={selectedTab}
                 onMapTabClick={handleMapTapClick}
               />
             </Box>

@@ -5,6 +5,8 @@ import NavBar from "./navBar";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../../theme/theme";
 import GlobalCSSVariables from "../../../theme/GlobalCSSVariables";
+import { store } from "../../../app/store";
+import { Provider } from "react-redux";
 
 const meta = {
   title: "NavBar",
@@ -14,10 +16,12 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <ThemeProvider theme={theme}>
-        <GlobalCSSVariables />
-        <Story />
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <GlobalCSSVariables />
+          <Story />
+        </ThemeProvider>
+      </Provider>
     ),
   ],
   tags: ["autodocs"],

@@ -1,30 +1,45 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import type { AppThunk } from "../../app/store";
 
+interface PanelState {
+  selectedTab: number;
+  panelVisible: boolean;
+  isOpen: boolean;
+}
+
+const initialState: PanelState = {
+  selectedTab: 0,
+  panelVisible: false,
+  isOpen: false,
+};
 
 export const panelSlice = createAppSlice({
-
   name: "panel",
-
-  initialState: {
-    title: "Panel",
-    content: "Panel Content",
-  },
-
+  initialState,
   reducers: (create) => ({
-    setTitle: create.reducer((state, action: PayloadAction<string>) => {
-      state.title = action.payload;
+    setSelectedTab: create.reducer((state, action: PayloadAction<number>) => {
+      state.selectedTab = action.payload;
     }),
-    setContent: create.reducer((state, action: PayloadAction<string>) => {
-      state.content = action.payload;
+    setPanelVisible: create.reducer((state, action: PayloadAction<boolean>) => {
+      state.panelVisible = action.payload;
+    }),
+    togglePanel: create.reducer((state) => {
+      state.isOpen = !state.isOpen;
+    }),
+    closePanel: create.reducer((state) => {
+      state.isOpen = false;
+      state.panelVisible = false;
     }),
   }),
-
   selectors: {
-    selectTitle: (panel) => panel.title,
-    selectContent: (panel) => panel.content,
+    selectSelectedTab: (panel) => panel.selectedTab,
+    selectPanelVisible: (panel) => panel.panelVisible,
+    selectIsOpen: (panel) => panel.isOpen,
   },
 });
 
-export const { setTitle, setContent } = panelSlice.actions;
+export const { setSelectedTab, setPanelVisible, togglePanel, closePanel } =
+  panelSlice.actions;
+
+export const { selectSelectedTab, selectPanelVisible, selectIsOpen } =
+  panelSlice.selectors;
