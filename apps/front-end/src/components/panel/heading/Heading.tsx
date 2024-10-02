@@ -1,23 +1,24 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 
 interface HeadingProps {
   title: string;
   children?: React.ReactNode;
 }
 
-const Heading = ({title, children}: HeadingProps) => {
+const StyledHeading = styled(Box)(() => ({
+  padding: "var(--spacing-medium)",
+  backgroundColor: "var(--color-neutral-light)",
+  "@media (min-width: 768px)": {
+    padding: "var(--spacing-large)",
+  },
+}));
+
+const Heading = ({ title, children }: HeadingProps) => {
   return (
-    <Box
-      sx={{
-        padding: "var(--spacing-medium)",
-        backgroundColor: "var(--color-neutral-light)",
-        "@media (min-width: 768px)": {
-          padding: "var(--spacing-large)",
-        },
-      }}
-    >
+    <StyledHeading>
       <Typography
         variant="h1"
         component="h1"
@@ -26,7 +27,7 @@ const Heading = ({title, children}: HeadingProps) => {
         {title}
       </Typography>
       {children}
-    </Box>
+    </StyledHeading>
   );
 };
 

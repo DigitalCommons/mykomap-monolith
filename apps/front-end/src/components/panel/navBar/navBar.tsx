@@ -8,12 +8,20 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Box from "@mui/material/Box";
 import { useAppDispatch } from "../../../app/hooks";
 import { setSelectedTab } from "../../panel/panelSlice";
+import { styled } from "@mui/material/styles";
 
 interface NavBarProps {
   onTabChange?: (selected: number) => void;
   onMapTabClick?: () => void;
   selectedTab?: number;
 }
+
+const StyledTabContainer = styled(Box)(() => ({
+  width: "100%",
+  display: "flex",
+  justifyContent: "flex-end",
+  backgroudColor: "var(--color-primary)",
+}));
 
 const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
   const dispatch = useAppDispatch();
@@ -34,28 +42,16 @@ const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "flex-end",
-        backgroudColor: "var(--color-primary)",
-      }}
-    >
+    <StyledTabContainer>
       <Tabs value={selectedTab} onChange={handleChange}>
         {!isMedium && (
-          <Tab
-            icon={<MapIcon />}
-            label="Map"
-            disableRipple
-            onClick={handleMapTabClick}
-          />
+          <Tab icon={<MapIcon />} label="Map" onClick={handleMapTabClick} />
         )}
-        <Tab icon={<SignpostIcon />} label="Directory" disableRipple />
-        <Tab icon={<SearchIcon />} label="Search" disableRipple />
-        <Tab icon={<InfoIcon />} label="About" disableRipple />
+        <Tab icon={<SignpostIcon />} label="Directory" />
+        <Tab icon={<SearchIcon />} label="Search" />
+        <Tab icon={<InfoIcon />} label="About" />
       </Tabs>
-    </Box>
+    </StyledTabContainer>
   );
 };
 

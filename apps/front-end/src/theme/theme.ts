@@ -57,6 +57,9 @@ const themeOptions: ThemeOptions = {
       },
     },
     MuiTab: {
+      defaultProps: {
+        disableRipple: true,
+      },
       styleOverrides: {
         root: {
           height: "60px",
@@ -93,9 +96,13 @@ const themeOptions: ThemeOptions = {
       },
     },
     MuiButton: {
+      defaultProps: {
+        disableRipple: true,
+      },
       styleOverrides: {
         root: {
           borderRadius: "var(--border-radius-small)",
+          boxShadow: "0 0 8px rgba(0, 0, 0, 0.16)",
           // "&.Mui-disabled": {
           //   backgroundColor: "var(--color-neutral-light)",
           //   color: "fuchsia",

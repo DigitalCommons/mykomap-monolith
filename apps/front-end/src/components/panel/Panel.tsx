@@ -1,6 +1,7 @@
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import NavBar from "./navBar/navBar";
+import { styled } from "@mui/material/styles";
 import PanelToggleButton from "../common/panelToggleButton/panelToggleButton";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CloseButton from "../common/closeButton/CloseButton";
@@ -17,6 +18,21 @@ import {
   selectPanelVisible,
   selectIsOpen,
 } from "./panelSlice";
+
+const StyledPanel = styled(Drawer)(() => ({
+  flexShrink: 0,
+  width: "calc(var(--panel-width-desktop) + 30px)",
+  position: "relative",
+  overflow: "visible",
+  "& .MuiDrawer-paper": {
+    width: "var(--panel-width-desktop)",
+    boxSizing: "border-box",
+    backgroundColor: "#fff",
+    visibility: "visible !important",
+    overflow: "visible",
+    boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
+  },
+}));
 
 const Panel = () => {
   const dispatch = useAppDispatch();
@@ -66,25 +82,7 @@ const Panel = () => {
         {/* Desktop view  */}
         {isMedium && (
           <Box>
-            <Drawer
-              variant="persistent"
-              open={isOpen}
-              anchor="left"
-              sx={{
-                flexShrink: 0,
-                width: "calc(var(--panel-width-desktop) + 30px)",
-                position: "relative",
-                overflow: "visible",
-                "& .MuiDrawer-paper": {
-                  width: "var(--panel-width-desktop)",
-                  boxSizing: "border-box",
-                  backgroundColor: "#fff",
-                  visibility: "visible !important",
-                  overflow: "visible",
-                  boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
-                },
-              }}
-            >
+            <StyledPanel variant="persistent" open={isOpen} anchor="left">
               <Box
                 sx={{
                   display: "flex",
@@ -103,7 +101,7 @@ const Panel = () => {
                 </Box>
               </Box>
               <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
-            </Drawer>
+            </StyledPanel>
           </Box>
         )}
 
