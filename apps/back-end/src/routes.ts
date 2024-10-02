@@ -139,7 +139,7 @@ export function MykomapRouter(
 
     async getVersion(req) {
       return {
-        body: { version: "FIXME" },
+        body: __BUILD_INFO__,
         status: 200,
       };
     },
