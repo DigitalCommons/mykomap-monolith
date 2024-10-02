@@ -41,6 +41,14 @@ const SelectBox = ({
         value={value}
         onChange={onChange}
         labelId={selectId}
+        displayEmpty
+        renderValue={(selected) => {
+          return selected && selected !== "" ? (
+            options?.find((option) => option.value === selected)?.label || ""
+          ) : (
+            <>Please select an option</>
+          );
+        }}
         aria-labelledby={selectId}
         aria-expanded={open}
         aria-controls={`${selectId}-menu`}

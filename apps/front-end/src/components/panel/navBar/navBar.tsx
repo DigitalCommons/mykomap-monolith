@@ -37,7 +37,7 @@ const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
 
   const handleMapTabClick = () => {
     if (onMapTabClick) {
-      onMapTabClick(); // Inform parent that the Map tab is selected
+      onMapTabClick();
     }
   };
 

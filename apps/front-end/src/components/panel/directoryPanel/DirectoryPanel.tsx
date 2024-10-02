@@ -1,12 +1,12 @@
-import React from 'react'
 import Heading from "../heading/Heading";
+import ContentPanel from "../contentPanel/ContentPanel";
 
 
 const DirectoryPanel = () => {
   return (
     <>
       <Heading title="Directory" />
-      <div>Directory Content</div>
+      <ContentPanel>Directory Content</ContentPanel>
     </>
   );
 }

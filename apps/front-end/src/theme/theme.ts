@@ -1,6 +1,7 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import type { ThemeOptions } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { m } from "vitest/dist/reporters-yx5ZTtEV.js";
 
 const themeOptions: ThemeOptions = {
   breakpoints: {
@@ -30,12 +31,25 @@ const themeOptions: ThemeOptions = {
       textTransform: "none",
       fontWeight: 400,
       color: "#fff",
-      fontSize: "14px",
+      fontSize: "var(--font-size-small)",
     },
     h1: {
-      fontSize: "30px",
+      fontSize: "var(--font-size-xxlarge)",
       textAlign: "left",
       fontWeight: 500,
+      "@media (min-width: 600px)": {
+        fontSize: "var(--font-size-xxxlarge)",
+      },
+    },
+    h4: {
+      fontSize: "var(--font-size-medium)",
+      fontWeight: 500,
+      marginBottom: "var(--spacing-small)",
+      color: "var(--color-primary)",
+      "@media (min-width: 600px)": {
+        fontSize: "var(--font-size-large)",
+        marginBottom: "var(--spacing-medium)",
+      },
     },
   },
   components: {
@@ -83,11 +97,11 @@ const themeOptions: ThemeOptions = {
           "@media (min-width: 897px)": {
             height: "100px",
             width: "100px",
-            fontSize: "14px",
+            fontSize: "var(--font-size-small)",
           },
           "@media screen and (min-height: 415px)": {
             height: "80px",
-            fontSize: "12px",
+            fontSize: "var(--font-size-xsmall)",
             "& .MuiTab-icon": {
               marginBottom: "var(--spacing-small)",
             },
@@ -103,10 +117,6 @@ const themeOptions: ThemeOptions = {
         root: {
           borderRadius: "var(--border-radius-small)",
           boxShadow: "0 0 8px rgba(0, 0, 0, 0.16)",
-          // "&.Mui-disabled": {
-          //   backgroundColor: "var(--color-neutral-light)",
-          //   color: "fuchsia",
-          // },
         },
         // Primary button styles
         containedPrimary: {
@@ -171,6 +181,7 @@ const themeOptions: ThemeOptions = {
           backgroundColor: "var(--color-neutral-light)",
           borderRadius: "var(--border-radius-small)",
           padding: "var(--spacing-small) var(--spacing-medium)",
+          marginBottom: "var(--spacing-medium)",
           boxShadow: "none",
           border: "2px solid var(--color-neutral-light)",
           transition: "border 0.25s ease-in-out",
@@ -182,6 +193,9 @@ const themeOptions: ThemeOptions = {
           },
           "& .MuiSelect-select": {
             padding: "0",
+          },
+          "@media (min-width: 600px)": {
+            marginBottom: "var(--spacing-large)",
           },
         },
         select: {
@@ -201,6 +215,9 @@ const themeOptions: ThemeOptions = {
       },
     },
     MuiMenuItem: {
+      defaultProps: {
+        disableRipple: true,
+      },
       styleOverrides: {
         root: {
           "&.Mui-selected": {
