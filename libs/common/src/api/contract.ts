@@ -11,7 +11,13 @@ const DatasetId = z.string();
 const DatasetItemId = z.coerce.number().int();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
-const VersionInfo = z.object({}).passthrough();
+const VersionInfo = z.object({
+  name: z.string(),
+  buildTime: z.string().datetime({ offset: false }),
+  version: z.array(z.number()),
+  commitDesc: z.string(),
+  nodeEnv: z.enum(["production", "development"]),
+});
 const ErrorInfo = z.object({ message: z.string() }).passthrough();
 
 export const schemas = {
