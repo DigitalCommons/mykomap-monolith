@@ -23,15 +23,25 @@ export const filterSlice = createAppSlice({
     }),
     performSearch: create.asyncThunk(
       async (_, thunkApi) => {
+        const datasetId =
+          new URLSearchParams(window.location.search).get("datasetId") ?? "";
+        if (datasetId === "") {
+          return thunkApi.rejectWithValue(
+            `No datasetId parameter given, so no dataset can be filtered`,
+          );
+        }
+
         const { filter } = thunkApi.getState() as { filter: FilterSliceState };
         const response = await searchDataset({
-          params: { datasetId: "test-500000" },
+          params: { datasetId: datasetId },
           query: { text: filter.text.toLowerCase() },
         });
         if (response.status === 200) {
           return response.body;
         } else {
-          throw new Error(`Failed search, status code ${response.status}`);
+          return thunkApi.rejectWithValue(
+            `Failed search, status code ${response.status}`,
+          );
         }
       },
       {
@@ -42,9 +52,10 @@ export const filterSlice = createAppSlice({
           state.status = "idle";
           state.visibleIds = action.payload ?? [];
         },
-        rejected: (state) => {
+        rejected: (state, action) => {
           state.status = "failed";
           state.visibleIds = [];
+          console.error(action.payload);
         },
       },
     ),
