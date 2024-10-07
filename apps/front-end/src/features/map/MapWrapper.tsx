@@ -1,39 +1,50 @@
-import { useRef, useEffect } from "react";
-import { createMap } from "./mapSetup";
-import { useAppSelector } from "../../app/hooks";
+import { useRef, useEffect, useState } from "react";
+import { createMap } from "./mapLibre";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectText, selectVisibleIds } from "../filter/filterSlice";
-import featuresPromise, { getFilteredFeatures } from "../../data/geojson";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
+import { fetchData, selectFeatures } from "./mapSlice";
 
 const MapWrapper = () => {
   const searchText = useAppSelector(selectText);
+  // If there is no search text, visible IDs is undefined to show all features
   const visibleIds = useAppSelector(selectVisibleIds);
+  const features = useAppSelector((state) =>
+    selectFeatures(state, searchText ? visibleIds : undefined),
+  );
+  const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     map.current = createMap();
+    map.current.on("sourcedata", (e) => {
+      if (e.isSourceLoaded && e.sourceId === "initiatives-geojson") {
+        console.log("Updated GeoJSON source");
+        // We need to wait for the source to be initially loaded before we can update the data
+        setSourceLoaded(true);
+      }
+    });
+    dispatch(fetchData());
 
     // Clean up on unmount
     return () => map.current?.remove();
   }, []);
 
   useEffect(() => {
-    updateMapData().catch((error) => {
-      console.error("Failed to update map data", error);
-    });
-  }, [visibleIds]);
+    if (sourceLoaded) {
+      updateMapData().catch((error) => {
+        console.error("Failed to update map data", error);
+      });
+    }
+  }, [features, sourceLoaded]);
 
   const updateMapData = async () => {
-    let features;
-
     if (searchText) {
-      console.log(`Found ${visibleIds.length} features that matched`);
-      features = await getFilteredFeatures(visibleIds);
-    } else {
-      features = await featuresPromise;
+      console.log(`Found ${visibleIds?.length} features that matched`);
     }
 
-    console.log("Rendering data in MapLibreGL");
+    console.log("Rendering data in MapLibreGL", features);
 
     (map.current?.getSource("initiatives-geojson") as GeoJSONSource)?.setData({
       type: "FeatureCollection",

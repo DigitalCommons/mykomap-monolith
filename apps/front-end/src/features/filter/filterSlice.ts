@@ -32,6 +32,10 @@ export const filterSlice = createAppSlice({
         }
 
         const { filter } = thunkApi.getState() as { filter: FilterSliceState };
+        if (filter.text === "") {
+          return thunkApi.fulfillWithValue([]);
+        }
+
         const response = await searchDataset({
           params: { datasetId: datasetId },
           query: { text: filter.text.toLowerCase() },
