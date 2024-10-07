@@ -5,7 +5,7 @@ import { selectText, selectVisibleIds } from "../filter/filterSlice";
 import featuresPromise, { getFilteredFeatures } from "../../data/geojson";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 
-const Map = () => {
+const MapWrapper = () => {
   const searchText = useAppSelector(selectText);
   const visibleIds = useAppSelector(selectVisibleIds);
   const map = useRef<MapLibreMap | null>(null);
@@ -49,4 +49,4 @@ const Map = () => {
   );
 };
 
-export default Map;
+export default MapWrapper;

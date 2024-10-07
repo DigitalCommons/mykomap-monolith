@@ -1,5 +1,5 @@
 import { Counter } from "./features/counter/Counter";
-import Map from "./features/map/Map";
+import MapWrapper from "./features/map/MapWrapper";
 import SearchBar from "./features/filter/SearchBar";
 import { Quotes } from "./features/quotes/Quotes";
 import logo from "./logo.svg";
@@ -7,7 +7,7 @@ import logo from "./logo.svg";
 const App = () => {
   return (
     <div>
-      <Map />
+      <MapWrapper />
       <SearchBar />
     </div>
   );
