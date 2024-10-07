@@ -10,13 +10,11 @@ import {
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
-import featuresPromise from "../../data/geojson";
 import { getDatasetItem } from "../../services";
 
 const baseUri = "https://base.uri/";
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
-let geojsonSourceLoaded = false;
 
 const getPopup = async (id: number): Promise<string> => {
   const { body, status } = await getDatasetItem({
@@ -114,29 +112,17 @@ export const createMap = (): MapLibreMap => {
     ],
   });
 
-  map.on("load", async () => {
-    const features = await featuresPromise;
+  map.on("load", () => {
     map.addSource("initiatives-geojson", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
-        features,
+        features: [],
       },
       buffer: 0,
       cluster: true,
       clusterMaxZoom: 19,
       clusterRadius: 60,
-    });
-
-    map.on("sourcedata", (e) => {
-      if (e.isSourceLoaded && e.sourceId === "initiatives-geojson") {
-        if (geojsonSourceLoaded) {
-          console.log("Updated GeoJSON source");
-        } else {
-          geojsonSourceLoaded = true;
-          console.log("Added GeoJSON source");
-        }
-      }
     });
 
     map.addLayer({
