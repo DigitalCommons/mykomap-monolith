@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectText, selectVisibleIds } from "../filter/filterSlice";
+import { selectText, selectVisibleIds } from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 import { fetchData, selectFeatures } from "./mapSlice";
 

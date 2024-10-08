@@ -1,21 +1,21 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { createAppSlice } from "../../app/createAppSlice";
-import { searchDataset } from "../../services";
+import { createAppSlice } from "../../../app/createAppSlice";
+import { searchDataset } from "../../../services";
 
-export interface FilterSliceState {
+export interface SearchSliceState {
   text: string;
   visibleIds: number[];
   status: string;
 }
 
-const initialState: FilterSliceState = {
+const initialState: SearchSliceState = {
   text: "",
   visibleIds: [],
   status: "idle",
 };
 
-export const filterSlice = createAppSlice({
-  name: "filter",
+export const searchSlice = createAppSlice({
+  name: "search",
   initialState,
   reducers: (create) => ({
     setText: create.reducer((state, action: PayloadAction<string>) => {
@@ -27,18 +27,18 @@ export const filterSlice = createAppSlice({
           new URLSearchParams(window.location.search).get("datasetId") ?? "";
         if (datasetId === "") {
           return thunkApi.rejectWithValue(
-            `No datasetId parameter given, so no dataset can be filtered`,
+            `No datasetId parameter given, so no dataset can be searched`,
           );
         }
 
-        const { filter } = thunkApi.getState() as { filter: FilterSliceState };
-        if (filter.text === "") {
+        const { search } = thunkApi.getState() as { search: SearchSliceState };
+        if (search.text === "") {
           return thunkApi.fulfillWithValue([]);
         }
 
         const response = await searchDataset({
           params: { datasetId: datasetId },
-          query: { text: filter.text.toLowerCase() },
+          query: { text: search.text.toLowerCase() },
         });
         if (response.status === 200) {
           return response.body;
@@ -65,11 +65,11 @@ export const filterSlice = createAppSlice({
     ),
   }),
   selectors: {
-    selectText: (filter) => filter.text,
-    selectVisibleIds: (filter) => filter.visibleIds,
+    selectText: (search) => search.text,
+    selectVisibleIds: (search) => search.visibleIds,
   },
 });
 
-export const { setText, performSearch } = filterSlice.actions;
+export const { setText, performSearch } = searchSlice.actions;
 
-export const { selectText, selectVisibleIds } = filterSlice.selectors;
+export const { selectText, selectVisibleIds } = searchSlice.selectors;

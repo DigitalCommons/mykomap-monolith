@@ -1,11 +1,3 @@
-// import {
-//   Map as MapLibreMap,
-//   GeoJSONSource,
-//   LngLatLike,
-//   NavigationControl,
-//   Popup,
-//   MapLayerMouseEvent,
-// } from "maplibre-gl"; // @ts-ignore
 import { Map as MapLibreMap, NavigationControl, Popup } from "maplibre-gl"; // @ts-ignore
 import type {
   GeoJSONSource,

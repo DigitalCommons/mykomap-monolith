@@ -30,15 +30,21 @@ const StyledSearchBox = styled(OutlinedInput)(() => ({
 
 interface SearchBoxProps {
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
 }
 
-const SearchBox = ({ value, onChange }: SearchBoxProps) => {
+const SearchBox = ({ value, onChange, onSubmit }: SearchBoxProps) => {
   return (
     <StyledSearchBox
       id="search-input"
       value={value}
       onChange={onChange}
+      onKeyUp={(event) => {
+        if (event.key === "Enter") onSubmit(event);
+      }}
       autoComplete="off"
       placeholder="Search for initiatives..."
       startAdornment={
