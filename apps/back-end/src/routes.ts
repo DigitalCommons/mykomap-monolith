@@ -26,12 +26,6 @@ type Contract = typeof contract;
 // Helper functions
 
 
-/** A predicate testing for a well-formed QName string */
-function validQName(value: string): boolean {
-  // Not quite a full qname check but it'll do for now (FIXME)
-  return !!value.match(/^[A-Z0-9_-]+:[A-Z0-9_-]+$/i);
-}
-
 /** Send a JSON file verbatim as Fastify's reply
  *
  * This function sends the file as a stream attached to the reply, which avoids
@@ -113,12 +107,6 @@ export function MykomapRouter(
       reply,
     }) {
       const filter2 = filter ?? [];
-      const invalidUris = filter2.filter((uri) => !validQName(uri));
-      if (invalidUris.length > 0)
-        throw new TsRestResponseError(contract.searchDataset, {
-          status: 400,
-          body: { message: `invalid filters: ${invalidUris}` },
-        });
 
       const components = ["datasets", datasetId, "search", ...filter2, "text"];
       if (text !== undefined) components.push(encodeURIComponent(text));
