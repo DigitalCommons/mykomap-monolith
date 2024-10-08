@@ -1,6 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import { datasetSearch } from "../../services";
+import { searchDataset } from "../../services";
 
 export interface FilterSliceState {
   text: string;
@@ -23,13 +23,30 @@ export const filterSlice = createAppSlice({
     }),
     performSearch: create.asyncThunk(
       async (_, thunkApi) => {
+        const datasetId =
+          new URLSearchParams(window.location.search).get("datasetId") ?? "";
+        if (datasetId === "") {
+          return thunkApi.rejectWithValue(
+            `No datasetId parameter given, so no dataset can be filtered`,
+          );
+        }
+
         const { filter } = thunkApi.getState() as { filter: FilterSliceState };
-        const response = await datasetSearch({
-          path: { datasetId: "test-500000" },
+        if (filter.text === "") {
+          return thunkApi.fulfillWithValue([]);
+        }
+
+        const response = await searchDataset({
+          params: { datasetId: datasetId },
           query: { text: filter.text.toLowerCase() },
         });
-        // The value we return becomes the `fulfilled` action payload
-        return response.data;
+        if (response.status === 200) {
+          return response.body;
+        } else {
+          return thunkApi.rejectWithValue(
+            `Failed search, status code ${response.status}`,
+          );
+        }
       },
       {
         pending: (state) => {
@@ -39,9 +56,10 @@ export const filterSlice = createAppSlice({
           state.status = "idle";
           state.visibleIds = action.payload ?? [];
         },
-        rejected: (state) => {
+        rejected: (state, action) => {
           state.status = "failed";
           state.visibleIds = [];
+          console.error(action.payload);
         },
       },
     ),

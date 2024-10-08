@@ -15,23 +15,21 @@ import type {
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
-import featuresPromise from "../../data/geojson";
-import { datasetItem } from "../../services";
+import { getDatasetItem } from "../../services";
 
 const baseUri = "https://base.uri/";
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
-let geojsonSourceLoaded = false;
 
 const getPopup = async (id: number): Promise<string> => {
-  const item = await datasetItem({
-    path: { datasetId: "test-500000", datasetItemId: id },
+  const { body, status } = await getDatasetItem({
+    params: { datasetId: "test-500000", datasetItemId: id },
   });
   return `
     <div class="m-0 flex flex-row h-56 w-[35vw] p-0">
       <div class="scrolling-touch max-h-100 w-2/3 overflow-y-auto rounded-md bg-white px-6 py-4">
-        <h2 class="font-bold text-xl mb-1">${item?.data?.name}</h2>
-        <p class="font-light text-sm my-2 mx-0">${item?.data?.desc}</p>
+        <h2 class="font-bold text-xl mb-1">${status === 200 ? body.name : "Unknown"}</h2>
+        <p class="font-light text-sm my-2 mx-0">${status === 200 ? body.desc : "Error retrieving data"}</p>
       </div>
       
       <div class="flex-grow w-1/3 overflow-y-auto rounded-r-md bg-gray-200 px-6 py-4">
@@ -119,29 +117,17 @@ export const createMap = (): MapLibreMap => {
     ],
   });
 
-  map.on("load", async () => {
-    const features = await featuresPromise;
+  map.on("load", () => {
     map.addSource("initiatives-geojson", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
-        features,
+        features: [],
       },
       buffer: 0,
       cluster: true,
       clusterMaxZoom: 19,
       clusterRadius: 60,
-    });
-
-    map.on("sourcedata", (e) => {
-      if (e.isSourceLoaded && e.sourceId === "initiatives-geojson") {
-        if (geojsonSourceLoaded) {
-          console.log("Updated GeoJSON source");
-        } else {
-          geojsonSourceLoaded = true;
-          console.log("Added GeoJSON source");
-        }
-      }
     });
 
     map.addLayer({

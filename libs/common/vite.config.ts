@@ -14,5 +14,7 @@ export default defineConfig({
     },
     target: "esnext",
   },
-  plugins: [dts({ include: ["**/*.ts", "**/*.js"] })], // emit TS declaration files
+  plugins: [
+    dts({ include: ["**/*.ts", "**/*.js", "**/mykomap-openapi.json"] }),
+  ], // emit TS declaration files
 });

@@ -22,3 +22,7 @@ e.g.
 ```
 npm i @fastify/cors -w @mykomap/back-end --save
 ```
+
+## Installation
+
+See [docs/deployment.md](docs/deployment.md)

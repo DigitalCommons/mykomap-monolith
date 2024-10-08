@@ -4,15 +4,17 @@ import { selectText, setText, performSearch } from "./filterSlice";
 
 const SearchBar = () => {
   const dispatch = useAppDispatch();
-  const searchText = useAppSelector(selectText);
+  const [currentText, setCurrentText] = useState("");
+  const submittedText = useAppSelector(selectText);
 
   const onChange = (e: React.FormEvent<HTMLInputElement>): void => {
-    dispatch(setText(e.currentTarget.value));
+    setCurrentText(e.currentTarget.value);
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(`Searching for ${searchText}`);
+    console.log(`Searching for '${submittedText}'`);
+    dispatch(setText(currentText));
     dispatch(performSearch());
   };
 
@@ -41,7 +43,7 @@ const SearchBar = () => {
           id="search-input"
           className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
           placeholder="Search for initiatives..."
-          value={searchText}
+          value={currentText}
           autoComplete="off"
           onChange={onChange}
         />
