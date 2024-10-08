@@ -1,12 +1,9 @@
-import {
-  Map as MapLibreMap,
+import { Map as MapLibreMap, NavigationControl, Popup } from "maplibre-gl"; // @ts-ignore
+import type {
   GeoJSONSource,
   LngLatLike,
-  NavigationControl,
-  Popup,
   MapLayerMouseEvent,
 } from "maplibre-gl";
-// @ts-ignore
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";

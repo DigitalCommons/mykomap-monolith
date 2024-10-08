@@ -1,0 +1,80 @@
+{
+  "countries": [
+    { "id": 1, "name": "Argentina" },
+    { "id": 2, "name": "Australia" },
+    { "id": 3, "name": "Austria" },
+    { "id": 4, "name": "Bangladesh" },
+    { "id": 5, "name": "Barbados" },
+    { "id": 6, "name": "Belarus" },
+    { "id": 7, "name": "Belgium" },
+    { "id": 8, "name": "Bolivia" },
+    { "id": 9, "name": "Brazil" },
+    { "id": 10, "name": "Bulgaria" },
+    { "id": 11, "name": "Canada" },
+    { "id": 12, "name": "Chile" },
+    { "id": 13, "name": "China" },
+    { "id": 14, "name": "Colombia" },
+    { "id": 15, "name": "Costa Rica" },
+    { "id": 16, "name": "Côte d'Ivoire" },
+    { "id": 17, "name": "Curaçao" },
+    { "id": 18, "name": "Cyprus" },
+    { "id": 19, "name": "Czechia" }
+  ],
+  "primaryActivity": [
+    { "id": 1, "name": "Agricultural Cooperative" },
+    { "id": 2, "name": "Worker Cooperative" },
+    { "id": 3, "name": "Housing Cooperative" },
+    { "id": 4, "name": "Consumer Cooperative" },
+    { "id": 5, "name": "Financial Cooperative (Credit Union)" },
+    { "id": 6, "name": "Fisheries Cooperative" },
+    { "id": 7, "name": "Healthcare Cooperative" },
+    { "id": 8, "name": "Retail Cooperative" },
+    { "id": 9, "name": "Utility Cooperative" },
+    { "id": 10, "name": "Artisan Cooperative" }
+  ],
+  "economicSector": [
+    { "id": 1, "name": "Agriculture and Food" },
+    { "id": 2, "name": "Finance and Insurance" },
+    { "id": 3, "name": "Housing and Real Estate" },
+    { "id": 4, "name": "Energy and Utilities" },
+    { "id": 5, "name": "Healthcare and Social Services" },
+    { "id": 6, "name": "Retail and Wholesale" },
+    { "id": 7, "name": "Transportation and Logistics" },
+    { "id": 8, "name": "Education and Training" },
+    { "id": 9, "name": "Arts and Crafts" },
+    { "id": 10, "name": "Technology and Innovation" }
+  ],
+  "organisationalStructure": [
+    { "id": 1, "name": "Worker-Owned Cooperative" },
+    { "id": 2, "name": "Multi-Stakeholder Cooperative" },
+    { "id": 3, "name": "Consumer-Owned Cooperative" },
+    { "id": 4, "name": "Producer Cooperative" },
+    { "id": 5, "name": "Purchasing Cooperative" },
+    { "id": 6, "name": "Platform Cooperative" },
+    { "id": 7, "name": "Housing Cooperative" },
+    { "id": 8, "name": "Credit Union" },
+    { "id": 9, "name": "Farming Cooperative" },
+    { "id": 10, "name": "Service Cooperative" }
+  ],
+  "apexOrganisations": [
+    { "id": 1, "name": "International Co-operative Alliance (ICA)" },
+    {
+      "id": 2,
+      "name": "European Confederation of Industrial and Service Cooperatives (CECOP)"
+    },
+    { "id": 3, "name": "World Council of Credit Unions (WOCCU)" },
+    { "id": 4, "name": "National Cooperative Business Association (NCBA)" },
+    { "id": 5, "name": "International Raiffeisen Union" },
+    { "id": 6, "name": "International Labour Organization (ILO)" },
+    {
+      "id": 7,
+      "name": "African Confederation of Cooperative Savings and Credit Associations (ACCOSCA)"
+    },
+    { "id": 8, "name": "Co-operatives UK" },
+    { "id": 9, "name": "The Co-operative College" },
+    {
+      "id": 10,
+      "name": "International Health Co-operative Organization (IHCO)"
+    }
+  ]
+}

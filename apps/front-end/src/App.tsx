@@ -1,12 +1,12 @@
-import MapWrapper from "./features/map/MapWrapper";
-import SearchBar from "./features/filter/SearchBar";
+import MapWrapper from "./components/map/MapWrapper";
+import Panel from "./components/panel/Panel";
 import logo from "./logo.svg";
 
 const App = () => {
   return (
     <div>
       <MapWrapper />
-      <SearchBar />
+      <Panel />
     </div>
   );
 };
