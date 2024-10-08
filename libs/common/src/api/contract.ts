@@ -83,6 +83,9 @@ export const schemas = {
   DatasetItemId,
   DatasetItem,
   Dataset,
+  QName,
+  VersionInfo,
+  ErrorInfo,
 };
 
 export const contract = c.router({
