@@ -12,23 +12,25 @@ import {
 } from "../../../features/filter/filterSlice";
 
 const SearchPanel = () => {
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    console.log(e.target.value);
-  };
-
   const dispatch = useAppDispatch();
   const searchText = useAppSelector(selectText);
 
+  // onChange handler for the search input
   const onSearchChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ): void => {
     dispatch(setText(e.currentTarget.value));
+  };
+
+  // onChange handler for the select input
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ) => {
+    console.log(e.target.value);
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {

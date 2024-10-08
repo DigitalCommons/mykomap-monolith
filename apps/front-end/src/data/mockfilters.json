@@ -1,15 +1,24 @@
 {
   "countries": [
-    { "id": 1, "name": "Spain" },
-    { "id": 2, "name": "Italy" },
-    { "id": 3, "name": "Kenya" },
-    { "id": 4, "name": "Argentina" },
-    { "id": 5, "name": "Canada" },
-    { "id": 6, "name": "France" },
-    { "id": 7, "name": "India" },
-    { "id": 8, "name": "United States" },
+    { "id": 1, "name": "Argentina" },
+    { "id": 2, "name": "Australia" },
+    { "id": 3, "name": "Austria" },
+    { "id": 4, "name": "Bangladesh" },
+    { "id": 5, "name": "Barbados" },
+    { "id": 6, "name": "Belarus" },
+    { "id": 7, "name": "Belgium" },
+    { "id": 8, "name": "Bolivia" },
     { "id": 9, "name": "Brazil" },
-    { "id": 10, "name": "Philippines" }
+    { "id": 10, "name": "Bulgaria" },
+    { "id": 11, "name": "Canada" },
+    { "id": 12, "name": "Chile" },
+    { "id": 13, "name": "China" },
+    { "id": 14, "name": "Colombia" },
+    { "id": 15, "name": "Costa Rica" },
+    { "id": 16, "name": "Côte d'Ivoire" },
+    { "id": 17, "name": "Curaçao" },
+    { "id": 18, "name": "Cyprus" },
+    { "id": 19, "name": "Czechia" }
   ],
   "primaryActivity": [
     { "id": 1, "name": "Agricultural Cooperative" },

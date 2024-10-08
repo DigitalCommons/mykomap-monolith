@@ -30,11 +30,10 @@ const StyledSearchBox = styled(OutlinedInput)(() => ({
 
 interface SearchBoxProps {
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  buttonAction?: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const SearchBox = ({ value, onChange, buttonAction }: SearchBoxProps) => {
+const SearchBox = ({ value, onChange }: SearchBoxProps) => {
   return (
     <StyledSearchBox
       id="search-input"
@@ -44,7 +43,7 @@ const SearchBox = ({ value, onChange, buttonAction }: SearchBoxProps) => {
       placeholder="Search for initiatives..."
       startAdornment={
         <InputAdornment position="end">
-          <IconButton aria-label="search-button" onClick={buttonAction} disableRipple>
+          <IconButton aria-label="search-button" disableRipple>
             <SearchIcon />
           </IconButton>
         </InputAdornment>

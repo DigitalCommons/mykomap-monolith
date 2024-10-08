@@ -3,6 +3,7 @@ import { userEvent, within } from "@storybook/test";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
 import GlobalCSSVariables from "../../theme/GlobalCSSVariables";
+import { CssBaseline } from "@mui/material";
 import Panel from "./Panel";
 import { store } from "../../app/store";
 import { Provider } from "react-redux";
@@ -18,6 +19,7 @@ const meta: Meta<typeof Panel> = {
       <Provider store={store}>
         <ThemeProvider theme={theme}>
           <GlobalCSSVariables />
+          <CssBaseline />
           <Story />
         </ThemeProvider>
       </Provider>
