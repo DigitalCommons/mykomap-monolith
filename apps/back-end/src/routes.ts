@@ -23,9 +23,6 @@ type Contract = typeof contract;
 //////////////////////////////////////////////////////////////////////
 // Helper functions
 
-// Helper functions
-
-
 /** Send a JSON file verbatim as Fastify's reply
  *
  * This function sends the file as a stream attached to the reply, which avoids
