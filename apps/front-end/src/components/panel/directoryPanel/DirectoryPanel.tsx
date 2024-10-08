@@ -7,7 +7,7 @@ import List from "@mui/material/List";
 const countries = [
   { id: "1", name: "Argentina", link: "#" },
   { id: "2", name: "Australia", link: "#" },
-  { id: "2", name: "Austria", link: "#" },
+  { id: "3", name: "Austria", link: "#" },
   { id: "4", name: "Bangladesh", link: "#" },
   { id: "5", name: "Barbados", link: "#" },
   { id: "6", name: "Belarus", link: "#" },
