@@ -7,7 +7,7 @@ extendZodWithOpenApi(z);
 const c = initContract();
 
 const Location = z.array(z.number()).min(2).max(2);
-const DatasetId = z.string();
+const DatasetId = z.string().regex(UrlSafeBase64Rx);
 const DatasetItemId = z.coerce.number().int();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
