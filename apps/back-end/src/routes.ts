@@ -25,10 +25,6 @@ type Contract = typeof contract;
 
 // Helper functions
 
-/** A predicate testing for URL-safe base64 string (RFC4648 sect 5) */
-function validBase64(value: string): boolean {
-  return !!value.match(/^[A-Z0-9_-]+$/i);
-}
 
 /** A predicate testing for a well-formed QName string */
 function validQName(value: string): boolean {
@@ -101,12 +97,6 @@ export function MykomapRouter(
     async getDataset({ params: { datasetId }, request, reply }) {
       // Validate the parameters some more
 
-      if (!validBase64(datasetId))
-        throw new TsRestResponseError(contract.getDataset, {
-          status: 401,
-          body: { message: `invalid datasetId: '${datasetId}'` },
-        });
-
       if (!sendJson(request, reply, filePath("datasets", datasetId)))
         throw new TsRestResponseError(contract.getDataset, {
           status: 404,
@@ -122,12 +112,6 @@ export function MykomapRouter(
       request,
       reply,
     }) {
-      if (!validBase64(datasetId))
-        throw new TsRestResponseError(contract.searchDataset, {
-          status: 401,
-          body: { message: `invalid datasetId: '${datasetId}'` },
-        });
-
       const filter2 = filter ?? [];
       const invalidUris = filter2.filter((uri) => !validQName(uri));
       if (invalidUris.length > 0)
@@ -153,11 +137,6 @@ export function MykomapRouter(
       request,
       reply,
     }) {
-      if (!validBase64(datasetId))
-        throw new TsRestResponseError(contract.getDatasetItem, {
-          status: 401,
-          body: { message: `invalid datasetId: '${datasetId}'` },
-        });
       if (datasetItemId < 0)
         throw new TsRestResponseError(contract.getDatasetItem, {
           status: 401,
