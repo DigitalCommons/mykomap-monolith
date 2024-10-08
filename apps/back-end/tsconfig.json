@@ -1,8 +1,6 @@
 {
   "extends": "@tsconfig/node22/tsconfig.json",
   "compilerOptions": {
-    "module": "es2022",
-    "moduleResolution": "nodenext",
     "declaration": true,
     "outDir": "dist"
   },
