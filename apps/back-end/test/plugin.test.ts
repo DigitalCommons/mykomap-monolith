@@ -54,7 +54,7 @@ test("testing dataset", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/some-file",
+    url: "/dataset/test-A",
     payload: undefined,
     headers: undefined,
   });
@@ -107,7 +107,7 @@ test("testing datasetSearch", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/some-file/search?filter=a:foo",
+    url: "/dataset/test-A/search?filter=a:foo",
     payload: undefined,
     headers: undefined,
   });
@@ -149,7 +149,7 @@ test("testing datasetItem", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/some-file/item/0",
+    url: "/dataset/test-A/item/0",
     payload: undefined,
     headers: undefined,
   });
