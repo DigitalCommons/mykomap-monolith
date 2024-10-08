@@ -7,7 +7,7 @@ import path from "node:path";
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
-  /** Options sepcifically used by Mykomap Api plugin go in here */
+  /** Options specifically used by Mykomap Api plugin go in here */
   mykomap: {
     /** Defines the path to the data store */
     dataRoot: string;
