@@ -64,7 +64,7 @@ const QNameRx = new RegExp(`^${NCName}[:]${NCName}$`, "gsu");
 
 const Location = z.array(z.number()).min(2).max(2);
 const DatasetId = z.string().regex(UrlSafeBase64Rx);
-const DatasetItemId = z.coerce.number().int();
+const DatasetItemId = z.coerce.number().int().nonnegative();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
 const QName = z.string().regex(QNameRx);
