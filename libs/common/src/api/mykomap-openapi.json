@@ -12,7 +12,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[A-Z0-9_-]+$"
             }
           }
         ],
@@ -88,7 +89,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[A-Z0-9_-]+$"
             }
           },
           {
@@ -106,11 +108,13 @@
                 {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "type": "string",
+                    "pattern": "^(?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)[:](?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)$"
                   }
                 },
                 {
-                  "type": "string"
+                  "type": "string",
+                  "pattern": "^(?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)[:](?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)$"
                 }
               ]
             }
@@ -126,6 +130,7 @@
                   "type": "array",
                   "items": {
                     "type": "integer",
+                    "minimum": 0,
                     "nullable": true
                   }
                 }
@@ -184,7 +189,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[A-Z0-9_-]+$"
             }
           },
           {
@@ -193,6 +199,7 @@
             "required": true,
             "schema": {
               "type": "integer",
+              "minimum": 0,
               "nullable": true
             }
           }
