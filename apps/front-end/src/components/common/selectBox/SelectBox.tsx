@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { Select, InputLabel, Box, MenuItem } from "@mui/material";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
 import type { SelectChangeEvent } from "@mui/material";
 
 interface OptionProps {

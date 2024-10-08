@@ -1,11 +1,17 @@
 import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
 import SelectBox from "../../common/selectBox/SelectBox";
+import SearchBox from "./searchBox/SearchBox";
 import { selectOptions } from "@testing-library/user-event/dist/cjs/utility/selectOptions.js";
 import Typography from "@mui/material/Typography";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import {
+  selectText,
+  setText,
+  performSearch,
+} from "../../../features/filter/filterSlice";
 
 const SearchPanel = () => {
-
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -14,9 +20,28 @@ const SearchPanel = () => {
     console.log(e.target.value);
   };
 
+  const dispatch = useAppDispatch();
+  const searchText = useAppSelector(selectText);
+
+  const onSearchChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
+  ): void => {
+    dispatch(setText(e.currentTarget.value));
+  };
+
+  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(`Searching for ${searchText}`);
+    dispatch(performSearch());
+  };
+
   return (
-    <>
-      <Heading title="Search">search box</Heading>
+    <form className="mx-auto max-w-md" onSubmit={onSubmit}>
+      <Heading title="Search">
+        <SearchBox value={searchText} onChange={onSearchChange} />
+      </Heading>
       <ContentPanel>
         <Typography variant="h4" component="h4">
           X matching results
@@ -38,7 +63,7 @@ const SearchPanel = () => {
           value={selectOptions.name}
         />
       </ContentPanel>
-    </>
+    </form>
   );
 };
 

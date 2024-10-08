@@ -1,0 +1,20 @@
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createAppSlice } from "../../../app/createAppSlice";
+
+export interface SearchState {
+  search: string;
+}
+
+const initialState: SearchState = {
+  search: "",
+};
+
+const searchSlice = createAppSlice({
+  name: "search",
+  initialState,
+  reducers: {
+    setSearch: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
+    },
+  },
+});
