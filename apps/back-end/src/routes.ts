@@ -125,12 +125,6 @@ export function MykomapRouter(
       request,
       reply,
     }) {
-      if (datasetItemId < 0)
-        throw new TsRestResponseError(contract.getDatasetItem, {
-          status: 401,
-          body: { message: `invalid datasetItemId: '${datasetItemId}'` },
-        });
-
       if (
         !sendJson(
           request,
