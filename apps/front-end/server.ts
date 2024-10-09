@@ -1,6 +1,6 @@
 import Fastify from "fastify";
 import FastifyVite from "@fastify/vite";
-import { apiPlugin, apiOptions } from "@mykomap/back-end";
+import { apiPlugin } from "@mykomap/back-end";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 
@@ -13,10 +13,17 @@ await server.register(FastifyVite, {
   dev: process.env.NODE_ENV === "development",
   spa: true,
 });
-apiOptions.serviceOptions.dataRoot = dirname(
+
+// Mykomap API options
+const backEndTestData = dirname(
   fileURLToPath(import.meta.resolve("@mykomap/back-end/test/data")),
 );
-server.register(apiPlugin, { ...apiOptions, prefix: "/api" });
+const mykomap = {
+  dataRoot: process.env.SERVER_DATA_ROOT ?? backEndTestData,
+};
+console.info(`Using back-end data path: ${mykomap.dataRoot}`);
+
+server.register(apiPlugin, { mykomap, prefix: "/api" });
 
 server.get("/", (req, reply) => {
   return reply.html();
