@@ -15,7 +15,7 @@ declare module "fastify" {
 }
 
 /** Defines our API as a Fastify plugin */
-export const pluginApi: FastifyPluginCallback<MykomapRouterConfig> = async (
+const pluginApi: FastifyPluginCallback<MykomapRouterConfig> = async (
   fastify: FastifyInstance,
   opts: MykomapRouterConfig,
 ) => {
