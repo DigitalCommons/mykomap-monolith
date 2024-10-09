@@ -12,7 +12,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[A-Z0-9_-]+$"
             }
           }
         ],
@@ -40,7 +41,18 @@
             "description": "400",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
               }
             }
           },
@@ -48,7 +60,18 @@
             "description": "404",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
               }
             }
           }
@@ -66,7 +89,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[A-Z0-9_-]+$"
             }
           },
           {
@@ -80,10 +104,19 @@
             "name": "filter",
             "in": "query",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^(?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)[:](?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)$"
+                  }
+                },
+                {
+                  "type": "string",
+                  "pattern": "^(?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)[:](?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)$"
+                }
+              ]
             }
           }
         ],
@@ -96,7 +129,9 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0,
+                    "nullable": true
                   }
                 }
               }
@@ -106,7 +141,18 @@
             "description": "400",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
               }
             }
           },
@@ -114,7 +160,18 @@
             "description": "404",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
               }
             }
           }
@@ -132,7 +189,8 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "pattern": "^[A-Z0-9_-]+$"
             }
           },
           {
@@ -140,7 +198,9 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 0,
+              "nullable": true
             }
           }
         ],
@@ -162,7 +222,18 @@
             "description": "400",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
               }
             }
           },
@@ -170,7 +241,18 @@
             "description": "404",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
               }
             }
           }
@@ -191,8 +273,38 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {},
-                  "additionalProperties": true
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "buildTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "version": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      }
+                    },
+                    "commitDesc": {
+                      "type": "string"
+                    },
+                    "nodeEnv": {
+                      "type": "string",
+                      "enum": [
+                        "production",
+                        "development"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "buildTime",
+                    "version",
+                    "commitDesc",
+                    "nodeEnv"
+                  ]
                 }
               }
             }
