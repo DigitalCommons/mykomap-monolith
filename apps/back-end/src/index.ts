@@ -58,7 +58,7 @@ export const start = async () => {
 
     // Mykomap API options
     const opts = {
-      dataRoot: process.env.SERVER_DATA_ROOT ?? "data",
+      dataRoot: process.env.SERVER_DATA_ROOT ?? "test/data",
     };
 
     // Register the API routes
