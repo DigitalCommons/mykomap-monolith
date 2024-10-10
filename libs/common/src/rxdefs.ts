@@ -58,10 +58,7 @@ export const NCName =
  * This regex requires node 10+ to be able to use /u and \p.
  *
  */
-export const QName = new RegExp(
-  `^${NCName.source}[:]${NCName.source}$`,
-  "imsu",
-);
+export const QName = new RegExp(`${NCName.source}[:]${NCName.source}`, "imsu");
 
 /** A Prefix-URI scheme.
  *
