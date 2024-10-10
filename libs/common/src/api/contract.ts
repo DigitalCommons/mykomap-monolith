@@ -75,6 +75,7 @@ const VersionInfo = z.object({
   commitDesc: z.string(),
   nodeEnv: z.enum(["production", "development"]),
 });
+const VocabIndex = z.object({});
 const ErrorInfo = z.object({ message: z.string() }).passthrough();
 
 export const schemas = {
@@ -173,6 +174,25 @@ export const contract = c.router({
       }),
       404: ErrorInfo.openapi({
         // description: "no such dataset or dataset item",
+      }),
+    },
+  },
+  getVocabs: {
+    method: "GET",
+    path: "/vocabs",
+    summary: "obtain localised voabulary definitions",
+    description:
+      "obtains definitions of vocabulary terms and their localised labels, " +
+      "which can be use to interpret identifers in the data and/or elsewhere",
+    responses: {
+      200: VocabIndex.openapi({
+        // description: "an index of the vocabularies and languages requested",
+      }),
+      400: ErrorInfo.openapi({
+        // description: "bad input parameter",
+      }),
+      404: ErrorInfo.openapi({
+        // description: "no such vocabulary",
       }),
     },
   },
