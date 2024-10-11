@@ -58,7 +58,6 @@ export const WithButtonAction: Story = {
   args: {
     value: "",
     onChange: fn(),
-    buttonAction: fn(),
   },
   play: ({ canvasElement }) => clickInteraction(canvasElement),
 };
@@ -67,7 +66,6 @@ export const WithValueAndButtonAction: Story = {
   args: {
     value: "Search",
     onChange: fn(),
-    buttonAction: fn(),
   },
   play: ({ canvasElement }) => clickInteraction(canvasElement),
 };
