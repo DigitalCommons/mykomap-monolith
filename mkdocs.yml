@@ -1,0 +1,10 @@
+site_name: Mykomap Docs
+site_url: https://digitalcommons.github.io/mykomap-monolith/
+repo_url: https://github.com/DigitalCommons/mykomap-monolith
+repo_name: DigitalCommons/mykomap-monolith
+theme:
+  name: material
+markdown_extensions:
+  - attr_list
+  - toc:
+      permalink: "#"

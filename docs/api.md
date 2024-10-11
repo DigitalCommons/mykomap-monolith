@@ -6,7 +6,7 @@ The Mykomap API is used by front-end clients to interact with the back-end serve
 
 We define and implement the API using a lightweight library called [ts-rest](https://ts-rest.com/).
 
-The API is defined by the [`contract.ts`](../libs/common/src/api/contract.ts) file in the
+The API is defined by the [`contract.ts`](https://github.com/DigitalCommons/mykomap-monolith/tree/main/libs/common/src/api/contract.ts){target="\_blank"} file in the
 `@mykomap/common` library. In the contract, we list the API routes, including details about the
 requests (e.g. query parameters) and responses and their types (using
 [Zod](https://zod.dev/?id=introduction) schemas).
@@ -16,4 +16,4 @@ consume the `contract.ts` and provide fully type-safe API methods in Typescript,
 validation based on the Zod schemas.
 
 From the `contract.ts`, we can also generate an OpenAPI spec, using the
-[`generate-openapi`](../libs/common/src/api/generate-openapi.ts) script.
+[`generate-openapi`](https://github.com/DigitalCommons/mykomap-monolith/tree/main/libs/common/src/api/generate-openapi.ts){target="\_blank"} script.
