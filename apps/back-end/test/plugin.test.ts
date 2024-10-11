@@ -7,9 +7,10 @@ import { expect, test } from "vitest";
 import Fastify from "fastify";
 import fastifyPlugin from "../src/pluginApi";
 import * as path from "node:path";
+import { MykomapRouterConfig } from "../src/routes";
 
-const opts = {
-  serviceOptions: {
+const opts: MykomapRouterConfig = {
+  mykomap: {
     dataRoot: path.join(import.meta.dirname, "data"),
   },
 };
@@ -53,7 +54,7 @@ test("testing dataset", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/some-file",
+    url: "/dataset/test-A",
     payload: undefined,
     headers: undefined,
   });
@@ -106,7 +107,7 @@ test("testing datasetSearch", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/some-file/search?filter=a:foo",
+    url: "/dataset/test-A/search?filter=a:foo",
     payload: undefined,
     headers: undefined,
   });
@@ -148,7 +149,7 @@ test("testing datasetItem", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/some-file/item/blah",
+    url: "/dataset/test-A/item/0",
     payload: undefined,
     headers: undefined,
   });
