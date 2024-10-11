@@ -2,6 +2,8 @@
 
 Mono-repo home to the FE/BE applications and libraries comprising Mykomap.
 
+See the full documentation [here](https://digitalcommons.github.io/mykomap-monolith/).
+
 ## Applications
 
 - [Front-end](./apps/front-end/)
@@ -25,4 +27,4 @@ npm i @fastify/cors -w @mykomap/back-end --save
 
 ## Installation
 
-See [docs/deployment.md](docs/deployment.md)
+See [deployment docs](https://digitalcommons.github.io/mykomap-monolith/deployment/).
