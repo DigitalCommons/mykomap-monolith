@@ -1,0 +1,65 @@
+{
+  "prefixes": {
+    "https://dev.lod.coop/essglobal/2.1/standard/activities-ica/": "aci",
+    "https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/": "bmt",
+    "https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/": "os"
+  },
+  "languages": ["EN", "FR"],
+  "vocabs": {
+    "aci:": {
+      "EN": {
+        "title": "Economic Activity",
+        "terms": {
+          "aci:ICA210": "Housing",
+          "aci:ICA220": "Transport",
+          "aci:ICA230": "Utilities"
+        }
+      },
+      "FR": {
+        "title": "Secteur économique",
+        "terms": {
+          "aci:ICA210": "Logement",
+          "aci:ICA220": "Transports",
+          "aci:ICA230": "Services publics"
+        }
+      }
+    },
+    "bmt:": {
+      "EN": {
+        "title": "Typology",
+        "terms": {
+          "bmt:BMT10": "Consumer/Users",
+          "bmt:BMT20": "Producers",
+          "bmt:BMT30": "Workers"
+        }
+      },
+      "FR": {
+        "title": "Typologie",
+        "terms": {
+          "bmt:BMT10": "Consommateurs/usagers",
+          "bmt:BMT20": "Producteurs",
+          "bmt:BMT30": "Travailleurs"
+        }
+      }
+    },
+    "os:": {
+      "EN": {
+        "title": "Structure Type",
+        "terms": {
+          "os:OS60": "Workers cooperative",
+          "os:OS80": "Consumer/User coops",
+          "os:OS90": "Producer cooperative"
+        }
+      },
+      "FR": {
+        "title": "Type de structure",
+        "terms": {
+          "os:OS50": "Entreprise (autre)",
+          "os:OS60": "Coopératives de travail associé",
+          "os:OS80": "Coopératives de consommateurs",
+          "os:OS90": "Coopératives de producteurs"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "Identifier": "test/cuk/R000001",
+  "Name": "Test Co-op",
+  "Description": "We sell some stuff",
+  "Website": "https://test.coop",
+  "DC Domains": "test.coop;testlong.coop",
+  "Country ID": "GB",
+  "Primary Activity": "ICA230",
+  "Organisational Structure": "OS60",
+  "Typology": "BMT30",
+  "Latitude": 51.507476,
+  "Longitude": -0.127825,
+  "Geo Container Latitude": 51.50747643,
+  "Geo Container Longitude": -0.12782464,
+  "Geocoded Address": "1 West Street, Sheffield, S1 2AB, UK",
+  "NCBA Member": 0,
+  "ICA Member": 0,
+  "DC Registered": 1,
+  "CUK Member": 1,
+  "CUK Sector": "Water"
+}
