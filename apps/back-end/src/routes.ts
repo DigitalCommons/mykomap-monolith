@@ -4,6 +4,7 @@ import { contract } from "@mykomap/common";
 import { FastifyPluginOptions, FastifyReply, FastifyRequest } from "fastify";
 import fs from "node:fs";
 import path from "node:path";
+import { initDatasets } from "./services/datasetService.js";
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
@@ -76,6 +77,9 @@ export function MykomapRouter(
       `the dataRoot plugin option is set but refers to a non-existing path: ` +
         `'${opts.mykomap.dataRoot}'.`,
     );
+
+  // TODO: uncomment this when the test/data has been created with the updated structure
+  // initDatasets(opts.mykomap.dataRoot);
 
   // Concatenates the path components into an absolute file path
   const filePath = (...components: string[]): string => {
