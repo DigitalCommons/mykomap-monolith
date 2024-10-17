@@ -137,6 +137,13 @@ export function MykomapRouter(
       return reply;
     },
 
+    async getConfig(req) {
+      return {
+        status: 404,
+        body: { message: "whoops" },
+      };
+    },
+
     async getVersion(req) {
       return {
         body: __BUILD_INFO__,
