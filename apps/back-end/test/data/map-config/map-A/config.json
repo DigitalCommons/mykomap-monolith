@@ -4,61 +4,160 @@
     "https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/": "bmt",
     "https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/": "os"
   },
-  "languages": ["EN", "FR"],
+  "languages": ["en", "fr"],
+  "fields": {
+    "uid": "value",
+    "name": "value",
+    "description": "value",
+    "website": {
+      "type": "multi",
+      "of": {
+        "type": "value"
+      }
+    },
+    "dc_domains": {
+      "type": "multi",
+      "of": { "type": "value" }
+    },
+    "country_id": {
+      "type": "vocab",
+      "uri": "coun"
+    },
+    "primary_activity": {
+      "type": "vocab",
+      "uri": "aci",
+      "titleUri": "ui:primary_activity"
+    },
+    "organisational_structure": {
+      "type": "vocab",
+      "uri": "os",
+      "titleUri": "ui:organisational_structure"
+    },
+    "typology": {
+      "type": "vocab",
+      "uri": "bmt",
+      "titleUri": "ui:typology"
+    },
+    "latitude": "value",
+    "longitude": "value",
+    "geocontainer_lat": "value",
+    "geocontainer_lon": "value",
+    "geocoded_addr": "value",
+    "ncba_member": {
+      "type": "vocab",
+      "uri": "bool"
+    },
+    "ica_member": {
+      "type": "vocab",
+      "uri": "bool"
+    },
+    "dc_registered": {
+      "type": "vocab",
+      "uri": "bool"
+    },
+    "cuk_member": {
+      "type": "vocab",
+      "uri": "bool"
+    }
+  },
   "vocabs": {
-    "aci:": {
-      "EN": {
+    "aci": {
+      "en": {
         "title": "Economic Activity",
         "terms": {
-          "aci:ICA210": "Housing",
-          "aci:ICA220": "Transport",
-          "aci:ICA230": "Utilities"
+          "ICA210": "Housing",
+          "ICA220": "Transport",
+          "ICA230": "Utilities"
         }
       },
-      "FR": {
+      "fr": {
         "title": "Secteur économique",
         "terms": {
-          "aci:ICA210": "Logement",
-          "aci:ICA220": "Transports",
-          "aci:ICA230": "Services publics"
+          "ICA210": "Logement",
+          "ICA220": "Transports",
+          "ICA230": "Services publics"
         }
       }
     },
-    "bmt:": {
-      "EN": {
+    "bmt": {
+      "en": {
         "title": "Typology",
         "terms": {
-          "bmt:BMT10": "Consumer/Users",
-          "bmt:BMT20": "Producers",
-          "bmt:BMT30": "Workers"
+          "BMT10": "Consumer/Users",
+          "BMT20": "Producers",
+          "BMT30": "Workers"
         }
       },
-      "FR": {
+      "fr": {
         "title": "Typologie",
         "terms": {
-          "bmt:BMT10": "Consommateurs/usagers",
-          "bmt:BMT20": "Producteurs",
-          "bmt:BMT30": "Travailleurs"
+          "BMT10": "Consommateurs/usagers",
+          "BMT20": "Producteurs",
+          "BMT30": "Travailleurs"
         }
       }
     },
-    "os:": {
-      "EN": {
+    "os": {
+      "en": {
         "title": "Structure Type",
         "terms": {
-          "os:OS60": "Workers cooperative",
-          "os:OS80": "Consumer/User coops",
-          "os:OS90": "Producer cooperative"
+          "OS60": "Workers cooperative",
+          "OS80": "Consumer/User coops",
+          "OS90": "Producer cooperative"
         }
       },
-      "FR": {
+      "fr": {
         "title": "Type de structure",
         "terms": {
-          "os:OS50": "Entreprise (autre)",
-          "os:OS60": "Coopératives de travail associé",
-          "os:OS80": "Coopératives de consommateurs",
-          "os:OS90": "Coopératives de producteurs"
+          "OS50": "Entreprise (autre)",
+          "OS60": "Coopératives de travail associé",
+          "OS80": "Coopératives de consommateurs",
+          "OS90": "Coopératives de producteurs"
         }
+      }
+    },
+    "coun": {
+      "en": {
+        "title": "Country",
+        "terms": {
+          "GB": "United Kingdom",
+          "FR": "France"
+        }
+      },
+      "fr": {
+        "title": "Pays",
+        "terms": {
+          "GB": "Royaume-Uni",
+          "FR": "France"
+        }
+      }
+    },
+    "bool": {
+      "en": {
+        "title": "Yes/No",
+        "terms": {
+          "0": "No",
+          "1": "Yes"
+        }
+      },
+      "fr": {
+        "title": "Oui/Non",
+        "terms": {
+          "0": "Non",
+          "1": "Oui"
+        }
+      }
+    },
+    "ui": {
+      "en": {
+        "primary_activity": "Primary Activity",
+        "organisational_structure": "Organisational Structure",
+        "typology": "Typology"
+      },
+      "fr": {
+        "primary_activity": "Activité principale",
+        "organisational_structure": "Structure organisationnelle",
+        "typology": "Typologie"
       }
     }
   }
