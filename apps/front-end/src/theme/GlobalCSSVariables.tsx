@@ -17,7 +17,7 @@ const rootVariables = {
   "--spacing-xlarge": "32px",
   "--spacing-xxlarge": "40px",
   "--spacing-xxxlarge": "48px",
-  "--panel-width-desktop": "450px",
+  "--panel-width-desktop": "400px",
   "--font-size-xsmall": "12px",
   "--font-size-small": "14px",
   "--font-size-medium": "16px",
