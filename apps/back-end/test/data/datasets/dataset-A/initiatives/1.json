@@ -3,7 +3,7 @@
   "name": "Pears United",
   "description": "We sell pears",
   "website": "https://pears.coop",
-  "dc_domains": "pears.coop;pearsunited.coop",
+  "dc_domains": ["pears.coop", "pearsunited.coop"],
   "country_id": "coun:FR",
   "primary_activity": "aci:ICA230",
   "organisational_structure": "os:OS90",
@@ -13,8 +13,5 @@
   "geocontainer_lat": 50.85045216,
   "geocontainer_lon": 0.92472819,
   "geocoded_addr": "79 rue de la Mare aux Carats, 34090 Montpellier, France",
-  "ncba_member": 0,
-  "ica_member": 0,
-  "dc_registered": 1,
-  "cuk_member": 0
+  "data_sources": ["dso:DC"]
 }

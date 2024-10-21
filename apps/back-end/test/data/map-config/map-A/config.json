@@ -43,21 +43,9 @@
     "geocontainer_lat": "value",
     "geocontainer_lon": "value",
     "geocoded_addr": "value",
-    "ncba_member": {
-      "type": "vocab",
-      "uri": "bool"
-    },
-    "ica_member": {
-      "type": "vocab",
-      "uri": "bool"
-    },
-    "dc_registered": {
-      "type": "vocab",
-      "uri": "bool"
-    },
-    "cuk_member": {
-      "type": "vocab",
-      "uri": "bool"
+    "data_sources": {
+      "type": "multi",
+      "of": { "type": "vocab", "uri": "dso" }
     }
   },
   "vocabs": {
@@ -132,19 +120,23 @@
         }
       }
     },
-    "bool": {
+    "dso": {
       "en": {
-        "title": "Yes/No",
+        "title": "Data Source",
         "terms": {
-          "0": "No",
-          "1": "Yes"
+          "CUK": "Co-operatives UK",
+          "DC": "DotCoop",
+          "ICA": "International Cooperative Alliance",
+          "NCBA": "National Cooperative Business Association (USA)"
         }
       },
       "fr": {
-        "title": "Oui/Non",
+        "title": "Source de données",
         "terms": {
-          "0": "Non",
-          "1": "Oui"
+          "CUK": "Co-operatives UK",
+          "DC": "DotCoop",
+          "ICA": "Alliance coopérative internationale",
+          "NCBA": "National Cooperative Business Association (USA)"
         }
       }
     },

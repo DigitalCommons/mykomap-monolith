@@ -3,7 +3,7 @@
   "name": "Apples Co-op",
   "description": "We sell apples",
   "website": "https://apples.coop",
-  "dc_domains": "apples.coop;orchards.coop",
+  "dc_domains": ["apples.coop", "orchards.coop"],
   "country_id": "coun:GB",
   "primary_activity": "aci:ICA210",
   "organisational_structure": "os:OS60",
@@ -13,8 +13,5 @@
   "geocontainer_lat": 51.50747643,
   "geocontainer_lon": -0.12782464,
   "geocoded_addr": "1 West Street, Sheffield, S1 2AB, UK",
-  "ncba_member": 0,
-  "ica_member": 0,
-  "dc_registered": 1,
-  "cuk_member": 1
+  "data_sources": ["dso:DC", "dso:CUK"]
 }
