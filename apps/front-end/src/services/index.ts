@@ -1,4 +1,4 @@
-import { initClient } from "@ts-rest/core";
+import { initClient, ClientInferResponseBody } from "@ts-rest/core";
 import { contract } from "@mykomap/common";
 
 const client = initClient(contract, {
@@ -6,4 +6,12 @@ const client = initClient(contract, {
   baseHeaders: {},
 });
 
-export const { getDataset, searchDataset, getDatasetItem, getVersion } = client;
+export const {
+  getConfig,
+  getDataset,
+  searchDataset,
+  getDatasetItem,
+  getVersion,
+} = client;
+
+export type Config = ClientInferResponseBody<typeof contract.getConfig, 200>;

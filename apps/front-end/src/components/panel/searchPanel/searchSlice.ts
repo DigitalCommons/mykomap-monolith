@@ -1,17 +1,19 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createAction, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
-import { searchDataset } from "../../../services";
+import { Config, getConfig, searchDataset } from "../../../services";
 
 export interface SearchSliceState {
   text: string;
   visibleIds: number[];
-  status: string;
+  searchingStatus: string;
+  filterOptions: { [field: string]: string[] };
 }
 
 const initialState: SearchSliceState = {
   text: "",
   visibleIds: [],
-  status: "idle",
+  searchingStatus: "idle",
+  filterOptions: {},
 };
 
 export const searchSlice = createAppSlice({
@@ -50,15 +52,47 @@ export const searchSlice = createAppSlice({
       },
       {
         pending: (state) => {
-          state.status = "loading";
+          state.searchingStatus = "loading";
         },
         fulfilled: (state, action) => {
-          state.status = "idle";
+          state.searchingStatus = "idle";
           state.visibleIds = action.payload ?? [];
         },
         rejected: (state, action) => {
-          state.status = "failed";
+          state.searchingStatus = "failed";
           state.visibleIds = [];
+          console.error(action.payload);
+        },
+      },
+    ),
+    fetchConfig: create.asyncThunk(
+      async (_, thunkApi) => {
+        const datasetId =
+          new URLSearchParams(window.location.search).get("datasetId") ?? "";
+        if (datasetId === "") {
+          return thunkApi.rejectWithValue(
+            `No datasetId parameter given, so no dataset config can be retrieved`,
+          );
+        }
+
+        const response = await getConfig({
+          params: { datasetId: datasetId },
+        });
+        if (response.status === 200) {
+          thunkApi.dispatch(configLoaded(response.body));
+          return response.body;
+        } else {
+          return thunkApi.rejectWithValue(
+            `Failed get config, status code ${response.status}`,
+          );
+        }
+      },
+      {
+        fulfilled: (state, action) => {
+          // TODO when types work:
+          // transform config.ui.filterableFields and config.vocabs terms into filterOptions dictionary
+        },
+        rejected: (state, action) => {
           console.error(action.payload);
         },
       },
@@ -69,6 +103,8 @@ export const searchSlice = createAppSlice({
     selectVisibleIds: (search) => search.visibleIds,
   },
 });
+
+export const configLoaded = createAction<Config>("configLoaded");
 
 export const { setText, performSearch } = searchSlice.actions;
 
