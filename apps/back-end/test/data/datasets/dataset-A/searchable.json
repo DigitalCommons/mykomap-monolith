@@ -1,0 +1,16 @@
+[
+  {
+    "country_id": "coun:GB",
+    "primary_activity": "aci:ICA210",
+    "organisational_structure": "os:OS60",
+    "typology": "bmt:BMT20",
+    "searchString": "test co-op 1 west street sheffield s1 2ab uk test.coop"
+  },
+  {
+    "country_id": "coun:FR",
+    "primary_activity": "aci:ICA230",
+    "organisational_structure": "os:OS90",
+    "typology": "bmt:BMT30",
+    "searchString": "pears united 79 rue de la mare aux carats 34090 montpellier france pears.coop"
+  }
+]
