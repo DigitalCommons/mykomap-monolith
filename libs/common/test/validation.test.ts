@@ -7,7 +7,7 @@ import { slurpJsonSync } from "./file-utils.js";
 import { globSync } from "glob";
 import { join } from "node:path";
 
-const { DatasetId, QName, PrefixUri, Iso639Set1Code } = schemas;
+const { DatasetId, QName, PrefixUri, Iso639Set1Code, ConfigData } = schemas;
 
 /** Creates expectations on validating each of an array of cases
  *
@@ -175,4 +175,9 @@ test("testing Iso639Set1Code validation", async (t) => {
     "en:",
     "e:",
   ]);
+});
+
+test("testing ConfigData validation", async (t) => {
+  expectValid(ConfigData, glorpJson("data/validation/vocabIndex/*.good.json"));
+  expectInvalid(ConfigData, glorpJson("data/validation/vocabIndex/*.bad.json"));
 });
