@@ -3,6 +3,9 @@
 import { expect, test, Assertion } from "vitest";
 import { schemas } from "../src/index.js";
 import { ZodType } from "zod";
+import { slurpJsonSync } from "./file-utils.js";
+import { globSync } from "glob";
+import { join } from "node:path";
 
 const { DatasetId, QName, PrefixUri, Iso639Set1Code } = schemas;
 
@@ -29,6 +32,14 @@ function expectValid<Z extends ZodType>(validation: Z, cases: unknown[]) {
 /** Expect Zod validations of each of the cases given to be falsy */
 function expectInvalid<Z extends ZodType>(validation: Z, cases: unknown[]) {
   expectSafeParse(validation, cases, (a) => a.toBeFalsy());
+}
+
+/** Find files given by a glob and parse as JSON */
+function glorpJson(pathGlob: string) {
+  const paths = globSync(pathGlob).map((path) =>
+    join(import.meta.dirname, path),
+  );
+  return paths.map((path) => slurpJsonSync(path));
 }
 
 test("testing DatasetId validation", async (t) => {
