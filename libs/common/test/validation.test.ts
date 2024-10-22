@@ -1,24 +1,52 @@
 /// <reference types="vitest"/>
 
-import { expect, test } from "vitest";
-import { schemas } from "@mykomap/common";
+import { expect, test, Assertion } from "vitest";
+import { schemas } from "../src/index.js";
+import { ZodType } from "zod";
 
 const { DatasetId, QName, PrefixUri, Iso639Set1Code } = schemas;
 
+/** Creates expectations on validating each of an array of cases
+ *
+ * Mainly here to provide the common part of expectValid and expectInvalid.
+ */
+function expectSafeParse<Z extends ZodType>(
+  validation: Z,
+  cases: unknown[],
+  expectTest: (assert: Assertion<boolean>) => void,
+) {
+  cases.forEach((it) => {
+    const result = validation.safeParse(it);
+    expectTest(expect(result.success, `parsing '${it}'...\n${result.error}`));
+  });
+}
+
+/** Expect Zod validations of each of the cases given to be truthy */
+function expectValid<Z extends ZodType>(validation: Z, cases: unknown[]) {
+  expectSafeParse(validation, cases, (a) => a.toBeTruthy());
+}
+
+/** Expect Zod validations of each of the cases given to be falsy */
+function expectInvalid<Z extends ZodType>(validation: Z, cases: unknown[]) {
+  expectSafeParse(validation, cases, (a) => a.toBeFalsy());
+}
+
 test("testing DatasetId validation", async (t) => {
-  const expectTrue = ["0", "A", "z", "_", "-", "01234", "Quick-Brown-Fox_42"];
-  const expectFalse = ["", " ", "/", "?", "&", ":", ".", "="];
-  expectTrue.forEach((it) =>
-    expect(DatasetId.safeParse(it).success, `parsing '${it}'`).toBeTruthy(),
-  );
-  expectFalse.forEach((it) =>
-    expect(DatasetId.safeParse(it).success, `parsing '${it}'`).toBeFalsy(),
-  );
+  expectValid(DatasetId, [
+    "0",
+    "A",
+    "z",
+    "_",
+    "-",
+    "01234",
+    "Quick-Brown-Fox_42",
+  ]);
+  expectInvalid(DatasetId, ["", " ", "/", "?", "&", ":", ".", "="]);
 });
 
 test("testing QName validation", async (t) => {
-  const expectTrue = ["a:b", "a1:b1", "_:_", "_1-.:_1-."];
-  const expectFalse = [
+  expectValid(QName, ["a:b", "a1:b1", "_:_", "_1-.:_1-."]);
+  expectInvalid(QName, [
     "",
     ":",
     "a:",
@@ -34,17 +62,11 @@ test("testing QName validation", async (t) => {
     "a:1",
     "1:a",
     "-:-",
-  ];
-  expectTrue.forEach((it) =>
-    expect(QName.safeParse(it).success, `parsing '${it}'`).toBeTruthy(),
-  );
-  expectFalse.forEach((it) =>
-    expect(QName.safeParse(it).success, `parsing '${it}'`).toBeFalsy(),
-  );
+  ]);
 });
 
 test("testing PrefixUri validation", async (t) => {
-  const expectTrue = [
+  expectValid(PrefixUri, [
     "http://a",
     "http://a/",
     "http://e.a",
@@ -69,8 +91,8 @@ test("testing PrefixUri validation", async (t) => {
     "http://example.com/foo/bar/#",
     "http://example.com/%2e%4F",
     "http://example.com/A-Za-z0-9._~!$&'()*+,;=:@-%20/",
-  ];
-  const expectFalse = [
+  ]);
+  expectInvalid(PrefixUri, [
     "http://",
     "http://-",
     "http://.",
@@ -116,19 +138,12 @@ test("testing PrefixUri validation", async (t) => {
     "http://example.com//foobar",
     "http://example.com/foo//bar",
     "http://example.com/foobar//",
-  ];
-
-  expectTrue.forEach((it) =>
-    expect(PrefixUri.safeParse(it).success, `parsing '${it}'`).toBeTruthy(),
-  );
-  expectFalse.forEach((it) =>
-    expect(PrefixUri.safeParse(it).success, `parsing '${it}'`).toBeFalsy(),
-  );
+  ]);
 });
 
 test("testing Iso639Set1Code validation", async (t) => {
-  const expectTrue = ["en", "fr", "ko", "es"];
-  const expectFalse = [
+  expectValid(Iso639Set1Code, ["en", "fr", "ko", "es"]);
+  expectInvalid(Iso639Set1Code, [
     "xe",
     "En",
     "eN",
@@ -148,14 +163,5 @@ test("testing Iso639Set1Code validation", async (t) => {
     "'en'",
     "en:",
     "e:",
-  ];
-  expectTrue.forEach((it) =>
-    expect(
-      Iso639Set1Code.safeParse(it).success,
-      `parsing '${it}'`,
-    ).toBeTruthy(),
-  );
-  expectFalse.forEach((it) =>
-    expect(Iso639Set1Code.safeParse(it).success, `parsing '${it}'`).toBeFalsy(),
-  );
+  ]);
 });
