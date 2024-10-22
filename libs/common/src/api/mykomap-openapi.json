@@ -13,7 +13,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "pattern": "^[A-Z0-9_-]+$"
+              "pattern": "^[A-Za-z0-9_-]+$"
             }
           }
         ],
@@ -90,7 +90,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "pattern": "^[A-Z0-9_-]+$"
+              "pattern": "^[A-Za-z0-9_-]+$"
             }
           },
           {
@@ -108,13 +108,11 @@
                 {
                   "type": "array",
                   "items": {
-                    "type": "string",
-                    "pattern": "^(?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)[:](?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)$"
+                    "type": "string"
                   }
                 },
                 {
-                  "type": "string",
-                  "pattern": "^(?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)[:](?:[_\\p{Ll}\\p{Lu}\\p{Lt}\\p{Lo}\\p{Nl}][_.\\p{L}\\p{M}\\p{Nd}\\p{Nl}-]*)$"
+                  "type": "string"
                 }
               ]
             }
@@ -190,7 +188,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "pattern": "^[A-Z0-9_-]+$"
+              "pattern": "^[A-Za-z0-9_-]+$"
             }
           },
           {
@@ -214,6 +212,111 @@
                   "type": "object",
                   "properties": {},
                   "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ],
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dataset/{datasetId}/config": {
+      "get": {
+        "description": "Obtains configured parameters for a map, which amongst other things, include default values for various options, and definitions of vocabulary terms with their localised labels, that are used to interpret identifers in the data and/or elsewhere.",
+        "summary": "obtain various configured parameters for a map",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "datasetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]+$"
+            }
+          }
+        ],
+        "operationId": "getConfig",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "prefixes": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "vocabs": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "object",
+                          "properties": {
+                            "title": {
+                              "type": "string"
+                            },
+                            "terms": {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "required": [
+                            "title",
+                            "terms"
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "prefixes",
+                    "vocabs"
+                  ]
                 }
               }
             }
