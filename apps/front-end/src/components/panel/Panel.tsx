@@ -94,11 +94,11 @@ const Panel = () => {
                   onTabChange={handleTabChange}
                   selectedTab={selectedTab}
                 />
-                <Box sx={{ flexGrow: 1 }}>
+                {/* <Box sx={{ flexGrow: 1 }}> */}
                   {selectedTab === 0 && <DirectoryPanel />}
                   {selectedTab === 1 && <SearchPanel />}
                   {selectedTab === 2 && <AboutPanel />}
-                </Box>
+                {/* </Box> */}
               </Box>
               <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
             </StyledPanel>
