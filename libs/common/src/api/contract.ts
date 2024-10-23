@@ -165,6 +165,32 @@ export const contract = c.router({
       }),
     },
   },
+  getConfig: {
+    method: "GET",
+    path: "/dataset/:datasetId/config",
+    summary: "obtain various configured parameters for a map",
+    description:
+      "Obtains configured parameters for a map, which amongst other things, " +
+      "include default values for various options, and definitions of " +
+      "vocabulary terms with their localised labels, that are used to " +
+      "interpret identifers in the data and/or elsewhere.",
+    pathParams: z.object({
+      datasetId: DatasetId.openapi({
+        // description: "uniquely specifies the dataset wanted",
+      }),
+    }),
+    responses: {
+      200: ConfigData.openapi({
+        // description: "variuos configured parameters for a map",
+      }),
+      400: ErrorInfo.openapi({
+        // description: "bad input parameter",
+      }),
+      404: ErrorInfo.openapi({
+        // description: "no such map",
+      }),
+    },
+  },
   getVersion: {
     method: "GET",
     path: "/version",
