@@ -25,6 +25,9 @@ const rootVariables = {
   "--font-size-xlarge": "20px",
   "--font-size-xxlarge": "24px",
   "--font-size-xxxlarge": "32px",
+  "--font-weight-normal": 400,
+  "--font-weight-medium": 500,
+  "--font-weight-bold": 600,
 };
 
 const GlobalCSSVariables: FC = () => {

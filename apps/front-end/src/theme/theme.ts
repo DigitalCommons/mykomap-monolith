@@ -1,7 +1,6 @@
 import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 import type { ThemeOptions } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { m } from "vitest/dist/reporters-yx5ZTtEV.js";
 
 const themeOptions: ThemeOptions = {
   breakpoints: {
@@ -29,21 +28,21 @@ const themeOptions: ThemeOptions = {
   typography: {
     button: {
       textTransform: "none",
-      fontWeight: 400,
+      fontWeight: "var(--font-weight-normal)",
       color: "#fff",
       fontSize: "var(--font-size-small)",
     },
     h1: {
       fontSize: "var(--font-size-xxlarge)",
       textAlign: "left",
-      fontWeight: 500,
+      fontWeight: "var(--font-weight-medium)",
       "@media (min-width: 600px)": {
         fontSize: "var(--font-size-xxxlarge)",
       },
     },
     h4: {
       fontSize: "var(--font-size-medium)",
-      fontWeight: 500,
+      fontWeight: "var(--font-weight-medium)",
       marginBottom: "var(--spacing-small)",
       color: "var(--color-primary)",
       "@media (min-width: 600px)": {
@@ -82,7 +81,7 @@ const themeOptions: ThemeOptions = {
           minWidth: "unset",
           maxWidth: "110px",
           textTransform: "none",
-          fontWeight: 400,
+          fontWeight: "var(--font-weight-normal)",
           fontSize: "0",
           color: "#ffffffcc",
           backgroundColor: "var(--color-primary)",
@@ -145,6 +144,20 @@ const themeOptions: ThemeOptions = {
           transition: "none",
           "&:hover": {
             backgroundColor: "transparent",
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          width: "100%",
+          padding: "var(--spacing-small) var(--spacing-medium)",
+          display: "block",
+          textDecoration: "none",
+          fontWeight: "var(--font-weight-medium)",
+          "@media (min-width: 768px)": {
+            padding: "var(--spacing-small) var(--spacing-large)",
           },
         },
       },
@@ -231,7 +244,7 @@ const themeOptions: ThemeOptions = {
         root: {
           width: "100%",
           color: "var(--color-text)",
-          fontWeight: 600,
+          fontWeight: "var(--font-weight-bold)",
           marginBottom: "var(--spacing-small)",
         },
       },
@@ -253,6 +266,23 @@ const themeOptions: ThemeOptions = {
         root: {
           backgroundColor: "var(--color-primary)",
           color: "var(--color-text)",
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          padding: "0",
+          margin: "0",
+          listStyleType: "none",
+        },
+      },
+    },
+    MuiListItem: {
+      styleOverrides: {
+        root: {
+          padding: 0,
+          margin: 0,
         },
       },
     },
