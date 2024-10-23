@@ -44,15 +44,14 @@ const results = [
   { id: "8", name: "Sancor Cooperativa de Seguros Ltdae", link: "" },
 ];
 
-
 const StyledResults = styled(Box)(() => ({
   width: "100%",
   display: "flex",
   flexDirection: "column",
+  overflow: "auto",
   padding: "var(--spacing-medium) 0",
   maxWidth: "var(--panel-width-desktop)",
   margin: "0 auto",
-  overflow: "auto",
   "@media (min-width: 768px)": {
     padding: "var(--spacing-xxlarge) 0 var(--spacing-large) 0",
   },

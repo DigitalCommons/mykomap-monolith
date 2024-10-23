@@ -7,6 +7,10 @@ interface ContentPanelProps {
 }
 
 const StyledContentPanel = styled(Box)(() => ({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  overflow: "hidden",
   padding: "var(--spacing-medium)",
   maxWidth: "var(--panel-width-desktop)",
   margin: "0 auto",
