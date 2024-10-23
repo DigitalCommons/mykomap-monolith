@@ -9,7 +9,7 @@ import { store } from "../../../app/store";
 import { Provider } from "react-redux";
 
 const meta = {
-  title: "NavBar",
+  title: "Components/Panel/NavBar",
   component: NavBar,
   parameters: {
     layout: "centered",

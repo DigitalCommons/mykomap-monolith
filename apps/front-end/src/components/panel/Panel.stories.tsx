@@ -43,7 +43,7 @@ const clickInteraction = async (canvasElement: HTMLElement, args: any) => {
 };
 
 const meta: Meta<typeof Panel> = {
-  title: "Components/Panel",
+  title: "Components/Panel/MainPanel",
   component: Panel,
   parameters: {
     layout: "fullscreen",

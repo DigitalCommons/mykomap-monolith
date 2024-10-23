@@ -11,6 +11,7 @@ interface HeadingProps {
 const StyledHeading = styled(Box)(() => ({
   padding: "var(--spacing-medium)",
   backgroundColor: "var(--color-neutral-light)",
+  position: "sticky",
   "@media (min-width: 768px)": {
     padding: "var(--spacing-large)",
   },

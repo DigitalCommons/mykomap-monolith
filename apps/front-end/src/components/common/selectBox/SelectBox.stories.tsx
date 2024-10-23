@@ -26,7 +26,7 @@ const selectInteraction = async (canvasElement: HTMLElement) => {
 };
 
 const meta: Meta<typeof SelectBox> = {
-  title: "Common/SelectBox",
+  title: "Components/Common/SelectBox",
   component: SelectBox,
   parameters: {
     layout: "centered",
