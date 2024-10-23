@@ -14,7 +14,7 @@ const clickInteraction = async (canvasElement: HTMLElement) => {
 };
 
 const meta = {
-  title: "SearchBox",
+  title: "Components/Panel/SearchBox",
   component: SearchBox,
   parameters: {
     layout: "centered",

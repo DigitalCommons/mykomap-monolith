@@ -14,7 +14,7 @@ const clickInteraction = async (canvasElement: HTMLElement) => {
 };
 
 const meta = {
-  title: "CloseButton",
+  title: "Components/Common/CloseButton",
   component: CloseButton,
   parameters: {
     layout: "centered",

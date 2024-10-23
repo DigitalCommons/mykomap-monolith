@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectText, setText, performSearch } from "./searchSlice";
 import { useState } from "react";
-import { SelectChangeEvent } from "@mui/material";
+import type { SelectChangeEvent } from "@mui/material";
 
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
