@@ -6,4 +6,9 @@ const client = initClient(contract, {
   baseHeaders: {},
 });
 
-export const { getDataset, searchDataset, getDatasetItem, getVersion } = client;
+export const {
+  getDatasetLocations,
+  searchDataset,
+  getDatasetItem,
+  getVersion,
+} = client;
