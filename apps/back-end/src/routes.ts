@@ -118,15 +118,17 @@ export function MykomapRouter(
     },
 
     async getDatasetItem({
-      params: { datasetId, datasetItemId },
+      params: { datasetId, datasetItemIdOrIx },
       request,
       reply,
     }) {
       if (
+        // datasetItemIdOrIx could be either an ID or an Index. But for the purposes here,
+        // which is a stub implementation, we don't distinguish.
         !sendJson(
           request,
           reply,
-          filePath("datasets", datasetId, "items", String(datasetItemId)),
+          filePath("datasets", datasetId, "items", String(datasetItemIdOrIx)),
         )
       )
         throw new TsRestResponseError(contract.getDatasetItem, {
