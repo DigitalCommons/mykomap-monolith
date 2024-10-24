@@ -7,7 +7,8 @@
     "clean": "npm run clean --workspaces && rimraf node_modules",
     "front-end:": "npm run --workspace=@mykomap/front-end",
     "back-end:": "npm run --workspace=@mykomap/back-end",
-    "common:": "npm run --workspace=@mykomap/common"
+    "common:": "npm run --workspace=@mykomap/common",
+    "test": "npm run test --workspaces"
   },
   "devDependencies": {
     "editorconfig": "^2.0.0",
