@@ -78,12 +78,12 @@ export const schemas = {
 };
 
 export const contract = c.router({
-  getDataset: {
+  getDatasetLocations: {
     method: "GET",
-    path: "/dataset/:datasetId",
-    summary: "obtains a dataset",
+    path: "/dataset/:datasetId/locations",
+    summary: "obtains a dataset's locations",
     description:
-      "Obtains a dataset by its ID, which by passing in the appropriate options, might be in different formats",
+      "Obtains all the locations for a dataset by the dataset ID, which by passing in the appropriate options, might be in different formats",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
         // description: "uniquely specifies the dataset wanted",
