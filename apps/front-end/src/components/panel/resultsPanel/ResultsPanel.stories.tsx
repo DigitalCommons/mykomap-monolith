@@ -20,7 +20,7 @@ const attachLinkClickListeners = async (
   links.forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault();
-      onLinkClick(link.getAttribute("href") || "unknown"); // Trigger the onLinkClick action
+      onLinkClick(link.getAttribute("href") || "clicked"); // Trigger the onLinkClick action
     });
   });
 
@@ -37,9 +37,9 @@ const meta: Meta<typeof ResultsPanel> = {
     layout: "fullscreen",
   },
   argTypes: {
-    onLinkClick: { action: "linkClicked" }, // Action for link clicks
-    onTogglePanel: { action: "panelToggled" }, // Action for toggling the panel
-    onClearSearch: { action: "clearSearch" }, // Action for clear search
+    onLinkClick: { action: "linkClicked" }, // Captures clicks on links in the Actions panel
+    onTogglePanel: { action: "panelToggled" }, // Captures panel toggling
+    onClearSearch: { action: "clearSearch" }, // Captures clearing of search
   },
   decorators: [
     (Story) => (
@@ -60,15 +60,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    onLinkClick: () => {
-      console.log("Link clicked");
-    },
-    onTogglePanel: (isOpen: boolean) => {
-      console.log(`Panel toggled: ${isOpen}`);
-    },
-    onClearSearch: () => {
-      console.log("Search cleared");
-    }
+    // No need for manual console logs since the Storybook action handlers will capture these
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -79,7 +71,7 @@ export const Default: Story = {
     // Test clear search button
     const clearSearchButton = await canvas.getByText("Clear Search");
     await userEvent.click(clearSearchButton);
-    args.onClearSearch();
+    args.onClearSearch(); // Captured by Storybook's Actions panel
 
     // Test panel toggle button
     let toggleButton;
@@ -93,7 +85,6 @@ export const Default: Story = {
     }
 
     await userEvent.click(toggleButton);
-    args.onTogglePanel(true);
+    args.onTogglePanel(true); // Captured by Storybook's Actions panel
   },
 };
-
