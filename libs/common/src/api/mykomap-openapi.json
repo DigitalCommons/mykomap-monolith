@@ -1,10 +1,10 @@
 {
   "openapi": "3.0.2",
   "paths": {
-    "/dataset/{datasetId}": {
+    "/dataset/{datasetId}/locations": {
       "get": {
-        "description": "Obtains a dataset by its ID, which by passing in the appropriate options, might be in different formats",
-        "summary": "obtains a dataset",
+        "description": "Obtains all the locations for a dataset by the dataset ID, which by passing in the appropriate options, might be in different formats",
+        "summary": "obtains a dataset's locations",
         "tags": [],
         "parameters": [
           {
@@ -17,7 +17,7 @@
             }
           }
         ],
-        "operationId": "getDataset",
+        "operationId": "getDatasetLocations",
         "responses": {
           "200": {
             "description": "200",
