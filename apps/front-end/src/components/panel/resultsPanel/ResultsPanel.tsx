@@ -47,7 +47,7 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ResultsPanel = () => {
+const ResultsPanel = ({ onLinkClick, onTogglePanel, onClearSearch }) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectIsOpen);
 
@@ -63,6 +63,11 @@ const ResultsPanel = () => {
     dispatch(closePanel());
     console.log("panelVisible", panelVisible);
   };
+
+  const handleClearSearch = () => {
+    console.log("Clear search");
+  };
+
   return (
     <>
       <StyledResultsPanel open={isOpen} variant="persistent">
@@ -74,7 +79,9 @@ const ResultsPanel = () => {
           }}
         >
           <StyledButtonContainer>
-            <StandardButton>Clear Search</StandardButton>
+            <StandardButton buttonAction={handleClearSearch}>
+              Clear Search
+            </StandardButton>
             {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
           </StyledButtonContainer>
           <Results />
