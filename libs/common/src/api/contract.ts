@@ -26,11 +26,22 @@ function ZodRegex(rx: RegExp, message: string) {
 
 const Location = z.array(z.number()).min(2).max(2);
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
-const DatasetItemId = z.coerce.number().int().nonnegative();
 const DatasetItem = z.object({}).passthrough();
 const Dataset = z.array(Location);
 const NCName = ZodRegex(Rx.NCName, "Invalid NCName format");
 const QName = ZodRegex(Rx.QName, "Invalid QName format");
+const DatasetItemId = ZodRegex(
+  Rx.DatasetItemId,
+  "Invalid DatasetItemId format",
+);
+const DatasetItemIx = ZodRegex(
+  Rx.DatasetItemIx,
+  "Invalid DatasetItemIx format",
+);
+const DatasetItemIdOrIx = ZodRegex(
+  Rx.DatasetItemIdOrIx,
+  "Invalid DatasetItemIdOrIx format",
+);
 // Developer note: PrefixUri is regex based, as it attempts to avoid the .url() deficiencies in
 // https://github.com/colinhacks/zod/issues/2236. But also our concept of a URI is narrowed, see
 // documentation for Rx.PrefixUri.
@@ -64,6 +75,8 @@ export const schemas = {
   ConfigData,
   DatasetId,
   DatasetItemId,
+  DatasetItemIdOrIx,
+  DatasetItemIx,
   DatasetItem,
   Dataset,
   I18nVocabDefs,
@@ -141,16 +154,16 @@ export const contract = c.router({
   },
   getDatasetItem: {
     method: "GET",
-    path: "/dataset/:datasetId/item/:datasetItemId",
+    path: "/dataset/:datasetId/item/:datasetItemIdOrIx",
     summary: "obtains a dataset item by its unique ID",
     description:
-      "Obtains a single dataset item by its ID and the dataset's ID.",
+      "Obtains a single dataset item by its ID or its index, and the dataset's ID.",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
         // description: "uniquely specifies the dataset wanted",
       }),
-      datasetItemId: DatasetItemId.openapi({
-        // description: "uniquely specifies the dataset item wanted",
+      datasetItemIdOrIx: DatasetItemId.openapi({
+        // description: "uniquely specifies the dataset item wanted within the dataset",
       }),
     }),
     responses: {
