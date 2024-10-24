@@ -17,7 +17,7 @@ const opts: MykomapRouterConfig = {
 
 //
 // Operation: dataset
-// URL: /dataset/:datasetId
+// URL: /dataset/:datasetId/locations
 // summary:  obtains a dataset
 // req.params
 //   type: object
@@ -54,7 +54,7 @@ test("testing dataset", async (t) => {
 
   const res = await fastify.inject({
     method: "GET",
-    url: "/dataset/test-A",
+    url: "/dataset/test-A/locations",
     payload: undefined,
     headers: undefined,
   });
