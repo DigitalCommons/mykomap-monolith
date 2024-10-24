@@ -9,7 +9,6 @@ import { Provider } from "react-redux";
 import ResultsPanel from "./ResultsPanel";
 
 // Helper function to prevent link navigation and handle clicks
-
 const attachLinkClickListeners = async (
   canvasElement: HTMLElement,
   onLinkClick: (link: string) => void,
@@ -40,6 +39,7 @@ const meta: Meta<typeof ResultsPanel> = {
   argTypes: {
     onLinkClick: { action: "linkClicked" }, // Action for link clicks
     onTogglePanel: { action: "panelToggled" }, // Action for toggling the panel
+    onClearSearch: { action: "clearSearch" }, // Action for clear search
   },
   decorators: [
     (Story) => (
@@ -60,11 +60,40 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    onLinkClick: (link: string) => {
-      console.log(`Link clicked: ${link}`);
+    onLinkClick: () => {
+      console.log("Link clicked");
     },
     onTogglePanel: (isOpen: boolean) => {
       console.log(`Panel toggled: ${isOpen}`);
     },
+    onClearSearch: () => {
+      console.log("Search cleared");
+    }
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Attach click listeners to links
+    await attachLinkClickListeners(canvasElement, args.onLinkClick);
+
+    // Test clear search button
+    const clearSearchButton = await canvas.getByText("Clear Search");
+    await userEvent.click(clearSearchButton);
+    args.onClearSearch();
+
+    // Test panel toggle button
+    let toggleButton;
+
+    // Try to find the button with "Open panel" label first
+    try {
+      toggleButton = await canvas.getByLabelText(/open panel/i);
+    } catch {
+      // If not found, try with "Close panel"
+      toggleButton = await canvas.getByLabelText(/close panel/i);
+    }
+
+    await userEvent.click(toggleButton);
+    args.onTogglePanel(true);
   },
 };
+
