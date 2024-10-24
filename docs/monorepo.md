@@ -1,19 +1,18 @@
-# Monorepo thinking
+# Monorepo structure
 
 ```
 monorepo
 |- apps
   |- @mykomap/front-end
   |- @mykomap/back-end
-      |- Map class instance for each config that needs a deployed backend
-      |- Single Fastify server shared across all maps
+      |- Dataset class instance for each dataset that needs a deployed backend
+      |- Single ts-rest/Fastify server shared across all datasets
 |- libs
   |- @mykomap/common
       |- search/filter code (imported in BE and some FE builds)
       |- API ts-rest contract + OpenAPI spec
-  |- @mykomap/variants, a folder for each map containing:
-      |- config.ts ... includes flag for whether to use search/filter in FE or BE
-      |- popup.ts (with an aim to commonalise this code and configure within config.ts)
+  |- @mykomap/config, a folder for each dataset containing:
+      |- config.json ... includes vocabs, UI config, and flag for whether to use search/filter in FE or BE
 ```
 
 ## Ideas
@@ -22,3 +21,7 @@ monorepo
 - Use git subtree, so we can publish sub-folders of the monorepo as independent repos that others
   can use. We can set this up later if required, but for now try to ensure repositories are not
   tightly coupled unecessarily.
+- Differentiate between maps and datasets: currently a map's data and config is associated with a
+  single dataset on the backend. We may want to unlink these so that 2 maps can share the same
+  dataset with differnet config, or a map can show multiple datasets. This could be done in the
+  future.
