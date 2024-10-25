@@ -18,7 +18,7 @@ const opts: MykomapRouterConfig = {
 // Note: see src/api/contract.ts in the @mykomap/common module for definitions
 // and documentation of the API.
 
-test("testing dataset", async (t) => {
+test("testing getDatasetLocations", async (t) => {
   const fastify = Fastify();
   fastify.register(fastifyPlugin, opts);
 
@@ -31,7 +31,7 @@ test("testing dataset", async (t) => {
   expect(res.statusCode).toBe(200);
 });
 
-test("testing datasetSearch", async (t) => {
+test("testing searchDataset", async (t) => {
   const fastify = Fastify();
   fastify.register(fastifyPlugin, opts);
 
@@ -44,7 +44,7 @@ test("testing datasetSearch", async (t) => {
   expect(res.statusCode).toBe(200);
 });
 
-test("testing datasetItem", async (t) => {
+test("testing getDatasetItem", async (t) => {
   const fastify = Fastify();
   fastify.register(fastifyPlugin, opts);
 
