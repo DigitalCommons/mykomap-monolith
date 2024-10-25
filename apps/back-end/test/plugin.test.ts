@@ -56,3 +56,16 @@ test("testing getDatasetItem", async (t) => {
   });
   expect(res.statusCode).toBe(200);
 });
+
+test("testing getConfig", async (t) => {
+  const fastify = Fastify();
+  fastify.register(fastifyPlugin, opts);
+
+  const res = await fastify.inject({
+    method: "GET",
+    url: "/dataset/test-A/config",
+    payload: undefined,
+    headers: undefined,
+  });
+  expect(res.statusCode).toBe(200);
+});
