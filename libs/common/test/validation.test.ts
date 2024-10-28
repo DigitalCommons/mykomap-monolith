@@ -7,7 +7,16 @@ import { slurpJsonSync } from "./file-utils.js";
 import { globSync } from "glob";
 import { join } from "node:path";
 
-const { DatasetId, QName, PrefixUri, Iso639Set1Code, ConfigData } = schemas;
+const {
+  DatasetId,
+  DatasetItemId,
+  DatasetItemIx,
+  DatasetItemIdOrIx,
+  QName,
+  PrefixUri,
+  Iso639Set1Code,
+  ConfigData,
+} = schemas;
 
 /** Creates expectations on validating each of an array of cases
  *
@@ -52,7 +61,131 @@ test("testing DatasetId validation", async (t) => {
     "01234",
     "Quick-Brown-Fox_42",
   ]);
-  expectInvalid(DatasetId, ["", " ", "/", "?", "&", ":", ".", "="]);
+  expectInvalid(DatasetId, [
+    "",
+    " ",
+    "/",
+    "?",
+    "&",
+    ":",
+    ".",
+    "=",
+    "a a",
+    " a",
+    "a ",
+  ]);
+});
+
+test("testing DatasetItemId validation", async (t) => {
+  expectValid(DatasetItemId, [
+    "0",
+    "A",
+    "z",
+    "_",
+    "-",
+    "-1",
+    "01234",
+    "Quick-Brown-Fox_42",
+    "Azaz09._~!$&'()*+,;=:@-",
+    "%61", // `a`
+    "%61%41", // `aA`
+    "%61%20%0a", // `a <line feed>`
+    "%401", // `@1`
+    "A@",
+    "%20foo%20bar%20", // embedded spaces allowed if encoded
+  ]);
+  expectInvalid(DatasetItemId, [
+    "",
+    " ",
+    "/",
+    "@",
+    "@1",
+    "@12334567890",
+    " foo", // no literal spaces
+    "foo ",
+    " foo ",
+  ]);
+});
+
+test("testing DatasetItemIx validation", async (t) => {
+  expectValid(DatasetItemIx, ["@1", "@12334567890"]);
+  expectInvalid(DatasetItemIx, [
+    "",
+    " ",
+    "/",
+    "@",
+    "0",
+    "A",
+    "z",
+    "_",
+    "-",
+    "-1",
+    "01234",
+    "Quick-Brown-Fox_42",
+    "Azaz09._~!$&'()*+,;=:@-",
+    "%61", // `a`
+    "%61%41", // `aA`
+    "%61%20%0a", // `a <line feed>`
+    "%401", // `@1`
+    "A@",
+    " @1", // no leading or trailing or embedded spaces
+    "@1 ",
+    " @1 ",
+    "@ 1",
+    "@1 1",
+    "%401", // No percent encoding
+    "@%31",
+  ]);
+});
+
+test("testing DatasetItemIdOrIx validation", async (t) => {
+  expectValid(DatasetItemIdOrIx, [
+    "0",
+    "A",
+    "z",
+    "_",
+    "-",
+    "-1",
+    "01234",
+    "Quick-Brown-Fox_42",
+    "Azaz09._~!$&'()*+,;=:@-",
+    "%61", // `a`
+    "%61%41", // `aA`
+    "%61%20%0a", // `a <line feed>`
+    "%401", // `@1`
+    "A@",
+    "@",
+    "@-1",
+    "-@1",
+    "0",
+    "-1",
+    "A",
+    "z",
+    "_",
+    "-",
+    "01234",
+    "Quick-Brown-Fox_42",
+    "Azaz09._~!$&'()*+,;=:@-",
+    "%61", // `a`
+    "%61%41", // `aA`
+    "%61%20%0a", // `a <line feed>`
+    "%401", // `@1`
+    "A@",
+    "@12334567890",
+  ]);
+  expectInvalid(DatasetItemIdOrIx, [
+    "",
+    " ",
+    "/",
+    " @1", // no leading or trailing or embedded spaces
+    "@1 ",
+    " @1 ",
+    "@ 1",
+    "@1 1",
+    " foo",
+    "foo ",
+    " foo ",
+  ]);
 });
 
 test("testing QName validation", async (t) => {

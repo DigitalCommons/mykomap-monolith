@@ -1,6 +1,6 @@
 /** Regular expression definitions */
 import RxUtils from "./rxutils.js";
-const { min, seq, conc, maybe } = RxUtils;
+const { min, seq, conc, maybe, oneOf } = RxUtils;
 
 /** A regex testing for an *URL-safe* base64 string (RFC4648 sect 5) */
 export const UrlSafeBase64 = /^[A-Za-z0-9_-]+$/imsu;
@@ -131,3 +131,53 @@ const Path = seq(min(0, seq("/", PathSegment)), maybe("/"));
  *
  */
 export const PrefixUri = conc(Scheme, Domain, Path, maybe("#"));
+
+/** A valid (non-percent-encoded) URI path character, excluding `@`
+ *
+ * Characters can be any of:
+ * - unreserved chars /[A-Za-z0-9._~-]/
+ * - percent-encoded chars i./%[A-Za-z0-9]{2}/
+ * - sub-delims chars /[!$&'()*+,;=]/
+ * - colon chars /[:]/
+ *
+ * Modified version of PathChar above.
+ */
+const NonAtPathChar = /[A-Za-z0-9._~!$&'()*+,;=:-]/;
+
+/** Match a DatasetItemId (identifier)
+ *
+ * This ID needs to be flexible enough to match user-supplied IDs. It can be
+ * anything an URI path segment contains. Percent-encoding is needed for
+ * anything not *literally* allowed in a path segment.
+ *
+ * It also needs to be distinct from DatasetItemIx, however. Therefore we don't use
+ * the exact same definition as PathSegment: we disallow a `@` character at the start. If the
+ * ID needs such a thing, it must use percent encoding for that character, i.e.
+ * `%40`.
+ *
+ */
+export const DatasetItemId = seq(
+  min(1, PctEnc, NonAtPathChar),
+  min(0, PctEnc, PathChar),
+);
+
+/** Match a DatasetItemIx (index)
+ *
+ * This is basically a non-negative integer, representing an offset into the dataset.
+ * However, it needs to be a bit distinct from a DatasetItemId, so the rule is that
+ * it starts with an `@` symbol.
+ *
+ */
+export const DatasetItemIx = seq(/@/, min(1, /\d/));
+
+/** Match a DatasetItemId or a DatasetItemIx,
+ *
+ * Nominally this means:
+ *
+ *    oneOf(DatasetItemId, DatasetItemIx);
+ *
+ * However, we can simplify that just by using PathSegment, whch amounts to the
+ * same thing (as the former is designed to match PathSegment patterns, but exclude
+ * DatasetItemIx patterns, so recombined they are equivalent to PathSegment)
+ */
+export const DatasetItemIdOrIx = PathSegment;

@@ -127,9 +127,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "nullable": true
+                    "type": "string"
                   }
                 }
               }
@@ -176,9 +174,9 @@
         }
       }
     },
-    "/dataset/{datasetId}/item/{datasetItemId}": {
+    "/dataset/{datasetId}/item/{datasetItemIdOrIx}": {
       "get": {
-        "description": "Obtains a single dataset item by its ID and the dataset's ID.",
+        "description": "Obtains a single dataset item by its ID or its index, and the dataset's ID.",
         "summary": "obtains a dataset item by its unique ID",
         "tags": [],
         "parameters": [
@@ -192,13 +190,11 @@
             }
           },
           {
-            "name": "datasetItemId",
+            "name": "datasetItemIdOrIx",
             "in": "path",
             "required": true,
             "schema": {
-              "type": "integer",
-              "minimum": 0,
-              "nullable": true
+              "type": "string"
             }
           }
         ],
