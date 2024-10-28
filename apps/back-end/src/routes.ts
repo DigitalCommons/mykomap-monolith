@@ -88,7 +88,9 @@ export function MykomapRouter(
     async getDatasetLocations({ params: { datasetId }, request, reply }) {
       // Validate the parameters some more
 
-      if (!sendJson(request, reply, filePath("datasets", datasetId)))
+      if (
+        !sendJson(request, reply, filePath("datasets", datasetId, "locations"))
+      )
         throw new TsRestResponseError(contract.getDatasetLocations, {
           status: 404,
           body: { message: `unknown datasetId '${datasetId}'` },
@@ -128,7 +130,12 @@ export function MykomapRouter(
         !sendJson(
           request,
           reply,
-          filePath("datasets", datasetId, "items", String(datasetItemIdOrIx)),
+          filePath(
+            "datasets",
+            datasetId,
+            "initiatives",
+            String(datasetItemIdOrIx),
+          ),
         )
       )
         throw new TsRestResponseError(contract.getDatasetItem, {
@@ -142,7 +149,7 @@ export function MykomapRouter(
     async getConfig({ params: { datasetId }, request, reply }) {
       // Validate the parameters some more
 
-      if (!sendJson(request, reply, filePath("datasets", datasetId, "config")))
+      if (!sendJson(request, reply, filePath("config", datasetId, "config")))
         throw new TsRestResponseError(contract.getConfig, {
           status: 404,
           body: { message: `unknown datasetId '${datasetId}'` },
