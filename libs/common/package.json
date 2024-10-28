@@ -9,7 +9,7 @@
   "main": "dist/common.js",
   "types": "./dist/src/index.d.ts",
   "scripts": {
-    "clean": "rimraf node_modules",
+    "clean": "rimraf dist node_modules",
     "prebuild": "npm run generate-openapi",
     "build": "vite build",
     "generate-openapi": "npx vite-node src/api/generate-openapi.ts",
