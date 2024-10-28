@@ -15,40 +15,10 @@ const opts: MykomapRouterConfig = {
   },
 };
 
-//
-// Operation: dataset
-// URL: /dataset/:datasetId/locations
-// summary:  obtains a dataset
-// req.params
-//   type: object
-//   properties:
-//     datasetId:
-//       type: string
-//       description: uniquely specifies the dataset wanted
-//   required:
-//     - datasetId
-//
-// valid responses
-//   '200':
-//     description: the dataset matching the supplied criteria
-//     content:
-//       application/json:
-//         schema:
-//           type: array
-//           items:
-//             maxItems: 2
-//             minItems: 2
-//             type: array
-//             items:
-//               type: number
-//               format: float32
-//   '400':
-//     description: bad input parameter
-//   '404':
-//     description: no such dataset
-//
+// Note: see src/api/contract.ts in the @mykomap/common module for definitions
+// and documentation of the API.
 
-test("testing dataset", async (t) => {
+test("testing getDatasetLocations", async (t) => {
   const fastify = Fastify();
   fastify.register(fastifyPlugin, opts);
 
@@ -61,47 +31,7 @@ test("testing dataset", async (t) => {
   expect(res.statusCode).toBe(200);
 });
 
-// Operation: datasetSearch
-// URL: /dataset/:datasetId/search
-// summary:  obtains a list of dataset entries satisfying the search criteria supplied
-// req.params
-//   type: object
-//   properties:
-//     datasetId:
-//       type: string
-//       description: uniquely specifies the dataset wanted
-//   required:
-//     - datasetId
-//
-// req.query
-//   type: object
-//   properties:
-//     text:
-//       type: string
-//       description: a text fragment to match
-//     filter:
-//       type: array
-//       items:
-//         type: string
-//       description: uniquely specifies the taxonomy filter items wanted
-//
-// valid responses
-//   '200':
-//     description: the dataset IDs matching the supplied criteria
-//     content:
-//       application/json:
-//         schema:
-//           type: array
-//           items:
-//             type: string
-//             description: uniquely specifies the dataset item wanted
-//   '400':
-//     description: bad input parameter
-//   '404':
-//     description: no such dataset
-//
-
-test("testing datasetSearch", async (t) => {
+test("testing searchDataset", async (t) => {
   const fastify = Fastify();
   fastify.register(fastifyPlugin, opts);
 
@@ -114,42 +44,39 @@ test("testing datasetSearch", async (t) => {
   expect(res.statusCode).toBe(200);
 });
 
-// Operation: datasetItem
-// URL: /dataset/:datasetId/item/:datasetItemId
-// summary:  obtains a dataset item by its  unique ID
-// req.params
-//   type: object
-//   properties:
-//     datasetId:
-//       type: string
-//       description: uniquely specifies the dataset wanted
-//     datasetItemId:
-//       type: string
-//       description: uniquely specifies the dataset item wanted
-//   required:
-//     - datasetId
-//     - datasetItemId
-//
-// valid responses
-//   '200':
-//     description: the dataset item matching the supplied criteria
-//     content:
-//       application/json:
-//         schema:
-//           type: object
-//   '400':
-//     description: bad input parameter
-//   '404':
-//     description: no such dataset item
-//
-
-test("testing datasetItem", async (t) => {
+test("testing getDatasetItem", async (t) => {
   const fastify = Fastify();
   fastify.register(fastifyPlugin, opts);
 
   const res = await fastify.inject({
     method: "GET",
     url: "/dataset/test-A/item/0",
+    payload: undefined,
+    headers: undefined,
+  });
+  expect(res.statusCode).toBe(200);
+});
+
+test("testing getConfig", async (t) => {
+  const fastify = Fastify();
+  fastify.register(fastifyPlugin, opts);
+
+  const res = await fastify.inject({
+    method: "GET",
+    url: "/dataset/test-A/config",
+    payload: undefined,
+    headers: undefined,
+  });
+  expect(res.statusCode).toBe(200);
+});
+
+test("testing getVersion", async (t) => {
+  const fastify = Fastify();
+  fastify.register(fastifyPlugin, opts);
+
+  const res = await fastify.inject({
+    method: "GET",
+    url: "/version",
     payload: undefined,
     headers: undefined,
   });
