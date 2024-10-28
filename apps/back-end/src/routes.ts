@@ -137,6 +137,18 @@ export function MykomapRouter(
       return reply;
     },
 
+    async getConfig({ params: { datasetId }, request, reply }) {
+      // Validate the parameters some more
+
+      if (!sendJson(request, reply, filePath("datasets", datasetId, "config")))
+        throw new TsRestResponseError(contract.getDataset, {
+          status: 404,
+          body: { message: `unknown datasetId '${datasetId}'` },
+        });
+
+      return reply;
+    },
+
     async getVersion(req) {
       return {
         body: __BUILD_INFO__,

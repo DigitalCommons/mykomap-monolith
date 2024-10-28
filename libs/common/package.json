@@ -13,11 +13,12 @@
     "prebuild": "npm run generate-openapi",
     "build": "vite build",
     "generate-openapi": "npx vite-node src/api/generate-openapi.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "dependencies": {
     "@ts-rest/core": "^3.51.0",
     "@ts-rest/open-api": "^3.51.0",
+    "glob": "^11.0.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -26,6 +27,7 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.3",
     "vite-node": "^2.0.5",
-    "vite-plugin-dts": "^4.1.0"
+    "vite-plugin-dts": "^4.1.0",
+    "vitest": "^2.1.4"
   }
 }
