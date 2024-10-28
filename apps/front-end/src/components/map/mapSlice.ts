@@ -1,6 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import { getDataset } from "../../services";
+import { getDatasetLocations } from "../../services";
 
 export interface MapSliceState {
   allLocations: number[][];
@@ -26,7 +26,7 @@ export const mapSlice = createAppSlice({
           );
         }
 
-        const response = await getDataset({ params: { datasetId } });
+        const response = await getDatasetLocations({ params: { datasetId } });
 
         if (response.status === 200) {
           const locations = response.body ?? [];

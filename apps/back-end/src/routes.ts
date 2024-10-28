@@ -85,11 +85,11 @@ export function MykomapRouter(
 
   // Construct and return the implementation object
   return {
-    async getDataset({ params: { datasetId }, request, reply }) {
+    async getDatasetLocations({ params: { datasetId }, request, reply }) {
       // Validate the parameters some more
 
       if (!sendJson(request, reply, filePath("datasets", datasetId)))
-        throw new TsRestResponseError(contract.getDataset, {
+        throw new TsRestResponseError(contract.getDatasetLocations, {
           status: 404,
           body: { message: `unknown datasetId '${datasetId}'` },
         });
@@ -141,7 +141,7 @@ export function MykomapRouter(
       // Validate the parameters some more
 
       if (!sendJson(request, reply, filePath("datasets", datasetId, "config")))
-        throw new TsRestResponseError(contract.getDataset, {
+        throw new TsRestResponseError(contract.getConfig, {
           status: 404,
           body: { message: `unknown datasetId '${datasetId}'` },
         });
