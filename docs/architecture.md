@@ -45,70 +45,13 @@ in the UI, including the vocabs (translations of data IDs), default sidebar pane
 appearance. This config is not generated into the above folder structure, but kept in source control
 in the `@mykomap/config` library.
 
-### Example file contents
-
-`locations.json`:
-
-```
-[ [1.21419, 50.45254], [0.21002, 49.33954], … ]
-```
-
-`searchable.json`:
-
-```
-{
-  "fields": ["coun", "sz", "searchString"],
-  "values": [
-    ["GB", "Small", "some co-op 2 green lane london n4 9qr"],
-    ["GB", "Large", "another co-op 15 brown street sheffield s7 0hg"],
-    ...
-  ]
-}
-```
+See the [`back-end test data`](https://github.com/DigitalCommons/mykomap-monolith/tree/main/apps/back-end/test/data/) for example file contents.
 
 #### Potential optimisation:
 
-Since there will be one row per item, with 100k items, every 10 characters adds a new megabyte. The really bulky bit is the text searchString part, so maybe it could be kept in its own plain text file, with one line per item. Searching it could be done by streaming it from disk, which avoids loading the entire file permanently into memory (for each dataset).
+The `searchable.json` will be loaded into the back-end server's memory. Since there will be one row per item, with 100k items, every 10 characters adds a new megabyte. The really bulky bit is the text searchString part, so maybe it could be kept in its own plain text file, with one line per item. Searching it could be done by streaming it from disk, which avoids loading the entire file permanently into memory (for each dataset).
 
 For instance, this [SO thread](https://stackoverflow.com/questions/20187145/how-to-search-stream-for-string-in-node-js) has some sample stream-searching code, and a reference to a module which performs the streaming by what appears to be a fast non-buffering algorithm.
-
-`0.json`:
-
-```
-{ name: "Some Co-op", "desc": "A co-op that sells stuff", "lng": 1.21419, "lat": 50.45254, "coun": "GB", "sz": "Small", ... }
-```
-
-`config.json`:
-
-```
-{
-  "prefixes": {
-    "https://example.com/sizes/1.1/": "sz",
-    ...
-  },
-  "vocabs": {
-    "sz": {
-      "EN": {
-        "title": "Sizes",
-        "terms": {
-          "large": "Large",
-          "medium": "Medium",
-          "small": "Small"
-        }
-      }
-    },
-    ...
-  },
-  "popupFields": {
-    "sz": "text",
-    "websites": "clickable-list",
-    ...
-  },
-  "ui": { ... },
-  ...
-}
-
-```
 
 ### Data generation
 
