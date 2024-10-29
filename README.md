@@ -1,3 +1,5 @@
+![build and test status](https://github.com/DigitalCommons/mykomap-monolith/actions/workflows/node-build-test.yml/badge.svg)
+
 # Mykomap Mono-Repo
 
 Mono-repo home to the FE/BE applications and libraries comprising Mykomap.
