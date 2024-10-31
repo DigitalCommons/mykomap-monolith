@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
+import { styled } from "@mui/material/styles";
 
 interface LeftPaneProps {
   name: string;
@@ -10,6 +11,19 @@ interface LeftPaneProps {
   dcDomains?: string[];
 }
 
+const StyledLeftPane = styled(Box)(() => ({
+  width: "65%",
+  padding:
+    "var(--spacing-xlarge) var(--spacing-xxlarge) var(--spacing-xxlarge)",
+}));
+
+const StyledHeaderContainer = styled(Box)(() => ({
+  position: "sticky",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+}));
+
 const LeftPane = ({
   name,
   primaryActivity,
@@ -17,9 +31,11 @@ const LeftPane = ({
   dcDomains,
 }: LeftPaneProps) => {
   return (
-    <Box>
+    <StyledLeftPane>
       <Box>
-        <Typography variant="h5">{name}</Typography>
+        <Typography variant="h1" sx={{ color: "var(--color-primary)" }}>
+          {name}
+        </Typography>
         <Box>
           <Typography variant="body1">{primaryActivity}</Typography>
         </Box>
@@ -36,7 +52,7 @@ const LeftPane = ({
           ))}
         </List>
       </Box>
-    </Box>
+    </StyledLeftPane>
   );
 };
 

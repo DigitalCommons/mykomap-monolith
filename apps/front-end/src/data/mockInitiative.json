@@ -1,0 +1,19 @@
+{
+  "uid": "test/cuk/R000002",
+  "name": "Pears United",
+  "description": "El Banco Credicoop Coop Limitado es un Banco cooperativo propiedad de sus Asociados, gestionado en forma democrática, heredero y continuador de la valiosa labor desplegada desde los inicios del siglo XX por las cajas de crédito cooperativas. El Banco Credicoop Coop. Ltdo. nació bajo la orientación del Instituto Movilizador de Fondos Cooperativos, el que sigue guiando institucionalmente a nuestra Entidad.
+  Nuestra labor primordial es la prestación de servicios financieros eficientes y de calidad a nuestros Asociados, otorgando particular importancia a la asistencia crediticia a las pequeñas y medianas empresas, a las cooperativas, a las empresas de economía social y a las personas; localizados tanto en los grandes centros urbanos como en las pequeñas poblaciones de nuestro país. Los depósitos captados son revertidos prioritariamente en financiaciones en la misma localidad.
+  Aspiramos a contribuir al progreso económico nacional y a la construcción de una sociedad solidaria con equidad distributiva para garantizar una vida digna a todos los habitantes de este país. ",
+  "website": "https://pears.coop",
+  "dc_domains": ["pears.coop", "pearsunited.coop"],
+  "country_id": "coun:FR",
+  "primary_activity": "aci:ICA230",
+  "organisational_structure": "os:OS90",
+  "typology": "bmt:BMT30",
+  "latitude": 50.850452,
+  "longitude": 0.924728,
+  "geocontainer_lat": 50.85045216,
+  "geocontainer_lon": 0.92472819,
+  "geocoded_addr": "79 rue de la Mare aux Carats, 34090 Montpellier, France",
+  "data_sources": ["dso:DC"] 
+}

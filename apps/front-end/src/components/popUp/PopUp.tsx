@@ -33,9 +33,10 @@ const StyledPopUp = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   backgroundColor: theme.palette.background.paper, // use theme value for background color
-  padding: theme.spacing(4), // convert spacing units
-  borderRadius: theme.shape.borderRadius, // use theme's border radius value
-  maxWidth: 600,
+  boxModel: "border-box",
+  padding: 0, // convert spacing units
+  borderRadius: "var(--border-radius-xlarge)", // use theme's border radius value
+  maxWidth: 900,
   margin: "auto",
   outline: "none", // remove focus outline inside modal
 }));
