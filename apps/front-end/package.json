@@ -11,6 +11,7 @@
     "prestart": "cross-env NODE_ENV=development npm -w ../back-end run build",
     "start": "cross-env NODE_ENV=development VITE_API_URL=/api tsx --tsconfig tsconfig.node.json --watch --watch-path=src --watch-path=../back-end/src/ server.ts",
     "dev": "cross-env VITE_API_URL=http://localhost:3000 vite",
+    "prebuild": "npm -w ../../libs/common run build",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
