@@ -1,4 +1,4 @@
-{
+const mockConfig = {
   "prefixes": {
     "https://dev.lod.coop/essglobal/2.1/standard/activities-ica/": "aci",
     "https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/": "bmt",
@@ -164,3 +164,5 @@
     }
   }
 }
+
+export default mockConfig;
