@@ -86,6 +86,7 @@ export const schemas = {
   PrefixIndex,
   QName,
   VersionInfo,
+  VocabDef,
   VocabIndex,
   ErrorInfo,
 };
