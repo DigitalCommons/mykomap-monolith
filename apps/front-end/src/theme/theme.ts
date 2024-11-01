@@ -50,6 +50,9 @@ const themeOptions: ThemeOptions = {
         marginBottom: "var(--spacing-medium)",
       },
     },
+    h5: {
+      fontSize: "var(-font-size-small)",
+    },
   },
   components: {
     MuiTabs: {

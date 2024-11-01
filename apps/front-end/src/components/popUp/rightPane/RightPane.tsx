@@ -54,23 +54,67 @@ const RightPane = ({
             {line}
           </Typography>
         ))}
-        <Typography variant="body1">{website}</Typography>
+        <Link
+          sx={{
+            color: "#ffffffB3",
+            textDecoration: "underline",
+            padding: "0 !important",
+            fontSize: "var(--font-size-small)",
+            marginTop: "var(--spacing-medium)",
+          }}
+        >
+          {website}
+        </Link>
       </StyledTopBox>
       <StyledBottomBox>
-        <Box>
-          <Typography variant="body1">Organisational Structure</Typography>
+        <Box
+          sx={{
+            marginBottom: "var(--spacing-large)",
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#ffffffB3",
+              marginBottom: "var(--spacing-xsmall) !important",
+            }}
+          >
+            Organisational Structure
+          </Typography>
           <Typography variant="body1">{organisationalStructure}</Typography>
         </Box>
-        <Box>
-          <Typography variant="body1">Typology</Typography>
+        <Box
+          sx={{
+            marginBottom: "var(--spacing-large)",
+          }}
+        >
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#ffffffB3",
+              marginBottom: "var(--spacing-xsmall) !important",
+            }}
+          >
+            Typology
+          </Typography>
           <Typography variant="body1">{typology}</Typography>
         </Box>
         <Box>
-          <Typography variant="body1">Data Sources</Typography>
-          <List>
+          <Typography
+            variant="h4"
+            sx={{
+              color: "#ffffffB3",
+              marginBottom: "var(--spacing-xsmall) !important",
+            }}
+          >
+            Data Sources
+          </Typography>
+          <List
+            sx={{ listStyleType: "unset", margin: "unset", padding: "unset" }}
+          >
             {dataSources.map((dataSource) => (
-              <ListItem key={dataSource}>
-                <Link href={dataSource}>{dataSource}</Link>
+              <ListItem key={dataSource} sx={{ display: "list-item", marginLeft: "var(--spacing-medium)" }}>
+                {dataSource}
               </ListItem>
             ))}
           </List>

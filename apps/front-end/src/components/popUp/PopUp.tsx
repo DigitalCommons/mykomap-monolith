@@ -7,24 +7,7 @@ import CloseButton from "../common/closeButton/CloseButton";
 import { styled } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closePopUp, popUpIsOpen } from "./popUpSlice";
-
-const initiative = {
-  uid: "test/cuk/R000002",
-  name: "Pears United",
-  description: "We sell pears",
-  website: "https://pears.coop",
-  dc_domains: ["pears.coop", "pearsunited.coop"],
-  country_id: "coun:FR",
-  primary_activity: "aci:ICA230",
-  organisational_structure: "os:OS90",
-  typology: "bmt:BMT30",
-  latitude: 50.850452,
-  longitude: 0.924728,
-  geocontainer_lat: 50.85045216,
-  geocontainer_lon: 0.92472819,
-  geocoded_addr: "79 rue de la Mare aux Carats, 34090 Montpellier, France",
-  data_sources: ["dso:DC"],
-};
+import mockInitiative from "../../data/mockInitiative";
 
 const StyledPopUp = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -33,6 +16,7 @@ const StyledPopUp = styled(Box)(({ theme }) => ({
   padding: 0,
   borderRadius: "var(--border-radius-xlarge)",
   maxWidth: 900,
+  maxHeight: 600,
   margin: "auto",
   outline: "none",
   position: "relative",
@@ -61,7 +45,7 @@ const PopUp = () => {
     <Modal
       open={open}
       onClose={handleClosePopUp}
-      aria-labelledby={`pop-up-${initiative.uid}`}
+      aria-labelledby={`pop-up-${mockInitiative.uid}`}
       aria-describedby="pop-up-description"
       closeAfterTransition
     >
@@ -76,17 +60,17 @@ const PopUp = () => {
             buttonAction={handleClosePopUp}
           />
           <LeftPane
-            name={initiative.name}
-            primaryActivity={initiative.primary_activity}
-            description={initiative.description}
-            dcDomains={initiative.dc_domains}
+            name={mockInitiative.name}
+            primaryActivity={mockInitiative.primary_activity}
+            description={mockInitiative.description}
+            dcDomains={mockInitiative.dc_domains}
           />
           <RightPane
-            geocodedAddr={initiative.geocoded_addr}
-            website={initiative.website}
-            organisationalStructure={initiative.organisational_structure}
-            typology={initiative.typology}
-            dataSources={initiative.data_sources}
+            geocodedAddr={mockInitiative.geocoded_addr}
+            website={mockInitiative.website}
+            organisationalStructure={mockInitiative.organisational_structure}
+            typology={mockInitiative.typology}
+            dataSources={mockInitiative.data_sources}
           />
           <StyledPointer />
         </StyledPopUp>
