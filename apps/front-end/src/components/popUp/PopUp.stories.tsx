@@ -1,11 +1,12 @@
-// PopUp Story
-
 import type { Meta, StoryObj } from "@storybook/react";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
 import GlobalCSSVariables from "../../theme/GlobalCSSVariables";
 import { CssBaseline } from "@mui/material";
+import { store } from "../../app/store";
+import { Provider } from "react-redux";
 import PopUp from "./PopUp";
+import { togglePopUp } from "./popUpSlice";
 
 const meta = {
   title: "Common/PopUp",
@@ -15,25 +16,23 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <ThemeProvider theme={theme}>
-        <GlobalCSSVariables />
-        <CssBaseline />
-        <Story />
-      </ThemeProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <GlobalCSSVariables />
+          <CssBaseline />
+          <Story />
+        </ThemeProvider>
+      </Provider>
     ),
   ],
   tags: ["autodocs"],
-  argTypes: {
-    onClose: { action: "closed" },
-  },
-  args: { open: true }, // Set default open state to true
 } as Meta<typeof PopUp>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: {
-    open: true,
+  play: () => {
+    store.dispatch(togglePopUp());
   },
 };

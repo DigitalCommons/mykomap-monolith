@@ -5,6 +5,7 @@ import { counterSlice } from "../features/counter/counterSlice";
 import { searchSlice } from "../components/panel/searchPanel/searchSlice";
 import { panelSlice } from "../components/panel/panelSlice";
 import { mapSlice } from "../components/map/mapSlice";
+import { popUpSlice } from "../components/popUp/popUpSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -13,6 +14,7 @@ const rootReducer = combineSlices(
   searchSlice,
   mapSlice,
   panelSlice,
+  popUpSlice,
 );
 
 // Infer the `RootState` type from the root reducer
