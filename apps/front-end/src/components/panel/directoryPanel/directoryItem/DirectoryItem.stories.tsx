@@ -13,7 +13,7 @@ const clickInteraction = async (canvasElement: HTMLElement) => {
 };
 
 const meta = {
-  title: "DirectoryItem",
+  title: "Components/Panel/DirectoryItem",
   component: DirectoryItem,
   decorators: [
     (Story) => (

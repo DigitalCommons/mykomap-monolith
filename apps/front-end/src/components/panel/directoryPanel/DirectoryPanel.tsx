@@ -34,6 +34,10 @@ interface DirectoryPanelProps {
 }
 
 const StyledDirectoryPanel = styled(Box)(() => ({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  overflowY: "auto",
   padding: "var(--spacing-medium) 0",
   maxWidth: "var(--panel-width-desktop)",
   margin: "0 auto",
