@@ -1,16 +1,19 @@
 import { useRef, useEffect, useState } from "react";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectText, selectVisibleIds } from "../panel/searchPanel/searchSlice";
+import {
+  selectText,
+  selectVisibleIndexes,
+} from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 import { fetchData, selectFeatures } from "./mapSlice";
 
 const MapWrapper = () => {
   const searchText = useAppSelector(selectText);
-  // If there is no search text, visible IDs is undefined to show all features
-  const visibleIds = useAppSelector(selectVisibleIds);
+  // If there is no search text, visible indexes is undefined to show all features
+  const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const features = useAppSelector((state) =>
-    selectFeatures(state, searchText ? visibleIds : undefined),
+    selectFeatures(state, searchText ? visibleIndexes : undefined),
   );
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
@@ -41,7 +44,7 @@ const MapWrapper = () => {
 
   const updateMapData = async () => {
     if (searchText) {
-      console.log(`Found ${visibleIds?.length} features that matched`);
+      console.log(`Found ${visibleIndexes?.length} features that matched`);
     }
 
     console.log("Rendering data in MapLibreGL", features);

@@ -61,21 +61,24 @@ export const mapSlice = createAppSlice({
 const selectAllFeatures = createSelector(
   [(state): number[][] => state.map.allLocations],
   (allLocations): GeoJSON.Feature<GeoJSON.Point>[] =>
-    allLocations.map((location, index) => ({
+    allLocations.map((location, ix) => ({
       type: "Feature",
       geometry: { type: "Point", coordinates: location },
-      properties: { id: index }, // id is the index of original array
+      properties: { ix },
     })),
 );
 
 /**
  * This selector outputs a list of GeoJSON features for all the locations in the dataset, or for a
- * subset of locations if an array of IDs is provided.
+ * subset of locations if an array of indexes is provided.
  */
 export const selectFeatures = createSelector(
-  [selectAllFeatures, (state, ids?: number[]): number[] | undefined => ids],
-  (allFeatures, ids): GeoJSON.Feature<GeoJSON.Point>[] =>
-    ids === undefined ? allFeatures : ids.map((id) => allFeatures[id]),
+  [
+    selectAllFeatures,
+    (state, indexes?: number[]): number[] | undefined => indexes,
+  ],
+  (allFeatures, indexes): GeoJSON.Feature<GeoJSON.Point>[] =>
+    indexes === undefined ? allFeatures : indexes.map((ix) => allFeatures[ix]),
 );
 
 export const { fetchData } = mapSlice.actions;

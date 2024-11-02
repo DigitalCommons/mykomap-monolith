@@ -4,14 +4,14 @@ import { Config, getConfig, searchDataset } from "../../../services";
 
 export interface SearchSliceState {
   text: string;
-  visibleIds: number[];
+  visibleIndexes: number[];
   searchingStatus: string;
   filterOptions: { [field: string]: string[] };
 }
 
 const initialState: SearchSliceState = {
   text: "",
-  visibleIds: [],
+  visibleIndexes: [],
   searchingStatus: "idle",
   filterOptions: {},
 };
@@ -39,7 +39,7 @@ export const searchSlice = createAppSlice({
         }
 
         const response = await searchDataset({
-          params: { datasetId: datasetId },
+          params: { datasetId },
           query: { text: search.text.toLowerCase() },
         });
         if (response.status === 200) {
@@ -56,11 +56,12 @@ export const searchSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.searchingStatus = "idle";
-          state.visibleIds = action.payload ?? [];
+          state.visibleIndexes =
+            action.payload.map((index) => Number(index.substring(1))) ?? []; // remove leading '@' from index
         },
         rejected: (state, action) => {
           state.searchingStatus = "failed";
-          state.visibleIds = [];
+          state.visibleIndexes = [];
           console.error(action.payload);
         },
       },
@@ -100,7 +101,7 @@ export const searchSlice = createAppSlice({
   }),
   selectors: {
     selectText: (search) => search.text,
-    selectVisibleIds: (search) => search.visibleIds,
+    selectVisibleIndexes: (search) => search.visibleIndexes,
   },
 });
 
@@ -108,4 +109,4 @@ export const configLoaded = createAction<Config>("configLoaded");
 
 export const { setText, performSearch } = searchSlice.actions;
 
-export const { selectText, selectVisibleIds } = searchSlice.selectors;
+export const { selectText, selectVisibleIndexes } = searchSlice.selectors;
