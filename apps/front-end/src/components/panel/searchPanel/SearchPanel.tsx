@@ -4,21 +4,30 @@ import SelectBox from "../../common/selectBox/SelectBox";
 import SearchBox from "./searchBox/SearchBox";
 import Typography from "@mui/material/Typography";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
-import { selectText, setText, performSearch } from "./searchSlice";
+import {
+  selectText,
+  setText,
+  performSearch,
+  selectFilterOptions,
+  setFilterValue,
+} from "./searchSlice";
 import { useState } from "react";
 import type { SelectChangeEvent } from "@mui/material";
 
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
   const submittedText = useAppSelector(selectText);
+  const filterOptions = useAppSelector(selectFilterOptions);
   const [currentText, setCurrentText] = useState(submittedText);
 
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>): void => {
     setCurrentText(e.currentTarget.value);
   };
 
-  const onFilterChange = (e: SelectChangeEvent<string>) => {
-    console.log(`Set filter to ${e.target.value}`);
+  const onFilterChange = (e: SelectChangeEvent<string>, fieldId: string) => {
+    console.log(`Set filter for ${fieldId} to ${e.target.value}`);
+    dispatch(setFilterValue({ id: fieldId, value: e.target.value }));
+    dispatch(performSearch());
   };
 
   const onSubmit = () => {
@@ -40,17 +49,15 @@ const SearchPanel = () => {
         <Typography variant="h4" component="h4">
           X matching results
         </Typography>
-        <SelectBox
-          label="Search by"
-          onChange={onFilterChange}
-          options={[
-            { value: "any", label: "- Any -" },
-            { value: "name", label: "Name" },
-            { value: "address", label: "Address" },
-            { value: "phone", label: "Phone" },
-          ]}
-          value="any"
-        />
+        {filterOptions.map(({ id, title, options, value }) => (
+          <SelectBox
+            key={`select-box-${id}`}
+            label={title}
+            onChange={(e) => onFilterChange(e, id)}
+            options={options}
+            value={value}
+          />
+        ))}
       </ContentPanel>
     </form>
   );

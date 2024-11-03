@@ -1,19 +1,31 @@
-import { createAction, type PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAction,
+  createSelector,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
-import { Config, getConfig, searchDataset } from "../../../services";
+import type { Config, VocabPropDef } from "../../../services";
+import { searchDataset } from "../../../services";
+
+type FilterableField = {
+  id: string;
+  value: string;
+  vocabUri: string;
+  titleUri?: string;
+};
 
 export interface SearchSliceState {
   text: string;
   visibleIndexes: number[];
   searchingStatus: string;
-  filterOptions: { [field: string]: string[] };
+  filterableFields: FilterableField[];
 }
 
 const initialState: SearchSliceState = {
   text: "",
   visibleIndexes: [],
   searchingStatus: "idle",
-  filterOptions: {},
+  filterableFields: [],
 };
 
 export const searchSlice = createAppSlice({
@@ -23,6 +35,14 @@ export const searchSlice = createAppSlice({
     setText: create.reducer((state, action: PayloadAction<string>) => {
       state.text = action.payload;
     }),
+    setFilterValue: create.reducer(
+      (state, action: PayloadAction<{ id: string; value: string }>) => {
+        const field = state.filterableFields.find(
+          (f) => f.id === action.payload.id,
+        );
+        if (field) field.value = action.payload.value;
+      },
+    ),
     performSearch: create.asyncThunk(
       async (_, thunkApi) => {
         const datasetId =
@@ -62,51 +82,66 @@ export const searchSlice = createAppSlice({
         rejected: (state, action) => {
           state.searchingStatus = "failed";
           state.visibleIndexes = [];
-          console.error(action.payload);
-        },
-      },
-    ),
-    fetchConfig: create.asyncThunk(
-      async (_, thunkApi) => {
-        const datasetId =
-          new URLSearchParams(window.location.search).get("datasetId") ?? "";
-        if (datasetId === "") {
-          return thunkApi.rejectWithValue(
-            `No datasetId parameter given, so no dataset config can be retrieved`,
-          );
-        }
-
-        const response = await getConfig({
-          params: { datasetId: datasetId },
-        });
-        if (response.status === 200) {
-          thunkApi.dispatch(configLoaded(response.body));
-          return response.body;
-        } else {
-          return thunkApi.rejectWithValue(
-            `Failed get config, status code ${response.status}`,
-          );
-        }
-      },
-      {
-        fulfilled: (state, action) => {
-          // TODO when types work:
-          // transform config.ui.filterableFields and config.vocabs terms into filterOptions dictionary
-        },
-        rejected: (state, action) => {
-          console.error(action.payload);
+          console.error("Error performing search", action.payload);
         },
       },
     ),
   }),
+  extraReducers: (builder) => {
+    builder.addCase(configLoaded, (state, action) => {
+      const config = action.payload;
+      state.filterableFields = config.ui.filterableFields.map((field) => {
+        const fieldDef = config.fields[field] as VocabPropDef;
+        return {
+          id: field,
+          value: FIELD_VALUE_ANY,
+          vocabUri: fieldDef.uri,
+          titleUri: fieldDef.titleUri,
+        };
+      });
+    });
+  },
   selectors: {
     selectText: (search) => search.text,
     selectVisibleIndexes: (search) => search.visibleIndexes,
   },
 });
 
+// TODO: add this to ui vocabs so it is translatable
+const FIELD_VALUE_ANY = "any";
+
 export const configLoaded = createAction<Config>("configLoaded");
 
-export const { setText, performSearch } = searchSlice.actions;
+export const { setText, setFilterValue, performSearch } = searchSlice.actions;
 
 export const { selectText, selectVisibleIndexes } = searchSlice.selectors;
+
+export const selectFilterOptions = createSelector(
+  [
+    (state): FilterableField[] => state.search.filterableFields,
+    (state): Config["vocabs"] => state.vocabs.vocabs,
+    (state): string => state.vocabs.language,
+  ],
+  (
+    filterableFields,
+    vocabs,
+    language,
+  ): {
+    id: string;
+    title: string;
+    options: { value: string; label: string }[];
+    value: string;
+  }[] =>
+    filterableFields.map((field) => ({
+      id: field.id,
+      // TODO: translate field ID to text using titleUri
+      title: field.id,
+      options: [
+        { value: FIELD_VALUE_ANY, label: "- Any -" },
+        ...Object.entries(vocabs[field.vocabUri][language].terms).map(
+          ([key, value]) => ({ value: key, label: value }),
+        ),
+      ],
+      value: field.value,
+    })),
+);
