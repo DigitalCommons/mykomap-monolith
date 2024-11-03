@@ -6,7 +6,7 @@ import {
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
-import { fetchData, selectFeatures } from "./mapSlice";
+import { fetchLocations, selectFeatures } from "./mapSlice";
 
 const MapWrapper = () => {
   const searchText = useAppSelector(selectText);
@@ -28,7 +28,7 @@ const MapWrapper = () => {
         setSourceLoaded(true);
       }
     });
-    dispatch(fetchData());
+    dispatch(fetchLocations());
 
     // Clean up on unmount
     return () => map.current?.remove();

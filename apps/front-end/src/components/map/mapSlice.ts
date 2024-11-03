@@ -16,13 +16,13 @@ export const mapSlice = createAppSlice({
   name: "map",
   initialState,
   reducers: (create) => ({
-    fetchData: create.asyncThunk(
+    fetchLocations: create.asyncThunk(
       async (_, thunkApi) => {
         const datasetId =
           new URLSearchParams(window.location.search).get("datasetId") ?? "";
         if (datasetId === "") {
           return thunkApi.rejectWithValue(
-            `No datasetId parameter given, so no dataset can be fetched`,
+            `No datasetId parameter given, so dataset locations cannot be fetched`,
           );
         }
 
@@ -48,7 +48,7 @@ export const mapSlice = createAppSlice({
         rejected: (state, action) => {
           state.status = "failed";
           state.allLocations = [];
-          console.error(action.payload);
+          console.error("Error detching locations", action.payload);
         },
       },
     ),
@@ -56,7 +56,7 @@ export const mapSlice = createAppSlice({
 });
 
 // We use the createSelector function from the Redux Toolkit for memoization, so that we don't need
-// to reform the features array every time the selector is called.
+// to re-form the features array every time the selector is called.
 // https://redux.js.org/usage/deriving-data-selectors#writing-memoized-selectors-with-reselect
 const selectAllFeatures = createSelector(
   [(state): number[][] => state.map.allLocations],
@@ -81,4 +81,4 @@ export const selectFeatures = createSelector(
     indexes === undefined ? allFeatures : indexes.map((ix) => allFeatures[ix]),
 );
 
-export const { fetchData } = mapSlice.actions;
+export const { fetchLocations } = mapSlice.actions;
