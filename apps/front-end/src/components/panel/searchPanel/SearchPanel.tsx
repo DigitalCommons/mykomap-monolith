@@ -27,10 +27,6 @@ const SearchPanel = () => {
     dispatch(performSearch());
   };
 
-  useEffect(() => {
-    dispatch(fetchConfig());
-  }, []);
-
   return (
     <form className="mx-auto max-w-md" onSubmit={onSubmit}>
       <Heading title="Search">
