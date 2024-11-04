@@ -1,0 +1,21 @@
+# Order of data fetching / what we implement
+
+- [x] getLocations (formerly detDataset) API request
+- [x] Render markers, requires:
+  - array of locations
+- [x] getConfig API request
+- [x] Render search panel, requires:
+  - knowledge of filterable fields that need to be displayed (select box headings)
+  - translations for all fields (vocabs)
+  - list of possible values for each field (select box options)
+  - search box, doesn't need prior knowledge of any data
+- Render directory panel, requires:
+  - knowledge of the field to display (e.g. countries)
+  - list of possible values for 1 field (countries) and their translations
+- getDatasetItem API request
+- Render popup, requires:
+  - full set of data for an initiative
+  - translations for all fields (vocabs)
+- [ ] getAbout API request
+- [ ] Render about panel, requires:
+  - content that describes a dataset
