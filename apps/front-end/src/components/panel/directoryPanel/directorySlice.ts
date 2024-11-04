@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
-import { configLoaded, selectFilterOptions } from "../searchPanel/searchSlice";
+import { selectFilterOptions } from "../searchPanel/searchSlice";
+import { configLoaded } from "../../../app/vocabsSlice";
 
 interface DirectoryState {
   fieldId: string;

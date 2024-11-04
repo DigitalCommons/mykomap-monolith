@@ -123,8 +123,6 @@ export const createMap = (): Map => {
     ],
   });
 
-  console.log("aaaaaaaa", map);
-
   map.on("load", () => {
     map.addSource("initiatives-geojson", {
       type: "geojson",

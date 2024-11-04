@@ -1,8 +1,8 @@
 {
   "recommendations": [
-    "bradlc.vscode-tailwindcss",
     "esbenp.prettier-vscode",
     "editorconfig.editorconfig",
-    "yoavbls.pretty-ts-errors"
+    "yoavbls.pretty-ts-errors",
+    "deinsoftware.vitest-snippets"
   ]
 }

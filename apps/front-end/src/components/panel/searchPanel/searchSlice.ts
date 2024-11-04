@@ -6,6 +6,7 @@ import {
 import { createAppSlice } from "../../../app/createAppSlice";
 import type { Config, VocabPropDef } from "../../../services";
 import { searchDataset } from "../../../services";
+import { configLoaded } from "../../../app/vocabsSlice";
 
 type FilterableField = {
   id: string;
@@ -109,8 +110,6 @@ export const searchSlice = createAppSlice({
 
 // TODO: add this to ui vocabs so it is translatable
 const FIELD_VALUE_ANY = "any";
-
-export const configLoaded = createAction<Config>("configLoaded");
 
 export const { setText, setFilterValue, performSearch } = searchSlice.actions;
 
