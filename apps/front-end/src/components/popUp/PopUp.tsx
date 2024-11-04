@@ -10,16 +10,46 @@ import { closePopUp, popUpIsOpen } from "./popUpSlice";
 import mockInitiative from "../../data/mockInitiative";
 
 const StyledPopUp = styled(Box)(({ theme }) => ({
+  width: "calc (100% - (var(--spacing-large) * 2))",
+  height: "calc(100% - (var(--spacing-large) * 2 + 80px))",
   display: "flex",
-  flexDirection: "row",
   backgroundColor: theme.palette.background.paper,
   padding: 0,
   borderRadius: "var(--border-radius-xlarge)",
-  maxWidth: 900,
-  maxHeight: 600,
-  margin: "auto",
+  margin: "auto var(--spacing-large)",
   outline: "none",
   position: "relative",
+  "@media (min-width: 768px)": {
+    width: "100%",
+    height: "auto",
+    maxWidth: 900,
+    maxHeight: 600,
+    margin: "auto",
+  },
+}));
+
+const StylePopUpInner = styled(Box)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  overflowY: "auto",
+  scrollbarWidth: "thin",
+  scrollbarColor: "rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1)",
+  "&::-webkit-scrollbar": {
+    width: "8px",
+  },
+  "&::-webkit-scrollbar-track": {
+    background: "rgba(0, 0, 0, 0.1)",
+    borderRadius: "10px",
+  },
+  "&::-webkit-scrollbar-thumb": {
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+    borderRadius: "10px",
+  },
+  "@media (min-width: 768px)": {
+    flexDirection: "row",
+    width: "100%",
+    overflowY: "hidden",
+  },
 }));
 
 const StyledPointer = styled(Box)(({ theme }) => ({
@@ -59,19 +89,21 @@ const PopUp = () => {
             }}
             buttonAction={handleClosePopUp}
           />
-          <LeftPane
-            name={mockInitiative.name}
-            primaryActivity={mockInitiative.primary_activity}
-            description={mockInitiative.description}
-            dcDomains={mockInitiative.dc_domains}
-          />
-          <RightPane
-            geocodedAddr={mockInitiative.geocoded_addr}
-            website={mockInitiative.website}
-            organisationalStructure={mockInitiative.organisational_structure}
-            typology={mockInitiative.typology}
-            dataSources={mockInitiative.data_sources}
-          />
+          <StylePopUpInner>
+            <LeftPane
+              name={mockInitiative.name}
+              primaryActivity={mockInitiative.primary_activity}
+              description={mockInitiative.description}
+              dcDomains={mockInitiative.dc_domains}
+            />
+            <RightPane
+              geocodedAddr={mockInitiative.geocoded_addr}
+              website={mockInitiative.website}
+              organisationalStructure={mockInitiative.organisational_structure}
+              typology={mockInitiative.typology}
+              dataSources={mockInitiative.data_sources}
+            />
+          </StylePopUpInner>
           <StyledPointer />
         </StyledPopUp>
       </Fade>

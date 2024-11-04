@@ -13,32 +13,47 @@ interface LeftPaneProps {
 }
 
 const StyledLeftPane = styled(Box)(() => ({
-  width: "60%",
   display: "flex",
   flexDirection: "column",
-  margin:
-    "var(--spacing-xlarge) 0 var(--spacing-xxlarge) var(--spacing-xxlarge)",
-  overflowY: "hidden",
+  margin: "var(--spacing-large)",
+  "@media (min-width: 768px)": {
+    width: "60%",
+    flexDirection: "column",
+    margin:
+      "var(--spacing-xlarge) 0 var(--spacing-xxlarge) var(--spacing-xxlarge)",
+    overflowY: "hidden",
+  },
 }));
 
 const StyledHeaderContainer = styled(Box)(() => ({
-  position: "sticky",
+  // position: "sticky",
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
-  padding: "0 var(--spacing-xxlarge) var(--spacing-xlarge) 0",
-  backgroundColor: "#fff",
+  padding: "0 0 var(--spacing-medium) 0",
+  backgroundColor: "#ffffff",
   top: 0,
   left: 0,
+  "& h1": {
+    fontSize: "var(--font-size-large)",
+    color: "var(--color-primary)",
+  },
+  "@media (min-width: 768px)": {
+    position: "sticky",
+    padding: "0 var(--spacing-xxlarge) var(--spacing-xlarge) 0",
+    "& h1": {
+      fontSize: "28px",
+    },
+  },
 }));
 
 const StyledContentContainer = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  overflowY: "auto",
+  // overflowY: "auto",
   whiteSpace: "pre-line",
-  paddingRight: "var(--spacing-large)",
-  marginRight: "var(--spacing-medium)",
+  paddingRight: 0,
+  marginRight: 0,
   scrollbarWidth: "thin",
   scrollbarColor: "rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1)",
   "&::-webkit-scrollbar": {
@@ -52,6 +67,26 @@ const StyledContentContainer = styled(Box)(() => ({
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     borderRadius: "10px",
   },
+  "& h4": {
+    fontSize: "var(--font-size-small)",
+    color: "var(--color-primary)",
+    marginBottom: "var(--spacing-xsmall)",
+  },
+  "& p": {
+    fontSize: "var(--font-size-small)",
+  },
+  "@media (min-width: 768px)": {
+    overflowY: "auto",
+    paddingRight: "var(--spacing-large)",
+    marginRight: "var(--spacing-medium)",
+    "& h4": {
+      fontSize: "var(--font-size-large)",
+    },
+
+    "& p": {
+      fontSize: "var(--font-size-medium)",
+    },
+  },
 }));
 
 const LeftPane = ({
@@ -63,21 +98,11 @@ const LeftPane = ({
   return (
     <StyledLeftPane>
       <StyledHeaderContainer>
-        <Typography
-          variant="h1"
-          sx={{ color: "var(--color-primary)", fontSize: "28px" }}
-        >
-          {name}
-        </Typography>
+        <Typography variant="h1">{name}</Typography>
       </StyledHeaderContainer>
       <StyledContentContainer>
         <Box>
-          <Typography
-            variant="h4"
-            sx={{ marginBottom: "var(--spacing-xsmall) !important" }}
-          >
-            Primary Activity
-          </Typography>
+          <Typography variant="h4">Primary Activity</Typography>
           <Typography
             variant="body1"
             sx={{
@@ -92,7 +117,10 @@ const LeftPane = ({
         <Box>
           <Typography
             variant="h4"
-            sx={{ marginBottom: "var(--spacing-xsmall) !important", marginTop: "var(--spacing-large)" }}
+            sx={{
+              marginBottom: "var(--spacing-xsmall) !important",
+              marginTop: "var(--spacing-large)",
+            }}
           >
             Domains
           </Typography>

@@ -18,16 +18,22 @@ const StyledRightPane = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
-  borderRadius: "0 var(--border-radius-xlarge) var(--border-radius-xlarge) 0",
+  borderRadius: "0 0 var(--border-radius-xlarge) var(--border-radius-xlarge)",
   color: "#fff",
   fontSize: "var(--font-size-medium)",
   lineHeight: "var(--line-height-medium)",
+  "@media (min-width: 768px)": {
+    borderRadius: "0 var(--border-radius-xlarge) var(--border-radius-xlarge) 0",
+  },
 }));
 
 const StyledTopBox = styled(Box)(() => ({
   backgroundColor: "var(--color-secondary-light)",
   padding: "var(--spacing-xlarge) var(--spacing-xxlarge)",
-  borderTopRightRadius: "var(--border-radius-xlarge)",
+  borderTopRightRadius: 0,
+  "@media (min-width: 768px)": {
+    borderTopRightRadius: "var(--border-radius-xlarge)",
+  },
 }));
 
 const StyledBottomBox = styled(Box)(() => ({
@@ -113,7 +119,13 @@ const RightPane = ({
             sx={{ listStyleType: "unset", margin: "unset", padding: "unset" }}
           >
             {dataSources.map((dataSource) => (
-              <ListItem key={dataSource} sx={{ display: "list-item", marginLeft: "var(--spacing-medium)" }}>
+              <ListItem
+                key={dataSource}
+                sx={{
+                  display: "list-item",
+                  marginLeft: "var(--spacing-medium)",
+                }}
+              >
                 {dataSource}
               </ListItem>
             ))}
