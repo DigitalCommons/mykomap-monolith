@@ -32,7 +32,7 @@ const PanelToggleButton = ({
       onClick={buttonAction}
       aria-label={isOpen ? "Close panel" : "Open panel"}
       id="panel-toggle-button"
-      title="Toggle Button"
+      title={isOpen ? "Close panel" : "Open panel"}
     >
       {isOpen ? <ArrowBackIosNewIcon /> : <ArrowForwardIosIcon />}
     </StyledIconButton>

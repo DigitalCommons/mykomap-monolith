@@ -1,5 +1,7 @@
-import { Map as MapLibreMap, NavigationControl, Popup } from "maplibre-gl"; // @ts-ignore
+import * as MapLibreGL from "maplibre-gl";
+import { NavigationControl, Popup } from "maplibre-gl";
 import type {
+  Map,
   GeoJSONSource,
   LngLatLike,
   MapLayerMouseEvent,
@@ -47,14 +49,14 @@ const getPopup = async (ix: number): Promise<string> => {
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
 
-const disableRotation = (map: MapLibreMap) => {
+const disableRotation = (map: Map) => {
   map.dragRotate.disable();
   map.keyboard.disable();
   map.touchZoomRotate.disableRotation();
 };
 
 const onMarkerClick = async (
-  map: MapLibreMap,
+  map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
@@ -81,7 +83,7 @@ const onMarkerClick = async (
 };
 
 const onMarkerHover = (
-  map: MapLibreMap,
+  map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
@@ -109,8 +111,8 @@ const onMarkerHover = (
 /**
  * Set up the sources and layers of the MapLibreGL map instance.
  */
-export const createMap = (): MapLibreMap => {
-  const map = new MapLibreMap({
+export const createMap = (): Map => {
+  const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
     minZoom: 1.3,
@@ -120,6 +122,8 @@ export const createMap = (): MapLibreMap => {
       [180, 78.1],
     ],
   });
+
+  console.log("aaaaaaaa", map);
 
   map.on("load", () => {
     map.addSource("initiatives-geojson", {
@@ -282,10 +286,10 @@ export const createMap = (): MapLibreMap => {
       tooltip?.remove();
       map.getCanvas().style.cursor = "";
     });
-  });
 
-  map.addControl(new NavigationControl(), "bottom-right");
-  disableRotation(map);
+    map.addControl(new NavigationControl(), "bottom-right");
+    disableRotation(map);
+  });
 
   return map;
 };
