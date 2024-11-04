@@ -16,7 +16,10 @@ export const {
 
 export type Config = ClientInferResponseBody<typeof contract.getConfig, 200> & {
   languages: string[];
-  ui: Dictionary<string | string[]> & { filterableFields: string[] };
+  ui: Dictionary<string | string[]> & {
+    filterableFields: string[];
+    directory_panel_field: string;
+  };
   fields: ConfigPropDefs;
 };
 
