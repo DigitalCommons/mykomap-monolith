@@ -80,7 +80,7 @@
     },
     "/dataset/{datasetId}/search": {
       "get": {
-        "description": "Obtains an array of dataset item IDs, which match the search criteria supplied",
+        "description": "Obtains an array of dataset item indexes, which match the search criteria supplied",
         "summary": "obtains a list of dataset entries satisfying the search criteria supplied",
         "tags": [],
         "parameters": [

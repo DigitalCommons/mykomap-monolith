@@ -1,17 +1,32 @@
-import type { PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAction,
+  createSelector,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
+import type { Config, VocabPropDef } from "../../../services";
 import { searchDataset } from "../../../services";
+import { configLoaded } from "../../../app/vocabsSlice";
+
+type FilterableField = {
+  id: string;
+  value: string;
+  vocabUri: string;
+  titleUri?: string;
+};
 
 export interface SearchSliceState {
   text: string;
-  visibleIds: number[];
-  status: string;
+  visibleIndexes: number[];
+  searchingStatus: string;
+  filterableFields: FilterableField[];
 }
 
 const initialState: SearchSliceState = {
   text: "",
-  visibleIds: [],
-  status: "idle",
+  visibleIndexes: [],
+  searchingStatus: "idle",
+  filterableFields: [],
 };
 
 export const searchSlice = createAppSlice({
@@ -21,6 +36,14 @@ export const searchSlice = createAppSlice({
     setText: create.reducer((state, action: PayloadAction<string>) => {
       state.text = action.payload;
     }),
+    setFilterValue: create.reducer(
+      (state, action: PayloadAction<{ id: string; value: string }>) => {
+        const field = state.filterableFields.find(
+          (f) => f.id === action.payload.id,
+        );
+        if (field) field.value = action.payload.value;
+      },
+    ),
     performSearch: create.asyncThunk(
       async (_, thunkApi) => {
         const datasetId =
@@ -37,7 +60,7 @@ export const searchSlice = createAppSlice({
         }
 
         const response = await searchDataset({
-          params: { datasetId: datasetId },
+          params: { datasetId },
           query: { text: search.text.toLowerCase() },
         });
         if (response.status === 200) {
@@ -50,26 +73,74 @@ export const searchSlice = createAppSlice({
       },
       {
         pending: (state) => {
-          state.status = "loading";
+          state.searchingStatus = "loading";
         },
         fulfilled: (state, action) => {
-          state.status = "idle";
-          state.visibleIds = action.payload ?? [];
+          state.searchingStatus = "idle";
+          state.visibleIndexes =
+            action.payload.map((index) => Number(index.substring(1))) ?? []; // remove leading '@' from index
         },
         rejected: (state, action) => {
-          state.status = "failed";
-          state.visibleIds = [];
-          console.error(action.payload);
+          state.searchingStatus = "failed";
+          state.visibleIndexes = [];
+          console.error("Error performing search", action.payload);
         },
       },
     ),
   }),
+  extraReducers: (builder) => {
+    builder.addCase(configLoaded, (state, action) => {
+      const config = action.payload;
+      state.filterableFields = config.ui.filterableFields.map((field) => {
+        const fieldDef = config.fields[field] as VocabPropDef;
+        return {
+          id: field,
+          value: FIELD_VALUE_ANY,
+          vocabUri: fieldDef.uri,
+          titleUri: fieldDef.titleUri,
+        };
+      });
+    });
+  },
   selectors: {
     selectText: (search) => search.text,
-    selectVisibleIds: (search) => search.visibleIds,
+    selectVisibleIndexes: (search) => search.visibleIndexes,
   },
 });
 
-export const { setText, performSearch } = searchSlice.actions;
+// TODO: add this to ui vocabs so it is translatable
+const FIELD_VALUE_ANY = "any";
 
-export const { selectText, selectVisibleIds } = searchSlice.selectors;
+export const { setText, setFilterValue, performSearch } = searchSlice.actions;
+
+export const { selectText, selectVisibleIndexes } = searchSlice.selectors;
+
+export const selectFilterOptions = createSelector(
+  [
+    (state): FilterableField[] => state.search.filterableFields,
+    (state): Config["vocabs"] => state.vocabs.vocabs,
+    (state): string => state.vocabs.language,
+  ],
+  (
+    filterableFields,
+    vocabs,
+    language,
+  ): {
+    id: string;
+    title: string;
+    options: { value: string; label: string }[];
+    value: string;
+  }[] =>
+    filterableFields.map((field) => ({
+      id: field.id,
+      // TODO: translate field ID to text using titleUri
+      title: field.id,
+      options: [
+        { value: FIELD_VALUE_ANY, label: "- Any -" },
+        ...Object.entries(vocabs[field.vocabUri][language].terms).map(
+          ([key, value]) => ({ value: key, label: value }),
+        ),
+      ],
+      value: field.value,
+    })),
+);

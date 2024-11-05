@@ -47,7 +47,11 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ResultsPanel = ({ onLinkClick, onTogglePanel, onClearSearch }) => {
+const ResultsPanel = ({
+  onLinkClick,
+  onTogglePanel,
+  onClearSearch,
+}: Record<string, unknown>) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectIsOpen);
 

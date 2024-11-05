@@ -1,5 +1,7 @@
-import { Map as MapLibreMap, NavigationControl, Popup } from "maplibre-gl"; // @ts-ignore
+import * as MapLibreGL from "maplibre-gl";
+import { NavigationControl, Popup } from "maplibre-gl";
 import type {
+  Map,
   GeoJSONSource,
   LngLatLike,
   MapLayerMouseEvent,
@@ -9,19 +11,32 @@ import Spiderfy from "@nazka/map-gl-js-spiderfy";
 import mapMarkerImgUrl from "./map-marker.png";
 import { getDatasetItem } from "../../services";
 
-const baseUri = "https://base.uri/";
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
 
-const getPopup = async (id: number): Promise<string> => {
+const getPopup = async (ix: number): Promise<string> => {
+  let name = "Unknown";
+  let desc = "Error retrieving data";
+
+  const datasetId =
+    new URLSearchParams(window.location.search).get("datasetId") ?? "";
+  if (datasetId === "") {
+    console.error(`No datasetId parameter given, so no popup can be retrieved`);
+  }
+
   const { body, status } = await getDatasetItem({
-    params: { datasetId: "test-500000", datasetItemId: id },
+    params: { datasetId, datasetItemIdOrIx: `@${ix}` },
   });
+  if (status === 200) {
+    name = String(body.name);
+    desc = String(body.desc);
+  }
+
   return `
     <div class="m-0 flex flex-row h-56 w-[35vw] p-0">
       <div class="scrolling-touch max-h-100 w-2/3 overflow-y-auto rounded-md bg-white px-6 py-4">
-        <h2 class="font-bold text-xl mb-1">${status === 200 ? body.name : "Unknown"}</h2>
-        <p class="font-light text-sm my-2 mx-0">${status === 200 ? body.desc : "Error retrieving data"}</p>
+        <h2 class="font-bold text-xl mb-1">${name}}</h2>
+        <p class="font-light text-sm my-2 mx-0">${desc}</p>
       </div>
       
       <div class="flex-grow w-1/3 overflow-y-auto rounded-r-md bg-gray-200 px-6 py-4">
@@ -34,23 +49,22 @@ const getPopup = async (id: number): Promise<string> => {
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
 
-const disableRotation = (map: MapLibreMap) => {
+const disableRotation = (map: Map) => {
   map.dragRotate.disable();
   map.keyboard.disable();
   map.touchZoomRotate.disableRotation();
 };
 
 const onMarkerClick = async (
-  map: MapLibreMap,
+  map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
   const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-  const id = feature.properties?.id;
-  const uri = `${baseUri}${id}`;
+  const ix = feature.properties?.ix;
 
-  console.log(`Clicked initiative ${id} ${coordinates}`);
-  const content = await getPopup(id);
+  console.log(`Clicked initiative @${ix} ${coordinates}`);
+  const content = await getPopup(ix);
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
@@ -64,12 +78,12 @@ const onMarkerClick = async (
     .setLngLat(coordinates)
     .setHTML(content)
     .addTo(map)
-    .addClassName(`popup-uri-${uri}`)
+    .addClassName(`popup-ix-${ix}`)
     .setOffset(popupOffset);
 };
 
 const onMarkerHover = (
-  map: MapLibreMap,
+  map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
@@ -97,8 +111,8 @@ const onMarkerHover = (
 /**
  * Set up the sources and layers of the MapLibreGL map instance.
  */
-export const createMap = (): MapLibreMap => {
-  const map = new MapLibreMap({
+export const createMap = (): Map => {
+  const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
     minZoom: 1.3,
@@ -236,16 +250,16 @@ export const createMap = (): MapLibreMap => {
       // console.log("Zoom level", map.getZoom());
 
       if (popup?.isOpen()) {
-        const uri = Array.from(popup?._container.classList)
-          .find((c: any) => c.startsWith("popup-uri-"))
-          ?.replace("popup-uri-", "");
-        const visibleFeatureUris = map
+        const ix = Array.from(popup?._container.classList)
+          .find((c: any) => c.startsWith("popup-ix-"))
+          ?.replace("popup-ix-", "");
+        const visibleFeatureIxs = map
           .queryRenderedFeatures(undefined, {
             layers: ["unclustered-point"],
           })
-          .map((f) => `${baseUri}${f?.properties.id}`);
+          .map((f) => f?.properties.ix);
 
-        if (!uri || !visibleFeatureUris.includes(uri)) {
+        if (!ix || !visibleFeatureIxs.includes(ix)) {
           // close the popup if the feature is no longer visible
           popup.remove();
         }
@@ -270,10 +284,10 @@ export const createMap = (): MapLibreMap => {
       tooltip?.remove();
       map.getCanvas().style.cursor = "";
     });
-  });
 
-  map.addControl(new NavigationControl(), "bottom-right");
-  disableRotation(map);
+    map.addControl(new NavigationControl(), "bottom-right");
+    disableRotation(map);
+  });
 
   return map;
 };

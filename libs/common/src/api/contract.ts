@@ -120,7 +120,7 @@ export const contract = c.router({
     summary:
       "obtains a list of dataset entries satisfying the search criteria supplied",
     description:
-      "Obtains an array of dataset item IDs, which match the search criteria supplied",
+      "Obtains an array of dataset item indexes, which match the search criteria supplied",
     query: z.object({
       text: z.string().optional().openapi({
         // description: "a text fragment to match",
@@ -141,8 +141,8 @@ export const contract = c.router({
       }),
     }),
     responses: {
-      200: z.array(DatasetItemId).openapi({
-        // description: "the dataset item IDs matching the supplied criteria",
+      200: z.array(DatasetItemIx).openapi({
+        // description: "the dataset item indexes matching the supplied criteria",
       }),
       400: ErrorInfo.openapi({
         // description: "bad input parameter",
