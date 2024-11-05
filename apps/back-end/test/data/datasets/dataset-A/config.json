@@ -5,8 +5,17 @@
     "https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/": "os"
   },
   "languages": ["en", "fr"],
+  "ui": {
+    "directory_panel_field": "country_id",
+    "filterableFields": [
+      "country_id",
+      "primary_activity",
+      "organisational_structure",
+      "typology"
+    ]
+  },
   "fields": {
-    "uid": "value",
+    "id": "value",
     "name": "value",
     "description": "value",
     "website": {
@@ -142,14 +151,20 @@
     },
     "ui": {
       "en": {
-        "primary_activity": "Primary Activity",
-        "organisational_structure": "Organisational Structure",
-        "typology": "Typology"
+        "title": "Translations",
+        "terms": {
+          "primary_activity": "Primary Activity",
+          "organisational_structure": "Organisational Structure",
+          "typology": "Typology"
+        }
       },
       "fr": {
-        "primary_activity": "Activité principale",
-        "organisational_structure": "Structure organisationnelle",
-        "typology": "Typologie"
+        "title": "Traductions",
+        "terms": {
+          "primary_activity": "Activité principale",
+          "organisational_structure": "Structure organisationnelle",
+          "typology": "Typologie"
+        }
       }
     }
   }
