@@ -9,6 +9,7 @@ const rootVariables = {
   "--color-secondary-light": "#535F6D",
   "--color-text": "#707070",
   "--color-neutral-light": "#F1F1F1",
+  "--color-neutral-tint": "#BAD9D6",
   "--border-radius-small": "7px",
   "--border-radius-xlarge": "24px",
   "--spacing-xsmall": "4px",

@@ -1,4 +1,4 @@
-import { createTheme, responsiveFontSizes } from "@mui/material/styles";
+import { createTheme} from "@mui/material/styles";
 import type { ThemeOptions } from "@mui/material/styles";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 

@@ -14,7 +14,7 @@ const clickInteraction = async (canvasElement: HTMLElement) => {
 };
 
 const meta = {
-  title: "Common/StandardButton",
+  title: "Components/Common/StandardButton",
   component: StandardButton,
   parameters: {
     layout: "centered",
