@@ -8,6 +8,7 @@
     "front-end:": "npm run --workspace=@mykomap/front-end",
     "back-end:": "npm run --workspace=@mykomap/back-end",
     "common:": "npm run --workspace=@mykomap/common",
+    "node-utils:": "npm run --workspace=@mykomap/node-utils",
     "prettier:check": "prettier -cu --no-color .",
     "prettier:format": "prettier -wu --no-color .",
     "test": "npm run test --workspaces"
