@@ -11,6 +11,7 @@ const rootVariables = {
   "--color-neutral-light": "#F1F1F1",
   "--color-neutral-tint": "#BAD9D6",
   "--border-radius-small": "7px",
+  "--border-radius-xlarge": "24px",
   "--spacing-xsmall": "4px",
   "--spacing-small": "8px",
   "--spacing-medium": "16px",
@@ -29,6 +30,9 @@ const rootVariables = {
   "--font-weight-normal": 400,
   "--font-weight-medium": 500,
   "--font-weight-bold": 600,
+  "--line-height-small": 1.5,
+  "--line-height-medium": 1.65,
+  "--line-height-large": 1.75,
 };
 
 const GlobalCSSVariables: FC = () => {
