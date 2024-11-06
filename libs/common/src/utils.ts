@@ -78,10 +78,11 @@ export function isPoint2d(x: unknown): x is Point2d {
  * - nulls and undefined values are not accepted.
  * - NaNs are not accepted.
  */
-export function toPoint2d<T = Point2d>(
-  x: unknown,
-  y: T | Point2d = [0, 0],
-): Point2d | T {
+
+export function toPoint2d(x: unknown, y: null): Point2d | null;
+export function toPoint2d(x: unknown, y?: undefined): Point2d | undefined;
+export function toPoint2d<T = Point2d>(x: unknown, y: T): Point2d | T;
+export function toPoint2d<T = Point2d>(x: unknown, y: T): Point2d | T {
   if (x instanceof Array) {
     if (x.length == 2) {
       if (typeof x[0] === "number" && typeof x[1] === "number")
@@ -137,13 +138,10 @@ export function isFiniteBox2d(x: Box2d): boolean {
  * - nulls and undefined values are not accepted.
  * - NaNs are not accepted.
  */
-export function toBox2d<T = Box2d>(
-  x: unknown,
-  y: Box2d | T = [
-    [0, 0],
-    [0, 0],
-  ],
-): Box2d | T {
+export function toBox2d(x: unknown, y: null): Box2d | null;
+export function toBox2d(x: unknown, y?: undefined): Box2d | undefined;
+export function toBox2d<T = Box2d>(x: unknown, y: T): Box2d | T;
+export function toBox2d<T = Box2d>(x: unknown, y: T): Box2d | T {
   if (x instanceof Array) {
     if (x.length >= 2) {
       if (isPoint2d(x[0]) && isPoint2d(x[1])) {
