@@ -99,18 +99,18 @@ export const contract = c.router({
       "Obtains all the locations for a dataset by the dataset ID, which by passing in the appropriate options, might be in different formats",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
-        // description: "uniquely specifies the dataset wanted",
+        description: "uniquely specifies the dataset wanted",
       }),
     }),
     responses: {
       200: Dataset.openapi({
-        // description: "the dataset matching the supplied ID",
+        description: "the dataset matching the supplied ID",
       }),
       400: ErrorInfo.openapi({
-        // description: "bad input parameter",
+        description: "bad input parameter",
       }),
       404: ErrorInfo.openapi({
-        // description: "no such dataset",
+        description: "no such dataset",
       }),
     },
   },
@@ -123,7 +123,7 @@ export const contract = c.router({
       "Obtains an array of dataset item indexes, which match the search criteria supplied",
     query: z.object({
       text: z.string().optional().openapi({
-        // description: "a text fragment to match",
+        description: "a text fragment to match",
       }),
       // Promote singular parameters to arrays (so that a single filter is possible!),
       // see https://github.com/ts-rest/ts-rest/issues/290#issuecomment-1658983510
@@ -132,23 +132,23 @@ export const contract = c.router({
         .or(QName.transform((v: string) => [v]))
         .optional()
         .openapi({
-          // description: "uniquely specifies the taxonomy filter items wanted",
+          description: "uniquely specifies the taxonomy filter items wanted",
         }),
     }),
     pathParams: z.object({
       datasetId: DatasetId.openapi({
-        // description: "uniquely specifies the dataset wanted",
+        description: "uniquely specifies the dataset wanted",
       }),
     }),
     responses: {
       200: z.array(DatasetItemIx).openapi({
-        // description: "the dataset item indexes matching the supplied criteria",
+        description: "the dataset item indexes matching the supplied criteria",
       }),
       400: ErrorInfo.openapi({
-        // description: "bad input parameter",
+        description: "bad input parameter",
       }),
       404: ErrorInfo.openapi({
-        // description: "no such dataset",
+        description: "no such dataset",
       }),
     },
   },
@@ -160,21 +160,22 @@ export const contract = c.router({
       "Obtains a single dataset item by its ID or its index, and the dataset's ID.",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
-        // description: "uniquely specifies the dataset wanted",
+        description: "uniquely specifies the dataset wanted",
       }),
-      datasetItemIdOrIx: DatasetItemId.openapi({
-        // description: "uniquely specifies the dataset item wanted within the dataset",
+      datasetItemIdOrIx: DatasetItemIdOrIx.openapi({
+        description:
+          "uniquely specifies the dataset item wanted within the dataset",
       }),
     }),
     responses: {
       200: DatasetItem.openapi({
-        // description: "the dataset item matching the supplied ID",
+        description: "the dataset item matching the supplied ID or index",
       }),
       400: ErrorInfo.openapi({
-        // description: "bad input parameter",
+        description: "bad input parameter",
       }),
       404: ErrorInfo.openapi({
-        // description: "no such dataset or dataset item",
+        description: "no such dataset or dataset item",
       }),
     },
   },
@@ -189,18 +190,18 @@ export const contract = c.router({
       "interpret identifers in the data and/or elsewhere.",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
-        // description: "uniquely specifies the dataset wanted",
+        description: "uniquely specifies the dataset wanted",
       }),
     }),
     responses: {
       200: ConfigData.openapi({
-        // description: "variuos configured parameters for a map",
+        description: "variuos configured parameters for a map",
       }),
       400: ErrorInfo.openapi({
-        // description: "bad input parameter",
+        description: "bad input parameter",
       }),
       404: ErrorInfo.openapi({
-        // description: "no such map",
+        description: "no such map",
       }),
     },
   },
@@ -212,7 +213,7 @@ export const contract = c.router({
       "Obtains version information about the backend Mykomap server, in the form of a JSON object",
     responses: {
       200: VersionInfo.openapi({
-        // description: "information about the current Mykomap server version",
+        description: "information about the current Mykomap server version",
       }),
     },
   },
