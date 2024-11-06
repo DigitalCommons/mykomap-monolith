@@ -20,18 +20,28 @@ import {
 } from "./panelSlice";
 
 const StyledPanel = styled(Drawer)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  height: "100%",
   flexShrink: 0,
   width: "calc(var(--panel-width-desktop) + 30px)",
   position: "relative",
   overflow: "visible",
+  backgroundColor: "#fff",
   "& .MuiDrawer-paper": {
     width: "var(--panel-width-desktop)",
     boxSizing: "border-box",
-    backgroundColor: "#fff",
     visibility: "visible !important",
     overflow: "visible",
     boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
   },
+}));
+
+const StyledBox = styled(Box)(() => ({
+  flexShrink: 0,
+  position: "relative",
+  overflow: "visible",
+  backgroundColor: "#fff",
 }));
 
 const Panel = () => {
@@ -70,59 +80,47 @@ const Panel = () => {
 
   return (
     <>
-      {/* Container for testing only */}
-      <Box
-        sx={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "#E2DFD2",
-        }}
-      >
-        {/* Desktop view  */}
-        {isMedium && (
-          <Box>
-            <StyledPanel variant="persistent" open={isOpen} anchor="left">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  height: "100%",
-                }}
-              >
-                <NavBar
-                  onTabChange={handleTabChange}
-                  selectedTab={selectedTab}
-                />
-                {/* <Box sx={{ flexGrow: 1 }}> */}
-                  {selectedTab === 0 && <DirectoryPanel />}
-                  {selectedTab === 1 && <SearchPanel />}
-                  {selectedTab === 2 && <AboutPanel />}
-                {/* </Box> */}
-              </Box>
-              <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
-            </StyledPanel>
-          </Box>
-        )}
+      {/* Desktop view  */}
+      {isMedium && (
+        <Box>
+          <StyledPanel variant="persistent" open={isOpen} anchor="left">
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+            >
+              <NavBar onTabChange={handleTabChange} selectedTab={selectedTab} />
+              {selectedTab === 0 && <DirectoryPanel />}
+              {selectedTab === 1 && <SearchPanel />}
+              {selectedTab === 2 && <AboutPanel />}
+            </Box>
+            <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
+          </StyledPanel>
+        </Box>
+      )}
 
-        {/* Mobile view  */}
-        {!isMedium && (
+      {/* Mobile view  */}
+      {!isMedium && (
+        <StyledBox>
           <Box
             sx={{
               flexGrow: 1,
               display: "flex",
               flexDirection: "column",
-              height: "100%",
+              height: selectedTab !== 0 ? "calc(100vh - 60px)" : "auto",
+              "@media screen and (min-height: 415px)": {
+                height: selectedTab !== 0 ? "calc(100vh - 80px)" : "auto",
+              },
             }}
           >
             {panelVisible && (
               <>
                 <CloseButton buttonAction={handlePanelClose} />
-                <Box sx={{ flexGrow: 1, backgroundColor: "#fff" }}>
-                  {selectedTab === 1 && <DirectoryPanel />}
-                  {selectedTab === 2 && <SearchPanel />}
-                  {selectedTab === 3 && <AboutPanel />}
-                </Box>
+                {selectedTab === 1 && <DirectoryPanel />}
+                {selectedTab === 2 && <SearchPanel />}
+                {selectedTab === 3 && <AboutPanel />}
               </>
             )}
             <Box
@@ -141,8 +139,8 @@ const Panel = () => {
               />
             </Box>
           </Box>
-        )}
-      </Box>
+        </StyledBox>
+      )}
     </>
   );
 };

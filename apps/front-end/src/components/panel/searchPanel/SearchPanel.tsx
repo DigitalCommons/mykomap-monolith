@@ -37,7 +37,7 @@ const SearchPanel = () => {
   };
 
   return (
-    <form className="mx-auto max-w-md" onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <Heading title="Search">
         <SearchBox
           value={currentText}
