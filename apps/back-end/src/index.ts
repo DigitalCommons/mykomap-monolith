@@ -45,6 +45,7 @@ export const start = async () => {
   if (import.meta.hot) {
     // @ts-ignore
     import.meta.hot.on("vite:beforeFullReload", () => {
+      console.log("Reload");
       app.close();
     });
   }
@@ -62,7 +63,11 @@ export const start = async () => {
     };
 
     // Register the API routes
-    await app.register(apiPlugin, { mykomap: opts, prefix: apiPathPrefix });
+    await app.register(apiPlugin, {
+      mykomap: opts,
+      prefix: apiPathPrefix,
+      responseValidation: true,
+    });
 
     // Start listening
     await app.listen({ port: listenPort });

@@ -40,8 +40,9 @@ export class Dataset {
   };
 
   getConfig = () => {
-    // TODO: implementation
-    return {};
+    return JSON.parse(
+      fs.readFileSync(path.join(this.folderPath, "config.json"), "utf8"),
+    );
   };
 
   getLocations = (): fs.ReadStream =>
