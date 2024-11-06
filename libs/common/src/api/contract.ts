@@ -57,9 +57,45 @@ const VocabDef = z.object({
 });
 const I18nVocabDefs = z.record(Iso639Set1Code, VocabDef);
 const VocabIndex = z.record(NCName, I18nVocabDefs);
+
+// The following specs shoud match the types in prop-spec.ts
+const FilterSpec = z.object({ preset: z.literal(true), to: z.unknown() });
+const CommonPropSpec = z.object({
+  from: z.string().optional(),
+  titleUri: z.string().optional(),
+  filter: z.union([FilterSpec, z.boolean()]).optional(),
+  search: z.boolean().optional(),
+});
+const InnerValuePropSpec = z.object({
+  type: z.literal("value"),
+  as: z
+    .union([z.literal("string"), z.literal("boolean"), z.literal("number")])
+    .optional(),
+  strict: z.boolean().optional(),
+});
+const InnerVocabPropSpec = z.object({
+  type: z.literal("vocab"),
+  uri: z.union([PrefixUri, QName]),
+});
+const InnerPropSpec = z.union([InnerValuePropSpec, InnerVocabPropSpec]);
+const OuterMultiPropSpec = z.object({
+  type: z.literal("multi"),
+  of: InnerPropSpec,
+});
+const ValuePropSpec = CommonPropSpec.merge(InnerValuePropSpec);
+const VocabPropSpec = CommonPropSpec.merge(InnerVocabPropSpec);
+const MultiPropSpec = CommonPropSpec.merge(OuterMultiPropSpec);
+const PropSpec = z.discriminatedUnion("type", [
+  ValuePropSpec,
+  VocabPropSpec,
+  MultiPropSpec,
+]);
+const PropSpecs = z.record(z.string(), PropSpec);
+
 const ConfigData = z.object({
   prefixes: PrefixIndex,
   vocabs: VocabIndex,
+  itemProps: PropSpecs,
 });
 const VersionInfo = z.object({
   name: z.string(),
@@ -79,15 +115,21 @@ export const schemas = {
   DatasetItemIx,
   DatasetItem,
   Dataset,
+  FilterSpec,
   I18nVocabDefs,
   Iso639Set1Code,
+  MultiPropSpec,
   NCName,
   PrefixUri,
   PrefixIndex,
+  PropSpec,
+  PropSpecs,
   QName,
+  ValuePropSpec,
   VersionInfo,
   VocabDef,
   VocabIndex,
+  VocabPropSpec,
   ErrorInfo,
 };
 
