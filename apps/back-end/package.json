@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
-    "prebuild": "npm -w ../../libs/common run build",
+    "prebuild": "npm -w ../../libs/common -w ../../libs/node-utils run build",
     "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",
     "start:attached": "npm run start",
@@ -19,6 +19,7 @@
   "dependencies": {
     "@fastify/cors": "^9.0.1",
     "@mykomap/common": "*",
+    "@mykomap/node-utils": "*",
     "@seriousme/openapi-schema-validator": "^2.2.1",
     "@ts-rest/fastify": "^3.51.0",
     "close-with-grace": "^2.1.0",
