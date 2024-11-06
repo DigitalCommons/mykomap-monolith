@@ -18,7 +18,6 @@
     "start": "node ./start.js",
     "start:attached": "npm run start",
     "test": "vitest run",
-    "predev": "npm -w ../../libs/common run build",
     "dev": "vite-node -w start.ts"
   },
   "dependencies": {
