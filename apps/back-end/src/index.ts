@@ -5,6 +5,11 @@ import qs from "qs";
 import apiPlugin from "./pluginApi.js";
 export { apiPlugin }; // For use as a library
 
+// Something is weird about udsv, we can't import nor export Schema directly and
+// seem to have to do this...
+import udsv from "udsv";
+export type Schema = ReturnType<typeof udsv.inferSchema>;
+
 // Set the number of milliseconds required for a graceful close to complete
 const closeGraceDelay = Number(process.env.FASTIFY_CLOSE_GRACE_DELAY) || 500;
 
