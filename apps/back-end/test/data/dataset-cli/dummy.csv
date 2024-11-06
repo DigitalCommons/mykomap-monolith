@@ -1,0 +1,5 @@
+Identifier,Name,Desc,Address,Websites,Activity,Other Activities,Latitude,Longitude,Geocoded Latitude,Geocoded Longitude,Validated
+aaa,"Apple Co-op",We grow fruit.","1 Apple Way, Appleton",http://apple.coop,AM130,,0,0,51.6084367,-3.6547778,true
+bbb,"Banana Co","We straighten bananas.","1 Banana Boulevard, Skinningdale",http://banana.com,AM60,AM70;AM120,0,0,55.9646979,-3.1733052,false
+ccc,"The Cabbage Collective","We are artists.","2 Cabbage Close, Caulfield",http://cabbage.coop;http://cabbage.com,AM60,AM130,,,54.9744687,-1.6108945,true
+ddd,"The Chateau","The Chateau is not a place, it is a state of mind.",,,,,,,,,
