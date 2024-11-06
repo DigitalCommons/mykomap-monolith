@@ -1,0 +1,18 @@
+{
+  "id": "bbb",
+  "name": "Banana Co",
+  "manlat": 0,
+  "manlng": 0,
+  "lat": 55.964698,
+  "lng": -3.173305,
+  "address": "1 Banana Boulevard, Skinningdale",
+  "activity": "AM60",
+  "otherActivities": [
+    "AM70",
+    "AM120"
+  ],
+  "websites": [
+    "http://banana.com"
+  ],
+  "validated": false
+}
