@@ -1,9 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
-import { TsRestResponseError } from "@ts-rest/core";
+import { ServerInferResponseBody, TsRestResponseError } from "@ts-rest/core";
 
 import { contract } from "@mykomap/common";
 import { Dataset } from "./Dataset.js";
+
+type GetConfigBody = ServerInferResponseBody<typeof contract.getConfig, 200>;
+type SearchDatasetBody = ServerInferResponseBody<
+  typeof contract.searchDataset,
+  200
+>;
 
 const datasets: { [id: string]: Dataset } = {};
 
@@ -41,7 +47,7 @@ export const getDatasetItem = (datasetId: string, datasetItemId: number) => {
   return dataset.getItem(datasetItemId);
 };
 
-export const getDatasetConfig = (datasetId: string) => {
+export const getDatasetConfig = (datasetId: string): GetConfigBody => {
   const dataset = getDatasetOrThrow404(datasetId);
   return dataset.getConfig();
 };
@@ -55,7 +61,10 @@ export const searchDataset = (
   datasetId: string,
   filter?: string[],
   text?: string,
-): number[] => {
+): SearchDatasetBody => {
   const dataset = getDatasetOrThrow404(datasetId);
-  return dataset.search(filter, text);
+  const visibleIndexes = dataset.search(filter, text);
+  // Add '@' before index numbers.
+  // TODO: Maybe skip this step and just return numbers?
+  return visibleIndexes.map((index) => `@${index}`);
 };

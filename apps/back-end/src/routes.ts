@@ -3,8 +3,13 @@ import { RouterImplementation } from "@ts-rest/fastify";
 import { contract } from "@mykomap/common";
 import { FastifyPluginOptions, FastifyReply, FastifyRequest } from "fastify";
 import fs from "node:fs";
-import path from "node:path";
-import { initDatasets } from "./services/datasetService.js";
+import {
+  getDatasetConfig,
+  getDatasetItem,
+  getDatasetLocations,
+  initDatasets,
+  searchDataset,
+} from "./services/datasetService.js";
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
@@ -20,36 +25,6 @@ export interface MykomapRouterConfig extends FastifyPluginOptions {
 
 /** The Mykomap API contract type */
 type Contract = typeof contract;
-
-//////////////////////////////////////////////////////////////////////
-// Helper functions
-
-/** Send a JSON file verbatim as Fastify's reply
- *
- * This function sends the file as a stream attached to the reply, which avoids
- * the need to load the file - which is potentially very large - deserialise it
- * from JSON, and then re-serialise it back to JSON.
- *
- * One consequence of this is that the content cannot be validated. You must
- * supply pre-validated files!
- *
- * @return true on success, false if the path doesn't correspond to a valid file
- * (in which case nothing can be sent).If successful, the reply will have
- * been modified to have an `application/json` content type, and the file
- * content attached as a stream. This reply can be returned from the handler
- * instead of a JSON object.
- */
-function sendJson(req: FastifyRequest, reply: FastifyReply, file: string) {
-  req.log.debug(`data file path is '${file}`);
-
-  if (!fs.existsSync(file)) return false;
-
-  const stream = fs.createReadStream(file, "utf8");
-  reply.header("Content-Type", "application/json");
-  reply.send(stream);
-
-  return true;
-}
 
 //////////////////////////////////////////////////////////////////////
 
@@ -78,94 +53,59 @@ export function MykomapRouter(
         `'${opts.mykomap.dataRoot}'.`,
     );
 
-  // TODO: uncomment this when the test/data has been created with the updated structure
-  // initDatasets(opts.mykomap.dataRoot);
-
-  // Concatenates the path components into an absolute file path
-  const filePath = (...components: string[]): string => {
-    const p = path.join(opts.mykomap.dataRoot ?? "", ...components) + ".json";
-    return p;
-  };
+  console.log("Initialising datasets...");
+  initDatasets(opts.mykomap.dataRoot);
 
   // Construct and return the implementation object
   return {
-    async getDatasetLocations({ params: { datasetId }, request, reply }) {
-      // Validate the parameters some more
+    getDatasetLocations: async ({ params: { datasetId }, request, reply }) => {
+      const stream = getDatasetLocations(datasetId);
+      reply.header("Content-Type", "application/json");
 
-      if (
-        !sendJson(request, reply, filePath("datasets", datasetId, "locations"))
-      )
-        throw new TsRestResponseError(contract.getDatasetLocations, {
-          status: 404,
-          body: { message: `unknown datasetId '${datasetId}'` },
-        });
-
+      // Send the locations as a stream attached to the reply, which avoids the need to load the
+      // file - which is potentially very large - deserialise it from JSON, and then re-serialise it
+      // back to JSON. One consequence of this is that the content cannot be validated. You must
+      // supply a pre-validated locations.json!
+      reply.send(stream);
       return reply;
     },
 
-    async searchDataset({
+    searchDataset: async ({
       params: { datasetId },
       query: { filter, text },
-      request,
-      reply,
-    }) {
-      const filter2 = filter ?? [];
+    }) => {
+      const visibleIndexes = searchDataset(datasetId, filter, text);
 
-      const components = ["datasets", datasetId, "search", ...filter2, "text"];
-      if (text !== undefined) components.push(encodeURIComponent(text));
-
-      if (!sendJson(request, reply, filePath(...components)))
-        return {
-          status: 200,
-          body: [],
-        };
-
-      return reply;
+      return { status: 200, body: visibleIndexes };
     },
 
-    async getDatasetItem({
-      params: { datasetId, datasetItemIdOrIx },
-      request,
-      reply,
-    }) {
-      if (
-        // datasetItemIdOrIx could be either an ID or an Index. But for the purposes here,
-        // which is a stub implementation, we don't distinguish.
-        !sendJson(
-          request,
-          reply,
-          filePath(
-            "datasets",
-            datasetId,
-            "initiatives",
-            String(datasetItemIdOrIx),
-          ),
-        )
-      )
-        throw new TsRestResponseError(contract.getDatasetItem, {
-          status: 404,
-          body: { message: `item retrieve failed` },
-        });
-
-      return reply;
-    },
-
-    async getConfig({ params: { datasetId }, request, reply }) {
-      // Validate the parameters some more
-
-      if (!sendJson(request, reply, filePath("config", datasetId, "config")))
+    getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
+      // datasetItemIdOrIx could be either an ID or an Index. But for the purposes here, just
+      // assume it is an Index.
+      // TODO: extend this method to handle full IDs too
+      if (!datasetItemIdOrIx.startsWith("@")) {
         throw new TsRestResponseError(contract.getConfig, {
-          status: 404,
-          body: { message: `unknown datasetId '${datasetId}'` },
+          status: 400,
+          body: { message: `We can only handle item indexes right now` },
         });
+      }
 
-      return reply;
+      const itemId = Number(datasetItemIdOrIx.substring(1));
+      const item = getDatasetItem(datasetId, itemId);
+
+      return { status: 200, body: item };
     },
 
-    async getVersion(req) {
+    getConfig: async ({ params: { datasetId } }) => {
+      const config = getDatasetConfig(datasetId);
+
+      return { status: 200, body: config };
+    },
+
+    getVersion: async () => {
       return {
-        body: __BUILD_INFO__,
         status: 200,
+        body: __BUILD_INFO__,
       };
     },
   };
