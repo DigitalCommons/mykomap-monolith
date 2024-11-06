@@ -44,6 +44,7 @@
     "@types/node": "^22.5.4",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
+    "dir-compare": "^5.0.0",
     "fastify": "^4.28.1",
     "fastify-cli": "^6.3.0",
     "nodemon": "^3.1.4",
