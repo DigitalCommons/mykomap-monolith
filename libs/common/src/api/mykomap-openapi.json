@@ -323,11 +323,240 @@
                           ]
                         }
                       }
+                    },
+                    "itemProps": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "discriminator": {
+                          "propertyName": "type"
+                        },
+                        "oneOf": [
+                          {
+                            "type": "object",
+                            "properties": {
+                              "from": {
+                                "type": "string"
+                              },
+                              "titleUri": {
+                                "type": "string"
+                              },
+                              "filter": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "preset": {
+                                        "type": "boolean",
+                                        "enum": [
+                                          true
+                                        ]
+                                      },
+                                      "to": {
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "preset"
+                                    ]
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "search": {
+                                "type": "boolean"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "value"
+                                ]
+                              },
+                              "as": {
+                                "type": "string",
+                                "enum": [
+                                  "string",
+                                  "boolean",
+                                  "number"
+                                ]
+                              },
+                              "strict": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "type"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "from": {
+                                "type": "string"
+                              },
+                              "titleUri": {
+                                "type": "string"
+                              },
+                              "filter": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "preset": {
+                                        "type": "boolean",
+                                        "enum": [
+                                          true
+                                        ]
+                                      },
+                                      "to": {
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "preset"
+                                    ]
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "search": {
+                                "type": "boolean"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "vocab"
+                                ]
+                              },
+                              "uri": {
+                                "oneOf": [
+                                  {
+                                    "type": "string"
+                                  },
+                                  {
+                                    "type": "string"
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "uri"
+                            ]
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "from": {
+                                "type": "string"
+                              },
+                              "titleUri": {
+                                "type": "string"
+                              },
+                              "filter": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "preset": {
+                                        "type": "boolean",
+                                        "enum": [
+                                          true
+                                        ]
+                                      },
+                                      "to": {
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "preset"
+                                    ]
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "search": {
+                                "type": "boolean"
+                              },
+                              "type": {
+                                "type": "string",
+                                "enum": [
+                                  "multi"
+                                ]
+                              },
+                              "of": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "enum": [
+                                          "value"
+                                        ]
+                                      },
+                                      "as": {
+                                        "type": "string",
+                                        "enum": [
+                                          "string",
+                                          "boolean",
+                                          "number"
+                                        ]
+                                      },
+                                      "strict": {
+                                        "type": "boolean"
+                                      }
+                                    },
+                                    "required": [
+                                      "type"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "enum": [
+                                          "vocab"
+                                        ]
+                                      },
+                                      "uri": {
+                                        "oneOf": [
+                                          {
+                                            "type": "string"
+                                          },
+                                          {
+                                            "type": "string"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "uri"
+                                    ]
+                                  }
+                                ]
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "of"
+                            ]
+                          }
+                        ]
+                      }
                     }
                   },
                   "required": [
                     "prefixes",
-                    "vocabs"
+                    "vocabs",
+                    "itemProps"
                   ],
                   "description": "variuos configured parameters for a map"
                 }
