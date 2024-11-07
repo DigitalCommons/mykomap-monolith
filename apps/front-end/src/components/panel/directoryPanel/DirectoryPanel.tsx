@@ -2,31 +2,31 @@ import Heading from "../heading/Heading";
 import DirectoryItem from "./directoryItem/DirectoryItem";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 
 // Mock data
-const countries = [
-  { id: "1", name: "Argentina", link: "" },
-  { id: "2", name: "Australia", link: "" },
-  { id: "3", name: "Austria", link: "" },
-  { id: "4", name: "Bangladesh", link: "" },
-  { id: "5", name: "Barbados", link: "" },
-  { id: "6", name: "Belarus", link: "" },
-  { id: "7", name: "Belgium", link: "" },
-  { id: "8", name: "Bolivia", link: "" },
-  { id: "9", name: "Brazil", link: "" },
-  { id: "10", name: "Bulgaria", link: "" },
-  { id: "11", name: "Canada", link: "" },
-  { id: "12", name: "Chile", link: "" },
-  { id: "13", name: "China", link: "" },
-  { id: "14", name: "Colombia", link: "" },
-  { id: "15", name: "Costa Rica", link: "" },
-  { id: "16", name: "Côte d'Ivoire", link: "" },
-  { id: "17", name: "Curaçao", link: "" },
-  { id: "18", name: "Cyprus", link: "" },
-  { id: "19", name: "Czechia", link: "" },
+const countries: { id: string; name: string }[] = [
+  { id: "1", name: "Argentina" },
+  { id: "2", name: "Australia" },
+  { id: "3", name: "Austria" },
+  { id: "4", name: "Bangladesh" },
+  { id: "5", name: "Barbados" },
+  { id: "6", name: "Belarus" },
+  { id: "7", name: "Belgium" },
+  { id: "8", name: "Bolivia" },
+  { id: "9", name: "Brazil" },
+  { id: "10", name: "Bulgaria" },
+  { id: "11", name: "Canada" },
+  { id: "12", name: "Chile" },
+  { id: "13", name: "China" },
+  { id: "14", name: "Colombia" },
+  { id: "15", name: "Costa Rica" },
+  { id: "16", name: "Côte d'Ivoire" },
+  { id: "17", name: "Curaçao" },
+  { id: "18", name: "Cyprus" },
+  { id: "19", name: "Czechia" },
 ];
 
 interface DirectoryPanelProps {
@@ -46,27 +46,43 @@ const StyledDirectoryPanel = styled(Box)(() => ({
   },
 }));
 
-const StyledLink = styled(Link)(() => ({
-  color: "var(--color-primary)",
+const StyledButton = styled(Button)(() => ({
+  width: "100%",
+  padding: "var(--spacing-small) var(--spacing-medium)",
   display: "block",
+  fontSize: "var(--font-size-medium)",
+  fontWeight: "var(--font-weight-medium)",
+  textDecoration: "none",
+  textAlign: "left",
+  color: "var(--color-primary)",
+  backgroundColor: "transparent",
+  borderRadius: 0,
+  boxShadow: "none",
   "&:hover": {
     backgroundColor: "var(--color-neutral-light)",
   },
+  "@media (min-width: 768px)": {
+    padding: "var(--spacing-small) var(--spacing-large)",
+  },
 }));
 
-const DirectoryPanel = ({onClick}: DirectoryPanelProps) => {
+const DirectoryPanel = ({ onClick }: DirectoryPanelProps) => {
+  const showAllEntries = () => {
+    console.log("Show all entries");
+  };
+
   return (
     <>
       <Heading title="Directory" />
       <StyledDirectoryPanel>
         <List>
           <ListItem>
-            <StyledLink href="" role="link" onClick={onClick}>
+            <StyledButton role="button" onClick={showAllEntries}>
               All Entries
-            </StyledLink>
+            </StyledButton>
           </ListItem>
           {countries.map((country) => (
-            <DirectoryItem key={country.id} {...country} link={country.link} />
+            <DirectoryItem key={country.id} {...country} />
           ))}
         </List>
       </StyledDirectoryPanel>
