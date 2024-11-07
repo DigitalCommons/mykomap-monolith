@@ -36,6 +36,13 @@ const SearchPanel = () => {
     dispatch(performSearch());
   };
 
+  const onClear = () => {
+    console.log("Clearing search");
+    setCurrentText("");
+    dispatch(setText(""));
+    dispatch(performSearch());
+  };
+
   return (
     <form onSubmit={onSubmit}>
       <Heading title="Search">
@@ -43,6 +50,7 @@ const SearchPanel = () => {
           value={currentText}
           onChange={onSearchChange}
           onSubmit={onSubmit}
+          clearSearch={onClear}
         />
       </Heading>
       <ContentPanel>
