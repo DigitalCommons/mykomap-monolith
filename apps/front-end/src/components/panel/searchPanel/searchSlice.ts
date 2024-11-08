@@ -91,13 +91,13 @@ export const searchSlice = createAppSlice({
   extraReducers: (builder) => {
     builder.addCase(configLoaded, (state, action) => {
       const config = action.payload;
-      state.filterableFields = config.ui.filterableFields.map((field) => {
-        const fieldDef = config.fields[field] as VocabPropDef;
+      state.filterableFields = config.ui.filterableFields.map((name) => {
+        const propDef = config.itemProps[name] as VocabPropDef;
         return {
-          id: field,
+          id: name,
           value: FIELD_VALUE_ANY,
-          vocabUri: fieldDef.uri,
-          titleUri: fieldDef.titleUri,
+          vocabUri: propDef.uri,
+          titleUri: propDef.titleUri,
         };
       });
     });

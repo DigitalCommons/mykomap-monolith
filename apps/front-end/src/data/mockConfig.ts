@@ -18,10 +18,10 @@ const mockConfig: Config = {
       // "data_sources", TODO: re-add this once we can handle multi vocabs
     ],
   },
-  fields: {
-    id: "value",
-    name: "value",
-    description: "value",
+  itemProps: {
+    id: { type: "value" },
+    name: { type: "value" },
+    description: { type: "value" },
     website: {
       type: "multi",
       of: {
@@ -51,11 +51,11 @@ const mockConfig: Config = {
       uri: "bmt",
       titleUri: "ui:typology",
     },
-    latitude: "value",
-    longitude: "value",
-    geocontainer_lat: "value",
-    geocontainer_lon: "value",
-    geocoded_addr: "value",
+    latitude: { type: "value" },
+    longitude: { type: "value" },
+    geocontainer_lat: { type: "value" },
+    geocontainer_lon: { type: "value" },
+    geocoded_addr: { type: "value" },
     data_sources: {
       type: "multi",
       of: { type: "vocab", uri: "dso" },

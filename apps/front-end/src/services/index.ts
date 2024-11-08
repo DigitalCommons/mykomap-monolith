@@ -20,7 +20,6 @@ export type Config = ClientInferResponseBody<typeof contract.getConfig, 200> & {
     filterableFields: string[];
     directory_panel_field: string;
   };
-  fields: ConfigPropDefs;
 };
 
 // TODO: we can remove these types, once the full structure of the config JSON has been added to the
