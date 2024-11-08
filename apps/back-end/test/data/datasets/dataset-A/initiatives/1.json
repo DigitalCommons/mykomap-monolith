@@ -4,14 +4,14 @@
   "description": "We sell pears",
   "website": "https://pears.coop",
   "dc_domains": ["pears.coop", "pearsunited.coop"],
-  "country_id": "coun:FR",
-  "primary_activity": "aci:ICA230",
-  "organisational_structure": "os:OS90",
-  "typology": "bmt:BMT30",
+  "country_id": "FR",
+  "primary_activity": "ICA230",
+  "organisational_structure": "OS90",
+  "typology": "BMT20",
   "latitude": 50.850452,
   "longitude": 0.924728,
   "geocontainer_lat": 50.85045216,
   "geocontainer_lon": 0.92472819,
   "geocoded_addr": "79 rue de la Mare aux Carats, 34090 Montpellier, France",
-  "data_sources": ["dso:DC"]
+  "data_sources": ["DC"]
 }

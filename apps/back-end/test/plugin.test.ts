@@ -47,13 +47,86 @@ describe("getDatasetLocations", () => {
 
 describe("searchDataset", () => {
   describe("dataset exists", () => {
-    test("status code 200", async (t) => {
+    test.each([
+      "filter=country_id:GB:BMT20",
+      "filter=country_id:GB:&text=pear",
+      "filter=country+id:GB",
+    ])("Malformed search query '%s' returns status code 400", async (query) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/search?filter=a:foo",
+        url: `/dataset/dataset-A/search?${query}`,
+      });
+      expect(res.statusCode).toBe(400);
+    });
+
+    test.each([
+      "filter=organisational_structure:OS60",
+      "filter=country_id:GB&filter=organisational_structure:OS60",
+      "filter=made_up_prop:MUP1",
+    ])(
+      "Search query '%s' contains non-searchable prop so returns status code 400",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(400);
+      },
+    );
+
+    test.each([
+      "filter=primary_activity:ICA210&filter=primary_activity:ICA220",
+      "filter=country_id:FR&filter=primary_activity:ICA210",
+      "text=blahblahblah",
+      "filter=primary_activity:ICA210&text=blahblahblah",
+    ])("Search query '%s' matches no items", async (query) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: `/dataset/dataset-A/search?${query}`,
       });
       expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual([]);
     });
+
+    test.each([
+      "filter=country_id:GB",
+      "filter=country_id:GB&filter=typology:BMT20",
+      "filter=country_id:GB&filter=typology:BMT20",
+      "text=1+West+Street",
+      "filter=country_id:GB&text=1+West+Street",
+    ])("Search query '%s' matches only item 0", async (query) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: `/dataset/dataset-A/search?${query}`,
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual(["@0"]);
+    });
+
+    test.each([
+      "filter=primary_activity:ICA230",
+      "text=pears.coop",
+      "text=pears+coop",
+    ])("Search query '%s' matches only item 1", async (query) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: `/dataset/dataset-A/search?${query}`,
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual(["@1"]);
+    });
+
+    test.each(["filter=typology:BMT20", "text=coop"])(
+      "Search query '%s' matches item 0 and 1",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual(["@0", "@1"]);
+      },
+    );
   });
 
   describe("dataset does not exist", () => {
