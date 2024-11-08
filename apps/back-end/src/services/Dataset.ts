@@ -82,11 +82,7 @@ export class Dataset {
   }
 
   getItem = (itemId: number) => {
-    if (
-      !fs.existsSync(
-        path.join(this.folderPath, "initiatives", `${itemId}.json`),
-      )
-    ) {
+    if (!fs.existsSync(path.join(this.folderPath, "items", `${itemId}.json`))) {
       throw new TsRestResponseError(contract.getDatasetItem, {
         status: 404,
         body: {
@@ -97,7 +93,7 @@ export class Dataset {
 
     return JSON.parse(
       fs.readFileSync(
-        path.join(this.folderPath, "initiatives", `${itemId}.json`),
+        path.join(this.folderPath, "items", `${itemId}.json`),
         "utf8",
       ),
     );
