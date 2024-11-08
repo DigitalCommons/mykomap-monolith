@@ -94,11 +94,11 @@ export const searchSlice = createAppSlice({
     builder.addCase(configLoaded, (state, action) => {
       const config = action.payload;
       const filterableVocabProps: FilterableVocabProp[] = [];
-      Object.entries(config.itemProps).forEach(([name, propSpec]) => {
+      Object.entries(config.itemProps).forEach(([propId, propSpec]) => {
         if (propSpec.filter) {
           if (propSpec.type === "vocab") {
             filterableVocabProps.push({
-              id: name,
+              id: propId,
               value: PROP_VALUE_ANY,
               vocabUri: propSpec.uri.replace(/:$/, ""), // Strip the trailing colon from this (assumed) abbrev URI
               titleUri: propSpec.titleUri,
@@ -108,7 +108,7 @@ export const searchSlice = createAppSlice({
             propSpec.of.type === "vocab"
           ) {
             filterableVocabProps.push({
-              id: name,
+              id: propId,
               value: PROP_VALUE_ANY,
               vocabUri: propSpec.of.uri.replace(/:$/, ""),
               titleUri: propSpec.titleUri,

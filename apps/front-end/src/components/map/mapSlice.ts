@@ -1,8 +1,8 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { z } from "zod";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
 import { notNullish, schemas } from "@mykomap/common";
-import { z } from "zod";
 
 export type Location = z.infer<typeof schemas.Location>;
 export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
