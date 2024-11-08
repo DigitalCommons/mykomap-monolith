@@ -60,6 +60,15 @@ export const NCName =
  */
 export const QName = new RegExp(`${NCName.source}[:]${NCName.source}`, "imsu");
 
+/** Match an AbbrevUri
+ *
+ * An abbreviated URI. This is essentially a QName without the second NCName.
+ *
+ * It represent a pre-defined URI base using the abbreviated name, followed by a
+ * colon.
+ */
+export const AbbrevUri = new RegExp(`${NCName.source}[:]`, "imsu");
+
 /** A Prefix-URI scheme.
  *
  * Note, limited to http and https.
