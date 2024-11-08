@@ -3,6 +3,7 @@
  * These are concrete classes implementing the relevant PropSpec interfaces.
  *
  */
+import { z } from "zod";
 
 import {
   CommonPropSpec,
@@ -16,8 +17,6 @@ import {
 } from "./prop-specs.js";
 import { stringify } from "./utils.js";
 import { schemas } from "./api/contract.js";
-
-import { z } from "zod";
 
 // Infer the types of various contract values....
 type VocabDef = z.infer<typeof schemas.VocabDef>;
@@ -65,7 +64,8 @@ export class PropDefServices {
 
   /** Looks up an interationalised vocab given its URI */
   i18nVocab(uri: NCName): I18nVocabDefs {
-    const vocab = this._vocabs[uri];
+    const abbrev = uri.replace(/:$/, ""); // Strip the trailing colon from this (assumed) abbrev URI
+    const vocab = this._vocabs[abbrev];
     if (vocab == null) throw new Error(`unknown vocab URI: '${uri}'`);
     return vocab;
   }

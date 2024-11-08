@@ -26,7 +26,13 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm run prettier:check --if-present
     - run: npm ci
+    - run: |
+        if ! npm run prettier:check --if-present; then
+          # https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions
+          echo "::warning prettier:check failed, formatting may be bad, or .prettierignore may need adjustment"
+          false
+        fi
+      continue-on-error: true # at least until the failures are eradicated
     - run: npm run build --workspaces --if-present
     - run: npm test

@@ -47,6 +47,8 @@ const DatasetItemIdOrIx = ZodRegex(
 // documentation for Rx.PrefixUri.
 const PrefixUri = ZodRegex(Rx.PrefixUri, "Invalid prefix URI format");
 const PrefixIndex = z.record(PrefixUri, NCName);
+const AbbrevUri = ZodRegex(Rx.AbbrevUri, "Invalid abbreviated URI format");
+
 // Zod.enum needs some hand-holding to be happy with using object keys, as it wants a
 // guaranteed non-zero length list
 const [lang0, ...langs] = Object.keys(Iso639Set1Codes);
@@ -75,7 +77,7 @@ const InnerValuePropSpec = z.object({
 });
 const InnerVocabPropSpec = z.object({
   type: z.literal("vocab"),
-  uri: z.union([PrefixUri, QName]),
+  uri: AbbrevUri,
 });
 const InnerPropSpec = z.union([InnerValuePropSpec, InnerVocabPropSpec]);
 const OuterMultiPropSpec = z.object({
@@ -107,6 +109,7 @@ const VersionInfo = z.object({
 const ErrorInfo = z.object({ message: z.string() }).passthrough();
 
 export const schemas = {
+  AbbrevUri,
   Location,
   ConfigData,
   DatasetId,

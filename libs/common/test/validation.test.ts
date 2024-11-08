@@ -12,6 +12,7 @@ const {
   DatasetItemId,
   DatasetItemIx,
   DatasetItemIdOrIx,
+  AbbrevUri,
   QName,
   PrefixUri,
   Iso639Set1Code,
@@ -194,6 +195,31 @@ test("testing QName validation", async (t) => {
     "",
     ":",
     "a:",
+    ":a",
+    "_",
+    "-",
+    ".",
+    "&",
+    ";",
+    "/",
+    "1:",
+    ":1",
+    "a:1",
+    "1:a",
+    "-:-",
+  ]);
+});
+
+test("testing AbbrevUri validation", async (t) => {
+  expectValid(AbbrevUri, ["a:", "a1:", "_:", "_1-.:"]);
+  expectInvalid(AbbrevUri, [
+    "",
+    ":",
+    "a:b",
+    "a:_",
+    "a:1",
+    "a: ",
+    " a:",
     ":a",
     "_",
     "-",

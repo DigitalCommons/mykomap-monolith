@@ -1,8 +1,4 @@
-import {
-  createAction,
-  createSelector,
-  type PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
 import type { Config, VocabPropDef } from "../../../services";
 import { searchDataset } from "../../../services";
@@ -91,13 +87,13 @@ export const searchSlice = createAppSlice({
   extraReducers: (builder) => {
     builder.addCase(configLoaded, (state, action) => {
       const config = action.payload;
-      state.filterableFields = config.ui.filterableFields.map((field) => {
-        const fieldDef = config.fields[field] as VocabPropDef;
+      state.filterableFields = config.ui.filterableFields.map((name) => {
+        const propDef = config.itemProps[name] as VocabPropDef;
         return {
-          id: field,
-          value: FIELD_VALUE_ANY,
-          vocabUri: fieldDef.uri,
-          titleUri: fieldDef.titleUri,
+          id: name,
+          value: PROP_VALUE_ANY,
+          vocabUri: propDef.uri,
+          titleUri: propDef.titleUri,
         };
       });
     });
@@ -109,7 +105,7 @@ export const searchSlice = createAppSlice({
 });
 
 // TODO: add this to ui vocabs so it is translatable
-const FIELD_VALUE_ANY = "any";
+const PROP_VALUE_ANY = "any";
 
 export const { setText, setFilterValue, performSearch } = searchSlice.actions;
 
@@ -136,7 +132,7 @@ export const selectFilterOptions = createSelector(
       // TODO: translate field ID to text using titleUri
       title: field.id,
       options: [
-        { value: FIELD_VALUE_ANY, label: "- Any -" },
+        { value: PROP_VALUE_ANY, label: "- Any -" },
         ...Object.entries(vocabs[field.vocabUri][language].terms).map(
           ([key, value]) => ({ value: key, label: value }),
         ),

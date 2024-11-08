@@ -95,9 +95,8 @@ EOF
 ( # back end
   cd apps/back-end
   npm ci
-  # this section doesn't work because of ESM/CJS glitches in the build
-  # rm -rf dist/
-  # npm run build 
+  rm -rf dist/
+  npm run build 
   # npm deploy "$BE_DEST"
   # cp -a --copy-contents dist/. "$BE_DEST" # the . is significant
 

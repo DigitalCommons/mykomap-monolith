@@ -334,9 +334,6 @@
                           {
                             "type": "object",
                             "properties": {
-                              "from": {
-                                "type": "string"
-                              },
                               "titleUri": {
                                 "type": "string"
                               },
@@ -368,9 +365,6 @@
                           {
                             "type": "object",
                             "properties": {
-                              "from": {
-                                "type": "string"
-                              },
                               "titleUri": {
                                 "type": "string"
                               },
@@ -384,14 +378,7 @@
                                 ]
                               },
                               "uri": {
-                                "oneOf": [
-                                  {
-                                    "type": "string"
-                                  },
-                                  {
-                                    "type": "string"
-                                  }
-                                ]
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -402,9 +389,6 @@
                           {
                             "type": "object",
                             "properties": {
-                              "from": {
-                                "type": "string"
-                              },
                               "titleUri": {
                                 "type": "string"
                               },
@@ -454,14 +438,7 @@
                                         ]
                                       },
                                       "uri": {
-                                        "oneOf": [
-                                          {
-                                            "type": "string"
-                                          },
-                                          {
-                                            "type": "string"
-                                          }
-                                        ]
+                                        "type": "string"
                                       }
                                     },
                                     "required": [
