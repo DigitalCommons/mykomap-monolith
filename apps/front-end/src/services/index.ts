@@ -37,7 +37,7 @@ export type Dictionary<V = string> = Assoc<string, V>;
 
 // Shared properties of all PropDefs.
 export interface CommonPropDef {
-  // Which InitiativeObj property to initialise this Initiative property from.
+  // Which property/field/header to initialise this property from.
   // If not set, defaults to the one with the same name.
   from?: string;
 
@@ -94,7 +94,6 @@ export type InnerMultiDef = {
   of: InnerDef;
 };
 
-// PropDefs define properties of Initiatives and how they map from InitiativeObj
 export type PropDef = ValuePropDef | VocabPropDef | MultiPropDef;
 export type ValuePropDef = CommonPropDef & {
   type: "value";

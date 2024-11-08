@@ -63,7 +63,7 @@ const SearchBox = ({
           if (event.key === "Enter") onSubmit(event);
         }}
         autoComplete="off"
-        placeholder="Search for initiatives..."
+        placeholder="Search for items..."
         startAdornment={
           <InputAdornment position="end">
             <IconButton aria-label="search-button" disableRipple>

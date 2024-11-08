@@ -63,7 +63,7 @@ const onMarkerClick = async (
   const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
   const ix = feature.properties?.ix;
 
-  console.log(`Clicked initiative @${ix} ${coordinates}`);
+  console.log(`Clicked item @${ix} ${coordinates}`);
   const content = await getPopup(ix);
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
@@ -125,7 +125,7 @@ export const createMap = (): Map => {
   });
 
   map.on("load", () => {
-    map.addSource("initiatives-geojson", {
+    map.addSource("items-geojson", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
@@ -140,7 +140,7 @@ export const createMap = (): Map => {
     map.addLayer({
       id: "clusters",
       type: "circle",
-      source: "initiatives-geojson",
+      source: "items-geojson",
       filter: ["has", "point_count"],
       paint: {
         // Use step expressions (https://docs.mapbox.com/style-spec/reference/expressions/#step)
@@ -160,7 +160,7 @@ export const createMap = (): Map => {
     map.addLayer({
       id: "cluster-count",
       type: "symbol",
-      source: "initiatives-geojson",
+      source: "items-geojson",
       filter: ["has", "point_count"],
       layout: {
         "text-field": ["get", "point_count_abbreviated"],
@@ -176,7 +176,7 @@ export const createMap = (): Map => {
     map.addLayer({
       id: "unclustered-point",
       type: "symbol",
-      source: "initiatives-geojson",
+      source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
       layout: {
         "icon-image": "custom-marker",
@@ -220,7 +220,7 @@ export const createMap = (): Map => {
           layers: ["clusters"],
         })[0] as GeoJSON.Feature<GeoJSON.Point>;
 
-      const source = map.getSource("initiatives-geojson") as GeoJSONSource;
+      const source = map.getSource("items-geojson") as GeoJSONSource;
       const features: GeoJSON.Feature<GeoJSON.Point>[] =
         (await source.getClusterLeaves(
           clusterFeature.properties?.cluster_id,

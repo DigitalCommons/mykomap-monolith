@@ -7,7 +7,7 @@ import CloseButton from "../common/closeButton/CloseButton";
 import { styled } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closePopUp, popUpIsOpen } from "./popUpSlice";
-import mockInitiative from "../../data/mockInitiative";
+import mockItem from "../../data/mockItem";
 
 const StyledPopUp = styled(Box)(({ theme }) => ({
   width: "calc (100% - (var(--spacing-large) * 2))",
@@ -75,7 +75,7 @@ const PopUp = () => {
     <Modal
       open={open}
       onClose={handleClosePopUp}
-      aria-labelledby={`pop-up-${mockInitiative.uid}`}
+      aria-labelledby={`pop-up-${mockItem.id}`}
       aria-describedby="pop-up-description"
       closeAfterTransition
     >
@@ -91,17 +91,17 @@ const PopUp = () => {
           />
           <StylePopUpInner>
             <LeftPane
-              name={mockInitiative.name}
-              primaryActivity={mockInitiative.primary_activity}
-              description={mockInitiative.description}
-              dcDomains={mockInitiative.dc_domains}
+              name={mockItem.name}
+              primaryActivity={mockItem.primary_activity}
+              description={mockItem.description}
+              dcDomains={mockItem.dc_domains}
             />
             <RightPane
-              geocodedAddr={mockInitiative.geocoded_addr}
-              website={mockInitiative.website}
-              organisationalStructure={mockInitiative.organisational_structure}
-              typology={mockInitiative.typology}
-              dataSources={mockInitiative.data_sources}
+              geocodedAddr={mockItem.geocoded_addr}
+              website={mockItem.website}
+              organisationalStructure={mockItem.organisational_structure}
+              typology={mockItem.typology}
+              dataSources={mockItem.data_sources}
             />
           </StylePopUpInner>
           <StyledPointer />
