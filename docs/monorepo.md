@@ -6,13 +6,14 @@ monorepo
   |- @mykomap/front-end
   |- @mykomap/back-end
       |- Dataset class instance for each dataset that needs a deployed backend
-      |- Single ts-rest/Fastify server shared across all datasets
+      |- single ts-rest/Fastify server shared across all datasets
+      |- script to generate data for each dataset, consumed by the back-end server
 |- libs
   |- @mykomap/common
-      |- search/filter code (imported in BE and some FE builds)
       |- API ts-rest contract + OpenAPI spec
+      |- prop defs code (used by both front-end and back-end)
   |- @mykomap/config, a folder for each dataset containing:
-      |- config.json ... includes vocabs, UI config, and flag for whether to use search/filter in FE or BE
+      |- config.json ... includes vocabs, item prop specs, UI config
 ```
 
 ## Ideas
@@ -25,3 +26,5 @@ monorepo
   single dataset on the backend. We may want to unlink these so that 2 maps can share the same
   dataset with differnet config, or a map can show multiple datasets. This could be done in the
   future.
+- Allow back-end code to be imported into the front-end for map builds that don't need a separate
+  back-end.

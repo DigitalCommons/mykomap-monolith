@@ -29,10 +29,10 @@ as seen from the SERVER_DATA_ROOT location:
 ```
 ├── datasets
 │   ├── some-dataset
-│   │   ├── locations.json (array of lng-lat coordinates for each initiative)
-│   │   ├── searchable.json (array of the property values and searchable strings for each initiative)
-│   │   ├── initiatives
-│   │   |   ├── 0.json (full info of first initiative in the above aggregate JSONs)
+│   │   ├── locations.json (array of lng-lat coordinates for each item)
+│   │   ├── searchable.json (array of the property values and searchable strings for each item)
+│   │   ├── items
+│   │   |   ├── 0.json (full info of first item in the above aggregate JSONs)
 │   │   |   ├── 1.json
 │   │   |   ├── ...
 │   ├── other-dataset
@@ -67,8 +67,8 @@ We will need to manually copy the `standard.csv` from the data factory server to
 
 - For each dataset available in the `datasets` directory on server start, a dataset instance is created
   by the Dataset service. Each Dataset instance has a:
-  - `searchable` property, which is just the `searchable.json` loaded as an in-memory object
+
   - `getItem` method
   - `getConfig` method, which includes the vocabs
   - `getLocations` method, which returns a stream of the data
-  - `search` method, which involves iterating through `searchable` to find matching initiatives
+  - `search` method, which iterates through the data loaded from `searchable.json` to find matching items
