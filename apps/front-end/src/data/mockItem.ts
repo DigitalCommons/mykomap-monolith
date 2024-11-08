@@ -1,4 +1,4 @@
-const mockInitiative = {
+const mockItem = {
   id: "test/cuk/R000002",
   name: "Banco Credicoop Cooperativo Ltd. (BCCL)",
   description:
@@ -38,4 +38,4 @@ const mockInitiative = {
   data_sources: ["dso:ICA", "dso:DotCoop"],
 };
 
-export default mockInitiative;
+export default mockItem;
