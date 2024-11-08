@@ -25,13 +25,15 @@
     "fastify-openapi-glue": "^4.7.0",
     "fastify-plugin": "^4.5.1",
     "js-yaml": "^4.1.0",
-    "minimist": "^1.2.8"
+    "lodash": "^4.17.21",
+    "minimist": "^1.2.8",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
+    "@storybook/addon-a11y": "^8.3.0",
     "@tsconfig/node22": "^22.0.0",
     "@types/node": "^22.5.4",
-    "@storybook/addon-a11y": "^8.3.0",
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
     "fastify": "^4.28.1",
