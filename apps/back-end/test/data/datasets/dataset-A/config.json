@@ -14,15 +14,36 @@
       "typology"
     ]
   },
-  "fields": {
-    "id": "value",
-    "name": "value",
-    "description": "value",
+  "itemProps": {
+    "id": {
+      "type": "value",
+      "from": "Identifier"
+    },
+    "name": {
+      "type": "value",
+      "search": true,
+      "from": "Name"
+    },
+    "description": { "type": "value" },
+    "lat": {
+      "type": "value",
+      "from": "Geocoded Latitude"
+    },
+    "lng": {
+      "type": "value",
+      "from": "Geocoded Longitude"
+    },
+    "address": {
+      "type": "value",
+      "search": true,
+      "from": "Address"
+    },
     "website": {
       "type": "multi",
       "of": {
         "type": "value"
-      }
+      },
+      "search": true
     },
     "dc_domains": {
       "type": "multi",
@@ -30,31 +51,30 @@
     },
     "country_id": {
       "type": "vocab",
-      "uri": "coun"
+      "uri": "coun:",
+      "filter": true
     },
     "primary_activity": {
       "type": "vocab",
-      "uri": "aci",
-      "titleUri": "ui:primary_activity"
+      "uri": "aci:",
+      "titleUri": "ui:primary_activity",
+      "filter": true
     },
     "organisational_structure": {
       "type": "vocab",
-      "uri": "os",
+      "uri": "os:",
       "titleUri": "ui:organisational_structure"
     },
     "typology": {
       "type": "vocab",
-      "uri": "bmt",
-      "titleUri": "ui:typology"
+      "uri": "bmt:",
+      "titleUri": "ui:typology",
+      "filter": true
     },
-    "latitude": "value",
-    "longitude": "value",
-    "geocontainer_lat": "value",
-    "geocontainer_lon": "value",
-    "geocoded_addr": "value",
     "data_sources": {
       "type": "multi",
-      "of": { "type": "vocab", "uri": "dso" }
+      "of": { "type": "vocab", "uri": "dso:" },
+      "filter": true
     }
   },
   "vocabs": {
