@@ -32,8 +32,8 @@ export type InnerDef = VocabPropDef | ValuePropDef;
 /** The top-level definition of a property definition. */
 export type PropDef = VocabPropDef | ValuePropDef | MultiPropDef;
 
-/** Services for creating and using PropDefs */
-export class PropDefServices {
+/** Used to create PropDefs from vocabs and PropSpecs */
+export class PropDefsFactory {
   private readonly _vocabs: VocabIndex;
   private readonly lang: Iso639Set1Code;
 
@@ -108,17 +108,17 @@ export class PropDefServices {
   /** Make a Record of indexed PropDefs from a Dictionary of ProfSpecs
    *
    *
-   * @param defs - a Dictionary of PropSpecs.
+   * @param specs - a Dictionary of PropSpecs.
    * @returns A record of PropDefs, indexed by the same keys as the
    * relevant PropSpec.
    *
    * A Dictionary may have undefined elements; a Record, by definition, doesn't.
    * This function should honour that, and guarantee none.
    */
-  mkPropDefs(defs: PropSpecs): PropDefs {
+  mkPropDefs(specs: PropSpecs): PropDefs {
     const result: Record<string, PropDef> = {};
-    for (const propName in defs) {
-      const propDef = defs[propName];
+    for (const propName in specs) {
+      const propDef = specs[propName];
       if (propDef == undefined) continue;
 
       result[propName] = this.mkPropDef(propDef);
