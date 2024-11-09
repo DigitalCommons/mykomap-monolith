@@ -6,7 +6,7 @@ import { searchSlice } from "../components/panel/searchPanel/searchSlice";
 import { panelSlice } from "../components/panel/panelSlice";
 import { mapSlice } from "../components/map/mapSlice";
 import { popUpSlice } from "../components/popUp/popUpSlice";
-import { vocabsSlice } from "./vocabsSlice";
+import { configSlice } from "./configSlice";
 
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
@@ -16,7 +16,7 @@ const rootReducer = combineSlices(
   mapSlice,
   panelSlice,
   popUpSlice,
-  vocabsSlice,
+  configSlice,
 );
 
 // Infer the `RootState` type from the root reducer

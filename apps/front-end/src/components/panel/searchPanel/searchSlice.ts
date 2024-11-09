@@ -1,10 +1,10 @@
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
-import type { Config, VocabPropDef } from "../../../services";
+import type { Config } from "../../../services";
 import { searchDataset } from "../../../services";
-import { configLoaded } from "../../../app/vocabsSlice";
+import { configLoaded } from "../../../app/configSlice";
 
-type FilterableField = {
+type FilterableVocabProp = {
   id: string;
   value: string;
   vocabUri: string;
@@ -15,14 +15,14 @@ export interface SearchSliceState {
   text: string;
   visibleIndexes: number[];
   searchingStatus: string;
-  filterableFields: FilterableField[];
+  filterableVocabProps: FilterableVocabProp[];
 }
 
 const initialState: SearchSliceState = {
   text: "",
   visibleIndexes: [],
   searchingStatus: "idle",
-  filterableFields: [],
+  filterableVocabProps: [],
 };
 
 export const searchSlice = createAppSlice({
@@ -34,7 +34,7 @@ export const searchSlice = createAppSlice({
     }),
     setFilterValue: create.reducer(
       (state, action: PayloadAction<{ id: string; value: string }>) => {
-        const field = state.filterableFields.find(
+        const field = state.filterableVocabProps.find(
           (f) => f.id === action.payload.id,
         );
         if (field) field.value = action.payload.value;
@@ -87,15 +87,30 @@ export const searchSlice = createAppSlice({
   extraReducers: (builder) => {
     builder.addCase(configLoaded, (state, action) => {
       const config = action.payload;
-      state.filterableFields = config.ui.filterableFields.map((name) => {
-        const propDef = config.itemProps[name] as VocabPropDef;
-        return {
-          id: name,
-          value: PROP_VALUE_ANY,
-          vocabUri: propDef.uri,
-          titleUri: propDef.titleUri,
-        };
+      const filterableVocabProps: FilterableVocabProp[] = [];
+      Object.entries(config.itemProps).forEach(([name, propSpec]) => {
+        if (propSpec.filter) {
+          if (propSpec.type === "vocab") {
+            filterableVocabProps.push({
+              id: name,
+              value: PROP_VALUE_ANY,
+              vocabUri: propSpec.uri.replace(/:$/, ""), // Strip the trailing colon from this (assumed) abbrev URI
+              titleUri: propSpec.titleUri,
+            });
+          } else if (
+            propSpec.type === "multi" &&
+            propSpec.of.type === "vocab"
+          ) {
+            filterableVocabProps.push({
+              id: name,
+              value: PROP_VALUE_ANY,
+              vocabUri: propSpec.of.uri.replace(/:$/, ""),
+              titleUri: propSpec.titleUri,
+            });
+          }
+        }
       });
+      state.filterableVocabProps = filterableVocabProps;
     });
   },
   selectors: {
@@ -113,12 +128,12 @@ export const { selectText, selectVisibleIndexes } = searchSlice.selectors;
 
 export const selectFilterOptions = createSelector(
   [
-    (state): FilterableField[] => state.search.filterableFields,
-    (state): Config["vocabs"] => state.vocabs.vocabs,
-    (state): string => state.vocabs.language,
+    (state): FilterableVocabProp[] => state.search.filterableVocabProps,
+    (state): Config["vocabs"] => state.config.vocabs,
+    (state): string => state.config.currentLanguage,
   ],
   (
-    filterableFields,
+    filterableVocabProps,
     vocabs,
     language,
   ): {
@@ -127,16 +142,25 @@ export const selectFilterOptions = createSelector(
     options: { value: string; label: string }[];
     value: string;
   }[] =>
-    filterableFields.map((field) => ({
-      id: field.id,
-      // TODO: translate field ID to text using titleUri
-      title: field.id,
-      options: [
-        { value: PROP_VALUE_ANY, label: "- Any -" },
-        ...Object.entries(vocabs[field.vocabUri][language].terms).map(
-          ([key, value]) => ({ value: key, label: value }),
-        ),
-      ],
-      value: field.value,
-    })),
+    filterableVocabProps.map((prop) => {
+      console.log("aaaaaaa", vocabs[prop.vocabUri]);
+
+      const title = prop.titleUri
+        ? vocabs[prop.titleUri.split(":")[0]][language].terms[
+            prop.titleUri.split(":")[1]
+          ]
+        : vocabs[prop.vocabUri][language].title;
+
+      return {
+        id: prop.id,
+        title: title,
+        options: [
+          { value: PROP_VALUE_ANY, label: "- Any -" },
+          ...Object.entries(vocabs[prop.vocabUri][language].terms).map(
+            ([key, value]) => ({ value: key, label: value }),
+          ),
+        ],
+        value: prop.value,
+      };
+    }),
 );
