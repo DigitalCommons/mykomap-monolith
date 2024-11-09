@@ -1,6 +1,5 @@
 import { createAction, PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
-import mockConfig from "../data/mockConfig";
 import { Config, getConfig } from "../services";
 import { getUrlSearchParam } from "../utils/window-utils";
 
@@ -29,21 +28,17 @@ export const configSlice = createAppSlice({
           );
         }
 
-        thunkApi.dispatch(configLoaded(mockConfig));
-
-        return mockConfig;
-
-        // const response = await getConfig({
-        //   params: { datasetId: datasetId },
-        // });
-        // if (response.status === 200) {
-        //   thunkApi.dispatch(configLoaded(response.body));
-        //   return response.body;
-        // } else {
-        //   return thunkApi.rejectWithValue(
-        //     `Failed get config, status code ${response.status}`,
-        //   );
-        // }
+        const response = await getConfig({
+          params: { datasetId: datasetId },
+        });
+        if (response.status === 200) {
+          thunkApi.dispatch(configLoaded(response.body));
+          return response.body;
+        } else {
+          return thunkApi.rejectWithValue(
+            `Failed get config, status code ${response.status}`,
+          );
+        }
       },
       {
         fulfilled: (state, action) => {
