@@ -24,9 +24,9 @@ const SearchPanel = () => {
     setCurrentText(e.currentTarget.value);
   };
 
-  const onFilterChange = (e: SelectChangeEvent<string>, fieldId: string) => {
-    console.log(`Set filter for ${fieldId} to ${e.target.value}`);
-    dispatch(setFilterValue({ id: fieldId, value: e.target.value }));
+  const onFilterChange = (e: SelectChangeEvent<string>, propId: string) => {
+    console.log(`Set filter for ${propId} to ${e.target.value}`);
+    dispatch(setFilterValue({ id: propId, value: e.target.value }));
     dispatch(performSearch());
   };
 

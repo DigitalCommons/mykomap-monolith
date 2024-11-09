@@ -3,6 +3,7 @@ import { createAppSlice } from "../../../app/createAppSlice";
 import type { Config } from "../../../services";
 import { searchDataset } from "../../../services";
 import { configLoaded } from "../../../app/configSlice";
+import { getUrlSearchParam } from "../../../utils/window-utils";
 
 type FilterableVocabProp = {
   id: string;
@@ -42,22 +43,27 @@ export const searchSlice = createAppSlice({
     ),
     performSearch: create.asyncThunk(
       async (_, thunkApi) => {
-        const datasetId =
-          new URLSearchParams(window.location.search).get("datasetId") ?? "";
-        if (datasetId === "") {
+        const datasetId = getUrlSearchParam("datasetId");
+        if (datasetId === null) {
           return thunkApi.rejectWithValue(
             `No datasetId parameter given, so no dataset can be searched`,
           );
         }
 
         const { search } = thunkApi.getState() as { search: SearchSliceState };
-        if (search.text === "") {
+        const activeFilters = search.filterableVocabProps.filter(
+          (prop) => prop.value !== PROP_VALUE_ANY,
+        );
+        if (activeFilters.length === 0 && search.text === "") {
           return thunkApi.fulfillWithValue([]);
         }
 
         const response = await searchDataset({
           params: { datasetId },
-          query: { text: search.text.toLowerCase() },
+          query: {
+            filter: activeFilters.map((prop) => `${prop.id}:${prop.value}`),
+            text: search.text.trim().toLowerCase() || undefined,
+          },
         });
         if (response.status === 200) {
           return response.body;
@@ -116,6 +122,12 @@ export const searchSlice = createAppSlice({
   selectors: {
     selectText: (search) => search.text,
     selectVisibleIndexes: (search) => search.visibleIndexes,
+    selectIsFilterActive: (search) => {
+      const activeFilters = search.filterableVocabProps.filter(
+        (prop) => prop.value !== PROP_VALUE_ANY,
+      );
+      return activeFilters.length > 0 || search.text.length > 0;
+    },
   },
 });
 
@@ -124,7 +136,8 @@ const PROP_VALUE_ANY = "any";
 
 export const { setText, setFilterValue, performSearch } = searchSlice.actions;
 
-export const { selectText, selectVisibleIndexes } = searchSlice.selectors;
+export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
+  searchSlice.selectors;
 
 export const selectFilterOptions = createSelector(
   [
@@ -142,25 +155,25 @@ export const selectFilterOptions = createSelector(
     options: { value: string; label: string }[];
     value: string;
   }[] =>
-    filterableVocabProps.map((prop) => {
-      console.log("aaaaaaa", vocabs[prop.vocabUri]);
+    filterableVocabProps
+      .filter((prop) => vocabs[prop.vocabUri])
+      .map((prop) => {
+        const title = prop.titleUri
+          ? vocabs[prop.titleUri.split(":")[0]][language].terms[
+              prop.titleUri.split(":")[1]
+            ]
+          : vocabs[prop.vocabUri][language].title;
 
-      const title = prop.titleUri
-        ? vocabs[prop.titleUri.split(":")[0]][language].terms[
-            prop.titleUri.split(":")[1]
-          ]
-        : vocabs[prop.vocabUri][language].title;
-
-      return {
-        id: prop.id,
-        title: title,
-        options: [
-          { value: PROP_VALUE_ANY, label: "- Any -" },
-          ...Object.entries(vocabs[prop.vocabUri][language].terms).map(
-            ([key, value]) => ({ value: key, label: value }),
-          ),
-        ],
-        value: prop.value,
-      };
-    }),
+        return {
+          id: prop.id,
+          title: title,
+          options: [
+            { value: PROP_VALUE_ANY, label: "- Any -" },
+            ...Object.entries(vocabs[prop.vocabUri][language].terms).map(
+              ([key, value]) => ({ value: key, label: value }),
+            ),
+          ],
+          value: prop.value,
+        };
+      }),
 );

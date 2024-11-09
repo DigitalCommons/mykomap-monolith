@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+  selectIsFilterActive,
   selectText,
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
@@ -9,11 +10,11 @@ import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 import { fetchLocations, selectFeatures } from "./mapSlice";
 
 const MapWrapper = () => {
-  const searchText = useAppSelector(selectText);
+  const isFilterActive = useAppSelector(selectIsFilterActive);
   // If there is no search text, visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const features = useAppSelector((state) =>
-    selectFeatures(state, searchText ? visibleIndexes : undefined),
+    selectFeatures(state, isFilterActive ? visibleIndexes : undefined),
   );
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
@@ -43,7 +44,7 @@ const MapWrapper = () => {
   }, [features, sourceLoaded]);
 
   const updateMapData = async () => {
-    if (searchText) {
+    if (isFilterActive) {
       console.log(`Found ${visibleIndexes?.length} features that matched`);
     }
 

@@ -41,5 +41,10 @@ export const selectDirectoryOptions = createSelector(
     id: string;
     options: { value: string; label: string }[];
     value: string;
-  } => filterOptions.find((filter) => filter.id === propId)!!,
+  } =>
+    filterOptions.find((filter) => filter.id === propId) ?? {
+      id: "",
+      options: [],
+      value: "",
+    },
 );
