@@ -168,11 +168,17 @@ export class ValuePropDef extends CommonPropDef implements ValuePropSpec {
   /** The type specifier */
   readonly type = "value";
 
+  /** Conversion hints */
+  readonly as: ValuePropSpec["as"];
+  readonly strict: ValuePropSpec["strict"];
+
   /** Constructor
    * @param init - the specification for the ValuePropDef
    */
   constructor(init: ValuePropSpec) {
     super(init);
+    this.as = init.as;
+    this.strict = init.strict;
   }
 
   override textForValue(value: unknown) {
