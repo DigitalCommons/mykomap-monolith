@@ -26,6 +26,7 @@ const StyledPanel = styled(Drawer)(() => ({
   flexShrink: 0,
   width: "calc(var(--panel-width-desktop) + 30px)",
   position: "relative",
+  zIndex: 3,
   overflow: "visible",
   backgroundColor: "#fff",
   "& .MuiDrawer-paper": {
@@ -40,6 +41,7 @@ const StyledPanel = styled(Drawer)(() => ({
 const StyledBox = styled(Box)(() => ({
   flexShrink: 0,
   position: "relative",
+  zIndex: 3,
   overflow: "visible",
   backgroundColor: "#fff",
 }));
