@@ -20,11 +20,11 @@ import { schemas } from "./api/contract.js";
 import { z } from "zod";
 
 // Infer the types of various contract values....
-type VocabDef = z.infer<typeof schemas.VocabDef>;
-type I18nVocabDefs = z.infer<typeof schemas.I18nVocabDefs>;
-type VocabIndex = z.infer<typeof schemas.VocabIndex>;
-type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
-type NCName = z.infer<typeof schemas.NCName>;
+export type VocabDef = z.infer<typeof schemas.VocabDef>;
+export type I18nVocabDefs = z.infer<typeof schemas.I18nVocabDefs>;
+export type VocabIndex = z.infer<typeof schemas.VocabIndex>;
+export type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
+export type NCName = z.infer<typeof schemas.NCName>;
 
 /** The part of a property definition that is meaningfully inside a multiple */
 export type InnerDef = VocabPropDef | ValuePropDef;
