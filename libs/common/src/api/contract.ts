@@ -27,7 +27,7 @@ function ZodRegex(rx: RegExp, message: string) {
 const Location = z.array(z.number()).min(2).max(2);
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
 const DatasetItem = z.object({}).passthrough();
-const Dataset = z.array(Location);
+const Dataset = z.array(Location.nullable());
 const NCName = ZodRegex(Rx.NCName, "Invalid NCName format");
 const QName = ZodRegex(Rx.QName, "Invalid QName format");
 const DatasetItemId = ZodRegex(
