@@ -57,8 +57,8 @@ const VocabDef = z.object({
   title: z.string(),
   terms: z.record(NCName, z.string()),
 });
-const I18nVocabDefs = z.record(Iso639Set1Code, VocabDef);
-const VocabIndex = z.record(NCName, I18nVocabDefs);
+const I18nVocabDef = z.record(Iso639Set1Code, VocabDef);
+const VocabIndex = z.record(NCName, I18nVocabDef);
 
 // The following specs shoud match the types in prop-spec.ts
 const FilterSpec = z.object({ preset: z.literal(true), to: z.unknown() });
@@ -119,7 +119,7 @@ export const schemas = {
   DatasetItem,
   Dataset,
   FilterSpec,
-  I18nVocabDefs,
+  I18nVocabDef,
   Iso639Set1Code,
   MultiPropSpec,
   NCName,
