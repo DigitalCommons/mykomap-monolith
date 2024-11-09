@@ -8,7 +8,7 @@ import GlobalCSSVariables from "../../../theme/GlobalCSSVariables";
 // Simulate a click event on a link within the DirectoryPanel
 const clickInteraction = async (canvasElement: HTMLElement) => {
   const canvas = within(canvasElement);
-  const links = await canvas.getAllByRole("link"); // Get all links in the panel
+  const links = await canvas.getAllByRole("button"); // Get all links in the panel
 
   links.forEach((link) => {
     link.addEventListener("click", (e) => e.preventDefault()); // Prevent navigation for all links

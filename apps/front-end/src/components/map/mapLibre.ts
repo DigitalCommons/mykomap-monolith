@@ -1,5 +1,5 @@
 import * as MapLibreGL from "maplibre-gl";
-import { NavigationControl, Popup } from "maplibre-gl";
+import { AttributionControl, NavigationControl, Popup } from "maplibre-gl";
 import type {
   Map,
   GeoJSONSource,
@@ -121,6 +121,7 @@ export const createMap = (): Map => {
       [-180, -59.9],
       [180, 78.1],
     ],
+    attributionControl: false,
   });
 
   map.on("load", () => {
@@ -285,7 +286,8 @@ export const createMap = (): Map => {
       map.getCanvas().style.cursor = "";
     });
 
-    map.addControl(new NavigationControl(), "bottom-right");
+    map.addControl(new AttributionControl(), "top-right");
+    map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
   });
 
