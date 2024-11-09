@@ -32,7 +32,8 @@
                       "type": "number"
                     },
                     "minItems": 2,
-                    "maxItems": 2
+                    "maxItems": 2,
+                    "nullable": true
                   },
                   "description": "the dataset matching the supplied ID"
                 }
