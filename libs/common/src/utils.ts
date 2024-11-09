@@ -299,3 +299,40 @@ export function filterSet<T>(set: Set<T>, predicate: Predicate<T>): Set<T> {
   });
   return result;
 }
+
+/** Splits a string by a delimiter, ignoring escaped delimiters
+ *
+ * Split a field into subfields, using the delimiter and the escape defined in
+ * the opt parameter.  Note, if the delimiter and the escape character are the
+ * same, the delimiter function wins, and nothing will be escaped.
+ */
+export function splitField(
+  field: string,
+  opts: { delim: string; escape: string },
+): string[] {
+  let buffer = "";
+  const subfields: string[] = [];
+  let escaped = false; // if true, we are skipping an escaped delim
+
+  for (var ch of field) {
+    // Loop through Unicode glyphs (not code points or surrogate pairs)
+    if (escaped) {
+      buffer += ch;
+      escaped = false;
+      continue;
+    }
+    switch (ch) {
+      case opts.delim:
+        subfields.push(buffer);
+        buffer = "";
+        break;
+      case opts.escape:
+        escaped = true;
+        break;
+      default:
+        buffer += ch;
+    }
+  }
+  subfields.push(buffer);
+  return subfields;
+}
