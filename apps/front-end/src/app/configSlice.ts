@@ -1,20 +1,22 @@
-import { createAction } from "@reduxjs/toolkit";
+import { createAction, PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
 import mockConfig from "../data/mockConfig";
 import { Config, getConfig } from "../services";
 
-export interface VocabsSliceState {
+export interface ConfigSliceState {
   vocabs: Config["vocabs"];
-  language: string;
+  languages: string[];
+  currentLanguage: string;
 }
 
-const initialState: VocabsSliceState = {
+const initialState: ConfigSliceState = {
   vocabs: {},
-  language: "en",
+  currentLanguage: "en",
+  languages: [],
 };
 
-export const vocabsSlice = createAppSlice({
-  name: "vocabs",
+export const configSlice = createAppSlice({
+  name: "config",
   initialState,
   reducers: (create) => ({
     fetchConfig: create.asyncThunk(
@@ -28,6 +30,7 @@ export const vocabsSlice = createAppSlice({
         }
 
         thunkApi.dispatch(configLoaded(mockConfig));
+
         return mockConfig;
 
         // const response = await getConfig({
@@ -46,34 +49,22 @@ export const vocabsSlice = createAppSlice({
         fulfilled: (state, action) => {
           console.log("Mock config", action.payload);
           state.vocabs = action.payload.vocabs;
-
-          if (action.payload.languages.length > 0) {
-            const urlParamLang = new URLSearchParams(
-              window.location.search,
-            ).get("lang");
-            if (
-              urlParamLang &&
-              action.payload.languages.includes(urlParamLang.toLowerCase())
-            ) {
-              state.language = urlParamLang.toLowerCase();
-            } else {
-              state.language = action.payload.languages[0];
-            }
-          }
+          state.languages = action.payload.languages;
+          state.currentLanguage = action.payload.languages[0];
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
         },
       },
     ),
+    setLanguage: create.reducer((state, action: PayloadAction<string>) => {
+      if (state.languages.includes(action.payload))
+        state.currentLanguage = action.payload;
+    }),
   }),
-  selectors: {
-    selectVocabs: (vocabs) => vocabs.vocabs,
-  },
+  selectors: {},
 });
 
 export const configLoaded = createAction<Config>("configLoaded");
 
-export const { fetchConfig } = vocabsSlice.actions;
-
-export const { selectVocabs } = vocabsSlice.selectors;
+export const { fetchConfig, setLanguage } = configSlice.actions;

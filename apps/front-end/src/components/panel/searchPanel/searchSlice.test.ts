@@ -1,4 +1,4 @@
-import { configLoaded } from "../../../app/vocabsSlice";
+import { configLoaded } from "../../../app/configSlice";
 import {
   searchSlice,
   selectFilterOptions,
@@ -9,14 +9,14 @@ import mockConfig from "../../../data/mockConfig";
 const reducer = searchSlice.reducer;
 
 describe("config load", () => {
-  test("should populate filterable fields", () => {
+  test("should populate filterableVocabProps", () => {
     expect(
       reducer(
         {
           text: "",
           visibleIndexes: [],
           searchingStatus: "idle",
-          filterableFields: [],
+          filterableVocabProps: [],
         },
         configLoaded(mockConfig),
       ),
@@ -24,7 +24,7 @@ describe("config load", () => {
       text: "",
       visibleIndexes: [],
       searchingStatus: "idle",
-      filterableFields: [
+      filterableVocabProps: [
         {
           id: "country_id",
           titleUri: undefined,
@@ -38,16 +38,16 @@ describe("config load", () => {
           vocabUri: "aci",
         },
         {
-          id: "organisational_structure",
-          titleUri: "ui:organisational_structure",
-          value: "any",
-          vocabUri: "os",
-        },
-        {
           id: "typology",
           titleUri: "ui:typology",
           value: "any",
           vocabUri: "bmt",
+        },
+        {
+          id: "data_sources",
+          titleUri: undefined,
+          value: "any",
+          vocabUri: "dso",
         },
       ],
     });
@@ -60,7 +60,7 @@ describe("selectFilterOptions", () => {
       text: "",
       visibleIndexes: [],
       searchingStatus: "idle",
-      filterableFields: [
+      filterableVocabProps: [
         {
           id: "country_id",
           titleUri: undefined,
@@ -75,8 +75,9 @@ describe("selectFilterOptions", () => {
         },
       ],
     },
-    vocabs: {
-      language: "en",
+    config: {
+      currentLanguage: "en",
+      languages: ["en", "fr"],
       vocabs: {
         aci: {
           en: {
@@ -134,7 +135,7 @@ describe("selectFilterOptions", () => {
     expect(selectFilterOptions(state)).toEqual([
       {
         id: "country_id",
-        title: "country_id", // TODO expect a translated title
+        title: "Country",
         options: [
           { value: "any", label: "- Any -" },
           { value: "GB", label: "United Kingdom" },
@@ -144,7 +145,7 @@ describe("selectFilterOptions", () => {
       },
       {
         id: "primary_activity",
-        title: "primary_activity", // TODO expect a translated title
+        title: "Primary Activity",
         options: [
           { value: "any", label: "- Any -" },
           { value: "ICA210", label: "Housing" },
@@ -160,12 +161,12 @@ describe("selectFilterOptions", () => {
     expect(
       selectFilterOptions({
         ...state,
-        vocabs: { ...state.vocabs, language: "fr" },
+        config: { ...state.config, currentLanguage: "fr" },
       }),
     ).toEqual([
       {
         id: "country_id",
-        title: "country_id", // TODO expect a translated title
+        title: "Pays",
         options: [
           { value: "any", label: "- Any -" },
           { value: "GB", label: "Royaume-Uni" },
@@ -175,7 +176,7 @@ describe("selectFilterOptions", () => {
       },
       {
         id: "primary_activity",
-        title: "primary_activity", // TODO expect a translated title
+        title: "Activité principale",
         options: [
           { value: "any", label: "- Any -" }, // TODO expect translated 'Any'
           { value: "ICA210", label: "Logement" },
@@ -196,7 +197,7 @@ describe("setFilterValue", () => {
           text: "",
           visibleIndexes: [],
           searchingStatus: "idle",
-          filterableFields: [
+          filterableVocabProps: [
             {
               id: "country_id",
               titleUri: undefined,
@@ -217,7 +218,7 @@ describe("setFilterValue", () => {
       text: "",
       visibleIndexes: [],
       searchingStatus: "idle",
-      filterableFields: [
+      filterableVocabProps: [
         {
           id: "country_id",
           titleUri: undefined,
@@ -241,7 +242,7 @@ describe("setFilterValue", () => {
           text: "",
           visibleIndexes: [],
           searchingStatus: "idle",
-          filterableFields: [
+          filterableVocabProps: [
             {
               id: "country_id",
               titleUri: undefined,
@@ -262,7 +263,7 @@ describe("setFilterValue", () => {
       text: "",
       visibleIndexes: [],
       searchingStatus: "idle",
-      filterableFields: [
+      filterableVocabProps: [
         {
           id: "country_id",
           titleUri: undefined,
