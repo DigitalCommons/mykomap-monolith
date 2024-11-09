@@ -36,13 +36,21 @@ const SearchPanel = () => {
     dispatch(performSearch());
   };
 
+  const onClear = () => {
+    console.log("Clearing search");
+    setCurrentText("");
+    dispatch(setText(""));
+    dispatch(performSearch());
+  };
+
   return (
-    <form className="mx-auto max-w-md" onSubmit={onSubmit}>
+    <form onSubmit={onSubmit}>
       <Heading title="Search">
         <SearchBox
           value={currentText}
           onChange={onSearchChange}
           onSubmit={onSubmit}
+          clearSearch={onClear}
         />
       </Heading>
       <ContentPanel>

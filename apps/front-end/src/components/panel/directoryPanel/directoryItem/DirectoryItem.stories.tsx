@@ -8,7 +8,7 @@ import GlobalCSSVariables from "../../../../theme/GlobalCSSVariables";
 // Simulate a click event on a link
 const clickInteraction = async (canvasElement: HTMLElement) => {
   const canvas = within(canvasElement);
-  const link = await canvas.getByRole("link");
+  const link = await canvas.getByRole("button");
   await userEvent.click(link);
 };
 

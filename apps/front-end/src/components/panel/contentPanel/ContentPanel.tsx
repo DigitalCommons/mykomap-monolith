@@ -18,10 +18,8 @@ const StyledContentPanel = styled(Box)(() => ({
   },
 }));
 
-const ContentPanel = ({children}: ContentPanelProps) => {
-  return (
-    <StyledContentPanel>{children}</StyledContentPanel>
-  )
-}
+const ContentPanel = ({ children }: ContentPanelProps) => {
+  return <StyledContentPanel>{children}</StyledContentPanel>;
+};
 
-export default ContentPanel
+export default ContentPanel;
