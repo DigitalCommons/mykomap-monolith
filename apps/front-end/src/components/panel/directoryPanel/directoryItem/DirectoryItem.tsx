@@ -1,14 +1,18 @@
 import ListItem from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
+import { useAppDispatch } from "../../../../app/hooks";
+import { performSearch, setFilterValue } from "../../searchPanel/searchSlice";
 
 interface DirectoryItemProps {
-  id: string;
-  name: string;
+  propId: string;
+  value: string;
+  label: string;
+  active: boolean;
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
 }
 
-const StyledButton = styled(Button)(() => ({
+const StyledButton = styled(Button)(({ active }: { active: boolean }) => ({
   width: "100%",
   padding: "var(--spacing-small) var(--spacing-medium)",
   display: "block",
@@ -16,7 +20,7 @@ const StyledButton = styled(Button)(() => ({
   fontWeight: "var(--font-weight-medium)",
   textDecoration: "none",
   textAlign: "left",
-  color: "var(--color-text)",
+  color: active ? "var(--color-primary)" : "var(--color-text)",
   backgroundColor: "transparent",
   borderRadius: 0,
   boxShadow: "none",
@@ -28,16 +32,25 @@ const StyledButton = styled(Button)(() => ({
   },
 }));
 
-const DirectoryItem = ({ id, name, onClick }: DirectoryItemProps) => {
+const DirectoryItem = ({
+  propId,
+  value,
+  label,
+  active,
+  onClick,
+}: DirectoryItemProps) => {
+  const dispatch = useAppDispatch();
+
   const handleClick = (e: React.MouseEvent) => {
-    console.log(`Clicked ${name}`);
-    if (onClick) onClick(e); // Optional for storybook testing
+    console.log(`Clicked ${value}`);
+    dispatch(setFilterValue({ id: propId, value }));
+    dispatch(performSearch());
   };
 
   return (
-    <ListItem key={id}>
-      <StyledButton role="button" onClick={handleClick}>
-        {name}
+    <ListItem>
+      <StyledButton role="button" active={active} onClick={handleClick}>
+        {label}
       </StyledButton>
     </ListItem>
   );

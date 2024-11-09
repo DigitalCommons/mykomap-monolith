@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
+import { getUrlSearchParam } from "../../utils/window-utils";
 
 export interface MapSliceState {
   allLocations: number[][];
@@ -18,9 +19,8 @@ export const mapSlice = createAppSlice({
   reducers: (create) => ({
     fetchLocations: create.asyncThunk(
       async (_, thunkApi) => {
-        const datasetId =
-          new URLSearchParams(window.location.search).get("datasetId") ?? "";
-        if (datasetId === "") {
+        const datasetId = getUrlSearchParam("datasetId");
+        if (datasetId === null) {
           return thunkApi.rejectWithValue(
             `No datasetId parameter given, so dataset locations cannot be fetched`,
           );

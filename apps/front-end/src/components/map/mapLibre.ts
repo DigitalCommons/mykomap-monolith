@@ -10,6 +10,7 @@ import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
 import { getDatasetItem } from "../../services";
+import { getUrlSearchParam } from "../../utils/window-utils";
 
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
@@ -18,18 +19,17 @@ const getPopup = async (ix: number): Promise<string> => {
   let name = "Unknown";
   let desc = "Error retrieving data";
 
-  const datasetId =
-    new URLSearchParams(window.location.search).get("datasetId") ?? "";
-  if (datasetId === "") {
+  const datasetId = getUrlSearchParam("datasetId");
+  if (datasetId === null) {
     console.error(`No datasetId parameter given, so no popup can be retrieved`);
-  }
-
-  const { body, status } = await getDatasetItem({
-    params: { datasetId, datasetItemIdOrIx: `@${ix}` },
-  });
-  if (status === 200) {
-    name = String(body.name);
-    desc = String(body.desc);
+  } else {
+    const { body, status } = await getDatasetItem({
+      params: { datasetId, datasetItemIdOrIx: `@${ix}` },
+    });
+    if (status === 200) {
+      name = String(body.name);
+      desc = String(body.desc);
+    }
   }
 
   return `
