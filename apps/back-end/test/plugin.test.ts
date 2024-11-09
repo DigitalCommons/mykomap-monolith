@@ -29,7 +29,7 @@ describe("getDatasetLocations", () => {
       expect(res.statusCode).toBe(200);
       expect(res.json()).toStrictEqual([
         [-0.12783, 51.50748],
-        [0.92473, 50.85045],
+        [3.92473, 46.85045],
       ]);
     });
   });
