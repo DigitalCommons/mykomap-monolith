@@ -74,6 +74,7 @@ const InnerValuePropSpec = z.object({
     .union([z.literal("string"), z.literal("boolean"), z.literal("number")])
     .optional(),
   strict: z.boolean().optional(),
+  nullable: z.boolean().optional(),
 });
 const InnerVocabPropSpec = z.object({
   type: z.literal("vocab"),
