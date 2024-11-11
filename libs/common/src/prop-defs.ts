@@ -170,7 +170,8 @@ export class ValuePropDef extends CommonPropDef implements ValuePropSpec {
 
   /** Conversion hints */
   readonly as: ValuePropSpec["as"];
-  readonly strict: ValuePropSpec["strict"];
+  readonly nullable: boolean;
+  readonly strict: boolean;
 
   /** Constructor
    * @param init - the specification for the ValuePropDef
@@ -178,7 +179,8 @@ export class ValuePropDef extends CommonPropDef implements ValuePropSpec {
   constructor(init: ValuePropSpec) {
     super(init);
     this.as = init.as;
-    this.strict = init.strict;
+    this.nullable = init.nullable === true;
+    this.strict = init.strict === true;
   }
 
   override textForValue(value: unknown) {
