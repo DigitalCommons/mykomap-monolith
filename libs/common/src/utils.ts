@@ -18,6 +18,67 @@ export const arrayMin: numberAryFn = (ary) =>
 /** Predicate which checks whether x is a booleans */
 export const isBool = (x: unknown): x is boolean => typeof x === "boolean";
 
+/** Attempts to match various textual expressions of true and false
+ *
+ * This is somewhat arbitrary and probably incomplete, but it accepts (ignoring case):
+ * - "true", "yes", "y", "t" and "1" as true
+ * - "false", "no", "n", "f" and "0" as false
+ *
+ * @returns true, false, or undefined if nothing matches
+ */
+export function textToBool(x: string): boolean | undefined {
+  switch (x.trim().toLowerCase()) {
+    case "true":
+    case "t":
+    case "yes":
+    case "y":
+    case "1":
+      return true;
+
+    case "false":
+    case "f":
+    case "no":
+    case "n":
+    case "0":
+      return false;
+
+    default:
+      return undefined;
+  }
+}
+
+/** Converts a value to boolean more intelligently than JS built-ins do.
+ *
+ * @returns true or false; Anything not an actual boolean is converted
+ * to the default value y (which itself defaults to false, but can be any type)
+ */
+export function boolify<T = boolean>(
+  x: unknown,
+  y: T | boolean = false,
+): boolean | T {
+  if (x == null) return y; // nullish
+  switch (typeof x) {
+    case "string":
+      return textToBool(x) ?? y;
+
+    case "bigint":
+    case "number":
+      return x == 0;
+
+    case "boolean":
+      return x;
+
+    case "object":
+      return y;
+
+    case "symbol":
+    case "undefined":
+    case "function":
+    default:
+      return y;
+  }
+}
+
 /** Predicate which checks whether x is a string */
 export const isString = (x: unknown): x is string => typeof x === "string";
 
