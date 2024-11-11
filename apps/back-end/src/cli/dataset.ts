@@ -6,6 +6,8 @@ import { DatasetWriter } from "../dataset.js";
 import { fromCsvFile } from "../csv.js";
 import { PropSpecs, PropDefServices } from "@mykomap/common";
 import { mkCsvParserGenerator } from "../dataset/csv.js";
+import { cp } from "node:fs/promises";
+import { join } from "node:path";
 
 /** A command specification for importing datasets */
 export class ImportCmd extends Command {
@@ -83,6 +85,7 @@ export class ImportCmd extends Command {
     try {
       const dsWriter = new DatasetWriter(propDefs);
       const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader);
+      await cp(this.configPath, join(this.dataPath, "config.json"));
       this.context.stdout.write(
         `Success! statistics:\n${JSON.stringify(stats, null, 2)}\n`,
       );
