@@ -7,6 +7,7 @@ import {
   Dictionary,
   stringify,
   toPoint2d,
+  notNullish,
 } from "@mykomap/common";
 import { ValidationError } from "./dataset/csv.js";
 
@@ -145,13 +146,25 @@ export class DatasetWriter {
 
     const ids = new Set(); // track duplicates with this
 
+    // Get the list of filterable property names
+    const filterablePropNames = Object.entries(this.props)
+      .map(([name, prop]) => (prop.filter ? name : undefined))
+      .filter(notNullish);
+    filterablePropNames.push(this.searchProp); // This synthetic prop needs to be included
+
     try {
       locationFile = await open(join(dirPath, "locations.json"), "w");
       searchableFile = await open(join(dirPath, "searchable.json"), "w");
 
-      // Write the opening delimiter of these JSON files
+      // Write the opening delimiter of the locations
       locationFile.write("[");
-      searchableFile.write("[\n");
+      // And the opening header of the searchables - indent the object keys so
+      // they stand out as different. The result is intentionally somewhat CSV-like.
+      searchableFile.write(
+        `{   "itemProps":\n` +
+          JSON.stringify(filterablePropNames) +
+          `,\n    "values":[\n`,
+      );
 
       // Write out each item
       for await (const item of items) {
@@ -183,7 +196,9 @@ export class DatasetWriter {
         const searchableItem = this.extractFilterable(item);
         searchableItem[this.searchProp] = this.textIndex(item);
 
-        const searchableItemString = JSON.stringify(searchableItem);
+        const searchableItemString = JSON.stringify(
+          Object.values(searchableItem),
+        );
         await searchableFile.write(searchableItemString);
 
         // Write the data item. Indent it this time.
@@ -202,7 +217,7 @@ export class DatasetWriter {
 
       // Write the closing delimiter of these JSON files
       await locationFile.write("]");
-      await searchableFile.write("\n]");
+      await searchableFile.write("\n]}");
     } catch (e) {
       if (e instanceof ValidationError)
         throw new Error(`validation error parsing item #${stats.counter}`, {
