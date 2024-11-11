@@ -33,10 +33,10 @@ export const stringify = <T = string>(
 export const toYesANumber = <T = number>(x: number, y: T | number = 0) =>
   isNaN(x) ? y : x;
 
-/** Predicate which checks whether x is a number */
+/** Predicate which checks whether x is a number (including NaN) */
 export const isNumber = (x: unknown): x is number => typeof x === "number";
 
-/** Predicate which checks whether x is a number */
+/** Predicate which checks whether x is a number (excluding NaN) */
 export const yesANumber = (x: unknown): x is number =>
   typeof x === "number" && !isNaN(x);
 
