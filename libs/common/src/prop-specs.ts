@@ -85,6 +85,8 @@ export type InnerValuePropSpec = {
   type: "value";
   /** Optional indicator of how to interpret the text */
   as?: "string" | "boolean" | "number";
+  /** Optional indicator of whether to allow nulls in interpretations */
+  nullable?: boolean;
   /** Optional indicator of whether to be strict in interpretations */
   strict?: boolean;
 };
