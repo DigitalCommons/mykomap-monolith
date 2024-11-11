@@ -357,6 +357,9 @@
                               },
                               "strict": {
                                 "type": "boolean"
+                              },
+                              "nullable": {
+                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -422,6 +425,9 @@
                                         ]
                                       },
                                       "strict": {
+                                        "type": "boolean"
+                                      },
+                                      "nullable": {
                                         "type": "boolean"
                                       }
                                     },
