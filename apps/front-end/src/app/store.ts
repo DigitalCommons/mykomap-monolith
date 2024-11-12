@@ -5,7 +5,7 @@ import { counterSlice } from "../features/counter/counterSlice";
 import { searchSlice } from "../components/panel/searchPanel/searchSlice";
 import { panelSlice } from "../components/panel/panelSlice";
 import { mapSlice } from "../components/map/mapSlice";
-import { popUpSlice } from "../components/popUp/popUpSlice";
+import { popupSlice } from "../components/popup/popupSlice";
 import { configSlice } from "./configSlice";
 import { directorySlice } from "../components/panel/directoryPanel/directorySlice";
 
@@ -16,7 +16,7 @@ const rootReducer = combineSlices(
   searchSlice,
   mapSlice,
   panelSlice,
-  popUpSlice,
+  popupSlice,
   configSlice,
   directorySlice,
 );

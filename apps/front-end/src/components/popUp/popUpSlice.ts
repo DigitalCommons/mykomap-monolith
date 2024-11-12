@@ -1,28 +1,28 @@
 import { createAppSlice } from "../../app/createAppSlice";
 
-interface PopUpState {
+interface PopupState {
   isOpen: boolean;
 }
 
-const initialState: PopUpState = {
+const initialState: PopupState = {
   isOpen: false,
 };
 
-export const popUpSlice = createAppSlice({
-  name: "popUp",
+export const popupSlice = createAppSlice({
+  name: "popup",
   initialState,
   reducers: (create) => ({
-    togglePopUp: create.reducer((state) => {
+    togglePopup: create.reducer((state) => {
       state.isOpen = !state.isOpen;
     }),
-    closePopUp: create.reducer((state) => {
+    closePopup: create.reducer((state) => {
       state.isOpen = false;
     }),
   }),
   selectors: {
-    popUpIsOpen: (popUp) => popUp.isOpen,
+    popupIsOpen: (popup) => popup.isOpen,
   },
 });
 
-export const { togglePopUp, closePopUp } = popUpSlice.actions;
-export const { popUpIsOpen } = popUpSlice.selectors;
+export const { togglePopup, closePopup } = popupSlice.actions;
+export const { popupIsOpen } = popupSlice.selectors;
