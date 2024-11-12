@@ -222,9 +222,7 @@ export function mkCsvParserGenerator(propDefs: PropDefs) {
   if (idProp === undefined)
     throw new Error(`PropDefs must have the mandatory id property defined`);
   if (idProp.from === undefined)
-    throw new Error(
-      `PropDefs must have a CSV header defined for the mandatory id property`,
-    );
+    throw new Error(`The PropDef for "id"  must define a 'from' property`);
 
   // Do as much as we can here - up to but not including the CSV column indexes.
   for (const key in propDefs) {
