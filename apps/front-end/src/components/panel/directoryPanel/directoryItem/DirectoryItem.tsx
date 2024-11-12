@@ -12,7 +12,8 @@ interface DirectoryItemProps {
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
 }
 
-const StyledButton = styled(Button)(({ active }: { active: boolean }) => ({
+/** Passing active as a boolean gives a React error so just pass as a number 0 or 1. */
+const StyledButton = styled(Button)(({ active }: { active: number }) => ({
   width: "100%",
   padding: "var(--spacing-small) var(--spacing-medium)",
   display: "block",
@@ -49,7 +50,7 @@ const DirectoryItem = ({
 
   return (
     <ListItem>
-      <StyledButton role="button" active={active} onClick={handleClick}>
+      <StyledButton role="button" active={+active} onClick={handleClick}>
         {label}
       </StyledButton>
     </ListItem>
