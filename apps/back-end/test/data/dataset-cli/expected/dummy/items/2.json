@@ -1,0 +1,18 @@
+{
+  "id": "ccc",
+  "name": "The Cabbage Collective",
+  "manlat": null,
+  "manlng": null,
+  "lat": 54.974469,
+  "lng": -1.610894,
+  "address": "2 Cabbage Close, Caulfield",
+  "activity": "AM60",
+  "otherActivities": [
+    "AM130"
+  ],
+  "websites": [
+    "http://cabbage.coop",
+    "http://cabbage.com"
+  ],
+  "validated": true
+}
