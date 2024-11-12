@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
@@ -8,6 +9,7 @@ import { styled } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { closePopup, popupIsOpen } from "./popupSlice";
 import mockItem from "../../data/mockItem";
+import { POPUP_CONTAINER_ID } from "../map/mapLibre";
 
 const StyledPopup = styled(Box)(({ theme }) => ({
   width: "calc (100% - (var(--spacing-large) * 2))",
@@ -72,42 +74,47 @@ const Popup = () => {
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={handleClosePopup}
-      aria-labelledby={`pop-up-${mockItem.id}`}
-      aria-describedby="pop-up-description"
-      closeAfterTransition
-    >
-      <Fade in={open}>
-        <StyledPopup>
-          <CloseButton
-            sx={{
-              position: "absolute",
-              right: "14px",
-              top: "14px",
-            }}
-            buttonAction={handleClosePopup}
+    open &&
+    document.getElementById(POPUP_CONTAINER_ID) &&
+    createPortal(
+      // <Modal
+      //   open={open}
+      //   onClose={handleClosePopup}
+      //   aria-labelledby={`pop-up-${mockItem.id}`}
+      //   aria-describedby="pop-up-description"
+      //   closeAfterTransition
+      // >
+      //   <Fade in={open}>
+      <StyledPopup id="'aaaaaaaaaa">
+        {/* <CloseButton
+          sx={{
+            position: "absolute",
+            right: "14px",
+            top: "14px",
+          }}
+          buttonAction={handleClosePopup}
+        /> */}
+        <StylePopupInner>
+          <LeftPane
+            name={mockItem.name}
+            primaryActivity={mockItem.primary_activity}
+            description={mockItem.description}
+            dcDomains={mockItem.dc_domains}
           />
-          <StylePopupInner>
-            <LeftPane
-              name={mockItem.name}
-              primaryActivity={mockItem.primary_activity}
-              description={mockItem.description}
-              dcDomains={mockItem.dc_domains}
-            />
-            <RightPane
-              geocodedAddr={mockItem.geocoded_addr}
-              website={mockItem.website}
-              organisationalStructure={mockItem.organisational_structure}
-              typology={mockItem.typology}
-              dataSources={mockItem.data_sources}
-            />
-          </StylePopupInner>
-          <StyledPointer />
-        </StyledPopup>
-      </Fade>
-    </Modal>
+          <RightPane
+            geocodedAddr={mockItem.geocoded_addr}
+            website={mockItem.website}
+            organisationalStructure={mockItem.organisational_structure}
+            typology={mockItem.typology}
+            dataSources={mockItem.data_sources}
+          />
+        </StylePopupInner>
+        {/* <StyledPointer /> */}
+      </StyledPopup>,
+      //   </Fade>
+      // </Modal>
+      document.getElementById(POPUP_CONTAINER_ID)!!,
+    )
   );
 };
 
