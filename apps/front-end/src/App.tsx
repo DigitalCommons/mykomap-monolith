@@ -5,6 +5,7 @@ import logo from "./logo.svg";
 import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
 import { getUrlSearchParam } from "./utils/window-utils";
+import Popup from "./components/popup/Popup";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -20,6 +21,7 @@ const App = () => {
     <div>
       <MapWrapper />
       <Panel />
+      <Popup />
     </div>
   );
 };

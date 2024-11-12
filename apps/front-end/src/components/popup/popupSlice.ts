@@ -15,6 +15,9 @@ export const popupSlice = createAppSlice({
     togglePopup: create.reducer((state) => {
       state.isOpen = !state.isOpen;
     }),
+    openPopup: create.reducer((state) => {
+      state.isOpen = true;
+    }),
     closePopup: create.reducer((state) => {
       state.isOpen = false;
     }),
@@ -24,5 +27,5 @@ export const popupSlice = createAppSlice({
   },
 });
 
-export const { togglePopup, closePopup } = popupSlice.actions;
+export const { togglePopup, openPopup, closePopup } = popupSlice.actions;
 export const { popupIsOpen } = popupSlice.selectors;
