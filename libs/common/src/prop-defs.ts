@@ -55,7 +55,7 @@ export class PropDefsFactory {
 
       if (invalidVocabIds.length) {
         throw new Error(
-          `PropDefServices initialised with these Vocabs which are incompatible ` +
+          `PropDefsFactory initialised with these Vocabs which are incompatible ` +
             `with the target languagees '${checkLangs}': ${invalidVocabIds}`,
         );
       }
