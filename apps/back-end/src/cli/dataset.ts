@@ -4,7 +4,7 @@ import { slurpJson } from "@mykomap/node-utils";
 import { zodCheck } from "./clipanion-interop.js";
 import { DatasetWriter } from "../dataset.js";
 import { fromCsvFile } from "../csv.js";
-import { PropSpecs, PropDefServices } from "@mykomap/common";
+import { PropSpecs, PropDefsFactory } from "@mykomap/common";
 import { mkCsvParserGenerator } from "../dataset/csv.js";
 import { cp } from "node:fs/promises";
 import { join } from "node:path";
@@ -49,8 +49,8 @@ export class ImportCmd extends Command {
     // Our vocab definitions
     const vocabs: VocabIndex = config.vocabs; // Types from contract should be compatible
 
-    // A PropDefServices instance using our vocab definitions
-    const pds = new PropDefServices(vocabs, this.defaultLang);
+    // A PropDefsFactory instance using our vocab definitions
+    const pds = new PropDefsFactory(vocabs, this.defaultLang); // FIXME do we need to supply several?
 
     const propSpecs: PropSpecs = config.itemProps; // Types from contract should be compatible
     const propDefs = pds.mkPropDefs(propSpecs);
