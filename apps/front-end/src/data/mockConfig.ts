@@ -10,18 +10,24 @@ const mockConfig: Config = {
   languages: ["en", "fr"],
   ui: {
     directory_panel_field: "country_id",
-    filterableFields: [
-      "country_id",
-      "primary_activity",
-      "organisational_structure",
-      "typology",
-      // "data_sources", TODO: re-add this once we can handle multi vocabs
-    ],
   },
   itemProps: {
-    id: { type: "value" },
-    name: { type: "value" },
+    id: {
+      type: "value",
+    },
+    name: {
+      type: "value",
+    },
     description: { type: "value" },
+    lat: {
+      type: "value",
+    },
+    lng: {
+      type: "value",
+    },
+    address: {
+      type: "value",
+    },
     website: {
       type: "multi",
       of: {
@@ -34,31 +40,30 @@ const mockConfig: Config = {
     },
     country_id: {
       type: "vocab",
-      uri: "coun",
+      uri: "coun:",
+      filter: true,
     },
     primary_activity: {
       type: "vocab",
-      uri: "aci",
+      uri: "aci:",
       titleUri: "ui:primary_activity",
+      filter: true,
     },
     organisational_structure: {
       type: "vocab",
-      uri: "os",
+      uri: "os:",
       titleUri: "ui:organisational_structure",
     },
     typology: {
       type: "vocab",
-      uri: "bmt",
+      uri: "bmt:",
       titleUri: "ui:typology",
+      filter: true,
     },
-    latitude: { type: "value" },
-    longitude: { type: "value" },
-    geocontainer_lat: { type: "value" },
-    geocontainer_lon: { type: "value" },
-    geocoded_addr: { type: "value" },
     data_sources: {
       type: "multi",
-      of: { type: "vocab", uri: "dso" },
+      of: { type: "vocab", uri: "dso:" },
+      filter: true,
     },
   },
   vocabs: {

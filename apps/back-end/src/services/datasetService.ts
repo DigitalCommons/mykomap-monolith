@@ -1,9 +1,19 @@
 import fs from "node:fs";
 import path from "node:path";
-import { TsRestResponseError } from "@ts-rest/core";
+import {
+  AppRoute,
+  ServerInferResponseBody,
+  TsRestResponseError,
+} from "@ts-rest/core";
 
 import { contract } from "@mykomap/common";
 import { Dataset } from "./Dataset.js";
+
+type GetConfigBody = ServerInferResponseBody<typeof contract.getConfig, 200>;
+type SearchDatasetBody = ServerInferResponseBody<
+  typeof contract.searchDataset,
+  200
+>;
 
 const datasets: { [id: string]: Dataset } = {};
 
@@ -24,11 +34,14 @@ export const initDatasets = (dataRoot: string) => {
   }
 };
 
-const getDatasetOrThrow404 = (datasetId: string): Dataset => {
+const getDatasetOrThrow404 = (
+  appRoute: AppRoute,
+  datasetId: string,
+): Dataset => {
   const dataset = datasets[datasetId];
 
   if (!dataset)
-    throw new TsRestResponseError(contract.searchDataset, {
+    throw new TsRestResponseError(appRoute, {
       status: 404,
       body: { message: `dataset ${datasetId} doesn't exist` },
     });
@@ -37,17 +50,17 @@ const getDatasetOrThrow404 = (datasetId: string): Dataset => {
 };
 
 export const getDatasetItem = (datasetId: string, datasetItemId: number) => {
-  const dataset = getDatasetOrThrow404(datasetId);
+  const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
   return dataset.getItem(datasetItemId);
 };
 
-export const getDatasetConfig = (datasetId: string) => {
-  const dataset = getDatasetOrThrow404(datasetId);
+export const getDatasetConfig = (datasetId: string): GetConfigBody => {
+  const dataset = getDatasetOrThrow404(contract.getConfig, datasetId);
   return dataset.getConfig();
 };
 
 export const getDatasetLocations = (datasetId: string): fs.ReadStream => {
-  const dataset = getDatasetOrThrow404(datasetId);
+  const dataset = getDatasetOrThrow404(contract.getDatasetLocations, datasetId);
   return dataset.getLocations();
 };
 
@@ -55,7 +68,10 @@ export const searchDataset = (
   datasetId: string,
   filter?: string[],
   text?: string,
-): number[] => {
-  const dataset = getDatasetOrThrow404(datasetId);
-  return dataset.search(filter, text);
+): SearchDatasetBody => {
+  const dataset = getDatasetOrThrow404(contract.searchDataset, datasetId);
+  const visibleIndexes = dataset.search(filter, text);
+  // Add '@' before index numbers.
+  // TODO: Maybe skip this step and just return numbers?
+  return visibleIndexes.map((index) => `@${index}`);
 };

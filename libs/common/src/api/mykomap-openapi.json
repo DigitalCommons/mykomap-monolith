@@ -14,7 +14,8 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           }
         ],
         "operationId": "getDatasetLocations",
@@ -32,7 +33,8 @@
                     },
                     "minItems": 2,
                     "maxItems": 2
-                  }
+                  },
+                  "description": "the dataset matching the supplied ID"
                 }
               }
             }
@@ -51,7 +53,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -70,7 +73,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -91,11 +95,13 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           },
           {
             "name": "text",
             "in": "query",
+            "description": "a text fragment to match",
             "schema": {
               "type": "string"
             }
@@ -103,6 +109,7 @@
           {
             "name": "filter",
             "in": "query",
+            "description": "uniquely specifies the taxonomy filter items wanted",
             "schema": {
               "oneOf": [
                 {
@@ -128,7 +135,8 @@
                   "type": "array",
                   "items": {
                     "type": "string"
-                  }
+                  },
+                  "description": "the dataset item indexes matching the supplied criteria"
                 }
               }
             }
@@ -147,7 +155,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -166,7 +175,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -187,7 +197,8 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           },
           {
             "name": "datasetItemIdOrIx",
@@ -195,7 +206,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "uniquely specifies the dataset item wanted within the dataset"
           }
         ],
         "operationId": "getDatasetItem",
@@ -207,7 +219,8 @@
                 "schema": {
                   "type": "object",
                   "properties": {},
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "the dataset item matching the supplied ID or index"
                 }
               }
             }
@@ -226,7 +239,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -245,7 +259,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -266,7 +281,8 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           }
         ],
         "operationId": "getConfig",
@@ -318,37 +334,10 @@
                           {
                             "type": "object",
                             "properties": {
-                              "from": {
-                                "type": "string"
-                              },
                               "titleUri": {
                                 "type": "string"
                               },
                               "filter": {
-                                "oneOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "preset": {
-                                        "type": "boolean",
-                                        "enum": [
-                                          true
-                                        ]
-                                      },
-                                      "to": {
-                                        "nullable": true
-                                      }
-                                    },
-                                    "required": [
-                                      "preset"
-                                    ]
-                                  },
-                                  {
-                                    "type": "boolean"
-                                  }
-                                ]
-                              },
-                              "search": {
                                 "type": "boolean"
                               },
                               "type": {
@@ -376,37 +365,10 @@
                           {
                             "type": "object",
                             "properties": {
-                              "from": {
-                                "type": "string"
-                              },
                               "titleUri": {
                                 "type": "string"
                               },
                               "filter": {
-                                "oneOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "preset": {
-                                        "type": "boolean",
-                                        "enum": [
-                                          true
-                                        ]
-                                      },
-                                      "to": {
-                                        "nullable": true
-                                      }
-                                    },
-                                    "required": [
-                                      "preset"
-                                    ]
-                                  },
-                                  {
-                                    "type": "boolean"
-                                  }
-                                ]
-                              },
-                              "search": {
                                 "type": "boolean"
                               },
                               "type": {
@@ -427,37 +389,10 @@
                           {
                             "type": "object",
                             "properties": {
-                              "from": {
-                                "type": "string"
-                              },
                               "titleUri": {
                                 "type": "string"
                               },
                               "filter": {
-                                "oneOf": [
-                                  {
-                                    "type": "object",
-                                    "properties": {
-                                      "preset": {
-                                        "type": "boolean",
-                                        "enum": [
-                                          true
-                                        ]
-                                      },
-                                      "to": {
-                                        "nullable": true
-                                      }
-                                    },
-                                    "required": [
-                                      "preset"
-                                    ]
-                                  },
-                                  {
-                                    "type": "boolean"
-                                  }
-                                ]
-                              },
-                              "search": {
                                 "type": "boolean"
                               },
                               "type": {
@@ -521,13 +456,219 @@
                           }
                         ]
                       }
+                    },
+                    "languages": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "aa",
+                          "ab",
+                          "ae",
+                          "af",
+                          "ak",
+                          "am",
+                          "an",
+                          "ar",
+                          "as",
+                          "av",
+                          "ay",
+                          "az",
+                          "ba",
+                          "be",
+                          "bg",
+                          "bi",
+                          "bm",
+                          "bn",
+                          "bo",
+                          "br",
+                          "bs",
+                          "ca",
+                          "ce",
+                          "ch",
+                          "co",
+                          "cr",
+                          "cs",
+                          "cu",
+                          "cv",
+                          "cy",
+                          "da",
+                          "de",
+                          "dv",
+                          "dz",
+                          "ee",
+                          "el",
+                          "en",
+                          "eo",
+                          "es",
+                          "et",
+                          "eu",
+                          "fa",
+                          "ff",
+                          "fi",
+                          "fj",
+                          "fo",
+                          "fr",
+                          "fy",
+                          "ga",
+                          "gd",
+                          "gl",
+                          "gn",
+                          "gu",
+                          "gv",
+                          "ha",
+                          "he",
+                          "hi",
+                          "ho",
+                          "hr",
+                          "ht",
+                          "hu",
+                          "hy",
+                          "hz",
+                          "ia",
+                          "id",
+                          "ie",
+                          "ig",
+                          "ii",
+                          "ik",
+                          "io",
+                          "is",
+                          "it",
+                          "iu",
+                          "ja",
+                          "jv",
+                          "ka",
+                          "kg",
+                          "ki",
+                          "kj",
+                          "kk",
+                          "kl",
+                          "km",
+                          "kn",
+                          "ko",
+                          "kr",
+                          "ks",
+                          "ku",
+                          "kv",
+                          "kw",
+                          "ky",
+                          "la",
+                          "lb",
+                          "lg",
+                          "li",
+                          "ln",
+                          "lo",
+                          "lt",
+                          "lu",
+                          "lv",
+                          "mg",
+                          "mh",
+                          "mi",
+                          "mk",
+                          "ml",
+                          "mn",
+                          "mr",
+                          "ms",
+                          "mt",
+                          "my",
+                          "na",
+                          "nb",
+                          "nd",
+                          "ne",
+                          "ng",
+                          "nl",
+                          "nn",
+                          "no",
+                          "nr",
+                          "nv",
+                          "ny",
+                          "oc",
+                          "oj",
+                          "om",
+                          "or",
+                          "os",
+                          "pa",
+                          "pi",
+                          "pl",
+                          "ps",
+                          "pt",
+                          "qu",
+                          "rm",
+                          "rn",
+                          "ro",
+                          "ru",
+                          "rw",
+                          "sa",
+                          "sc",
+                          "sd",
+                          "se",
+                          "sg",
+                          "si",
+                          "sk",
+                          "sl",
+                          "sm",
+                          "sn",
+                          "so",
+                          "sq",
+                          "sr",
+                          "ss",
+                          "st",
+                          "su",
+                          "sv",
+                          "sw",
+                          "ta",
+                          "te",
+                          "tg",
+                          "th",
+                          "ti",
+                          "tk",
+                          "tl",
+                          "tn",
+                          "to",
+                          "tr",
+                          "ts",
+                          "tt",
+                          "tw",
+                          "ty",
+                          "ug",
+                          "uk",
+                          "ur",
+                          "uz",
+                          "ve",
+                          "vi",
+                          "vo",
+                          "wa",
+                          "wo",
+                          "xh",
+                          "yi",
+                          "yo",
+                          "za",
+                          "zh",
+                          "zu"
+                        ]
+                      },
+                      "minItems": 1
+                    },
+                    "ui": {
+                      "type": "object",
+                      "properties": {
+                        "directory_panel_field": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "directory_panel_field"
+                      ]
                     }
                   },
                   "required": [
                     "prefixes",
                     "vocabs",
-                    "itemProps"
-                  ]
+                    "itemProps",
+                    "languages",
+                    "ui"
+                  ],
+                  "description": "variuos configured parameters for a map"
                 }
               }
             }
@@ -546,7 +687,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -565,7 +707,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -618,7 +761,8 @@
                     "version",
                     "commitDesc",
                     "nodeEnv"
-                  ]
+                  ],
+                  "description": "information about the current Mykomap server version"
                 }
               }
             }

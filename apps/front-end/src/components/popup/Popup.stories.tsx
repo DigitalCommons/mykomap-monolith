@@ -5,12 +5,12 @@ import GlobalCSSVariables from "../../theme/GlobalCSSVariables";
 import { CssBaseline } from "@mui/material";
 import { store } from "../../app/store";
 import { Provider } from "react-redux";
-import PopUp from "./PopUp";
-import { togglePopUp } from "./popUpSlice";
+import Popup from "./Popup";
+import { togglePopup } from "./popupSlice";
 
 const meta = {
-  title: "Common/PopUp",
-  component: PopUp,
+  title: "Common/Popup",
+  component: Popup,
   parameters: {
     layout: "centered",
   },
@@ -26,13 +26,13 @@ const meta = {
     ),
   ],
   tags: ["autodocs"],
-} as Meta<typeof PopUp>;
+} as Meta<typeof Popup>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   play: () => {
-    store.dispatch(togglePopUp());
+    store.dispatch(togglePopup());
   },
 };

@@ -7,5 +7,10 @@
 @import "tailwindcss/utilities";
 
 .maplibregl-popup-content {
-  @apply rounded-md p-0 shadow-lg;
+  border-radius: var(--border-radius-xlarge);
+  box-shadow: none;
+  padding: 0;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
 }

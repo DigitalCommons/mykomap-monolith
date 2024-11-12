@@ -10,6 +10,9 @@ import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
 import { getDatasetItem } from "../../services";
+import { getUrlSearchParam } from "../../utils/window-utils";
+
+export const POPUP_CONTAINER_ID = "popup-container";
 
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
@@ -18,24 +21,23 @@ const getPopup = async (ix: number): Promise<string> => {
   let name = "Unknown";
   let desc = "Error retrieving data";
 
-  const datasetId =
-    new URLSearchParams(window.location.search).get("datasetId") ?? "";
-  if (datasetId === "") {
+  const datasetId = getUrlSearchParam("datasetId");
+  if (datasetId === null) {
     console.error(`No datasetId parameter given, so no popup can be retrieved`);
-  }
-
-  const { body, status } = await getDatasetItem({
-    params: { datasetId, datasetItemIdOrIx: `@${ix}` },
-  });
-  if (status === 200) {
-    name = String(body.name);
-    desc = String(body.desc);
+  } else {
+    const { body, status } = await getDatasetItem({
+      params: { datasetId, datasetItemIdOrIx: `@${ix}` },
+    });
+    if (status === 200) {
+      name = String(body.name);
+      desc = String(body.desc);
+    }
   }
 
   return `
     <div class="m-0 flex flex-row h-56 w-[35vw] p-0">
       <div class="scrolling-touch max-h-100 w-2/3 overflow-y-auto rounded-md bg-white px-6 py-4">
-        <h2 class="font-bold text-xl mb-1">${name}}</h2>
+        <h2 class="font-bold text-xl mb-1">${name}</h2>
         <p class="font-light text-sm my-2 mx-0">${desc}</p>
       </div>
       
@@ -58,12 +60,14 @@ const disableRotation = (map: Map) => {
 const onMarkerClick = async (
   map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
+  popupCreatedCallback: () => void,
+  popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
   const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
   const ix = feature.properties?.ix;
 
-  console.log(`Clicked initiative @${ix} ${coordinates}`);
+  console.log(`Clicked item @${ix} ${coordinates}`);
   const content = await getPopup(ix);
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
@@ -76,10 +80,13 @@ const onMarkerClick = async (
     maxWidth: "none",
   })
     .setLngLat(coordinates)
-    .setHTML(content)
+    .setHTML(`<div id=${POPUP_CONTAINER_ID}></div>`)
     .addTo(map)
     .addClassName(`popup-ix-${ix}`)
-    .setOffset(popupOffset);
+    .setOffset(popupOffset)
+    .on("close", popupClosedCallback);
+
+  popupCreatedCallback();
 };
 
 const onMarkerHover = (
@@ -111,7 +118,10 @@ const onMarkerHover = (
 /**
  * Set up the sources and layers of the MapLibreGL map instance.
  */
-export const createMap = (): Map => {
+export const createMap = (
+  popupCreatedCallback: () => void,
+  popupClosedCallback: () => void,
+): Map => {
   const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
@@ -125,7 +135,7 @@ export const createMap = (): Map => {
   });
 
   map.on("load", () => {
-    map.addSource("initiatives-geojson", {
+    map.addSource("items-geojson", {
       type: "geojson",
       data: {
         type: "FeatureCollection",
@@ -140,7 +150,7 @@ export const createMap = (): Map => {
     map.addLayer({
       id: "clusters",
       type: "circle",
-      source: "initiatives-geojson",
+      source: "items-geojson",
       filter: ["has", "point_count"],
       paint: {
         // Use step expressions (https://docs.mapbox.com/style-spec/reference/expressions/#step)
@@ -160,7 +170,7 @@ export const createMap = (): Map => {
     map.addLayer({
       id: "cluster-count",
       type: "symbol",
-      source: "initiatives-geojson",
+      source: "items-geojson",
       filter: ["has", "point_count"],
       layout: {
         "text-field": ["get", "point_count_abbreviated"],
@@ -176,7 +186,7 @@ export const createMap = (): Map => {
     map.addLayer({
       id: "unclustered-point",
       type: "symbol",
-      source: "initiatives-geojson",
+      source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
       layout: {
         "icon-image": "custom-marker",
@@ -190,7 +200,13 @@ export const createMap = (): Map => {
         e: MapLayerMouseEvent,
         leafOffset: [number, number],
       ) => {
-        onMarkerClick(map, feature, leafOffset);
+        onMarkerClick(
+          map,
+          feature,
+          popupCreatedCallback,
+          popupClosedCallback,
+          leafOffset,
+        );
       },
       onLeafHover: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
@@ -220,7 +236,7 @@ export const createMap = (): Map => {
           layers: ["clusters"],
         })[0] as GeoJSON.Feature<GeoJSON.Point>;
 
-      const source = map.getSource("initiatives-geojson") as GeoJSONSource;
+      const source = map.getSource("items-geojson") as GeoJSONSource;
       const features: GeoJSON.Feature<GeoJSON.Point>[] =
         (await source.getClusterLeaves(
           clusterFeature.properties?.cluster_id,
@@ -243,7 +259,7 @@ export const createMap = (): Map => {
     map.on("click", "unclustered-point", (e: MapLayerMouseEvent) => {
       if (e.features) {
         const feature = e.features[0] as GeoJSON.Feature<GeoJSON.Point>;
-        onMarkerClick(map, feature);
+        onMarkerClick(map, feature, popupCreatedCallback, popupClosedCallback);
       }
     });
 

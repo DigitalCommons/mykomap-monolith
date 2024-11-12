@@ -1,6 +1,7 @@
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import qs from "qs";
 import apiPlugin from "./pluginApi.js";
 export { apiPlugin }; // For use as a library
 
@@ -24,6 +25,9 @@ export const start = async () => {
     logger: {
       level: process.env.NODE_ENV === "development" ? "debug" : "info",
     },
+    // Fastify doesn't parse query param arrays properly, so we need to use qs
+    // https://github.com/ts-rest/ts-rest/issues/290
+    querystringParser: (str) => qs.parse(str),
   });
 
   // This closes the application with a delay to clear up.
@@ -45,6 +49,7 @@ export const start = async () => {
   if (import.meta.hot) {
     // @ts-ignore
     import.meta.hot.on("vite:beforeFullReload", () => {
+      console.log("Reload");
       app.close();
     });
   }
@@ -62,7 +67,11 @@ export const start = async () => {
     };
 
     // Register the API routes
-    await app.register(apiPlugin, { mykomap: opts, prefix: apiPathPrefix });
+    await app.register(apiPlugin, {
+      mykomap: opts,
+      prefix: apiPathPrefix,
+      responseValidation: true,
+    });
 
     // Start listening
     await app.listen({ port: listenPort });

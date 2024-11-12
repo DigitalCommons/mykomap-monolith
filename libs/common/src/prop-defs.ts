@@ -3,6 +3,7 @@
  * These are concrete classes implementing the relevant PropSpec interfaces.
  *
  */
+import { z } from "zod";
 
 import {
   CommonPropSpec,
@@ -14,14 +15,12 @@ import {
   ValuePropSpec,
   VocabPropSpec,
 } from "./prop-specs.js";
-
 import { stringify } from "./utils.js";
 import { schemas } from "./api/contract.js";
-import { z } from "zod";
 
 // Infer the types of various contract values....
 type VocabDef = z.infer<typeof schemas.VocabDef>;
-type I18nVocabDefs = z.infer<typeof schemas.I18nVocabDefs>;
+type I18nVocabDef = z.infer<typeof schemas.I18nVocabDef>;
 type VocabIndex = z.infer<typeof schemas.VocabIndex>;
 type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
 type NCName = z.infer<typeof schemas.NCName>;
@@ -32,53 +31,42 @@ export type InnerDef = VocabPropDef | ValuePropDef;
 /** The top-level definition of a property definition. */
 export type PropDef = VocabPropDef | ValuePropDef | MultiPropDef;
 
-/** Services for creating and using PropDefs */
-export class PropDefServices {
+/** Used to create PropDefs from vocabs and PropSpecs */
+export class PropDefsFactory {
   private readonly _vocabs: VocabIndex;
-  private readonly lang: Iso639Set1Code;
 
   /** Constructor.
    *
    * @param vocabs - all the vocab definitions we will require to create VocabPropDefs.
-   * @param lang - the language to create VocabPropDefs in by default.
+   * @param checkLangs - if given, check that the vocabs include translations for these languages.
    */
-  constructor(vocabs: VocabIndex, lang: Iso639Set1Code) {
+  constructor(vocabs: VocabIndex, checkLangs?: Iso639Set1Code[]) {
     this._vocabs = schemas.VocabIndex.parse(vocabs);
-    this.lang = schemas.Iso639Set1Code.parse(lang);
 
-    // Sanity check the languages are defined
-    const invalidVocabIds: NCName[] = [];
-    for (const vocabId in this._vocabs) {
-      const vocab = this._vocabs[vocabId];
-      if (lang in vocab) continue;
+    if (checkLangs) {
+      // Sanity check the languages are defined for each vocab
+      const invalidVocabIds: NCName[] = [];
+      for (const vocabId in this._vocabs) {
+        const vocab = this._vocabs[vocabId];
+        if (checkLangs.every((lang) => lang in vocab)) continue;
 
-      invalidVocabIds.push(vocabId);
-    }
+        invalidVocabIds.push(vocabId);
+      }
 
-    if (invalidVocabIds.length) {
-      throw new Error(
-        `PropDefServices initialised with these Vocabs which are incompatible ` +
-          `with the target language '${lang}': ${invalidVocabIds}`,
-      );
+      if (invalidVocabIds.length) {
+        throw new Error(
+          `PropDefServices initialised with these Vocabs which are incompatible ` +
+            `with the target languagees '${checkLangs}': ${invalidVocabIds}`,
+        );
+      }
     }
   }
 
   /** Looks up an interationalised vocab given its URI */
-  i18nVocab(uri: NCName): I18nVocabDefs {
+  i18nVocabDef(uri: NCName): I18nVocabDef {
     const abbrev = uri.replace(/:$/, ""); // Strip the trailing colon from this (assumed) abbrev URI
     const vocab = this._vocabs[abbrev];
     if (vocab == null) throw new Error(`unknown vocab URI: '${uri}'`);
-    return vocab;
-  }
-
-  /** Looks up a localised vocab, given its URI and a language code */
-  vocabDef(uri: NCName, lang: Iso639Set1Code): VocabDef {
-    const i18nVocab = this.i18nVocab(uri);
-    const vocab = i18nVocab[lang];
-    if (vocab == null)
-      throw new Error(
-        `no terms defined for language code '${lang}' in vocab '${uri}'`,
-      );
     return vocab;
   }
 
@@ -97,7 +85,7 @@ export class PropDefServices {
       case "value":
         return new ValuePropDef(def);
       case "vocab":
-        return new VocabPropDef(def, this.vocabDef(def.uri, this.lang));
+        return new VocabPropDef(def, this.i18nVocabDef(def.uri));
       case "multi":
         // We can cast this safely as we know that InnerSpec -> InnerDef
         const of = this.mkPropDef(def.of);
@@ -108,17 +96,17 @@ export class PropDefServices {
   /** Make a Record of indexed PropDefs from a Dictionary of ProfSpecs
    *
    *
-   * @param defs - a Dictionary of PropSpecs.
+   * @param specs - a Dictionary of PropSpecs.
    * @returns A record of PropDefs, indexed by the same keys as the
    * relevant PropSpec.
    *
    * A Dictionary may have undefined elements; a Record, by definition, doesn't.
    * This function should honour that, and guarantee none.
    */
-  mkPropDefs(defs: PropSpecs): PropDefs {
+  mkPropDefs(specs: PropSpecs): PropDefs {
     const result: Record<string, PropDef> = {};
-    for (const propName in defs) {
-      const propDef = defs[propName];
+    for (const propName in specs) {
+      const propDef = specs[propName];
       if (propDef == undefined) continue;
 
       result[propName] = this.mkPropDef(propDef);
@@ -150,11 +138,16 @@ export abstract class CommonPropDef implements CommonPropSpec {
 
   /** Get the text form of a value
    *
+   * @param lang - the language code to use for the text translation, only relevant for vocab types.
+   *
    * @returns a value depending on the type of PropDef. If it is a MultiPropDef,
    * an array of strings is returned (which may be empty). Otherwise a single
    * string will be, or an undefined value if the property is undefined.
    */
-  abstract textForValue(value: unknown): string | string[] | undefined;
+  abstract textForValue(
+    value: unknown,
+    lang?: Iso639Set1Code,
+  ): string | string[] | undefined;
 
   /** @return true if and only if a filter should be created for this PropDef */
   isFiltered() {
@@ -191,18 +184,31 @@ export class VocabPropDef extends CommonPropDef implements VocabPropSpec {
 
   /** Constructor
    * @param init - the specification for the VocabPropDef
-   * @param vocab - the localised vocab definitions to use
+   * @param i18nVocab - the internationalised vocab definitions to use
    */
   constructor(
     init: VocabPropSpec,
-    readonly vocab: VocabDef,
+    readonly i18nVocab: I18nVocabDef,
   ) {
     super(init);
     this.uri = init.uri;
   }
 
-  override textForValue(value: unknown) {
-    if (typeof value === "string") return this.vocab.terms[value];
+  /** Looks up a localised vocab, given a language code */
+  localisedVocabDef(lang: Iso639Set1Code): VocabDef {
+    const vocab = this.i18nVocab[lang];
+    if (vocab == null)
+      throw new Error(
+        `no terms defined for language code '${lang}' in vocab '${this.uri}'`,
+      );
+    return vocab;
+  }
+
+  override textForValue(value: unknown, lang?: Iso639Set1Code) {
+    if (lang === undefined)
+      throw new Error(`no language code provided for vocab '${this.uri}'`);
+    if (typeof value === "string")
+      return this.localisedVocabDef(lang).terms[value];
     return "";
   }
 }
@@ -213,15 +219,16 @@ export class MultiPropDef extends CommonPropDef implements MultiPropSpec {
   readonly type = "multi";
   readonly of: InnerDef;
 
-  /** This indicates the vocab URI in use if it contains vocab Qname. It is
-   * undefined otherwise
+  /**
+   * This indicates the vocab URI in use if it contains vocab Qname. It is undefined otherwise
    */
   readonly uri?: string;
 
-  /** This indicates the vocab definition in use if it contains vocab values. It is
-   * undefined otherwise
+  /**
+   * This indicates the internationalised vocab definition in use if it contains vocab values. It
+   * is undefined otherwise.
    */
-  readonly vocab?: VocabDef;
+  readonly i18nVocab?: I18nVocabDef;
 
   /** Constructor
    *
@@ -234,12 +241,12 @@ export class MultiPropDef extends CommonPropDef implements MultiPropSpec {
     this.of = init.of;
 
     // Initialise the vocab if present
-    if ("vocab" in init.of) this.vocab = init.of.vocab;
+    if (init.of instanceof VocabPropDef) this.i18nVocab = init.of.i18nVocab;
   }
 
-  override textForValue(value: unknown) {
+  override textForValue(value: unknown, lang?: Iso639Set1Code) {
     if (value instanceof Array)
-      return value.map((v) => stringify(this.of.textForValue(v)));
+      return value.map((v) => stringify(this.of.textForValue(v, lang)));
     return [];
   }
 }

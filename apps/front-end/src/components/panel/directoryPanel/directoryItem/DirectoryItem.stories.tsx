@@ -43,7 +43,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    name: "Directory Item",
+    label: "Directory Item",
     onClick: (e: React.MouseEvent) => {
       e.preventDefault();
       console.log("Link clicked"); // Log the event to show it's working
