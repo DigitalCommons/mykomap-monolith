@@ -49,7 +49,7 @@ const DirectoryItem = ({
 
   return (
     <ListItem>
-      <StyledButton role="button" active={active} onClick={handleClick}>
+      <StyledButton role="button" active={active.toString()} onClick={handleClick}>
         {label}
       </StyledButton>
     </ListItem>
