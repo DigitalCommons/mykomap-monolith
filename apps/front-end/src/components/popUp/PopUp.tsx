@@ -6,10 +6,10 @@ import RightPane from "./rightPane/RightPane";
 import CloseButton from "../common/closeButton/CloseButton";
 import { styled } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { closePopUp, popUpIsOpen } from "./popUpSlice";
+import { closePopup, popupIsOpen } from "./popupSlice";
 import mockItem from "../../data/mockItem";
 
-const StyledPopUp = styled(Box)(({ theme }) => ({
+const StyledPopup = styled(Box)(({ theme }) => ({
   width: "calc (100% - (var(--spacing-large) * 2))",
   height: "calc(100% - (var(--spacing-large) * 2 + 80px))",
   display: "flex",
@@ -28,7 +28,7 @@ const StyledPopUp = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StylePopUpInner = styled(Box)(() => ({
+const StylePopupInner = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   overflowY: "auto",
@@ -63,33 +63,33 @@ const StyledPointer = styled(Box)(({ theme }) => ({
   borderTop: `20px solid ${theme.palette.background.paper}`,
 }));
 
-const PopUp = () => {
+const Popup = () => {
   const dispatch = useAppDispatch();
-  const open = useAppSelector(popUpIsOpen);
+  const open = useAppSelector(popupIsOpen);
 
-  const handleClosePopUp = () => {
-    dispatch(closePopUp());
+  const handleClosePopup = () => {
+    dispatch(closePopup());
   };
 
   return (
     <Modal
       open={open}
-      onClose={handleClosePopUp}
+      onClose={handleClosePopup}
       aria-labelledby={`pop-up-${mockItem.id}`}
       aria-describedby="pop-up-description"
       closeAfterTransition
     >
       <Fade in={open}>
-        <StyledPopUp>
+        <StyledPopup>
           <CloseButton
             sx={{
               position: "absolute",
               right: "14px",
               top: "14px",
             }}
-            buttonAction={handleClosePopUp}
+            buttonAction={handleClosePopup}
           />
-          <StylePopUpInner>
+          <StylePopupInner>
             <LeftPane
               name={mockItem.name}
               primaryActivity={mockItem.primary_activity}
@@ -103,12 +103,12 @@ const PopUp = () => {
               typology={mockItem.typology}
               dataSources={mockItem.data_sources}
             />
-          </StylePopUpInner>
+          </StylePopupInner>
           <StyledPointer />
-        </StyledPopUp>
+        </StyledPopup>
       </Fade>
     </Modal>
   );
 };
 
-export default PopUp;
+export default Popup;
