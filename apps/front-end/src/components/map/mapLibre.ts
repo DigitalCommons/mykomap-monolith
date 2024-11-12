@@ -35,7 +35,7 @@ const getPopup = async (ix: number): Promise<string> => {
   return `
     <div class="m-0 flex flex-row h-56 w-[35vw] p-0">
       <div class="scrolling-touch max-h-100 w-2/3 overflow-y-auto rounded-md bg-white px-6 py-4">
-        <h2 class="font-bold text-xl mb-1">${name}}</h2>
+        <h2 class="font-bold text-xl mb-1">${name}</h2>
         <p class="font-light text-sm my-2 mx-0">${desc}</p>
       </div>
       
