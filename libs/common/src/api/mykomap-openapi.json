@@ -335,10 +335,37 @@
                           {
                             "type": "object",
                             "properties": {
+                              "from": {
+                                "type": "string"
+                              },
                               "titleUri": {
                                 "type": "string"
                               },
                               "filter": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "preset": {
+                                        "type": "boolean",
+                                        "enum": [
+                                          true
+                                        ]
+                                      },
+                                      "to": {
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "preset"
+                                    ]
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "search": {
                                 "type": "boolean"
                               },
                               "type": {
@@ -369,10 +396,37 @@
                           {
                             "type": "object",
                             "properties": {
+                              "from": {
+                                "type": "string"
+                              },
                               "titleUri": {
                                 "type": "string"
                               },
                               "filter": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "preset": {
+                                        "type": "boolean",
+                                        "enum": [
+                                          true
+                                        ]
+                                      },
+                                      "to": {
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "preset"
+                                    ]
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "search": {
                                 "type": "boolean"
                               },
                               "type": {
@@ -393,10 +447,37 @@
                           {
                             "type": "object",
                             "properties": {
+                              "from": {
+                                "type": "string"
+                              },
                               "titleUri": {
                                 "type": "string"
                               },
                               "filter": {
+                                "oneOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "preset": {
+                                        "type": "boolean",
+                                        "enum": [
+                                          true
+                                        ]
+                                      },
+                                      "to": {
+                                        "nullable": true
+                                      }
+                                    },
+                                    "required": [
+                                      "preset"
+                                    ]
+                                  },
+                                  {
+                                    "type": "boolean"
+                                  }
+                                ]
+                              },
+                              "search": {
                                 "type": "boolean"
                               },
                               "type": {

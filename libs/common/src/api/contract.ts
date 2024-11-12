@@ -63,10 +63,10 @@ const VocabIndex = z.record(NCName, I18nVocabDefs);
 // The following specs shoud match the types in prop-spec.ts
 const FilterSpec = z.object({ preset: z.literal(true), to: z.unknown() });
 const CommonPropSpec = z.object({
-  // from: z.string().optional(), we don't need to send this to the FE
+  from: z.string().optional(),
   titleUri: QName.optional(),
-  filter: z.boolean().optional(), // z.union([FilterSpec, z.boolean()]).optional(), we don't need this functionality yet in the FE
-  // search: z.boolean().optional(), we don't need to send this to the FE since it's only used when creating the BE data structure
+  filter: z.union([FilterSpec, z.boolean()]).optional(),
+  search: z.boolean().optional(),
 });
 const InnerValuePropSpec = z.object({
   type: z.literal("value"),

@@ -20,7 +20,7 @@ import { schemas } from "./api/contract.js";
 
 // Infer the types of various contract values....
 export type VocabDef = z.infer<typeof schemas.VocabDef>;
-export type I18nVocabDef = z.infer<typeof schemas.I18nVocabDef>;
+export type I18nVocabDefs = z.infer<typeof schemas.I18nVocabDefs>;
 export type VocabIndex = z.infer<typeof schemas.VocabIndex>;
 export type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
 export type NCName = z.infer<typeof schemas.NCName>;
