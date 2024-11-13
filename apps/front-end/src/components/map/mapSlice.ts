@@ -5,10 +5,10 @@ import { notNullish, schemas } from "@mykomap/common";
 import { z } from "zod";
 
 export type Location = z.infer<typeof schemas.Location>;
-export type Dataset = z.infer<typeof schemas.Dataset>;
+export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
 
 export interface MapSliceState {
-  allLocations: Dataset;
+  allLocations: DatasetLocations;
   status: string;
 }
 
@@ -64,7 +64,7 @@ export const mapSlice = createAppSlice({
 // to re-form the features array every time the selector is called.
 // https://redux.js.org/usage/deriving-data-selectors#writing-memoized-selectors-with-reselect
 const selectAllFeatures = createSelector(
-  [(state): Dataset => state.map.allLocations],
+  [(state): DatasetLocations => state.map.allLocations],
   (allLocations): GeoJSON.Feature<GeoJSON.Point>[] =>
     allLocations
       .map((location, ix) => {
