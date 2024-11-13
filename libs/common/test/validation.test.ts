@@ -3,7 +3,7 @@
 import { expect, test, Assertion } from "vitest";
 import { schemas } from "../src/index.js";
 import { ZodType } from "zod";
-import { slurpJsonSync } from "./file-utils.js";
+import { slurpJsonSync } from "@mykomap/node-utils";
 import { globSync } from "glob";
 import { join } from "node:path";
 
