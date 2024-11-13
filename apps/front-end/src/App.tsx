@@ -21,6 +21,9 @@ const App = () => {
       .then((response) => response.json())
       .then((versionInfo) => {
         console.log("API version info", versionInfo);
+      })
+      .catch((error) => {
+        console.error("Error fetching API version info", error);
       });
   }, []);
 
