@@ -53,7 +53,7 @@ export const mapSlice = createAppSlice({
         rejected: (state, action) => {
           state.status = "failed";
           state.allLocations = [];
-          console.error("Error detching locations", action.payload);
+          console.error("Error fetching locations", action.payload);
         },
       },
     ),

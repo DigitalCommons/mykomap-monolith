@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 
 interface RightPaneProps {
-  geocodedAddr?: string;
+  address?: string;
   website?: string;
   organisationalStructure?: string;
   typology?: string;
@@ -79,7 +79,7 @@ const StyledBottomBox = styled(Box)(() => ({
 }));
 
 const RightPane = ({
-  geocodedAddr,
+  address,
   website,
   organisationalStructure,
   typology,
@@ -93,7 +93,7 @@ const RightPane = ({
   return (
     <StyledRightPane>
       <StyledTopBox>
-        {splitAddress(geocodedAddr).map((line, index) => (
+        {splitAddress(address).map((line, index) => (
           <Typography key={index}>{line}</Typography>
         ))}
         <Link

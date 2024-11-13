@@ -7,8 +7,7 @@ import RightPane from "./rightPane/RightPane";
 import CloseButton from "../common/closeButton/CloseButton";
 import { styled } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { closePopup, popupIsOpen } from "./popupSlice";
-import mockItem from "../../data/mockItem";
+import { closePopup, selectPopupIsOpen, selectPopupData } from "./popupSlice";
 import { POPUP_CONTAINER_ID } from "../map/mapLibre";
 
 const StyledPopup = styled(Box)(({ theme }) => ({
@@ -68,7 +67,8 @@ const StyledPointer = styled(Box)(({ theme }) => ({
 
 const Popup = () => {
   const dispatch = useAppDispatch();
-  const open = useAppSelector(popupIsOpen);
+  const open = useAppSelector(selectPopupIsOpen);
+  const data = useAppSelector(selectPopupData);
 
   const handleClosePopup = () => {
     dispatch(closePopup());
@@ -86,7 +86,7 @@ const Popup = () => {
       //   closeAfterTransition
       // >
       //   <Fade in={open}>
-      <StyledPopup id="'aaaaaaaaaa">
+      <StyledPopup>
         {/* <CloseButton
           sx={{
             position: "absolute",
@@ -96,19 +96,8 @@ const Popup = () => {
           buttonAction={handleClosePopup}
         /> */}
         <StylePopupInner>
-          <LeftPane
-            name={mockItem.name}
-            primaryActivity={mockItem.primary_activity}
-            description={mockItem.description}
-            dcDomains={mockItem.dc_domains}
-          />
-          <RightPane
-            geocodedAddr={mockItem.geocoded_addr}
-            website={mockItem.website}
-            organisationalStructure={mockItem.organisational_structure}
-            typology={mockItem.typology}
-            dataSources={mockItem.data_sources}
-          />
+          <LeftPane {...data} />
+          <RightPane {...data} />
         </StylePopupInner>
         {/* <StyledPointer /> */}
       </StyledPopup>,

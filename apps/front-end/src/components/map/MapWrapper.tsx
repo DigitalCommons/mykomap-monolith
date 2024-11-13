@@ -20,9 +20,9 @@ const MapWrapper = () => {
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
 
-  const popupCreatedCallback = () => {
+  const popupCreatedCallback = (itemIx: number) => {
     console.log("Popup created");
-    dispatch(openPopup());
+    dispatch(openPopup(itemIx));
   };
 
   const popupClosedCallback = () => {
@@ -58,7 +58,7 @@ const MapWrapper = () => {
       console.log(`Found ${visibleIndexes?.length} features that matched`);
     }
 
-    console.log("Rendering data in MapLibreGL", features);
+    console.log(`Rendering ${features.length} points in MapLibreGL`);
 
     (map.current?.getSource("items-geojson") as GeoJSONSource)?.setData({
       type: "FeatureCollection",
