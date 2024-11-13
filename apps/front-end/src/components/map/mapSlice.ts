@@ -1,14 +1,19 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
+import { notNullish, schemas } from "@mykomap/common";
+import { z } from "zod";
+
+export type Location = z.infer<typeof schemas.Location>;
+export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
 
 export interface MapSliceState {
-  allLocations: number[][];
+  allLocations: DatasetLocations;
   status: string;
 }
 
 const initialState: MapSliceState = {
-  allLocations: [[]],
+  allLocations: [],
   status: "loading",
 };
 
@@ -59,13 +64,19 @@ export const mapSlice = createAppSlice({
 // to re-form the features array every time the selector is called.
 // https://redux.js.org/usage/deriving-data-selectors#writing-memoized-selectors-with-reselect
 const selectAllFeatures = createSelector(
-  [(state): number[][] => state.map.allLocations],
+  [(state): DatasetLocations => state.map.allLocations],
   (allLocations): GeoJSON.Feature<GeoJSON.Point>[] =>
-    allLocations.map((location, ix) => ({
-      type: "Feature",
-      geometry: { type: "Point", coordinates: location },
-      properties: { ix },
-    })),
+    allLocations
+      .map((location, ix) => {
+        if (!location) return null; // skip non-locations here to preserve index counting
+        const point: GeoJSON.Feature<GeoJSON.Point> = {
+          type: "Feature",
+          geometry: { type: "Point", coordinates: location },
+          properties: { ix },
+        };
+        return point;
+      })
+      .filter(notNullish),
 );
 
 /**

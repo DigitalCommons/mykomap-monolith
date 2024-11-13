@@ -33,10 +33,10 @@ export const stringify = <T = string>(
 export const toYesANumber = <T = number>(x: number, y: T | number = 0) =>
   isNaN(x) ? y : x;
 
-/** Predicate which checks whether x is a number */
+/** Predicate which checks whether x is a number (including NaN) */
 export const isNumber = (x: unknown): x is number => typeof x === "number";
 
-/** Predicate which checks whether x is a number */
+/** Predicate which checks whether x is a number (excluding NaN) */
 export const yesANumber = (x: unknown): x is number =>
   typeof x === "number" && !isNaN(x);
 
@@ -265,6 +265,14 @@ export function promoteToArray<T = unknown[]>(x: unknown): T | unknown[] {
   return [x];
 }
 
+/** Helper function to exlcude undefined values in filter operations */
+export const notUndefined = <T>(it: T): it is Exclude<T, undefined> =>
+  it !== undefined;
+
+/** Helper function to exclude nullish values in filter operations */
+export const notNullish = <T>(it: T): it is Exclude<T, null | undefined> =>
+  it != null;
+
 /** Compact an array (or an empty reference) of possibly undefined values into
  * an array with no undefined values
  */
@@ -272,7 +280,7 @@ export function compactArray<T>(
   x: (T | undefined | null)[] | undefined | null,
 ): T[] {
   if (!x) return [];
-  return x.filter((it): it is T => it !== undefined);
+  return x.filter(notNullish);
 }
 
 /** Throw an error with the given message if the expression is not truthy */
