@@ -17,10 +17,10 @@ const StyledLeftPane = styled(Box)(() => ({
   flexDirection: "column",
   margin: "var(--spacing-large)",
   "@media (min-width: 768px)": {
-    width: "60%",
+    width: "70%",
     flexDirection: "column",
     margin:
-      "var(--spacing-xlarge) 0 var(--spacing-xxlarge) var(--spacing-xxlarge)",
+      "var(--spacing-large) 0 var(--spacing-xlarge) var(--spacing-xlarge)",
     overflowY: "hidden",
   },
 }));
@@ -35,14 +35,14 @@ const StyledHeaderContainer = styled(Box)(() => ({
   top: 0,
   left: 0,
   "& h1": {
-    fontSize: "var(--font-size-large)",
+    fontSize: "var(--font-size-xxlarge)",
     color: "var(--color-primary)",
   },
   "@media (min-width: 768px)": {
     position: "sticky",
-    padding: "0 var(--spacing-xxlarge) var(--spacing-xlarge) 0",
+    padding: "0 var(--spacing-xlarge) var(--spacing-large) 0",
     "& h1": {
-      fontSize: "28px",
+      fontSize: "26px",
     },
   },
 }));
@@ -61,11 +61,11 @@ const StyledContentContainer = styled(Box)(() => ({
   },
   "&::-webkit-scrollbar-track": {
     background: "rgba(0, 0, 0, 0.1)",
-    borderRadius: "10px",
+    borderRadius: "8px",
   },
   "&::-webkit-scrollbar-thumb": {
     backgroundColor: "rgba(0, 0, 0, 0.3)",
-    borderRadius: "10px",
+    borderRadius: "8px",
   },
   "& h4": {
     fontSize: "var(--font-size-small)",
@@ -78,14 +78,7 @@ const StyledContentContainer = styled(Box)(() => ({
   "@media (min-width: 768px)": {
     overflowY: "auto",
     paddingRight: "var(--spacing-large)",
-    marginRight: "var(--spacing-medium)",
-    "& h4": {
-      fontSize: "var(--font-size-large)",
-    },
-
-    "& p": {
-      fontSize: "var(--font-size-medium)",
-    },
+    marginRight: "var(--spacing-small)",
   },
 }));
 

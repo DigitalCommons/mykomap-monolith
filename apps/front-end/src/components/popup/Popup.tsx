@@ -21,11 +21,12 @@ const StyledPopup = styled(Box)(({ theme }) => ({
   margin: "auto var(--spacing-large)",
   outline: "none",
   position: "relative",
+  textAlign: "left",
   "@media (min-width: 768px)": {
     width: "100%",
     height: "auto",
-    maxWidth: 900,
-    maxHeight: 600,
+    maxWidth: 700,
+    maxHeight: 450,
     margin: "auto",
   },
 }));
