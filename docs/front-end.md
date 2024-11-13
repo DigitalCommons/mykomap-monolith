@@ -1,6 +1,6 @@
 # Order of data fetching / what we implement
 
-- [x] getLocations (formerly detDataset) API request
+- [x] getLocations (formerly getDataset) API request
 - [x] Render markers, requires:
   - array of locations
 - [x] getConfig API request
