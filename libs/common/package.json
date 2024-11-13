@@ -22,6 +22,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@mykomap/node-utils": "*",
     "@openapi-ts-rest/cli": "^0.1.2",
     "rimraf": "^6.0.1",
     "typescript": "^5.5.4",
