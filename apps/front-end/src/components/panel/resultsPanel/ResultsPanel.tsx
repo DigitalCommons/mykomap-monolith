@@ -11,11 +11,17 @@ import {
   selectPanelVisible,
   togglePanel,
   selectIsOpen,
-  closePanel,
+  toggleResultsPanel,
+  selectResultsOpen,
 } from "../panelSlice";
+import {
+  setText,
+  performSearch,
+} from "../searchPanel/searchSlice";
 
 const StyledResultsPanel = styled(Drawer)(() => ({
-  width: "100%)",
+  width: "100%",
+  height: "100vh",
   position: "relative",
   overflow: "visible",
   "& .MuiDrawer-paper": {
@@ -28,6 +34,7 @@ const StyledResultsPanel = styled(Drawer)(() => ({
   },
   "@media (min-width: 897px)": {
     width: "calc(var(--panel-width-desktop) + 30px)",
+    transform: "translateX(var(--panel-width-desktop))", // Marcel: to fix
     "& .MuiDrawer-paper": {
       width: "var(--panel-width-desktop)",
     },
@@ -54,27 +61,32 @@ const ResultsPanel = ({
 }: Record<string, unknown>) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectIsOpen);
+  const resultsOpen = useAppSelector(selectResultsOpen);
+
+  console.log("resultsOpen", resultsOpen);
 
   const panelVisible = useAppSelector(selectPanelVisible);
   const isMedium = useMediaQuery("(min-width: 897px)");
 
   const handleToggle = () => {
     dispatch(togglePanel());
+    dispatch(toggleResultsPanel());
     console.log("isOpen", isOpen);
   };
 
   const handlePanelClose = () => {
-    dispatch(closePanel());
+    dispatch(toggleResultsPanel());
     console.log("panelVisible", panelVisible);
   };
 
   const handleClearSearch = () => {
     console.log("Clear search");
+    dispatch(toggleResultsPanel());
   };
 
   return (
     <>
-      <StyledResultsPanel open={isOpen} variant="persistent">
+      <StyledResultsPanel open={resultsOpen} variant="persistent">
         <Box
           sx={{
             display: "flex",

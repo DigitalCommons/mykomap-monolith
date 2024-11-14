@@ -4,6 +4,7 @@ import type { Config } from "../../../services";
 import { searchDataset } from "../../../services";
 import { configLoaded } from "../../../app/configSlice";
 import { getUrlSearchParam } from "../../../utils/window-utils";
+import { openResultsPanel } from "../panelSlice";
 
 type FilterableVocabProp = {
   id: string;
@@ -66,6 +67,7 @@ export const searchSlice = createAppSlice({
           },
         });
         if (response.status === 200) {
+          thunkApi.dispatch(openResultsPanel()); // Marcel: to add reducer to panelSlice to get this working
           return response.body;
         } else {
           return thunkApi.rejectWithValue(

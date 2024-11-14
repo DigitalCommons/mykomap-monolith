@@ -10,6 +10,7 @@ import {
   performSearch,
   selectFilterOptions,
   setFilterValue,
+  selectVisibleIndexes,
 } from "./searchSlice";
 import { useState } from "react";
 import type { SelectChangeEvent } from "@mui/material";
@@ -18,7 +19,10 @@ const SearchPanel = () => {
   const dispatch = useAppDispatch();
   const submittedText = useAppSelector(selectText);
   const filterOptions = useAppSelector(selectFilterOptions);
+  const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const [currentText, setCurrentText] = useState(submittedText);
+
+  const resultCount = visibleIndexes.length;
 
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>): void => {
     setCurrentText(e.currentTarget.value);
@@ -58,7 +62,7 @@ const SearchPanel = () => {
       </Heading>
       <ContentPanel>
         <Typography variant="h4" component="h4">
-          X matching results
+          {resultCount} matching results
         </Typography>
         {filterOptions.map(({ id, title, options, value }) => (
           <SelectBox

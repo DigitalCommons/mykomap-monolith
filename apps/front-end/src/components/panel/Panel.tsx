@@ -8,6 +8,7 @@ import CloseButton from "../common/closeButton/CloseButton";
 import AboutPanel from "./aboutPanel/AboutPanel";
 import DirectoryPanel from "./directoryPanel/DirectoryPanel";
 import SearchPanel from "./searchPanel/SearchPanel";
+import ResultsPanel from "../panel/resultsPanel/ResultsPanel";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   setSelectedTab,
@@ -17,6 +18,7 @@ import {
   selectSelectedTab,
   selectPanelVisible,
   selectIsOpen,
+  selectResultsOpen,
 } from "./panelSlice";
 
 const StyledPanel = styled(Drawer)(() => ({
@@ -51,6 +53,7 @@ const Panel = () => {
   const isOpen = useAppSelector(selectIsOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
   const panelVisible = useAppSelector(selectPanelVisible);
+  const resultsOpen = useAppSelector(selectResultsOpen);
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
@@ -67,6 +70,7 @@ const Panel = () => {
     }
     dispatch(setSelectedTab(tab));
     console.log("tab", tab);
+    console.log("panelVisible", panelVisible);
   };
 
   const handlePanelClose = () => {
@@ -82,6 +86,8 @@ const Panel = () => {
 
   return (
     <>
+      {/* Marcel: need to move this to Panel  */}
+      {/* <ResultsPanel /> */}
       {/* Desktop view  */}
       {isMedium && (
         <Box>
@@ -98,7 +104,9 @@ const Panel = () => {
               {selectedTab === 1 && <SearchPanel />}
               {selectedTab === 2 && <AboutPanel />}
             </Box>
-            <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
+            {!resultsOpen && (
+              <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
+            )}
           </StyledPanel>
         </Box>
       )}

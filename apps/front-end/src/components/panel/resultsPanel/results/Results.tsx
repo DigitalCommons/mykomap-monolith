@@ -3,46 +3,8 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import { styled } from "@mui/material/styles";
 import ResultItem from "./resultItem/ResultItem";
-
-// Mock data
-const results = [
-  {
-    id: "1",
-    name: "Agricultores Federados Argentinos Sociedad Cooperativa Limitada (AFA S.C.L.)",
-    link: "",
-  },
-  {
-    id: "2",
-    name: "Asociación de Cooperativas Argentinas Cooperativa Limitada (ACA C.L.)",
-    link: "",
-  },
-  {
-    id: "3",
-    name: "Confederación Cooperativa de la República Argentina Ltda. (COOPERAR)",
-    link: "",
-  },
-  {
-    id: "4",
-    name: "Cooperativa de Trabajos Portuarios Limitada de San Martin (Coop Portuaria)",
-    link: "",
-  },
-  {
-    id: "5",
-    name: "Federación Argentina de Cooperativas de Consumo (FACC)",
-    link: "",
-  },
-  {
-    id: "6",
-    name: "Instituto Movilizador De Fondos Cooperativos, Cooperativa Ltda. (IMFC)",
-    link: "",
-  },
-  {
-    id: "7",
-    name: "La Segunda Cooperativa Limitada Seguros Generales",
-    link: "",
-  },
-  { id: "8", name: "Sancor Cooperativa de Seguros Ltdae", link: "" },
-];
+import { useAppSelector } from "../../../../app/hooks";
+import { selectVisibleIndexes } from "../../searchPanel/searchSlice";
 
 const StyledResults = styled(Box)(() => ({
   width: "100%",
@@ -58,7 +20,9 @@ const StyledResults = styled(Box)(() => ({
 }));
 
 const Results = () => {
-  const resultCount = results.length;
+  const visibleIndexes = useAppSelector(selectVisibleIndexes);
+
+  const resultCount = visibleIndexes.length;
 
   return (
     <StyledResults>
@@ -77,8 +41,13 @@ const Results = () => {
         {resultCount} matching results
       </Typography>
       <List>
-        {results.map((result) => (
-          <ResultItem key={result.id} {...result} link={result.link} />
+        {visibleIndexes.map((index) => (
+          <ResultItem
+            key={index}
+            id={index.toString()}
+            name={index.toString()}
+            buttonAction={() => console.log(`Clicked ${index}`)}
+          />
         ))}
       </List>
     </StyledResults>

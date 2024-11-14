@@ -1,27 +1,39 @@
 import ListItem from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
-import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 
 interface ResultItemProps {
   id: string;
   name: string;
-  link: string;
-  onClick?: (e: React.MouseEvent) => void; // for storybook testing
+  buttonAction?: (e: React.MouseEvent) => void; // for storybook testing
 }
 
-const StyledLink = styled(Link)(() => ({
+const StyledLink = styled(Button)(() => ({
+  width: "100%",
+  padding: "var(--spacing-small) var(--spacing-medium)",
+  display: "block",
+  fontSize: "var(--font-size-medium)",
+  fontWeight: "var(--font-weight-medium)",
+  textDecoration: "none",
+  textAlign: "left",
+  backgroundColor: "transparent",
+  borderRadius: 0,
+  boxShadow: "none",
   color: "#ffffffcc",
   transition: "ease-in 0.15s",
   "&:hover": {
     backgroundColor: "var(--color-secondary-light)",
     color: "#fff",
   },
+  "@media (min-width: 768px)": {
+    padding: "var(--spacing-small) var(--spacing-large)",
+  },
 }));
 
-const ResultItems = ({id, name, link, onClick}: ResultItemProps) => {
+const ResultItems = ({id, name, buttonAction}: ResultItemProps) => {
   return (
     <ListItem key={id}>
-      <StyledLink href={link} role="link" onClick={onClick}>
+      <StyledLink role="button" onClick={buttonAction}>
         {name}
       </StyledLink>
     </ListItem>

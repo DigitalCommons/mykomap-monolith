@@ -6,6 +6,7 @@ import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
 import { getUrlSearchParam } from "./utils/window-utils";
 import Popup from "./components/popup/Popup";
+import ResultsPanel from "./components/panel/resultsPanel/ResultsPanel";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -31,6 +32,7 @@ const App = () => {
     <div>
       <MapWrapper />
       <Panel />
+      <ResultsPanel />
       <Popup />
     </div>
   );
