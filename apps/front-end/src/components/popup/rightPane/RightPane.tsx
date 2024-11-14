@@ -18,12 +18,11 @@ const StyledRightPane = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
-  borderRadius: "0 0 var(--border-radius-xlarge) var(--border-radius-xlarge)",
   color: "#fff",
   fontSize: "var(--font-size-medium)",
   lineHeight: "var(--line-height-medium)",
-  overflowY: "hidden",
   "@media (min-width: 768px)": {
+    overflowY: "hidden",
     borderRadius: "0 var(--border-radius-xlarge) var(--border-radius-xlarge) 0",
   },
 }));
