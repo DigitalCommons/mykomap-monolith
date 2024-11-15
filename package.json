@@ -4,6 +4,7 @@
     "libs/*"
   ],
   "scripts": {
+    "build": "npm run -w @mykomap/common build; npm -w @mykomap/node-utils build; npm run --ignore-scripts -w @mykomap/back-end build; npm run --ignore-scripts -w @mykomap/front-end build",
     "clean": "npm run clean --workspaces && rimraf node_modules",
     "front-end:": "npm run --workspace=@mykomap/front-end",
     "back-end:": "npm run --workspace=@mykomap/back-end",
