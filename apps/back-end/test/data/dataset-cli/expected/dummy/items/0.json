@@ -1,0 +1,15 @@
+{
+  "id": "aaa",
+  "name": "Apple Co-op",
+  "manlat": 0,
+  "manlng": 0,
+  "lat": 51.608437,
+  "lng": -3.654778,
+  "address": "1 Apple Way, Appleton",
+  "activity": "AM130",
+  "otherActivities": [],
+  "websites": [
+    "http://apple.coop"
+  ],
+  "validated": true
+}

@@ -1,0 +1,8 @@
+{   "itemProps":
+["name","address","searchString"],
+    "values":[
+["Apple Co-op","1 Apple Way, Appleton","apple co op"],
+["Banana Co","1 Banana Boulevard, Skinningdale","banana co"],
+["The Cabbage Collective","2 Cabbage Close, Caulfield","the cabbage collective"],
+["The Chateau","","the chateau"]
+]}
