@@ -2,6 +2,8 @@
   "prefixes": {
     "https://dev.lod.coop/essglobal/2.1/standard/activities-modified/": "am"
   },
+  "languages": ["en"],
+  "ui": { "directory_panel_field": "activity" },
   "vocabs": {
     "am": {
       "en": {
