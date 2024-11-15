@@ -2,25 +2,36 @@ import { useRef, useEffect, useState } from "react";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
-  selectText,
+  selectIsFilterActive,
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 import { fetchLocations, selectFeatures } from "./mapSlice";
+import { closePopup, openPopup } from "../popup/popupSlice";
 
 const MapWrapper = () => {
-  const searchText = useAppSelector(selectText);
-  // If there is no search text, visible indexes is undefined to show all features
+  const isFilterActive = useAppSelector(selectIsFilterActive);
+  // If there is no filter active , visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const features = useAppSelector((state) =>
-    selectFeatures(state, searchText ? visibleIndexes : undefined),
+    selectFeatures(state, isFilterActive ? visibleIndexes : undefined),
   );
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
 
+  const popupCreatedCallback = () => {
+    console.log("Popup created");
+    dispatch(openPopup());
+  };
+
+  const popupClosedCallback = () => {
+    console.log("Popup closed");
+    dispatch(closePopup());
+  };
+
   useEffect(() => {
-    map.current = createMap();
+    map.current = createMap(popupCreatedCallback, popupClosedCallback);
     map.current.on("sourcedata", (e) => {
       if (e.isSourceLoaded && e.sourceId === "items-geojson") {
         console.log("Updated GeoJSON source");
@@ -43,7 +54,7 @@ const MapWrapper = () => {
   }, [features, sourceLoaded]);
 
   const updateMapData = async () => {
-    if (searchText) {
+    if (isFilterActive) {
       console.log(`Found ${visibleIndexes?.length} features that matched`);
     }
 

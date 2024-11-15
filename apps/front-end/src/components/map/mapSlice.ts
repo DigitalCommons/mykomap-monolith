@@ -6,6 +6,7 @@ import { z } from "zod";
 
 export type Location = z.infer<typeof schemas.Location>;
 export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
+import { getUrlSearchParam } from "../../utils/window-utils";
 
 export interface MapSliceState {
   allLocations: DatasetLocations;
@@ -23,9 +24,8 @@ export const mapSlice = createAppSlice({
   reducers: (create) => ({
     fetchLocations: create.asyncThunk(
       async (_, thunkApi) => {
-        const datasetId =
-          new URLSearchParams(window.location.search).get("datasetId") ?? "";
-        if (datasetId === "") {
+        const datasetId = getUrlSearchParam("datasetId");
+        if (datasetId === null) {
           return thunkApi.rejectWithValue(
             `No datasetId parameter given, so dataset locations cannot be fetched`,
           );

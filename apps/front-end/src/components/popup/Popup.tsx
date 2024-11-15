@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
@@ -6,10 +7,11 @@ import RightPane from "./rightPane/RightPane";
 import CloseButton from "../common/closeButton/CloseButton";
 import { styled } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { closePopUp, popUpIsOpen } from "./popUpSlice";
+import { closePopup, popupIsOpen } from "./popupSlice";
 import mockItem from "../../data/mockItem";
+import { POPUP_CONTAINER_ID } from "../map/mapLibre";
 
-const StyledPopUp = styled(Box)(({ theme }) => ({
+const StyledPopup = styled(Box)(({ theme }) => ({
   width: "calc (100% - (var(--spacing-large) * 2))",
   height: "calc(100% - (var(--spacing-large) * 2 + 80px))",
   display: "flex",
@@ -28,7 +30,7 @@ const StyledPopUp = styled(Box)(({ theme }) => ({
   },
 }));
 
-const StylePopUpInner = styled(Box)(() => ({
+const StylePopupInner = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   overflowY: "auto",
@@ -63,52 +65,57 @@ const StyledPointer = styled(Box)(({ theme }) => ({
   borderTop: `20px solid ${theme.palette.background.paper}`,
 }));
 
-const PopUp = () => {
+const Popup = () => {
   const dispatch = useAppDispatch();
-  const open = useAppSelector(popUpIsOpen);
+  const open = useAppSelector(popupIsOpen);
 
-  const handleClosePopUp = () => {
-    dispatch(closePopUp());
+  const handleClosePopup = () => {
+    dispatch(closePopup());
   };
 
   return (
-    <Modal
-      open={open}
-      onClose={handleClosePopUp}
-      aria-labelledby={`pop-up-${mockItem.id}`}
-      aria-describedby="pop-up-description"
-      closeAfterTransition
-    >
-      <Fade in={open}>
-        <StyledPopUp>
-          <CloseButton
-            sx={{
-              position: "absolute",
-              right: "14px",
-              top: "14px",
-            }}
-            buttonAction={handleClosePopUp}
+    open &&
+    document.getElementById(POPUP_CONTAINER_ID) &&
+    createPortal(
+      // <Modal
+      //   open={open}
+      //   onClose={handleClosePopup}
+      //   aria-labelledby={`pop-up-${mockItem.id}`}
+      //   aria-describedby="pop-up-description"
+      //   closeAfterTransition
+      // >
+      //   <Fade in={open}>
+      <StyledPopup id="'aaaaaaaaaa">
+        {/* <CloseButton
+          sx={{
+            position: "absolute",
+            right: "14px",
+            top: "14px",
+          }}
+          buttonAction={handleClosePopup}
+        /> */}
+        <StylePopupInner>
+          <LeftPane
+            name={mockItem.name}
+            primaryActivity={mockItem.primary_activity}
+            description={mockItem.description}
+            dcDomains={mockItem.dc_domains}
           />
-          <StylePopUpInner>
-            <LeftPane
-              name={mockItem.name}
-              primaryActivity={mockItem.primary_activity}
-              description={mockItem.description}
-              dcDomains={mockItem.dc_domains}
-            />
-            <RightPane
-              geocodedAddr={mockItem.geocoded_addr}
-              website={mockItem.website}
-              organisationalStructure={mockItem.organisational_structure}
-              typology={mockItem.typology}
-              dataSources={mockItem.data_sources}
-            />
-          </StylePopUpInner>
-          <StyledPointer />
-        </StyledPopUp>
-      </Fade>
-    </Modal>
+          <RightPane
+            geocodedAddr={mockItem.geocoded_addr}
+            website={mockItem.website}
+            organisationalStructure={mockItem.organisational_structure}
+            typology={mockItem.typology}
+            dataSources={mockItem.data_sources}
+          />
+        </StylePopupInner>
+        {/* <StyledPointer /> */}
+      </StyledPopup>,
+      //   </Fade>
+      // </Modal>
+      document.getElementById(POPUP_CONTAINER_ID)!!,
+    )
   );
 };
 
-export default PopUp;
+export default Popup;

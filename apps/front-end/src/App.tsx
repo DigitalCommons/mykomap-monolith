@@ -2,20 +2,26 @@ import { useEffect } from "react";
 import MapWrapper from "./components/map/MapWrapper";
 import Panel from "./components/panel/Panel";
 import logo from "./logo.svg";
-import { fetchConfig } from "./app/vocabsSlice";
+import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
+import { getUrlSearchParam } from "./utils/window-utils";
+import Popup from "./components/popup/Popup";
 
 const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchConfig());
+    dispatch(fetchConfig()).then(() => {
+      const urlParamLang = getUrlSearchParam("lang")?.toLowerCase();
+      if (urlParamLang) dispatch(setLanguage(urlParamLang));
+    });
   }, []);
 
   return (
     <div>
       <MapWrapper />
       <Panel />
+      <Popup />
     </div>
   );
 };
