@@ -6,7 +6,7 @@ import { CssBaseline } from "@mui/material";
 import { store } from "../../app/store";
 import { Provider } from "react-redux";
 import Popup from "./Popup";
-import { togglePopup } from "./popupSlice";
+// import { togglePopup } from "./popupSlice";
 
 const meta = {
   title: "Common/Popup",
@@ -33,6 +33,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   play: () => {
-    store.dispatch(togglePopup());
+    // TODO: feed in mock item data
+    // https://storybook.js.org/tutorials/intro-to-storybook/react/en/data/
+    // store.dispatch(togglePopup());
   },
 };

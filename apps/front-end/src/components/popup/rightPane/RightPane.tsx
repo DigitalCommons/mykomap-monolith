@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 
 interface RightPaneProps {
-  geocodedAddr?: string;
+  address?: string;
   website?: string;
   organisationalStructure?: string;
   typology?: string;
@@ -18,30 +18,67 @@ const StyledRightPane = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
-  borderRadius: "0 0 var(--border-radius-xlarge) var(--border-radius-xlarge)",
   color: "#fff",
   fontSize: "var(--font-size-medium)",
   lineHeight: "var(--line-height-medium)",
   "@media (min-width: 768px)": {
+    overflowY: "hidden",
     borderRadius: "0 var(--border-radius-xlarge) var(--border-radius-xlarge) 0",
   },
 }));
 
 const StyledTopBox = styled(Box)(() => ({
   backgroundColor: "var(--color-secondary-light)",
-  padding: "var(--spacing-xlarge) var(--spacing-xxlarge)",
+  padding: "var(--spacing-large) var(--spacing-xlarge)",
   borderTopRightRadius: 0,
+  "& p": {
+    fontSize: "var(--font-size-small)",
+  },
   "@media (min-width: 768px)": {
     borderTopRightRadius: "var(--border-radius-xlarge)",
   },
 }));
 
 const StyledBottomBox = styled(Box)(() => ({
-  padding: "var(--spacing-xxlarge) var(--spacing-xxlarge)",
+  margin: "var(--spacing-large) var(--spacing-xlarge) var(--spacing-xlarge)",
+  "& h4, & p, & li": {
+    fontSize: "var(--font-size-small)",
+  },
+  "& h4": {
+    color: "#ffffffB3",
+    marginBottom: "var(--spacing-xsmall) !important",
+  },
+  "& ul": {
+    listStyleType: "unset",
+    margin: "unset",
+    padding: "unset",
+  },
+  "& li": {
+    display: "list-item",
+    marginLeft: "var(--spacing-medium)",
+  },
+  "@media (min-width: 768px)": {
+    overflowY: "auto",
+    paddingRight: "var(--spacing-large)",
+    marginRight: "var(--spacing-small)",
+    scrollbarWidth: "thin",
+    scrollbarColor: "rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1)",
+    "&::-webkit-scrollbar": {
+      width: "8px",
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "rgba(0, 0, 0, 0.1)",
+      borderRadius: "8px",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      backgroundColor: "rgba(0, 0, 0, 0.3)",
+      borderRadius: "8px",
+    },
+  },
 }));
 
 const RightPane = ({
-  geocodedAddr,
+  address,
   website,
   organisationalStructure,
   typology,
@@ -55,17 +92,15 @@ const RightPane = ({
   return (
     <StyledRightPane>
       <StyledTopBox>
-        {splitAddress(geocodedAddr).map((line, index) => (
-          <Typography key={index} variant="body1">
-            {line}
-          </Typography>
+        {splitAddress(address).map((line, index) => (
+          <Typography key={index}>{line}</Typography>
         ))}
         <Link
           sx={{
             color: "#ffffffB3",
             textDecoration: "underline",
             padding: "0 !important",
-            fontSize: "var(--font-size-small)",
+            fontSize: "var(--font-size-xsmall)",
             marginTop: "var(--spacing-medium)",
           }}
         >
@@ -75,49 +110,23 @@ const RightPane = ({
       <StyledBottomBox>
         <Box
           sx={{
-            marginBottom: "var(--spacing-large)",
+            marginBottom: "var(--spacing-medium)",
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{
-              color: "#ffffffB3",
-              marginBottom: "var(--spacing-xsmall) !important",
-            }}
-          >
-            Organisational Structure
-          </Typography>
+          <Typography variant="h4">Organisational Structure</Typography>
           <Typography variant="body1">{organisationalStructure}</Typography>
         </Box>
         <Box
           sx={{
-            marginBottom: "var(--spacing-large)",
+            marginBottom: "var(--spacing-medium)",
           }}
         >
-          <Typography
-            variant="h4"
-            sx={{
-              color: "#ffffffB3",
-              marginBottom: "var(--spacing-xsmall) !important",
-            }}
-          >
-            Typology
-          </Typography>
+          <Typography variant="h4">Typology</Typography>
           <Typography variant="body1">{typology}</Typography>
         </Box>
         <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              color: "#ffffffB3",
-              marginBottom: "var(--spacing-xsmall) !important",
-            }}
-          >
-            Data Sources
-          </Typography>
-          <List
-            sx={{ listStyleType: "unset", margin: "unset", padding: "unset" }}
-          >
+          <Typography variant="h4">Data Sources</Typography>
+          <List>
             {dataSources.map((dataSource) => (
               <ListItem
                 key={dataSource}

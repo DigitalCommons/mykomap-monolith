@@ -42,7 +42,7 @@ export const configSlice = createAppSlice({
       },
       {
         fulfilled: (state, action) => {
-          console.log("Mock config", action.payload);
+          console.log("Config", action.payload);
           state.vocabs = action.payload.vocabs;
           state.languages = action.payload.languages;
           state.currentLanguage = action.payload.languages[0];

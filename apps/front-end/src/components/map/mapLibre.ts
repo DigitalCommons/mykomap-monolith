@@ -60,7 +60,7 @@ const disableRotation = (map: Map) => {
 const onMarkerClick = async (
   map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
-  popupCreatedCallback: () => void,
+  popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
@@ -86,7 +86,7 @@ const onMarkerClick = async (
     .setOffset(popupOffset)
     .on("close", popupClosedCallback);
 
-  popupCreatedCallback();
+  popupCreatedCallback(ix);
 };
 
 const onMarkerHover = (
@@ -119,7 +119,7 @@ const onMarkerHover = (
  * Set up the sources and layers of the MapLibreGL map instance.
  */
 export const createMap = (
-  popupCreatedCallback: () => void,
+  popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
 ): Map => {
   const map = new MapLibreGL.Map({

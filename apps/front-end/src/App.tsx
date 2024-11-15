@@ -10,11 +10,21 @@ import Popup from "./components/popup/Popup";
 const App = () => {
   const dispatch = useAppDispatch();
 
+  /** Startup tasks */
   useEffect(() => {
     dispatch(fetchConfig()).then(() => {
       const urlParamLang = getUrlSearchParam("lang")?.toLowerCase();
       if (urlParamLang) dispatch(setLanguage(urlParamLang));
     });
+
+    fetch(`${import.meta.env.VITE_API_URL}/version`)
+      .then((response) => response.json())
+      .then((versionInfo) => {
+        console.log("API version info", versionInfo);
+      })
+      .catch((error) => {
+        console.error("Error fetching API version info", error);
+      });
   }, []);
 
   return (

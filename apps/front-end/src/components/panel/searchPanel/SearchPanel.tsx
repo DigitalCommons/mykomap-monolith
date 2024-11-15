@@ -44,7 +44,10 @@ const SearchPanel = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form
+      onSubmit={onSubmit}
+      style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
+    >
       <Heading title="Search">
         <SearchBox
           value={currentText}

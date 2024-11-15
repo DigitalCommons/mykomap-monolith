@@ -37,7 +37,7 @@ const themeOptions: ThemeOptions = {
       textAlign: "left",
       fontWeight: "var(--font-weight-medium)",
       "@media (min-width: 600px)": {
-        fontSize: "var(--font-size-xxxlarge)",
+        fontSize: "var(--font-size-heading)",
       },
     },
     h4: {
