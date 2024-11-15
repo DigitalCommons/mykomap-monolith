@@ -14,7 +14,8 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           }
         ],
         "operationId": "getDatasetLocations",
@@ -33,7 +34,8 @@
                     "minItems": 2,
                     "maxItems": 2,
                     "nullable": true
-                  }
+                  },
+                  "description": "the dataset matching the supplied ID"
                 }
               }
             }
@@ -52,7 +54,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -71,7 +74,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -92,11 +96,13 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           },
           {
             "name": "text",
             "in": "query",
+            "description": "a text fragment to match",
             "schema": {
               "type": "string"
             }
@@ -104,6 +110,7 @@
           {
             "name": "filter",
             "in": "query",
+            "description": "uniquely specifies the taxonomy filter items wanted",
             "schema": {
               "oneOf": [
                 {
@@ -129,7 +136,8 @@
                   "type": "array",
                   "items": {
                     "type": "string"
-                  }
+                  },
+                  "description": "the dataset item indexes matching the supplied criteria"
                 }
               }
             }
@@ -148,7 +156,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -167,7 +176,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -188,7 +198,8 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           },
           {
             "name": "datasetItemIdOrIx",
@@ -196,7 +207,8 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "uniquely specifies the dataset item wanted within the dataset"
           }
         ],
         "operationId": "getDatasetItem",
@@ -208,7 +220,8 @@
                 "schema": {
                   "type": "object",
                   "properties": {},
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "the dataset item matching the supplied ID or index"
                 }
               }
             }
@@ -227,7 +240,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -246,7 +260,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -267,7 +282,8 @@
             "schema": {
               "type": "string",
               "pattern": "^[A-Za-z0-9_-]+$"
-            }
+            },
+            "description": "uniquely specifies the dataset wanted"
           }
         ],
         "operationId": "getConfig",
@@ -534,7 +550,8 @@
                     "prefixes",
                     "vocabs",
                     "itemProps"
-                  ]
+                  ],
+                  "description": "variuos configured parameters for a map"
                 }
               }
             }
@@ -553,7 +570,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -572,7 +590,8 @@
                   "required": [
                     "message"
                   ],
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "description": "no such map"
                 }
               }
             }
@@ -625,7 +644,8 @@
                     "version",
                     "commitDesc",
                     "nodeEnv"
-                  ]
+                  ],
+                  "description": "information about the current Mykomap server version"
                 }
               }
             }

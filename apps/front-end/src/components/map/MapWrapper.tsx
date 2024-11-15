@@ -22,7 +22,7 @@ const MapWrapper = () => {
   useEffect(() => {
     map.current = createMap();
     map.current.on("sourcedata", (e) => {
-      if (e.isSourceLoaded && e.sourceId === "initiatives-geojson") {
+      if (e.isSourceLoaded && e.sourceId === "items-geojson") {
         console.log("Updated GeoJSON source");
         // We need to wait for the source to be initially loaded before we can update the data
         setSourceLoaded(true);
@@ -49,7 +49,7 @@ const MapWrapper = () => {
 
     console.log("Rendering data in MapLibreGL", features);
 
-    (map.current?.getSource("initiatives-geojson") as GeoJSONSource)?.setData({
+    (map.current?.getSource("items-geojson") as GeoJSONSource)?.setData({
       type: "FeatureCollection",
       features,
     });

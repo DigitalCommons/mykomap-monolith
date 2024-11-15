@@ -14,7 +14,7 @@
   - list of possible values for 1 field (countries) and their translations
 - getDatasetItem API request
 - Render popup, requires:
-  - full set of data for an initiative
+  - full set of data for an item
   - translations for all fields (vocabs)
 - [ ] getAbout API request
 - [ ] Render about panel, requires:

@@ -5,15 +5,45 @@
     "https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/": "os"
   },
   "languages": ["en", "fr"],
-  "fields": {
-    "uid": "value",
-    "name": "value",
-    "description": "value",
+  "ui": {
+    "directory_panel_field": "country_id",
+    "filterableFields": [
+      "country_id",
+      "primary_activity",
+      "organisational_structure",
+      "typology"
+    ]
+  },
+  "itemProps": {
+    "id": {
+      "type": "value",
+      "from": "Identifier"
+    },
+    "name": {
+      "type": "value",
+      "search": true,
+      "from": "Name"
+    },
+    "description": { "type": "value" },
+    "lat": {
+      "type": "value",
+      "from": "Geocoded Latitude"
+    },
+    "lng": {
+      "type": "value",
+      "from": "Geocoded Longitude"
+    },
+    "address": {
+      "type": "value",
+      "search": true,
+      "from": "Address"
+    },
     "website": {
       "type": "multi",
       "of": {
         "type": "value"
-      }
+      },
+      "search": true
     },
     "dc_domains": {
       "type": "multi",
@@ -21,31 +51,30 @@
     },
     "country_id": {
       "type": "vocab",
-      "uri": "coun"
+      "uri": "coun:",
+      "filter": true
     },
     "primary_activity": {
       "type": "vocab",
-      "uri": "aci",
-      "titleUri": "ui:primary_activity"
+      "uri": "aci:",
+      "titleUri": "ui:primary_activity",
+      "filter": true
     },
     "organisational_structure": {
       "type": "vocab",
-      "uri": "os",
+      "uri": "os:",
       "titleUri": "ui:organisational_structure"
     },
     "typology": {
       "type": "vocab",
-      "uri": "bmt",
-      "titleUri": "ui:typology"
+      "uri": "bmt:",
+      "titleUri": "ui:typology",
+      "filter": true
     },
-    "latitude": "value",
-    "longitude": "value",
-    "geocontainer_lat": "value",
-    "geocontainer_lon": "value",
-    "geocoded_addr": "value",
     "data_sources": {
       "type": "multi",
-      "of": { "type": "vocab", "uri": "dso" }
+      "of": { "type": "vocab", "uri": "dso:" },
+      "filter": true
     }
   },
   "vocabs": {
@@ -142,14 +171,20 @@
     },
     "ui": {
       "en": {
-        "primary_activity": "Primary Activity",
-        "organisational_structure": "Organisational Structure",
-        "typology": "Typology"
+        "title": "Translations",
+        "terms": {
+          "primary_activity": "Primary Activity",
+          "organisational_structure": "Organisational Structure",
+          "typology": "Typology"
+        }
       },
       "fr": {
-        "primary_activity": "Activité principale",
-        "organisational_structure": "Structure organisationnelle",
-        "typology": "Typologie"
+        "title": "Traductions",
+        "terms": {
+          "primary_activity": "Activité principale",
+          "organisational_structure": "Structure organisationnelle",
+          "typology": "Typologie"
+        }
       }
     }
   }
