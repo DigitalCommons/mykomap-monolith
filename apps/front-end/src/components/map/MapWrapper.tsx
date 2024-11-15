@@ -7,7 +7,12 @@ import {
 } from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 import { fetchLocations, selectFeatures } from "./mapSlice";
-import { closePopup, openPopup } from "../popup/popupSlice";
+import {
+  closePopup,
+  openPopup,
+  selectPopupIndex,
+  selectPopupIsOpen,
+} from "../popup/popupSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -16,6 +21,8 @@ const MapWrapper = () => {
   const features = useAppSelector((state) =>
     selectFeatures(state, isFilterActive ? visibleIndexes : undefined),
   );
+  const popupIsOpen = useAppSelector(selectPopupIsOpen);
+  const popupIndex = useAppSelector(selectPopupIndex);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
@@ -53,6 +60,14 @@ const MapWrapper = () => {
     }
   }, [features, sourceLoaded]);
 
+  useEffect(() => {
+    // Keep the mapLibre popup in sync with the Redux state
+    if (!popupIsOpen) {
+      console.log("Closing popup");
+      map?.current?.fire("closeAllPopups");
+    }
+  }, [popupIsOpen]);
+
   const updateMapData = async () => {
     if (isFilterActive) {
       console.log(`Found ${visibleIndexes?.length} features that matched`);
@@ -64,6 +79,10 @@ const MapWrapper = () => {
       type: "FeatureCollection",
       features,
     });
+
+    if (!visibleIndexes.includes(popupIndex)) {
+      dispatch(closePopup());
+    }
   };
 
   return (

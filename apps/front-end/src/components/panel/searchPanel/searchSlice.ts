@@ -68,7 +68,7 @@ export const searchSlice = createAppSlice({
         });
         if (response.status === 200) {
           thunkApi.dispatch(openResultsPanel()); // Marcel: to add reducer to panelSlice to get this working
-          return response.body;
+          return response.body as string[];
         } else {
           return thunkApi.rejectWithValue(
             `Failed search, status code ${response.status}`,

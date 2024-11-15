@@ -122,9 +122,11 @@ export const popupSlice = createAppSlice({
   }),
   selectors: {
     selectPopupIsOpen: (popup) => popup.isOpen,
+    selectPopupIndex: (popup) => popup.index,
     selectPopupData: (popup) => popup.data,
   },
 });
 
 export const { openPopup, closePopup } = popupSlice.actions;
-export const { selectPopupIsOpen, selectPopupData } = popupSlice.selectors;
+export const { selectPopupIsOpen, selectPopupIndex, selectPopupData } =
+  popupSlice.selectors;

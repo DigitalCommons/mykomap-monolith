@@ -6,5 +6,6 @@ vi.mock("maplibre-gl", () => ({
   Map: vi.fn().mockImplementation((options) => ({
     on: vi.fn(),
     remove: vi.fn(),
+    fire: vi.fn(),
   })),
 }));

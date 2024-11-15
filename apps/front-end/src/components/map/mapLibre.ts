@@ -302,6 +302,10 @@ export const createMap = (
       map.getCanvas().style.cursor = "";
     });
 
+    map.on("closeAllPopups", () => {
+      popup?.remove();
+    });
+
     map.addControl(new AttributionControl(), "top-right");
     map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
