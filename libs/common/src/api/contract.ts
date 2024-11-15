@@ -64,7 +64,7 @@ const VocabIndex = z.record(NCName, I18nVocabDefs);
 const FilterSpec = z.object({ preset: z.literal(true), to: z.unknown() });
 const CommonPropSpec = z.object({
   from: z.string().optional(),
-  titleUri: z.string().optional(),
+  titleUri: QName.optional(),
   filter: z.union([FilterSpec, z.boolean()]).optional(),
   search: z.boolean().optional(),
 });
@@ -99,6 +99,8 @@ const ConfigData = z.object({
   prefixes: PrefixIndex,
   vocabs: VocabIndex,
   itemProps: PropSpecs,
+  languages: z.array(Iso639Set1Code).nonempty(),
+  ui: z.object({ directory_panel_field: z.string() }),
 });
 const VersionInfo = z.object({
   name: z.string(),
