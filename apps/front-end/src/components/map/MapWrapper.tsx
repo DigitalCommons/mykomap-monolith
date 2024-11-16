@@ -70,10 +70,13 @@ const MapWrapper = () => {
 
   const updateMapData = async () => {
     if (isFilterActive) {
-      console.log(`Found ${visibleIndexes?.length} features that matched`);
+      console.log(`Found ${visibleIndexes?.length} itmes that matched`);
     }
 
-    console.log(`Rendering ${features.length} points in MapLibreGL`);
+    console.log(
+      `Rendering ${features.length} items that have a location in MapLibreGL`,
+      features,
+    );
 
     (map.current?.getSource("items-geojson") as GeoJSONSource)?.setData({
       type: "FeatureCollection",

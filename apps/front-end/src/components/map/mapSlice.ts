@@ -1,12 +1,13 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { z } from "zod";
+
+import { notNullish, schemas } from "@mykomap/common";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
-import { notNullish, schemas } from "@mykomap/common";
+import { getUrlSearchParam } from "../../utils/window-utils";
 
 export type Location = z.infer<typeof schemas.Location>;
 export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
-import { getUrlSearchParam } from "../../utils/window-utils";
 
 export interface MapSliceState {
   allLocations: DatasetLocations;
@@ -65,18 +66,16 @@ export const mapSlice = createAppSlice({
 // https://redux.js.org/usage/deriving-data-selectors#writing-memoized-selectors-with-reselect
 const selectAllFeatures = createSelector(
   [(state): DatasetLocations => state.map.allLocations],
-  (allLocations): GeoJSON.Feature<GeoJSON.Point>[] =>
-    allLocations
-      .map((location, ix) => {
-        if (!location) return null; // skip non-locations here to preserve index counting
-        const point: GeoJSON.Feature<GeoJSON.Point> = {
-          type: "Feature",
-          geometry: { type: "Point", coordinates: location },
-          properties: { ix },
-        };
-        return point;
-      })
-      .filter(notNullish),
+  (allLocations): (GeoJSON.Feature<GeoJSON.Point> | null)[] =>
+    allLocations.map((location, ix) => {
+      if (!location) return null; // skip non-locations here to preserve index counting
+      const point: GeoJSON.Feature<GeoJSON.Point> = {
+        type: "Feature",
+        geometry: { type: "Point", coordinates: location },
+        properties: { ix },
+      };
+      return point;
+    }),
 );
 
 /**
@@ -89,7 +88,9 @@ export const selectFeatures = createSelector(
     (state, indexes?: number[]): number[] | undefined => indexes,
   ],
   (allFeatures, indexes): GeoJSON.Feature<GeoJSON.Point>[] =>
-    indexes === undefined ? allFeatures : indexes.map((ix) => allFeatures[ix]),
+    indexes === undefined
+      ? allFeatures.filter(notNullish)
+      : indexes.map((ix) => allFeatures[ix]).filter(notNullish),
 );
 
 export const { fetchLocations } = mapSlice.actions;
