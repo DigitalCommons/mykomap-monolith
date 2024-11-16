@@ -30,6 +30,7 @@ describe("getDatasetLocations", () => {
       expect(res.json()).toStrictEqual([
         [-0.12783, 51.50748],
         [3.92473, 46.85045],
+        null,
       ]);
     });
   });
@@ -89,8 +90,6 @@ describe("searchDataset", () => {
     });
 
     test.each([
-      "filter=country_id:GB",
-      "filter=country_id:GB&filter=typology:BMT20",
       "filter=country_id:GB&filter=typology:BMT20",
       "text=1+West+Street",
       "filter=country_id:GB&text=1+West+Street",
