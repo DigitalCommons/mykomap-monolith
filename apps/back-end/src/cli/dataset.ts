@@ -73,8 +73,11 @@ export class ImportCmd extends Command {
     // Our vocab definitions
     const vocabs: VocabIndex = config.vocabs; // Types from contract should be compatible
 
+    // Our supported languages
+    const langs = config.languages;
+
     // A PropDefsFactory instance using our vocab definitions
-    const pds = new PropDefsFactory(vocabs, this.defaultLang);
+    const pds = new PropDefsFactory(vocabs, langs);
 
     const propSpecs: PropSpecs = config.itemProps; // Types from contract should be compatible
     const propDefs = pds.mkPropDefs(propSpecs);

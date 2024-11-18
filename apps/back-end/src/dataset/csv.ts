@@ -5,11 +5,11 @@ import { Schema } from "udsv";
 import { DatasetItem, PropParser, PropParserInfo } from "../dataset.js";
 import { RowTransformer } from "../csv.js";
 import {
+  I18nVocabDef,
   InnerValuePropSpec,
   MultiPropDef,
   PropDef,
   PropDefs,
-  VocabDef,
   VocabPropSpec,
   boolify,
   numberify,
@@ -136,13 +136,13 @@ export function mkCsvPropDefParser(propDef: PropDef) {
 
   function parseVocab(
     propDef: VocabPropSpec,
-    vocab: VocabDef,
+    i18nVocab: I18nVocabDef,
   ): PropParser<CsvVal, string | undefined | null> {
     // FIXME add (non-)nullable and strict semantics later
     return (v: unknown) => {
       switch (typeof v) {
         case "string":
-          if (v in vocab.terms) return v;
+          if (v in Object.values(i18nVocab)[0]?.terms) return v;
 
           // FIXME this case, an empty-string (so effectively undefined) vocab,
           // might not be allowed in some cases?
@@ -179,7 +179,7 @@ export function mkCsvPropDefParser(propDef: PropDef) {
               return values.map(parseValue(innerDef));
 
             case "vocab":
-              return values.map(parseVocab(innerDef, innerDef.vocab));
+              return values.map(parseVocab(innerDef, innerDef.i18nVocab));
           }
           throw new Error(`unexpected code path!`); // Belt and braces
 
@@ -198,7 +198,7 @@ export function mkCsvPropDefParser(propDef: PropDef) {
     case "value":
       return parseValue(propDef);
     case "vocab":
-      return parseVocab(propDef, propDef.vocab);
+      return parseVocab(propDef, propDef.i18nVocab);
     case "multi":
       return parseMulti(propDef, { delim: ";", escape: "\\" });
   }

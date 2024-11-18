@@ -35,7 +35,7 @@ export class Dataset {
     );
 
     // Create prop defs
-    const pdf = new PropDefsFactory(this.config.vocabs, "en");
+    const pdf = new PropDefsFactory(this.config.vocabs, this.config.languages);
     this.propDefs = pdf.mkPropDefs(this.config.itemProps);
 
     // Load the searchable.json
