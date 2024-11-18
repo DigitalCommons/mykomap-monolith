@@ -72,11 +72,18 @@ export function MykomapRouter(
 
     searchDataset: async ({
       params: { datasetId },
-      query: { filter, text },
+      query: { filter, text, returnProps, page, pageSize },
     }) => {
-      const visibleIndexes = searchDataset(datasetId, filter, text);
+      const body = searchDataset(
+        datasetId,
+        filter,
+        text,
+        returnProps,
+        page,
+        pageSize,
+      );
 
-      return { status: 200, body: visibleIndexes };
+      return { status: 200, body };
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
@@ -90,8 +97,8 @@ export function MykomapRouter(
         });
       }
 
-      const itemId = Number(datasetItemIdOrIx.substring(1));
-      const item = getDatasetItem(datasetId, itemId);
+      const itemIx = Number(datasetItemIdOrIx.substring(1));
+      const item = getDatasetItem(datasetId, itemIx);
 
       return { status: 200, body: item };
     },

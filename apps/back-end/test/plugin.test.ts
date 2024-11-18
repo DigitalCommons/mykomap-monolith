@@ -2,8 +2,9 @@
 
 import { expect, test, describe } from "vitest";
 import Fastify from "fastify";
-import fastifyPlugin from "../src/pluginApi";
+import qs from "qs";
 import * as path from "node:path";
+import fastifyPlugin from "../src/pluginApi";
 import { MykomapRouterConfig } from "../src/routes";
 
 const opts: MykomapRouterConfig = {
@@ -12,7 +13,7 @@ const opts: MykomapRouterConfig = {
   },
 };
 
-const fastify = Fastify();
+const fastify = Fastify({ querystringParser: (str) => qs.parse(str) });
 fastify.register(fastifyPlugin, opts);
 
 // Note: see src/api/contract.ts in the @mykomap/common module for definitions
@@ -124,6 +125,71 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual(["@0", "@1"]);
+      },
+    );
+
+    test.each(["returnProps[]=name&page=0&pageSize=2"])(
+      "Paginated search query '%s' returns the first 2 items",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual([
+          { index: "@0", name: "Apples Co-op" },
+          { index: "@1", name: "Pears United" },
+        ]);
+      },
+    );
+
+    test.each(["returnProps[]=name&page=1&pageSize=2"])(
+      "Paginated search query '%s' returns the final item",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual([
+          { index: "@2", name: "Invisible Collab" },
+        ]);
+      },
+    );
+
+    test.each([
+      "returnProps[]=name",
+      "returnProps[]=name&pageSize=2",
+      "returnProps[]=name&page=0",
+    ])(
+      "Search query '%s' with unspecified pagination params returns all items",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual([
+          { index: "@0", name: "Apples Co-op" },
+          { index: "@1", name: "Pears United" },
+          { index: "@2", name: "Invisible Collab" },
+        ]);
+      },
+    );
+
+    test.each([
+      "page=-1&pageSize=2",
+      "page=1&pageSize=0",
+      "page=0.5&pageSize=2",
+      "page=1&pageSize=1.5",
+    ])(
+      "Paginated search query '%s' with bad params returns status code 400",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(400);
       },
     );
   });

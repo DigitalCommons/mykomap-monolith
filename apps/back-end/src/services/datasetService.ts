@@ -49,9 +49,9 @@ const getDatasetOrThrow404 = (
   return dataset;
 };
 
-export const getDatasetItem = (datasetId: string, datasetItemId: number) => {
+export const getDatasetItem = (datasetId: string, datasetItemIx: number) => {
   const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
-  return dataset.getItem(datasetItemId);
+  return dataset.getItem(datasetItemIx);
 };
 
 export const getDatasetConfig = (datasetId: string): GetConfigBody => {
@@ -68,10 +68,16 @@ export const searchDataset = (
   datasetId: string,
   filter?: string[],
   text?: string,
+  returnProps?: string[],
+  page?: number,
+  pageSize?: number,
 ): SearchDatasetBody => {
   const dataset = getDatasetOrThrow404(contract.searchDataset, datasetId);
-  const visibleIndexes = dataset.search(filter, text);
-  // Add '@' before index numbers.
-  // TODO: Maybe skip this step and just return numbers?
-  return visibleIndexes.map((index) => `@${index}`);
+  return dataset.search(
+    filter,
+    text,
+    returnProps,
+    page,
+    pageSize,
+  ) as SearchDatasetBody;
 };
