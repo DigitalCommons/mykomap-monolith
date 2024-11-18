@@ -89,16 +89,16 @@ export class DatasetWriter {
 
   /** A JSON.stringify replacer for arrays of numbers
    *
-   * Limits the decimals to 6 DP. This is as much resolution as a world map
+   * Limits the decimals to 5 DP. This is as much resolution as a world map
    * with building-level precesion needs.
    */
   limitDecimals(_: string, value: any): any {
     const type = typeof value;
     switch (type) {
       case "number":
-        return Number(value.toFixed(6));
+        return Number(value.toFixed(5));
       case "string":
-        return Number(Number(value).toFixed(6));
+        return Number(Number(value).toFixed(5));
       default:
         return value;
     }
@@ -111,7 +111,7 @@ export class DatasetWriter {
   limitLatLngDecimals(key: string, value: any): any {
     if (key === "lat" || key === "lng") {
       if (value == null) return null; // note: nullish comparison
-      return Number(Number(value).toFixed(6));
+      return Number(Number(value).toFixed(5));
     }
     return value;
   }
