@@ -3,8 +3,9 @@ import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import { styled } from "@mui/material/styles";
 import ResultItem from "./resultItem/ResultItem";
-import { useAppSelector } from "../../../../app/hooks";
-import { selectVisibleIndexes } from "../../searchPanel/searchSlice";
+import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
+import { selectResults } from "../../panelSlice";
+import { openPopup } from "../../../popup/popupSlice";
 
 const StyledResults = styled(Box)(() => ({
   width: "100%",
@@ -20,9 +21,14 @@ const StyledResults = styled(Box)(() => ({
 }));
 
 const Results = () => {
-  const visibleIndexes = useAppSelector(selectVisibleIndexes);
+  const dispatch = useAppDispatch();
+  const results = useAppSelector(selectResults);
+  const resultCount = results.length;
 
-  const resultCount = visibleIndexes.length;
+  const onItemClick = (itemIx: number) => {
+    console.log(`Clicked item @${itemIx}`);
+    dispatch(openPopup(itemIx));
+  };
 
   return (
     <StyledResults>
@@ -41,12 +47,12 @@ const Results = () => {
         {resultCount} matching results
       </Typography>
       <List>
-        {visibleIndexes.map((index) => (
+        {results.map((item, index) => (
           <ResultItem
             key={index}
-            id={index.toString()}
-            name={index.toString()}
-            buttonAction={() => console.log(`Clicked ${index}`)}
+            index={item.index}
+            name={item.name}
+            buttonAction={() => onItemClick(item.index)}
           />
         ))}
       </List>

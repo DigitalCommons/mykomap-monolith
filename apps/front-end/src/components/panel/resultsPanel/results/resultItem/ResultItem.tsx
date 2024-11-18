@@ -3,12 +3,12 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 
 interface ResultItemProps {
-  id: string;
+  index: number;
   name: string;
   buttonAction?: (e: React.MouseEvent) => void; // for storybook testing
 }
 
-const StyledLink = styled(Button)(() => ({
+const StyledButton = styled(Button)(() => ({
   width: "100%",
   padding: "var(--spacing-small) var(--spacing-medium)",
   display: "block",
@@ -30,12 +30,12 @@ const StyledLink = styled(Button)(() => ({
   },
 }));
 
-const ResultItems = ({id, name, buttonAction}: ResultItemProps) => {
+const ResultItems = ({ index, name, buttonAction }: ResultItemProps) => {
   return (
-    <ListItem key={id}>
-      <StyledLink role="button" onClick={buttonAction}>
+    <ListItem>
+      <StyledButton role="button" onClick={buttonAction}>
         {name}
-      </StyledLink>
+      </StyledButton>
     </ListItem>
   );
 };

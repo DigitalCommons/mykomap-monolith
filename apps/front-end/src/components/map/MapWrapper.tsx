@@ -62,11 +62,14 @@ const MapWrapper = () => {
 
   useEffect(() => {
     // Keep the mapLibre popup in sync with the Redux state
-    if (!popupIsOpen) {
+    if (popupIsOpen) {
+      console.log("Opening popup");
+      map?.current?.fire("openPopup", { itemIx: popupIndex });
+    } else {
       console.log("Closing popup");
       map?.current?.fire("closeAllPopups");
     }
-  }, [popupIsOpen]);
+  }, [popupIsOpen, popupIndex]);
 
   const updateMapData = async () => {
     if (isFilterActive) {

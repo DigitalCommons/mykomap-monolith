@@ -59,7 +59,14 @@ export const mapSlice = createAppSlice({
       },
     ),
   }),
+  selectors: {
+    selectTotalItemsCount: (state) => state.allLocations.length,
+  },
 });
+
+export const { fetchLocations } = mapSlice.actions;
+
+export const { selectTotalItemsCount } = mapSlice.selectors;
 
 // We use the createSelector function from the Redux Toolkit for memoization, so that we don't need
 // to re-form the features array every time the selector is called.
@@ -92,5 +99,3 @@ export const selectFeatures = createSelector(
       ? allFeatures.filter(notNullish)
       : indexes.map((ix) => allFeatures[ix]).filter(notNullish),
 );
-
-export const { fetchLocations } = mapSlice.actions;

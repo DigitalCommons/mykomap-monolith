@@ -17,8 +17,8 @@ import {
   closePanel,
   selectSelectedTab,
   selectPanelVisible,
-  selectIsOpen,
-  selectResultsOpen,
+  selectPanelOpen,
+  selectResultsPanelOpen,
 } from "./panelSlice";
 
 const StyledPanel = styled(Drawer)(() => ({
@@ -50,10 +50,10 @@ const StyledBox = styled(Box)(() => ({
 
 const Panel = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector(selectIsOpen);
+  const isOpen = useAppSelector(selectPanelOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
   const panelVisible = useAppSelector(selectPanelVisible);
-  const resultsOpen = useAppSelector(selectResultsOpen);
+  const resultsOpen = useAppSelector(selectResultsPanelOpen);
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
@@ -86,8 +86,6 @@ const Panel = () => {
 
   return (
     <>
-      {/* Marcel: need to move this to Panel  */}
-      {/* <ResultsPanel /> */}
       {/* Desktop view  */}
       {isMedium && (
         <Box>
@@ -151,6 +149,8 @@ const Panel = () => {
           </Box>
         </StyledBox>
       )}
+
+      <ResultsPanel />
     </>
   );
 };

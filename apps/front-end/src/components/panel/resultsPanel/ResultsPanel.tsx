@@ -10,14 +10,12 @@ import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   selectPanelVisible,
   togglePanel,
-  selectIsOpen,
+  selectPanelOpen,
   toggleResultsPanel,
-  selectResultsOpen,
+  selectResultsPanelOpen,
+  closeResultsPanel,
 } from "../panelSlice";
-import {
-  setText,
-  performSearch,
-} from "../searchPanel/searchSlice";
+import { clearSearch } from "../searchPanel/searchSlice";
 
 const StyledResultsPanel = styled(Drawer)(() => ({
   width: "100%",
@@ -34,7 +32,7 @@ const StyledResultsPanel = styled(Drawer)(() => ({
   },
   "@media (min-width: 897px)": {
     width: "calc(var(--panel-width-desktop) + 30px)",
-    transform: "translateX(var(--panel-width-desktop))", // Marcel: to fix
+    transform: "translateX(var(--panel-width-desktop))",
     "& .MuiDrawer-paper": {
       width: "var(--panel-width-desktop)",
     },
@@ -54,16 +52,12 @@ const StyledButtonContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const ResultsPanel = ({
-  onLinkClick,
-  onTogglePanel,
-  onClearSearch,
-}: Record<string, unknown>) => {
+const ResultsPanel = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector(selectIsOpen);
-  const resultsOpen = useAppSelector(selectResultsOpen);
+  const panelOpen = useAppSelector(selectPanelOpen);
+  const resultsPanelOpen = useAppSelector(selectResultsPanelOpen);
 
-  console.log("resultsOpen", resultsOpen);
+  console.log("resultsPanelOpen", resultsPanelOpen);
 
   const panelVisible = useAppSelector(selectPanelVisible);
   const isMedium = useMediaQuery("(min-width: 897px)");
@@ -71,42 +65,45 @@ const ResultsPanel = ({
   const handleToggle = () => {
     dispatch(togglePanel());
     dispatch(toggleResultsPanel());
-    console.log("isOpen", isOpen);
+    console.log("panelOpen", panelOpen);
   };
 
   const handlePanelClose = () => {
-    dispatch(toggleResultsPanel());
+    dispatch(closeResultsPanel());
     console.log("panelVisible", panelVisible);
   };
 
   const handleClearSearch = () => {
     console.log("Clear search");
-    dispatch(toggleResultsPanel());
+    dispatch(closeResultsPanel());
+    dispatch(clearSearch());
   };
 
   return (
-    <>
-      <StyledResultsPanel open={resultsOpen} variant="persistent">
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
-          <StyledButtonContainer>
-            <StandardButton buttonAction={handleClearSearch}>
-              Clear Search
-            </StandardButton>
-            {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
-          </StyledButtonContainer>
-          <Results />
-        </Box>
-        {isMedium && (
-          <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
-        )}
-      </StyledResultsPanel>
-    </>
+    resultsPanelOpen && (
+      <>
+        <StyledResultsPanel open={resultsPanelOpen} variant="persistent">
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
+          >
+            <StyledButtonContainer>
+              <StandardButton buttonAction={handleClearSearch}>
+                Clear Search
+              </StandardButton>
+              {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
+            </StyledButtonContainer>
+            <Results />
+          </Box>
+          {isMedium && (
+            <PanelToggleButton buttonAction={handleToggle} isOpen={panelOpen} />
+          )}
+        </StyledResultsPanel>
+      </>
+    )
   );
 };
 

@@ -17,6 +17,7 @@ describe("config load", () => {
           visibleIndexes: [],
           searchingStatus: "idle",
           filterableVocabProps: [],
+          searchQuery: {},
         },
         configLoaded(mockConfig),
       ),
@@ -50,6 +51,7 @@ describe("config load", () => {
           vocabUri: "dso",
         },
       ],
+      searchQuery: {},
     });
   });
 });
@@ -211,6 +213,7 @@ describe("setFilterValue", () => {
               vocabUri: "aci",
             },
           ],
+          searchQuery: {},
         },
         setFilterValue({ id: "country_id", value: "fr" }),
       ),
@@ -232,6 +235,7 @@ describe("setFilterValue", () => {
           vocabUri: "aci",
         },
       ],
+      searchQuery: {},
     });
   });
 
@@ -256,6 +260,7 @@ describe("setFilterValue", () => {
               vocabUri: "aci",
             },
           ],
+          searchQuery: {},
         },
         setFilterValue({ id: "country_id", value: "gb" }),
       ),
@@ -277,6 +282,7 @@ describe("setFilterValue", () => {
           vocabUri: "aci",
         },
       ],
+      searchQuery: {},
     });
   });
 });
