@@ -19,6 +19,7 @@ export class Dataset {
   id: string;
   folderPath: string;
   config: ConfigData;
+  about: string;
   propDefs: PropDefs;
   searchablePropIndexMap: { [field: string]: number };
   searchablePropValues: (string | string[])[][];
@@ -32,6 +33,12 @@ export class Dataset {
       JSON.parse(
         fs.readFileSync(path.join(this.folderPath, "config.json"), "utf8"),
       ),
+    );
+
+    // Load the About text
+    this.about = fs.readFileSync(
+      path.join(this.folderPath, "about.md"),
+      "utf8",
     );
 
     // Create prop defs
@@ -100,6 +107,8 @@ export class Dataset {
   };
 
   getConfig = () => this.config;
+
+  getAbout = () => this.about;
 
   getLocations = (): fs.ReadStream =>
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");

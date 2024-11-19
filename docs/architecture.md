@@ -29,6 +29,8 @@ as seen from the SERVER_DATA_ROOT location:
 ```
 ├── datasets
 │   ├── some-dataset
+│   │   ├── config.json (itemProps, vocabs, UI config, languages, etc.)
+│   │   ├── about.md (markdown file containing info to be displayed in AboutPanel)
 │   │   ├── locations.json (array of lng-lat coordinates for each item)
 │   │   ├── searchable.json (array of the property values and searchable strings for each item)
 │   │   ├── items
@@ -40,10 +42,7 @@ as seen from the SERVER_DATA_ROOT location:
 │   ├── ...
 ```
 
-Additionally, for each dataset there's a `config.json`. This contains config for displaying the map
-in the UI, including the vocabs (translations of data IDs), default sidebar panel, and popup
-appearance. This config is not generated into the above folder structure, but kept in source control
-in the `@mykomap/config` library.
+Note that the `config.json` for each dataset is kept in source control in the `@mykomap/config` library (to be implemented).
 
 See the [`back-end test data`](https://github.com/DigitalCommons/mykomap-monolith/tree/main/apps/back-end/test/data/) for example file contents.
 
@@ -70,5 +69,6 @@ We will need to manually copy the `standard.csv` from the data factory server to
 
   - `getItem` method
   - `getConfig` method, which includes the vocabs
+  - `getAbout` method
   - `getLocations` method, which returns a stream of the data
   - `search` method, which iterates through the data loaded from `searchable.json` to find matching items

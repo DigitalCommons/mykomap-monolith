@@ -241,6 +241,29 @@ describe("getDatasetItem", () => {
   });
 });
 
+describe("getAbout", () => {
+  describe("dataset exists", () => {
+    test("status code 200 and non-empty response", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/about",
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toContain("published by Mr Douglas Quaid");
+    });
+  });
+
+  describe("dataset does not exist", () => {
+    test("status code 404", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-in-your-imagination/about",
+      });
+      expect(res.statusCode).toBe(404);
+    });
+  });
+});
+
 describe("getConfig", () => {
   describe("dataset exists", () => {
     test("status code 200 and non-empty response", async (t) => {
