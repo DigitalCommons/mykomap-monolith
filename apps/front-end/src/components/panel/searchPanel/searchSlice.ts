@@ -3,7 +3,7 @@ import { createAppSlice } from "../../../app/createAppSlice";
 import type { Config } from "../../../services";
 import { searchDataset } from "../../../services";
 import { configLoaded } from "../../../app/configSlice";
-import { getUrlSearchParam } from "../../../utils/window-utils";
+import { getDatasetId } from "../../../utils/window-utils";
 import { populateSearchResults } from "../panelSlice";
 import { AppThunk } from "../../../app/store";
 import i18n from "../../../i18n";
@@ -174,7 +174,7 @@ export const selectFilterOptions = createSelector(
 
 export const performSearch = (): AppThunk => {
   return async (dispatch, getState) => {
-    const datasetId = getUrlSearchParam("datasetId");
+    const datasetId = getDatasetId();
     if (datasetId === null) {
       console.error(
         `No datasetId parameter given, so no dataset can be searched`,

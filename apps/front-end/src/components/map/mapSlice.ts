@@ -4,7 +4,7 @@ import { z } from "zod";
 import { notNullish, schemas } from "@mykomap/common";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
-import { getUrlSearchParam } from "../../utils/window-utils";
+import { getDatasetId } from "../../utils/window-utils";
 
 export type Location = z.infer<typeof schemas.Location>;
 export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
@@ -25,7 +25,7 @@ export const mapSlice = createAppSlice({
   reducers: (create) => ({
     fetchLocations: create.asyncThunk(
       async (_, thunkApi) => {
-        const datasetId = getUrlSearchParam("datasetId");
+        const datasetId = getDatasetId();
         if (datasetId === null) {
           return thunkApi.rejectWithValue(
             `No datasetId parameter given, so dataset locations cannot be fetched`,

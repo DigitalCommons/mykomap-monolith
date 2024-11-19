@@ -1,7 +1,7 @@
 import { createAction, PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
 import { Config, getConfig } from "../services";
-import { getUrlSearchParam } from "../utils/window-utils";
+import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
 
 export interface ConfigSliceState {
@@ -22,7 +22,7 @@ export const configSlice = createAppSlice({
   reducers: (create) => ({
     fetchConfig: create.asyncThunk(
       async (_, thunkApi) => {
-        const datasetId = getUrlSearchParam("datasetId");
+        const datasetId = getDatasetId();
         if (datasetId === null) {
           return thunkApi.rejectWithValue(
             `No datasetId parameter given, so no dataset config can be retrieved`,

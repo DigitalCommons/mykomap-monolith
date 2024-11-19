@@ -1,7 +1,9 @@
 import { Iso639Set1Codes } from "@mykomap/common";
 
-export const getUrlSearchParam = (param: string): string | null =>
+const getUrlSearchParam = (param: string): string | null =>
   new URLSearchParams(window.location.search).get(param);
+
+export const getDatasetId = () => getUrlSearchParam("datasetId");
 
 /** Get language from URL param and fallback to English */
 export const getLanguageFromUrl = (): string => {

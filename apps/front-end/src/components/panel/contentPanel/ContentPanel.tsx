@@ -13,8 +13,16 @@ const StyledContentPanel = styled(Box)(() => ({
   padding: "var(--spacing-medium)",
   maxWidth: "var(--panel-width-desktop)",
   margin: "0 auto",
-  "@media (min-width: 768px)": {
+  "@media (min-width: 897px)": {
     padding: "var(--spacing-large)",
+    paddingTop: "5px",
+  },
+  "& .MuiLink-root": {
+    padding: 0,
+    display: "inline",
+  },
+  "& .MuiTypography-root": {
+    marginBlock: "25px",
   },
 }));
 
