@@ -139,7 +139,7 @@ describe("selectFilterOptions", () => {
         id: "country_id",
         title: "Country",
         options: [
-          { value: "any", label: "- Any -" },
+          { value: "any", label: "- any -" }, // mocked i18n returns 'any' for this translation
           { value: "GB", label: "United Kingdom" },
           { value: "FR", label: "France" },
         ],
@@ -149,7 +149,7 @@ describe("selectFilterOptions", () => {
         id: "primary_activity",
         title: "Primary Activity",
         options: [
-          { value: "any", label: "- Any -" },
+          { value: "any", label: "- any -" }, // mocked i18n returns 'any' for this translation
           { value: "ICA210", label: "Housing" },
           { value: "ICA220", label: "Transport" },
           { value: "ICA230", label: "Utilities" },
@@ -170,7 +170,7 @@ describe("selectFilterOptions", () => {
         id: "country_id",
         title: "Pays",
         options: [
-          { value: "any", label: "- Any -" },
+          { value: "any", label: "- any -" },
           { value: "GB", label: "Royaume-Uni" },
           { value: "FR", label: "France" },
         ],
@@ -180,7 +180,7 @@ describe("selectFilterOptions", () => {
         id: "primary_activity",
         title: "Activité principale",
         options: [
-          { value: "any", label: "- Any -" }, // TODO expect translated 'Any'
+          { value: "any", label: "- any -" },
           { value: "ICA210", label: "Logement" },
           { value: "ICA220", label: "Transports" },
           { value: "ICA230", label: "Services publics" },

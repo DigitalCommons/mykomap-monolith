@@ -13,6 +13,7 @@ import {
   selectPopupIndex,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
+import { selectCurrentLanguage } from "../../app/configSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -23,6 +24,7 @@ const MapWrapper = () => {
   );
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const language = useAppSelector(selectCurrentLanguage);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
@@ -70,6 +72,10 @@ const MapWrapper = () => {
       map?.current?.fire("closeAllPopups");
     }
   }, [popupIsOpen, popupIndex]);
+
+  useEffect(() => {
+    map.current?.fire("changeLanguage", { language });
+  }, [language]);
 
   const updateMapData = async () => {
     if (isFilterActive) {

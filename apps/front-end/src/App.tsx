@@ -3,7 +3,7 @@ import MapWrapper from "./components/map/MapWrapper";
 import Panel from "./components/panel/Panel";
 import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
-import { getUrlSearchParam } from "./utils/window-utils";
+import { getLanguageFromUrl } from "./utils/window-utils";
 import Popup from "./components/popup/Popup";
 
 const App = () => {
@@ -12,7 +12,7 @@ const App = () => {
   /** Startup tasks */
   useEffect(() => {
     dispatch(fetchConfig()).then(() => {
-      const urlParamLang = getUrlSearchParam("lang")?.toLowerCase();
+      const urlParamLang = getLanguageFromUrl();
       if (urlParamLang) dispatch(setLanguage(urlParamLang));
     });
 

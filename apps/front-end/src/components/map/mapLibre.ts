@@ -7,8 +7,8 @@ import type {
   MapLayerMouseEvent,
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
-
 import mapMarkerImgUrl from "./map-marker.png";
+import { getLanguageFromUrl } from "../../utils/window-utils";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -302,6 +302,20 @@ export const createMap = (
       tooltip?.remove();
       map.getCanvas().style.cursor = "";
     });
+
+    map.on("changeLanguage", ({ language }) => {
+      const oldStyle = map.getStyle();
+      const newStyle = JSON.stringify(oldStyle, (key, val) => {
+        if (typeof val === "string") {
+          return val.replaceAll("name:en", `name:${language.toLowerCase()}`);
+        }
+        return val;
+      });
+      map.setStyle(JSON.parse(newStyle));
+      console.log("Set MapLibre GL language to", language);
+    });
+
+    map.fire("changeLanguage", { language: getLanguageFromUrl() });
 
     map.addControl(new AttributionControl(), "top-right");
     map.addControl(new NavigationControl(), "top-right");

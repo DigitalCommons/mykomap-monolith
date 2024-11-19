@@ -4,6 +4,7 @@ import ListItem from "@mui/material/ListItem";
 import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
+import { useTranslation } from "react-i18next";
 
 interface RightPaneProps {
   address?: string;
@@ -84,6 +85,8 @@ const RightPane = ({
   typology,
   dataSources,
 }: RightPaneProps) => {
+  const { t } = useTranslation();
+
   const splitAddress = (address?: string): string[] => {
     if (!address) return [];
     return address.split(",").map((line) => line.trim());
@@ -113,7 +116,7 @@ const RightPane = ({
             marginBottom: "var(--spacing-medium)",
           }}
         >
-          <Typography variant="h4">Organisational Structure</Typography>
+          <Typography variant="h4">{t("organisational_structure")}</Typography>
           <Typography variant="body1">{organisationalStructure}</Typography>
         </Box>
         <Box
@@ -121,11 +124,11 @@ const RightPane = ({
             marginBottom: "var(--spacing-medium)",
           }}
         >
-          <Typography variant="h4">Typology</Typography>
+          <Typography variant="h4">{t("typology")}</Typography>
           <Typography variant="body1">{typology}</Typography>
         </Box>
         <Box>
-          <Typography variant="h4">Data Sources</Typography>
+          <Typography variant="h4">{t("data_sources")}</Typography>
           <List>
             {dataSources.map((dataSource) => (
               <ListItem

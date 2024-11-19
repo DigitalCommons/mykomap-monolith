@@ -14,6 +14,7 @@ import {
   closeResultsPanel,
 } from "../panelSlice";
 import { clearSearch } from "../searchPanel/searchSlice";
+import { useTranslation } from "react-i18next";
 
 const StyledResultsPanel = styled(Drawer)(() => ({
   width: "100%",
@@ -52,6 +53,7 @@ const StyledButtonContainer = styled(Box)(() => ({
 
 const ResultsPanel = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const panelOpen = useAppSelector(selectPanelOpen);
   const resultsPanelOpen = useAppSelector(selectResultsPanelOpen);
 
@@ -93,7 +95,7 @@ const ResultsPanel = () => {
             >
               <StyledButtonContainer>
                 <StandardButton buttonAction={handleClearSearch}>
-                  Clear Search
+                  {t("clear_search")}
                 </StandardButton>
                 {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
               </StyledButtonContainer>

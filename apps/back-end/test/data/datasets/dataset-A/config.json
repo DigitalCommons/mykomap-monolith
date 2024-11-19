@@ -47,7 +47,8 @@
     },
     "dc_domains": {
       "type": "multi",
-      "of": { "type": "value" }
+      "of": { "type": "value" },
+      "titleUri": "ui:domains"
     },
     "country_id": {
       "type": "vocab",
@@ -74,7 +75,8 @@
     "data_sources": {
       "type": "multi",
       "of": { "type": "vocab", "uri": "dso:" },
-      "filter": true
+      "filter": true,
+      "titleUri": "ui:data_sources"
     }
   },
   "vocabs": {
@@ -175,7 +177,21 @@
         "terms": {
           "primary_activity": "Primary Activity",
           "organisational_structure": "Organisational Structure",
-          "typology": "Typology"
+          "typology": "Typology",
+          "domains": "Domains",
+          "data_sources": "Data Sources",
+          "directory": "Directory",
+          "matching_results_zero": "No matching results",
+          "matching_results_one": "{{count}} matching result",
+          "matching_results_other": "{{count}} matching results",
+          "directory_entries_zero": "No directory entries",
+          "directory_entries_one": "{{count}} directory entry",
+          "directory_entries_other": "{{count}} directory entries",
+          "search": "Search",
+          "clear_search": "Clear Search",
+          "any": "Any",
+          "map": "Map",
+          "about": "About"
         }
       },
       "fr": {
@@ -183,7 +199,21 @@
         "terms": {
           "primary_activity": "Activité principale",
           "organisational_structure": "Structure organisationnelle",
-          "typology": "Typologie"
+          "typology": "Typologie",
+          "domains": "Domaines",
+          "data_sources": "Sources de données",
+          "directory": "Annuaire",
+          "matching_results_zero": "Aucun résultat correspondant",
+          "matching_results_one": "{{count}} résultat correspondant",
+          "matching_results_other": "{{count}} résultats correspondants",
+          "directory_entries_zero": "Aucune entrée d'annuaire",
+          "directory_entries_one": "{{count}} entrée d'annuaire",
+          "directory_entries_other": "{{count}} entrées d'annuaire",
+          "search": "Rechercher",
+          "clear_search": "Effacer la recherche",
+          "any": "Tout afficher",
+          "map": "Carte",
+          "about": "À propos"
         }
       }
     }

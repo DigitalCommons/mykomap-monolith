@@ -5,6 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import CancelIcon from "@mui/icons-material/Cancel";
+import { useTranslation } from "react-i18next";
 
 const StyledSearchBox = styled(OutlinedInput)(() => ({
   width: "100%",
@@ -53,6 +54,8 @@ const SearchBox = ({
   onSubmit,
   clearSearch,
 }: SearchBoxProps) => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ position: "relative", marginTop: "var(--spacing-medium)" }}>
       <StyledSearchBox
@@ -63,7 +66,7 @@ const SearchBox = ({
           if (event.key === "Enter") onSubmit(event);
         }}
         autoComplete="off"
-        placeholder="Search for items..."
+        placeholder={t("search")}
         startAdornment={
           <InputAdornment position="end">
             <IconButton aria-label="search-button" disableRipple>

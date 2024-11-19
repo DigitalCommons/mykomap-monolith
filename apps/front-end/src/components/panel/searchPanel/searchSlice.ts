@@ -6,6 +6,7 @@ import { configLoaded } from "../../../app/configSlice";
 import { getUrlSearchParam } from "../../../utils/window-utils";
 import { populateSearchResults } from "../panelSlice";
 import { AppThunk } from "../../../app/store";
+import i18n from "../../../i18n";
 
 type FilterableVocabProp = {
   id: string;
@@ -161,7 +162,7 @@ export const selectFilterOptions = createSelector(
           id: prop.id,
           title: title,
           options: [
-            { value: PROP_VALUE_ANY, label: "- Any -" },
+            { value: PROP_VALUE_ANY, label: `- ${i18n.t("any")} -` },
             ...Object.entries(vocabs[prop.vocabUri][language].terms).map(
               ([key, value]) => ({ value: key, label: value }),
             ),

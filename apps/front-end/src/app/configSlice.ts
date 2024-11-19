@@ -2,6 +2,7 @@ import { createAction, PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
 import { Config, getConfig } from "../services";
 import { getUrlSearchParam } from "../utils/window-utils";
+import i18n from "../i18n";
 
 export interface ConfigSliceState {
   vocabs: Config["vocabs"];
@@ -33,6 +34,7 @@ export const configSlice = createAppSlice({
         });
         if (response.status === 200) {
           thunkApi.dispatch(configLoaded(response.body));
+          i18n.loadLanguages(response.body.languages);
           return response.body;
         } else {
           return thunkApi.rejectWithValue(
@@ -57,9 +59,13 @@ export const configSlice = createAppSlice({
         state.currentLanguage = action.payload;
     }),
   }),
-  selectors: {},
+  selectors: {
+    selectCurrentLanguage: (state) => state.currentLanguage,
+  },
 });
 
 export const configLoaded = createAction<Config>("configLoaded");
 
 export const { fetchConfig, setLanguage } = configSlice.actions;
+
+export const { selectCurrentLanguage } = configSlice.selectors;

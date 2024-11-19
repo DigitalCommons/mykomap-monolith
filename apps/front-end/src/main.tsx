@@ -2,12 +2,15 @@ import React from "react";
 import * as Sentry from "@sentry/browser";
 import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+
 import App from "./App";
 import { store } from "./app/store";
 import "./index.css";
-import { ThemeProvider } from "@mui/material/styles";
+import "./i18n";
 import GlobalCSSVariables from "./theme/GlobalCSSVariables";
-import { CssBaseline } from "@mui/material";
+
 import theme from "./theme/theme";
 
 // Initialise Sentry SDK ASAP before application load and React initialisation.
