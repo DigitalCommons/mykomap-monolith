@@ -2,6 +2,7 @@ import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
+import { useTranslation } from "react-i18next";
 
 // Mock data
 const aboutContent = `
@@ -13,9 +14,11 @@ const aboutContent = `
 `;
 
 const AboutPanel = () => {
+  const { t } = useTranslation();
+
   return (
     <>
-      <Heading title="About" />
+      <Heading title={t("about")} />
       <ContentPanel>
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
           {aboutContent}

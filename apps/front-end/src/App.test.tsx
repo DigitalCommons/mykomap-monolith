@@ -16,7 +16,7 @@ test("App should have correct initial render on mobile", () => {
   renderWithProviders(<App />);
 
   waitFor(() => {
-    expect(screen.getByText("Search")).toBeInTheDocument();
+    expect(screen.getByText("search")).toBeInTheDocument();
   });
 });
 

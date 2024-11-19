@@ -4,6 +4,7 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 interface LeftPaneProps {
   name: string;
@@ -88,6 +89,8 @@ const LeftPane = ({
   description,
   dcDomains,
 }: LeftPaneProps) => {
+  const { t } = useTranslation();
+
   return (
     <StyledLeftPane>
       <StyledHeaderContainer>
@@ -95,7 +98,7 @@ const LeftPane = ({
       </StyledHeaderContainer>
       <StyledContentContainer>
         <Box>
-          <Typography variant="h4">Primary Activity</Typography>
+          <Typography variant="h4">{t("primary_activity")}</Typography>
           <Typography
             variant="body1"
             sx={{
@@ -115,7 +118,7 @@ const LeftPane = ({
               marginTop: "var(--spacing-large)",
             }}
           >
-            Domains
+            {t("domains")}
           </Typography>
           <List>
             {dcDomains?.map((dcDomain) => (

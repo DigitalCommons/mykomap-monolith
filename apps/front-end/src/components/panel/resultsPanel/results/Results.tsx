@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import { styled } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 import ResultItem from "./resultItem/ResultItem";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { selectResults } from "../../panelSlice";
@@ -22,6 +23,7 @@ const StyledResults = styled(Box)(() => ({
 
 const Results = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const results = useAppSelector(selectResults);
   const resultCount = results.length;
 
@@ -44,7 +46,7 @@ const Results = () => {
           },
         }}
       >
-        {resultCount} matching results
+        {t("matching_results", { count: resultCount })}
       </Typography>
       <List>
         {results.map((item, index) => (

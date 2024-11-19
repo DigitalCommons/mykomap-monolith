@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { useAppDispatch } from "../../../app/hooks";
 import { setSelectedTab } from "../../panel/panelSlice";
 import { styled } from "@mui/material/styles";
+import { useTranslation } from "react-i18next";
 
 interface NavBarProps {
   onTabChange?: (selected: number) => void;
@@ -24,6 +25,7 @@ const StyledTabContainer = styled(Box)(() => ({
 }));
 
 const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const isMedium = useMediaQuery("(min-width: 897px)");
 
@@ -32,7 +34,6 @@ const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
       onTabChange(selected);
     }
     dispatch(setSelectedTab(selected));
-    console.log("selected", selected);
   };
 
   const handleMapTabClick = () => {
@@ -45,11 +46,15 @@ const NavBar = ({ onTabChange, onMapTabClick, selectedTab }: NavBarProps) => {
     <StyledTabContainer>
       <Tabs value={selectedTab} onChange={handleChange}>
         {!isMedium && (
-          <Tab icon={<MapIcon />} label="Map" onClick={handleMapTabClick} />
+          <Tab
+            icon={<MapIcon />}
+            label={t("map")}
+            onClick={handleMapTabClick}
+          />
         )}
-        <Tab icon={<SignpostIcon />} label="Directory" />
-        <Tab icon={<SearchIcon />} label="Search" />
-        <Tab icon={<InfoIcon />} label="About" />
+        <Tab icon={<SignpostIcon />} label={t("directory")} />
+        <Tab icon={<SearchIcon />} label={t("search")} />
+        <Tab icon={<InfoIcon />} label={t("about")} />
       </Tabs>
     </StyledTabContainer>
   );

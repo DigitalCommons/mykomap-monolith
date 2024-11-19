@@ -1,3 +1,6 @@
+import { useState } from "react";
+import type { SelectChangeEvent } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
 import SelectBox from "../../common/selectBox/SelectBox";
@@ -13,12 +16,11 @@ import {
   selectVisibleIndexes,
   selectIsFilterActive,
 } from "./searchSlice";
-import { useState } from "react";
-import type { SelectChangeEvent } from "@mui/material";
 import { selectTotalItemsCount } from "../../map/mapSlice";
 
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const submittedText = useAppSelector(selectText);
   const filterOptions = useAppSelector(selectFilterOptions);
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
@@ -56,7 +58,7 @@ const SearchPanel = () => {
       onSubmit={onSubmit}
       style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
     >
-      <Heading title="Search">
+      <Heading title={t("search")}>
         <SearchBox
           value={currentText}
           onChange={onSearchChange}
@@ -66,8 +68,9 @@ const SearchPanel = () => {
       </Heading>
       <ContentPanel>
         <Typography variant="h4" component="h4">
-          {resultCount}{" "}
-          {isFilterActive ? "matching results" : "directory entries"}
+          {isFilterActive
+            ? t("matching_results", { count: resultCount })
+            : t("directory_entries", { count: resultCount })}
         </Typography>
         {filterOptions.map(({ id, title, options, value }) => (
           <SelectBox

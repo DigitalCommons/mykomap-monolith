@@ -12,6 +12,22 @@ vi.mock("maplibre-gl", () => ({
   })),
 }));
 
+// Mock i18next hook so it just uses the key as the translation
+vi.mock("react-i18next", () => ({
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+  initReactI18next: {
+    type: "3rdParty",
+    init: () => {},
+  },
+}));
+
 // Mock network requests
 const server = setupServer(
   http.get("/api/version", ({ request, params }) => {
