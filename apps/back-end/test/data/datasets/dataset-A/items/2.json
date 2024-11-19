@@ -1,0 +1,17 @@
+{
+  "id": "test/cuk/R000003",
+  "name": "Invisible Collab",
+  "description": "Can't find us anywhere",
+  "website": null,
+  "dc_domains": [],
+  "country_id": "GB",
+  "primary_activity": "ICA220",
+  "organisational_structure": "OS60",
+  "typology": "BMT10",
+  "latitude": null,
+  "longitude": null,
+  "geocontainer_lat": null,
+  "geocontainer_lon": null,
+  "geocoded_addr": null,
+  "data_sources": ["CUK"]
+}

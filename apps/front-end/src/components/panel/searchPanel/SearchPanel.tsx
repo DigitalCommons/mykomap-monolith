@@ -10,15 +10,23 @@ import {
   performSearch,
   selectFilterOptions,
   setFilterValue,
+  selectVisibleIndexes,
+  selectIsFilterActive,
 } from "./searchSlice";
 import { useState } from "react";
 import type { SelectChangeEvent } from "@mui/material";
+import { selectTotalItemsCount } from "../../map/mapSlice";
 
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
   const submittedText = useAppSelector(selectText);
   const filterOptions = useAppSelector(selectFilterOptions);
+  const visibleIndexes = useAppSelector(selectVisibleIndexes);
+  const isFilterActive = useAppSelector(selectIsFilterActive);
+  const totalItemsCount = useAppSelector(selectTotalItemsCount);
   const [currentText, setCurrentText] = useState(submittedText);
+
+  const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
 
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>): void => {
     setCurrentText(e.currentTarget.value);
@@ -58,7 +66,8 @@ const SearchPanel = () => {
       </Heading>
       <ContentPanel>
         <Typography variant="h4" component="h4">
-          X matching results
+          {resultCount}{" "}
+          {isFilterActive ? "matching results" : "directory entries"}
         </Typography>
         {filterOptions.map(({ id, title, options, value }) => (
           <SelectBox

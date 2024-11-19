@@ -124,6 +124,37 @@
                 }
               ]
             }
+          },
+          {
+            "name": "returnProps",
+            "in": "query",
+            "description": "The props to return as an array of item objects. If not specified, only an flattened array of indexes is returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "The page number to return. If not specified, all items are returned.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "nullable": true
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "description": "The number of items per page. If not specified, all items are returned.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "exclusiveMinimum": 0
+            }
           }
         ],
         "operationId": "searchDataset",
@@ -133,10 +164,29 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "index": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "index"
+                        ],
+                        "additionalProperties": true
+                      }
+                    }
+                  ],
                   "description": "the dataset item indexes matching the supplied criteria"
                 }
               }

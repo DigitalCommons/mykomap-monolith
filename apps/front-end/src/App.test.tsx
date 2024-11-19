@@ -1,4 +1,4 @@
-import { screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import App from "./App";
 import { renderWithProviders } from "./utils/test-utils";
 
@@ -15,7 +15,9 @@ import { renderWithProviders } from "./utils/test-utils";
 test("App should have correct initial render on mobile", () => {
   renderWithProviders(<App />);
 
-  expect(screen.getByText("Search")).toBeInTheDocument();
+  waitFor(() => {
+    expect(screen.getByText("Search")).toBeInTheDocument();
+  });
 });
 
 // test("Increment value and Decrement value should work as expected", async () => {

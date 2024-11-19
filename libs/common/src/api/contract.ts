@@ -183,6 +183,18 @@ export const contract = c.router({
         .openapi({
           description: "uniquely specifies the taxonomy filter items wanted",
         }),
+      returnProps: z.array(z.string()).optional().openapi({
+        description:
+          "The props to return as an array of item objects. If not specified, only an flattened array of indexes is returned.",
+      }),
+      page: z.coerce.number().int().nonnegative().optional().openapi({
+        description:
+          "The page number to return. If not specified, all items are returned.",
+      }),
+      pageSize: z.coerce.number().int().positive().optional().openapi({
+        description:
+          "The number of items per page. If not specified, all items are returned.",
+      }),
     }),
     pathParams: z.object({
       datasetId: DatasetId.openapi({
@@ -190,9 +202,15 @@ export const contract = c.router({
       }),
     }),
     responses: {
-      200: z.array(DatasetItemIx).openapi({
-        description: "the dataset item indexes matching the supplied criteria",
-      }),
+      200: z
+        .union([
+          z.array(DatasetItemIx),
+          z.array(DatasetItem.partial().extend({ index: DatasetItemIx })),
+        ])
+        .openapi({
+          description:
+            "the dataset item indexes matching the supplied criteria",
+        }),
       400: ErrorInfo.openapi({
         description: "bad input parameter",
       }),

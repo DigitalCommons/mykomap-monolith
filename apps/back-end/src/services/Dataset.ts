@@ -81,19 +81,19 @@ export class Dataset {
     }
   }
 
-  getItem = (itemId: number) => {
-    if (!fs.existsSync(path.join(this.folderPath, "items", `${itemId}.json`))) {
+  getItem = (itemIx: number) => {
+    if (!fs.existsSync(path.join(this.folderPath, "items", `${itemIx}.json`))) {
       throw new TsRestResponseError(contract.getDatasetItem, {
         status: 404,
         body: {
-          message: `can't retrieve data for dataset ${this.id} item ${itemId}`,
+          message: `can't retrieve data for dataset ${this.id} item @${itemIx}`,
         },
       });
     }
 
     return JSON.parse(
       fs.readFileSync(
-        path.join(this.folderPath, "items", `${itemId}.json`),
+        path.join(this.folderPath, "items", `${itemIx}.json`),
         "utf8",
       ),
     );
@@ -104,7 +104,17 @@ export class Dataset {
   getLocations = (): fs.ReadStream =>
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");
 
-  search = (filters?: string[], text?: string): number[] => {
+  /**
+   * Returns an array of item indexes that match the given criteria, or an array of objects if
+   * returnProps is specified. Also supports pagination.
+   */
+  search = (
+    filters?: string[],
+    text?: string,
+    returnProps?: string[],
+    page?: number,
+    pageSize?: number,
+  ): (string | { [prop: string]: unknown })[] => {
     const propMatchers: {
       propIndex: number;
       propMatcher: (value: string | string[]) => boolean;
@@ -174,7 +184,7 @@ export class Dataset {
       });
     }
 
-    return this.searchablePropValues
+    const visibleIndexes = this.searchablePropValues
       .map((itemValues, itemIx) =>
         // item must match all given propMatchers
         propMatchers.every(({ propIndex, propMatcher }) =>
@@ -183,7 +193,40 @@ export class Dataset {
           ? itemIx
           : "",
       )
-      .filter((v) => typeof v === "number");
+      .filter((v) => v !== "");
+
+    return visibleIndexes
+      .slice(
+        (page ?? 0) * (pageSize ?? 0),
+        ((page ?? visibleIndexes.length) + 1) *
+          (pageSize ?? visibleIndexes.length),
+      )
+      .map((itemIx) => {
+        if (returnProps) {
+          const item = this.getItem(itemIx);
+          // Return only the requested properties
+          const strippedItem: { [prop: string]: unknown } = {};
+
+          for (const prop of returnProps) {
+            if (item[prop] === undefined) {
+              throw new TsRestResponseError(contract.searchDataset, {
+                status: 400,
+                body: {
+                  message: `Unknown propery name '${prop}'`,
+                },
+              });
+            }
+            strippedItem[prop] = item[prop];
+          }
+
+          return {
+            index: `@${itemIx}`,
+            ...strippedItem,
+          };
+        } else {
+          return `@${itemIx}`;
+        }
+      });
   };
 }
 

@@ -4,6 +4,8 @@ import type { Config } from "../../../services";
 import { searchDataset } from "../../../services";
 import { configLoaded } from "../../../app/configSlice";
 import { getUrlSearchParam } from "../../../utils/window-utils";
+import { populateSearchResults } from "../panelSlice";
+import { AppThunk } from "../../../app/store";
 
 type FilterableVocabProp = {
   id: string;
@@ -12,11 +14,17 @@ type FilterableVocabProp = {
   titleUri?: string;
 };
 
+type SearchQuery = {
+  filter?: string | string[];
+  text?: string;
+};
+
 export interface SearchSliceState {
   text: string;
   visibleIndexes: number[];
-  searchingStatus: string;
+  searchingStatus: "idle" | "loading" | "failed";
   filterableVocabProps: FilterableVocabProp[];
+  searchQuery: SearchQuery;
 }
 
 const initialState: SearchSliceState = {
@@ -24,6 +32,7 @@ const initialState: SearchSliceState = {
   visibleIndexes: [],
   searchingStatus: "idle",
   filterableVocabProps: [],
+  searchQuery: {},
 };
 
 export const searchSlice = createAppSlice({
@@ -41,54 +50,32 @@ export const searchSlice = createAppSlice({
         if (field) field.value = action.payload.value;
       },
     ),
-    performSearch: create.asyncThunk(
-      async (_, thunkApi) => {
-        const datasetId = getUrlSearchParam("datasetId");
-        if (datasetId === null) {
-          return thunkApi.rejectWithValue(
-            `No datasetId parameter given, so no dataset can be searched`,
-          );
-        }
-
-        const { search } = thunkApi.getState() as { search: SearchSliceState };
-        const activeFilters = search.filterableVocabProps.filter(
-          (prop) => prop.value !== PROP_VALUE_ANY,
-        );
-        if (activeFilters.length === 0 && search.text === "") {
-          return thunkApi.fulfillWithValue([]);
-        }
-
-        const response = await searchDataset({
-          params: { datasetId },
-          query: {
-            filter: activeFilters.map((prop) => `${prop.id}:${prop.value}`),
-            text: search.text.trim().toLowerCase() || undefined,
-          },
-        });
-        if (response.status === 200) {
-          return response.body;
-        } else {
-          return thunkApi.rejectWithValue(
-            `Failed search, status code ${response.status}`,
-          );
-        }
-      },
-      {
-        pending: (state) => {
-          state.searchingStatus = "loading";
-        },
-        fulfilled: (state, action) => {
-          state.searchingStatus = "idle";
-          state.visibleIndexes =
-            action.payload.map((index) => Number(index.substring(1))) ?? []; // remove leading '@' from index
-        },
-        rejected: (state, action) => {
-          state.searchingStatus = "failed";
-          state.visibleIndexes = [];
-          console.error("Error performing search", action.payload);
-        },
+    updateVisibleIndexes: create.reducer(
+      (
+        state,
+        action: PayloadAction<{
+          searchQuery: SearchQuery;
+          visibleIndexes: number[];
+        }>,
+      ) => {
+        state.searchQuery = action.payload.searchQuery;
+        state.visibleIndexes = action.payload.visibleIndexes;
       },
     ),
+    setSearchingStatus: create.reducer(
+      (state, action: PayloadAction<"idle" | "loading" | "failed">) => {
+        state.searchingStatus = action.payload;
+      },
+    ),
+    clearSearch: create.reducer((state) => {
+      state.text = "";
+      state.filterableVocabProps.forEach(
+        (prop) => (prop.value = PROP_VALUE_ANY),
+      );
+      state.visibleIndexes = [];
+      state.searchQuery = {};
+      state.searchingStatus = "idle";
+    }),
   }),
   extraReducers: (builder) => {
     builder.addCase(configLoaded, (state, action) => {
@@ -134,7 +121,13 @@ export const searchSlice = createAppSlice({
 // TODO: add this to ui vocabs so it is translatable
 const PROP_VALUE_ANY = "any";
 
-export const { setText, setFilterValue, performSearch } = searchSlice.actions;
+export const {
+  setText,
+  setFilterValue,
+  updateVisibleIndexes,
+  setSearchingStatus,
+  clearSearch,
+} = searchSlice.actions;
 
 export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
   searchSlice.selectors;
@@ -177,3 +170,53 @@ export const selectFilterOptions = createSelector(
         };
       }),
 );
+
+export const performSearch = (): AppThunk => {
+  return async (dispatch, getState) => {
+    const datasetId = getUrlSearchParam("datasetId");
+    if (datasetId === null) {
+      console.error(
+        `No datasetId parameter given, so no dataset can be searched`,
+      );
+      return;
+    }
+
+    const { search } = getState();
+    const activeFilters = search.filterableVocabProps.filter(
+      (prop) => prop.value !== PROP_VALUE_ANY,
+    );
+    if (activeFilters.length === 0 && search.text === "") {
+      dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
+      dispatch(populateSearchResults(0));
+      return;
+    }
+
+    const searchQuery = {
+      filter: activeFilters.map((prop) => `${prop.id}:${prop.value}`),
+      text: search.text.trim().toLowerCase() || undefined,
+    };
+
+    dispatch(setSearchingStatus("loading"));
+
+    const response = await searchDataset({
+      params: { datasetId },
+      query: searchQuery,
+    });
+    if (response.status === 200) {
+      dispatch(
+        updateVisibleIndexes({
+          searchQuery,
+          visibleIndexes: (response.body as string[]).map(
+            (index) => Number(index.substring(1)), // remove leading '@' from index
+          ),
+        }),
+      );
+      dispatch(populateSearchResults(0));
+      dispatch(setSearchingStatus("idle"));
+    } else {
+      console.error(`Failed search, status code ${response.status}`);
+      dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
+      dispatch(setSearchingStatus("failed"));
+    }
+  };
+};

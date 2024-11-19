@@ -9,44 +9,11 @@ import type {
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 import mapMarkerImgUrl from "./map-marker.png";
-import { getDatasetItem } from "../../services";
-import { getUrlSearchParam } from "../../utils/window-utils";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
-
-const getPopup = async (ix: number): Promise<string> => {
-  let name = "Unknown";
-  let desc = "Error retrieving data";
-
-  const datasetId = getUrlSearchParam("datasetId");
-  if (datasetId === null) {
-    console.error(`No datasetId parameter given, so no popup can be retrieved`);
-  } else {
-    const { body, status } = await getDatasetItem({
-      params: { datasetId, datasetItemIdOrIx: `@${ix}` },
-    });
-    if (status === 200) {
-      name = String(body.name);
-      desc = String(body.desc);
-    }
-  }
-
-  return `
-    <div class="m-0 flex flex-row h-56 w-[35vw] p-0">
-      <div class="scrolling-touch max-h-100 w-2/3 overflow-y-auto rounded-md bg-white px-6 py-4">
-        <h2 class="font-bold text-xl mb-1">${name}</h2>
-        <p class="font-light text-sm my-2 mx-0">${desc}</p>
-      </div>
-      
-      <div class="flex-grow w-1/3 overflow-y-auto rounded-r-md bg-gray-200 px-6 py-4">
-        <p class="font-light text-sm my-2 mx-0">Render other details here...</p>
-      </div>
-    </div>
-  `;
-};
 
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
@@ -57,18 +24,16 @@ const disableRotation = (map: Map) => {
   map.touchZoomRotate.disableRotation();
 };
 
-const onMarkerClick = async (
+const openPopup = async (
   map: Map,
-  feature: GeoJSON.Feature<GeoJSON.Point>,
+  itemIx: number,
+  coordinates: LngLatLike,
   popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
-  const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-  const ix = feature.properties?.ix;
+  console.log(`Clicked item @${itemIx} ${coordinates}`);
 
-  console.log(`Clicked item @${ix} ${coordinates}`);
-  const content = await getPopup(ix);
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
@@ -82,11 +47,11 @@ const onMarkerClick = async (
     .setLngLat(coordinates)
     .setHTML(`<div id=${POPUP_CONTAINER_ID}></div>`)
     .addTo(map)
-    .addClassName(`popup-ix-${ix}`)
+    .addClassName(`popup-ix-${itemIx}`)
     .setOffset(popupOffset)
     .on("close", popupClosedCallback);
 
-  popupCreatedCallback(ix);
+  popupCreatedCallback(itemIx);
 };
 
 const onMarkerHover = (
@@ -94,14 +59,13 @@ const onMarkerHover = (
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
+  // TODO: add support for tooltips
   // const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
   // const name = feature.properties?.Name;
-
   // // Shift the tooltip up a bit so it doesn't cover the marker
   // const popupOffset: [number, number] = offset
   //   ? [offset[0], offset[1] - 20]
   //   : [0, -20];
-
   // tooltip?.remove();
   // tooltip = new Popup({
   //   closeButton: false,
@@ -111,8 +75,6 @@ const onMarkerHover = (
   //   .setHTML(getTooltip(name))
   //   .addTo(map)
   //   .setOffset(popupOffset);
-
-  map.getCanvas().style.cursor = "pointer";
 };
 
 /**
@@ -200,9 +162,12 @@ export const createMap = (
         e: MapLayerMouseEvent,
         leafOffset: [number, number],
       ) => {
-        onMarkerClick(
+        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+        const itemIx = feature.properties?.ix;
+        openPopup(
           map,
-          feature,
+          itemIx,
+          coordinates,
           popupCreatedCallback,
           popupClosedCallback,
           leafOffset,
@@ -259,8 +224,43 @@ export const createMap = (
     map.on("click", "unclustered-point", (e: MapLayerMouseEvent) => {
       if (e.features) {
         const feature = e.features[0] as GeoJSON.Feature<GeoJSON.Point>;
-        onMarkerClick(map, feature, popupCreatedCallback, popupClosedCallback);
+        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+        const itemIx = feature.properties?.ix;
+        openPopup(
+          map,
+          itemIx,
+          coordinates,
+          popupCreatedCallback,
+          popupClosedCallback,
+        );
       }
+    });
+
+    map.on("openPopup", ({ itemIx }) => {
+      const features = map
+        .queryRenderedFeatures(undefined, {
+          layers: ["unclustered-point"],
+        })
+        .filter((f) => f?.properties?.ix === itemIx);
+
+      if (features.length > 0) {
+        const feature = features[0] as GeoJSON.Feature<GeoJSON.Point>;
+        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+        openPopup(
+          map,
+          itemIx,
+          coordinates,
+          popupCreatedCallback,
+          popupClosedCallback,
+        );
+      } else {
+        console.error(`Feature @${itemIx} not visible`);
+        popup?.remove();
+      }
+    });
+
+    map.on("closeAllPopups", () => {
+      popup?.remove();
     });
 
     map.on("zoomend", () => {
@@ -274,7 +274,7 @@ export const createMap = (
           .queryRenderedFeatures(undefined, {
             layers: ["unclustered-point"],
           })
-          .map((f) => f?.properties.ix);
+          .map((f) => f?.properties?.ix);
 
         if (!ix || !visibleFeatureIxs.includes(ix)) {
           // close the popup if the feature is no longer visible
@@ -294,8 +294,9 @@ export const createMap = (
       map.getCanvas().style.cursor = "";
     });
     map.on("mouseenter", "unclustered-point", (e: any) => {
-      const feature = e.features[0];
-      onMarkerHover(map, feature);
+      map.getCanvas().style.cursor = "pointer";
+      // const feature = e.features[0];
+      // onMarkerHover(map, feature);
     });
     map.on("mouseleave", "unclustered-point", () => {
       tooltip?.remove();

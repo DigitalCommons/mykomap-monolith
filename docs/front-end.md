@@ -9,11 +9,15 @@
   - translations for all fields (vocabs)
   - list of possible values for each field (select box options)
   - search box, doesn't need prior knowledge of any data
-- Render directory panel, requires:
+- [x] Render directory panel, requires:
   - knowledge of the field to display (e.g. countries)
   - list of possible values for 1 field (countries) and their translations
-- getDatasetItem API request
-- Render popup, requires:
+- [x] searchDataset API request (just indexes)
+- [x] searchDataset API request (names too, paginated?)
+- [x] Render results panel, requires:
+  - list of indexes & names of items matching the search, maybe paginated
+- [x] getDatasetItem API request
+- [x] Render popup, requires:
   - full set of data for an item
   - translations for all fields (vocabs)
 - [ ] getAbout API request
