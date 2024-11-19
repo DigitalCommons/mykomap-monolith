@@ -22,7 +22,11 @@ const App = () => {
         console.log("API version info", versionInfo);
       })
       .catch((error) => {
-        console.error("Error fetching API version info", error);
+        console.error(
+          "Error fetching API version info",
+          error.message,
+          import.meta.env.VITE_API_URL,
+        );
       });
   }, []);
 

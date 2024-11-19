@@ -8,13 +8,13 @@ const root = process.cwd();
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  server: {
-    open: true,
-  },
   test: {
     globals: true,
     environment: "jsdom",
     setupFiles: "src/setupTests",
+    env: {
+      VITE_API_URL: "/api",
+    },
   },
   base: "./",
   root,

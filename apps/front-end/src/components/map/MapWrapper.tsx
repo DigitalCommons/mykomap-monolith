@@ -73,7 +73,7 @@ const MapWrapper = () => {
 
   const updateMapData = async () => {
     if (isFilterActive) {
-      console.log(`Found ${visibleIndexes?.length} itmes that matched`);
+      console.log(`Found ${visibleIndexes?.length} items that matched`);
     }
 
     console.log(
