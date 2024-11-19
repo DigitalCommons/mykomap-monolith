@@ -12,13 +12,12 @@ import ResultsPanel from "../panel/resultsPanel/ResultsPanel";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   setSelectedTab,
-  setPanelVisible,
   togglePanel,
   closePanel,
   selectSelectedTab,
-  selectPanelVisible,
   selectPanelOpen,
   selectResultsPanelOpen,
+  openPanel,
 } from "./panelSlice";
 
 const StyledPanel = styled(Drawer)(() => ({
@@ -52,7 +51,6 @@ const Panel = () => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectPanelOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
-  const panelVisible = useAppSelector(selectPanelVisible);
   const resultsOpen = useAppSelector(selectResultsPanelOpen);
 
   const isMedium = useMediaQuery("(min-width: 897px)");
@@ -64,23 +62,22 @@ const Panel = () => {
 
   const handleTabChange = (tab: number) => {
     if (tab === 0) {
-      dispatch(setPanelVisible(false)); // Hide the panel if Map is selected
+      dispatch(closePanel()); // Hide the panel if Map is selected
     } else {
-      dispatch(setPanelVisible(true)); // Show the panel if any other tab is selected
+      dispatch(openPanel()); // Show the panel if any other tab is selected
     }
     dispatch(setSelectedTab(tab));
     console.log("tab", tab);
-    console.log("panelVisible", panelVisible);
   };
 
   const handlePanelClose = () => {
     dispatch(closePanel());
     dispatch(setSelectedTab(0));
-    console.log("panelVisible", panelVisible);
+    console.log("isOpen", isOpen);
   };
 
   const handleMapTapClick = () => {
-    dispatch(setPanelVisible(false));
+    dispatch(closePanel());
     dispatch(setSelectedTab(0));
   };
 
@@ -102,7 +99,7 @@ const Panel = () => {
               {selectedTab === 1 && <SearchPanel />}
               {selectedTab === 2 && <AboutPanel />}
             </Box>
-            {!resultsOpen && (
+            {!(isOpen && resultsOpen) && (
               <PanelToggleButton buttonAction={handleToggle} isOpen={isOpen} />
             )}
           </StyledPanel>
@@ -123,7 +120,7 @@ const Panel = () => {
               },
             }}
           >
-            {panelVisible && (
+            {isOpen && (
               <>
                 <CloseButton buttonAction={handlePanelClose} />
                 {selectedTab === 1 && <DirectoryPanel />}

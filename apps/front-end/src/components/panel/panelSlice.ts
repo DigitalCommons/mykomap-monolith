@@ -8,7 +8,6 @@ const RESULTS_PER_PAGE = 10;
 
 interface PanelSliceState {
   selectedTab: number;
-  panelVisible: boolean;
   isOpen: boolean;
   resultsOpen: boolean;
   resultsStatus: "idle" | "loading" | "failed";
@@ -19,7 +18,6 @@ interface PanelSliceState {
 
 const initialState: PanelSliceState = {
   selectedTab: 0,
-  panelVisible: false,
   isOpen: false,
   resultsOpen: false,
   resultsStatus: "idle",
@@ -34,18 +32,17 @@ export const panelSlice = createAppSlice({
     setSelectedTab: create.reducer((state, action: PayloadAction<number>) => {
       state.selectedTab = action.payload;
     }),
-    setPanelVisible: create.reducer((state, action: PayloadAction<boolean>) => {
-      state.panelVisible = action.payload;
-    }),
     togglePanel: create.reducer((state) => {
       state.isOpen = !state.isOpen;
     }),
     toggleResultsPanel: create.reducer((state) => {
       state.resultsOpen = !state.resultsOpen;
     }),
+    openPanel: create.reducer((state) => {
+      state.isOpen = true;
+    }),
     closePanel: create.reducer((state) => {
       state.isOpen = false;
-      state.panelVisible = false;
     }),
     openResultsPanel: create.reducer((state) => {
       state.resultsOpen = true;
@@ -107,7 +104,6 @@ export const panelSlice = createAppSlice({
   }),
   selectors: {
     selectSelectedTab: (panel) => panel.selectedTab,
-    selectPanelVisible: (panel) => panel.panelVisible,
     selectPanelOpen: (panel) => panel.isOpen,
     selectResultsPanelOpen: (panel) => panel.resultsOpen,
     selectResultsStatus: (panel) => panel.resultsStatus,
@@ -118,9 +114,9 @@ export const panelSlice = createAppSlice({
 
 export const {
   setSelectedTab,
-  setPanelVisible,
   togglePanel,
   toggleResultsPanel,
+  openPanel,
   closePanel,
   openResultsPanel,
   closeResultsPanel,
@@ -129,7 +125,6 @@ export const {
 
 export const {
   selectSelectedTab,
-  selectPanelVisible,
   selectPanelOpen,
   selectResultsPanelOpen,
   selectResultsStatus,

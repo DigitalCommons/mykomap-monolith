@@ -8,10 +8,8 @@ import StandardButton from "../../common/standardButton/StandardButton";
 import Results from "./results/Results";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
-  selectPanelVisible,
   togglePanel,
   selectPanelOpen,
-  toggleResultsPanel,
   selectResultsPanelOpen,
   closeResultsPanel,
 } from "../panelSlice";
@@ -39,7 +37,7 @@ const StyledResultsPanel = styled(Drawer)(() => ({
   },
 }));
 
-const StyledButtonContainer = styled(Box)(({ theme }) => ({
+const StyledButtonContainer = styled(Box)(() => ({
   width: "100%",
   display: "flex",
   justifyContent: "space-between",
@@ -59,18 +57,16 @@ const ResultsPanel = () => {
 
   console.log("resultsPanelOpen", resultsPanelOpen);
 
-  const panelVisible = useAppSelector(selectPanelVisible);
   const isMedium = useMediaQuery("(min-width: 897px)");
 
   const handleToggle = () => {
     dispatch(togglePanel());
-    dispatch(toggleResultsPanel());
     console.log("panelOpen", panelOpen);
   };
 
   const handlePanelClose = () => {
     dispatch(closeResultsPanel());
-    console.log("panelVisible", panelVisible);
+    console.log("panelOpen", panelOpen);
   };
 
   const handleClearSearch = () => {
@@ -80,30 +76,38 @@ const ResultsPanel = () => {
   };
 
   return (
-    resultsPanelOpen && (
-      <>
-        <StyledResultsPanel open={resultsPanelOpen} variant="persistent">
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-            }}
+    <>
+      {panelOpen &&
+        resultsPanelOpen && ( // Adding this stops the drawer transition working
+          <StyledResultsPanel
+            open={panelOpen && resultsPanelOpen}
+            variant="persistent"
+            anchor="left"
           >
-            <StyledButtonContainer>
-              <StandardButton buttonAction={handleClearSearch}>
-                Clear Search
-              </StandardButton>
-              {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
-            </StyledButtonContainer>
-            <Results />
-          </Box>
-          {isMedium && (
-            <PanelToggleButton buttonAction={handleToggle} isOpen={panelOpen} />
-          )}
-        </StyledResultsPanel>
-      </>
-    )
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+            >
+              <StyledButtonContainer>
+                <StandardButton buttonAction={handleClearSearch}>
+                  Clear Search
+                </StandardButton>
+                {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
+              </StyledButtonContainer>
+              <Results />
+            </Box>
+            {isMedium && (
+              <PanelToggleButton
+                buttonAction={handleToggle}
+                isOpen={panelOpen}
+              />
+            )}
+          </StyledResultsPanel>
+        )}
+    </>
   );
 };
 
