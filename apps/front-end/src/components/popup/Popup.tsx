@@ -9,7 +9,7 @@ import { POPUP_CONTAINER_ID } from "../map/mapLibre";
 
 const StyledPopup = styled(Box)(({ theme }) => ({
   width: "300px",
-  height: "500px",
+  height: "450px",
   display: "flex",
   backgroundColor: theme.palette.background.paper,
   padding: 0,
