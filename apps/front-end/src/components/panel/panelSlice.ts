@@ -1,6 +1,6 @@
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import { getUrlSearchParam } from "../../utils/window-utils";
+import { getDatasetId } from "../../utils/window-utils";
 import { searchDataset } from "../../services";
 import { SearchSliceState } from "./searchPanel/searchSlice";
 
@@ -52,7 +52,7 @@ export const panelSlice = createAppSlice({
     }),
     populateSearchResults: create.asyncThunk(
       async (page: number, thunkApi) => {
-        const datasetId = getUrlSearchParam("datasetId");
+        const datasetId = getDatasetId();
         if (datasetId === null) {
           return thunkApi.rejectWithValue(
             `No datasetId parameter given, so no dataset can be searched`,

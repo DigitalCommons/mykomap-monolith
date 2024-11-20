@@ -4,6 +4,7 @@ import { contract } from "@mykomap/common";
 import { FastifyPluginOptions } from "fastify";
 import fs from "node:fs";
 import {
+  getDatasetAbout,
   getDatasetConfig,
   getDatasetItem,
   getDatasetLocations,
@@ -107,6 +108,12 @@ export function MykomapRouter(
       const config = getDatasetConfig(datasetId);
 
       return { status: 200, body: config };
+    },
+
+    getAbout: async ({ params: { datasetId } }) => {
+      const about = getDatasetAbout(datasetId);
+
+      return { status: 200, body: about };
     },
 
     getVersion: async () => {

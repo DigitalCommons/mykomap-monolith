@@ -249,9 +249,9 @@ export const contract = c.router({
   getConfig: {
     method: "GET",
     path: "/dataset/:datasetId/config",
-    summary: "obtain various configured parameters for a map",
+    summary: "obtain various configured parameters for a dataset",
     description:
-      "Obtains configured parameters for a map, which amongst other things, " +
+      "Obtains configured parameters for a datset, which amongst other things, " +
       "include default values for various options, and definitions of " +
       "vocabulary terms with their localised labels, that are used to " +
       "interpret identifers in the data and/or elsewhere.",
@@ -262,13 +262,36 @@ export const contract = c.router({
     }),
     responses: {
       200: ConfigData.openapi({
-        description: "variuos configured parameters for a map",
+        description: "various configured parameters for a map",
       }),
       400: ErrorInfo.openapi({
         description: "bad input parameter",
       }),
       404: ErrorInfo.openapi({
-        description: "no such map",
+        description: "no such dataset",
+      }),
+    },
+  },
+  getAbout: {
+    method: "GET",
+    path: "/dataset/:datasetId/about",
+    summary: "obtain the About text for a dataset",
+    description:
+      "Obtains information about the datset, in markdown format so it can be easily rendered on a front-end application.",
+    pathParams: z.object({
+      datasetId: DatasetId.openapi({
+        description: "uniquely specifies the dataset wanted",
+      }),
+    }),
+    responses: {
+      200: z.string().openapi({
+        description: "About text in markdown format",
+      }),
+      400: ErrorInfo.openapi({
+        description: "bad input parameter",
+      }),
+      404: ErrorInfo.openapi({
+        description: "no such dataset",
       }),
     },
   },

@@ -59,6 +59,11 @@ export const getDatasetConfig = (datasetId: string): GetConfigBody => {
   return dataset.getConfig();
 };
 
+export const getDatasetAbout = (datasetId: string): string => {
+  const dataset = getDatasetOrThrow404(contract.getAbout, datasetId);
+  return dataset.getAbout();
+};
+
 export const getDatasetLocations = (datasetId: string): fs.ReadStream => {
   const dataset = getDatasetOrThrow404(contract.getDatasetLocations, datasetId);
   return dataset.getLocations();

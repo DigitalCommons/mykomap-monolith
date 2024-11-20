@@ -2,7 +2,7 @@ import i18n, { Resource, ResourceLanguage } from "i18next";
 import HttpBackend, { HttpBackendOptions } from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
-import { getUrlSearchParam } from "./utils/window-utils";
+import { getDatasetId } from "./utils/window-utils";
 import { Config } from "./services";
 
 i18n
@@ -13,7 +13,7 @@ i18n
     backend: {
       // Load the config for the dataset from the API, then parse it to extract i18n resources from
       // the ui vocab
-      loadPath: `${import.meta.env.VITE_API_URL}/dataset/${getUrlSearchParam("datasetId")}/config`,
+      loadPath: `${import.meta.env.VITE_API_URL}/dataset/${getDatasetId()}/config`,
       parse: (data, languages, namespaces): Resource | ResourceLanguage => {
         const config = JSON.parse(data) as Config;
         const uiVocab = config.vocabs.ui;
