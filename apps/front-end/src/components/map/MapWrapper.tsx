@@ -67,10 +67,16 @@ const MapWrapper = () => {
     // Keep the mapLibre popup in sync with the Redux state
     if (popupIsOpen) {
       console.log("Opening popup");
-      map?.current?.fire("openPopup", {
-        itemIx: popupIndex,
-        location: popupLocation,
-      });
+      if (popupLocation) {
+        map?.current?.fire("openPopup", {
+          itemIx: popupIndex,
+          location: popupLocation,
+        });
+      } else {
+        console.log("Open popup for item with no location");
+        map?.current?.fire("closeAllPopups");
+        // This is handled in Popup.tsx
+      }
     } else {
       console.log("Closing popup");
       map?.current?.fire("closeAllPopups");

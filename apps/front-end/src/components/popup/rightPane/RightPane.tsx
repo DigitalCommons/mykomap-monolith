@@ -94,22 +94,24 @@ const RightPane = ({
 
   return (
     <StyledRightPane>
-      <StyledTopBox>
-        {splitAddress(address).map((line, index) => (
-          <Typography key={index}>{line}</Typography>
-        ))}
-        <Link
-          sx={{
-            color: "#ffffffB3",
-            textDecoration: "underline",
-            padding: "0 !important",
-            fontSize: "var(--font-size-xsmall)",
-            marginTop: "var(--spacing-medium)",
-          }}
-        >
-          {website}
-        </Link>
-      </StyledTopBox>
+      {(address || website) && (
+        <StyledTopBox>
+          {splitAddress(address).map((line, index) => (
+            <Typography key={index}>{line}</Typography>
+          ))}
+          <Link
+            sx={{
+              color: "#ffffffB3",
+              textDecoration: "underline",
+              padding: "0 !important",
+              fontSize: "var(--font-size-xsmall)",
+              marginTop: "var(--spacing-medium)",
+            }}
+          >
+            {website}
+          </Link>
+        </StyledTopBox>
+      )}
       <StyledBottomBox>
         <Box
           sx={{

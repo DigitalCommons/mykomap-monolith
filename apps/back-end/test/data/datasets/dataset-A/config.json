@@ -192,7 +192,8 @@
           "any": "Any",
           "map": "Map",
           "about": "About",
-          "apply_filters": "Apply Filters"
+          "apply_filters": "Apply Filters",
+          "no_location_available": "No location data available"
         }
       },
       "fr": {
@@ -215,7 +216,8 @@
           "any": "Tout afficher",
           "map": "Carte",
           "about": "À propos",
-          "apply_filters": "Appliquer les filtres"
+          "apply_filters": "Appliquer les filtres",
+          "no_location_available": "Aucune donnée de localisation disponible"
         }
       }
     }

@@ -11,6 +11,7 @@ interface LeftPaneProps {
   primaryActivity?: string;
   description?: string;
   dcDomains?: string[];
+  hasLocation: boolean;
 }
 
 const StyledLeftPane = styled(Box)(() => ({
@@ -88,6 +89,7 @@ const LeftPane = ({
   primaryActivity,
   description,
   dcDomains,
+  hasLocation,
 }: LeftPaneProps) => {
   const { t } = useTranslation();
 
@@ -95,6 +97,11 @@ const LeftPane = ({
     <StyledLeftPane>
       <StyledHeaderContainer>
         <Typography variant="h1">{name}</Typography>
+        {!hasLocation && (
+          <Typography variant="subtitle2">
+            {t("no_location_available")}
+          </Typography>
+        )}
       </StyledHeaderContainer>
       <StyledContentContainer>
         <Box>

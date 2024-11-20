@@ -40,7 +40,7 @@ const openPopup = async (
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
-  console.log(`Clicked item @${itemIx} ${coordinates}`);
+  console.log(`Open popup for item @${itemIx} ${coordinates}`);
 
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
@@ -233,15 +233,26 @@ export const createMap = (
     map.on("click", "unclustered-point", (e: MapLayerMouseEvent) => {
       if (e.features) {
         const feature = e.features[0] as GeoJSON.Feature<GeoJSON.Point>;
-        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+        const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
-        openPopup(
-          map,
-          itemIx,
-          coordinates,
-          popupCreatedCallback,
-          popupClosedCallback,
-        );
+
+        // fly to a position so that the popup is fully visible
+        map
+          .flyTo({
+            center: [
+              coordinates[0],
+              coordinates[1] + getMapCentreOffsetLat(map.getZoom()),
+            ],
+          })
+          .once("moveend", () => {
+            openPopup(
+              map,
+              itemIx,
+              coordinates as LngLatLike,
+              popupCreatedCallback,
+              popupClosedCallback,
+            );
+          });
       }
     });
 
@@ -249,10 +260,7 @@ export const createMap = (
       if (popup?.isOpen() && popupIx === itemIx) return;
 
       if (location === null) {
-        console.error(
-          "No location provided so display popup in middle of screen",
-        );
-        // TODO
+        console.error("This shouldn't happen");
         return;
       }
 
@@ -275,7 +283,7 @@ export const createMap = (
 
           map
             .flyTo({
-              center: location,
+              center: [location[0], location[1] + getMapCentreOffsetLat(zoom)],
               zoom,
             })
             .once("moveend", () => {
@@ -311,11 +319,18 @@ export const createMap = (
         }
       };
 
+      // Remove previous popup - remove listener to prevent looping back and confusing React code
+      popup?.off("close", popupClosedCallback);
+      popup?.remove();
       flyToThenOpenPopupRecursive();
     });
 
     map.on("closeAllPopups", () => {
+      // The React code knows we're closing this popup - remove listener to prevent loop
+      popup?.off("close", popupClosedCallback);
       popup?.remove();
+      popupIx = undefined;
+      popup = undefined;
     });
 
     map.on("zoomend", () => {

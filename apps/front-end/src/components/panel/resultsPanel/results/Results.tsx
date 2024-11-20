@@ -5,13 +5,19 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import ResultItem from "./resultItem/ResultItem";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
-import { selectResults } from "../../panelSlice";
+import {
+  closePanel,
+  closeResultsPanel,
+  selectResults,
+  setSelectedTab,
+} from "../../panelSlice";
 import { openPopup } from "../../../popup/popupSlice";
 import {
   selectIsFilterActive,
   selectVisibleIndexes,
 } from "../../searchPanel/searchSlice";
 import { selectTotalItemsCount } from "../../../map/mapSlice";
+import { useMediaQuery } from "@mui/material";
 
 const StyledResults = styled(Box)(() => ({
   width: "100%",
@@ -35,9 +41,16 @@ const Results = () => {
   const totalItemsCount = useAppSelector(selectTotalItemsCount);
   const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
 
+  const isMedium = useMediaQuery("(min-width: 897px)");
+
   const onItemClick = (itemIx: number) => {
     console.log(`Clicked item @${itemIx}`);
     dispatch(openPopup(itemIx));
+    dispatch(closePanel());
+    if (!isMedium) {
+      dispatch(setSelectedTab(0));
+      dispatch(closeResultsPanel());
+    }
   };
 
   return (

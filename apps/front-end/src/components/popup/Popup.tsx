@@ -3,13 +3,19 @@ import Box from "@mui/material/Box";
 import LeftPane from "./leftPane/LeftPane";
 import RightPane from "./rightPane/RightPane";
 import { styled } from "@mui/material/styles";
-import { useAppSelector } from "../../app/hooks";
-import { selectPopupIsOpen, selectPopupData } from "./popupSlice";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  selectPopupIsOpen,
+  selectPopupData,
+  selectPopupIndex,
+  closePopup,
+} from "./popupSlice";
 import { POPUP_CONTAINER_ID } from "../map/mapLibre";
+import { selectLocation } from "../map/mapSlice";
 
 const StyledPopup = styled(Box)(({ theme }) => ({
-  width: "300px",
-  height: "450px",
+  width: 300,
+  height: 450,
   display: "flex",
   backgroundColor: theme.palette.background.paper,
   padding: 0,
@@ -55,21 +61,46 @@ const StylePopupInner = styled(Box)(() => ({
 }));
 
 const Popup = () => {
+  const dispatch = useAppDispatch();
   const open = useAppSelector(selectPopupIsOpen);
+  const popupIndex = useAppSelector(selectPopupIndex);
+  const hasLocation = !!useAppSelector(selectLocation(popupIndex));
   const data = useAppSelector(selectPopupData);
+
+  const popupComponent = (
+    <StyledPopup onClick={(e) => e.stopPropagation()}>
+      <StylePopupInner>
+        <LeftPane {...data} hasLocation={hasLocation} />
+        <RightPane {...data} />
+      </StylePopupInner>
+    </StyledPopup>
+  );
 
   return (
     open &&
-    document.getElementById(POPUP_CONTAINER_ID) &&
-    createPortal(
-      <StyledPopup>
-        <StylePopupInner>
-          <LeftPane {...data} />
-          <RightPane {...data} />
-        </StylePopupInner>
-      </StyledPopup>,
-      document.getElementById(POPUP_CONTAINER_ID)!!,
-    )
+    (hasLocation ? (
+      document.getElementById(POPUP_CONTAINER_ID) &&
+      createPortal(
+        popupComponent,
+        document.getElementById(POPUP_CONTAINER_ID)!!,
+      )
+    ) : (
+      // Just show popup in the middle of the screen if no location is available
+      <div
+        style={{
+          height: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(0,0,0,0.7)",
+          position: "relative",
+          zIndex: 5,
+        }}
+        onClick={() => dispatch(closePopup())}
+      >
+        {popupComponent}
+      </div>
+    ))
   );
 };
 
