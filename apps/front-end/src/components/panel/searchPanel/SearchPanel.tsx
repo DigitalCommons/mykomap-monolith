@@ -21,6 +21,7 @@ import {
   selectIsFilterActive,
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
+import { openResultsPanel } from "../panelSlice";
 
 const StyledButtonContainer = styled(Box)(() => ({
   width: "100%",
@@ -57,15 +58,14 @@ const SearchPanel = () => {
   const onFilterChange = (e: SelectChangeEvent<string>, propId: string) => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
     dispatch(setFilterValue({ id: propId, value: e.target.value }));
-    if (isMedium) {
-      dispatch(performSearch());
-    }
+    dispatch(performSearch());
+    if (isMedium) dispatch(openResultsPanel());
   };
 
   const onSubmit = () => {
     console.log(`Searching for '${submittedText}'`);
     dispatch(setText(currentText));
-    dispatch(performSearch());
+    dispatch(openResultsPanel());
   };
 
   const onClear = () => {
@@ -80,40 +80,40 @@ const SearchPanel = () => {
       onSubmit={onSubmit}
       style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
     >
-        <Heading title={t("search")}>
-          <SearchBox
-            value={currentText}
-            onChange={onSearchChange}
-            onSubmit={onSubmit}
-            clearSearch={onClear}
+      <Heading title={t("search")}>
+        <SearchBox
+          value={currentText}
+          onChange={onSearchChange}
+          onSubmit={onSubmit}
+          clearSearch={onClear}
+        />
+      </Heading>
+      <ContentPanel>
+        <Typography variant="h4" component="h4">
+          {isFilterActive
+            ? t("matching_results", { count: resultCount })
+            : t("directory_entries", { count: resultCount })}
+        </Typography>
+        {filterOptions.map(({ id, title, options, value }) => (
+          <SelectBox
+            key={`select-box-${id}`}
+            label={title}
+            onChange={(e) => onFilterChange(e, id)}
+            options={options}
+            value={value}
           />
-        </Heading>
-        <ContentPanel>
-          <Typography variant="h4" component="h4">
-            {isFilterActive
-              ? t("matching_results", { count: resultCount })
-              : t("directory_entries", { count: resultCount })}
-          </Typography>
-          {filterOptions.map(({ id, title, options, value }) => (
-            <SelectBox
-              key={`select-box-${id}`}
-              label={title}
-              onChange={(e) => onFilterChange(e, id)}
-              options={options}
-              value={value}
-            />
-          ))}
-        </ContentPanel>
-        <StyledButtonContainer>
-          {!isMedium && (
-            <StandardButton
-              buttonAction={onSubmit}
-              disabled={!currentText && !isFilterActive}
-            >
-              {t("Apply Filters")}
-            </StandardButton>
-          )}
-        </StyledButtonContainer>
+        ))}
+      </ContentPanel>
+      <StyledButtonContainer>
+        {!isMedium && (
+          <StandardButton
+            buttonAction={onSubmit}
+            disabled={!currentText && !isFilterActive}
+          >
+            {t("apply_filters")}
+          </StandardButton>
+        )}
+      </StyledButtonContainer>
     </form>
   );
 };
