@@ -6,7 +6,7 @@ import {
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
-import { fetchLocations, selectFeatures } from "./mapSlice";
+import { fetchLocations, selectFeatures, selectLocation } from "./mapSlice";
 import {
   closePopup,
   openPopup,
@@ -24,6 +24,7 @@ const MapWrapper = () => {
   );
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
@@ -66,7 +67,10 @@ const MapWrapper = () => {
     // Keep the mapLibre popup in sync with the Redux state
     if (popupIsOpen) {
       console.log("Opening popup");
-      map?.current?.fire("openPopup", { itemIx: popupIndex });
+      map?.current?.fire("openPopup", {
+        itemIx: popupIndex,
+        location: popupLocation,
+      });
     } else {
       console.log("Closing popup");
       map?.current?.fire("closeAllPopups");

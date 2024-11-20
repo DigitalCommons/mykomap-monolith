@@ -5,6 +5,7 @@ import { notNullish, schemas } from "@mykomap/common";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
 import { getDatasetId } from "../../utils/window-utils";
+import { RootState } from "../../app/store";
 
 export type Location = z.infer<typeof schemas.Location>;
 export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
@@ -67,6 +68,9 @@ export const mapSlice = createAppSlice({
 export const { fetchLocations } = mapSlice.actions;
 
 export const { selectTotalItemsCount } = mapSlice.selectors;
+
+export const selectLocation = (ix: number) => (state: RootState) =>
+  state.map.allLocations[ix];
 
 // We use the createSelector function from the Redux Toolkit for memoization, so that we don't need
 // to re-form the features array every time the selector is called.

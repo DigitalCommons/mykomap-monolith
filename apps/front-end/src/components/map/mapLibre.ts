@@ -13,7 +13,15 @@ import { getLanguageFromUrl } from "../../utils/window-utils";
 export const POPUP_CONTAINER_ID = "popup-container";
 
 let popup: Popup | undefined;
+let popupIx: number | undefined;
 let tooltip: Popup | undefined;
+
+/**
+ * We need to offset latitude of the map centre slightly above a marker's location when opening a
+ * popup so that it can be fully seen. I've calcluated that this exponential function gives a good
+ * offset.
+ */
+const getMapCentreOffsetLat = (zoom: number) => 87 * Math.exp(-0.704 * zoom);
 
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
@@ -40,6 +48,7 @@ const openPopup = async (
     : [0, -20];
 
   popup?.remove();
+  popupIx = itemIx;
   popup = new Popup({
     closeButton: false,
     maxWidth: "none",
@@ -87,11 +96,11 @@ export const createMap = (
   const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
-    minZoom: 1.3,
+    minZoom: 1.1,
     maxZoom: 18,
     bounds: [
       [-180, -59.9],
-      [180, 78.1],
+      [180, 83],
     ],
     attributionControl: false,
   });
@@ -236,27 +245,73 @@ export const createMap = (
       }
     });
 
-    map.on("openPopup", ({ itemIx }) => {
-      const features = map
-        .queryRenderedFeatures(undefined, {
-          layers: ["unclustered-point"],
-        })
-        .filter((f) => f?.properties?.ix === itemIx);
+    map.on("openPopup", async ({ itemIx, location }) => {
+      if (popup?.isOpen() && popupIx === itemIx) return;
 
-      if (features.length > 0) {
-        const feature = features[0] as GeoJSON.Feature<GeoJSON.Point>;
-        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-        openPopup(
-          map,
-          itemIx,
-          coordinates,
-          popupCreatedCallback,
-          popupClosedCallback,
+      if (location === null) {
+        console.error(
+          "No location provided so display popup in middle of screen",
         );
-      } else {
-        console.error(`Feature @${itemIx} not visible`);
-        popup?.remove();
+        // TODO
+        return;
       }
+
+      const getFeatureIfVisible = (ix: number) =>
+        map
+          .queryRenderedFeatures(undefined, {
+            layers: ["unclustered-point"],
+          })
+          .find(
+            (f) => f?.properties?.ix === ix,
+          ) as GeoJSON.Feature<GeoJSON.Point>;
+
+      let zoom = 10; // start with this zoom, then hone in
+      const maxZoom = 18; // once we get to this zoom, stop
+
+      const flyToThenOpenPopupRecursive = () => {
+        const feature = getFeatureIfVisible(itemIx);
+        if (!feature) {
+          console.info(`Feature @${itemIx} not visible, flying to it`);
+
+          map
+            .flyTo({
+              center: location,
+              zoom,
+            })
+            .once("moveend", () => {
+              if (zoom < maxZoom) {
+                zoom += 2;
+                flyToThenOpenPopupRecursive();
+              } else {
+                console.error(
+                  "Maybe the feature is in a cluster and needs to be spiderfied.",
+                );
+                // TODO spiderfy the cluster
+              }
+            });
+        } else {
+          // Do a final fly to position the marker nicely without zooming,
+          // in case the feature was already visible
+          map
+            .flyTo({
+              center: [
+                location[0],
+                location[1] + getMapCentreOffsetLat(map.getZoom()),
+              ],
+            })
+            .once("moveend", () => {
+              openPopup(
+                map,
+                itemIx,
+                location,
+                popupCreatedCallback,
+                popupClosedCallback,
+              );
+            });
+        }
+      };
+
+      flyToThenOpenPopupRecursive();
     });
 
     map.on("closeAllPopups", () => {
