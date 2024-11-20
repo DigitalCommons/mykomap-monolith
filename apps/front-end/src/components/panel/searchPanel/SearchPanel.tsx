@@ -5,7 +5,11 @@ import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
 import SelectBox from "../../common/selectBox/SelectBox";
 import SearchBox from "./searchBox/SearchBox";
+import StandardButton from "../../common/standardButton/StandardButton";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   selectText,
@@ -18,6 +22,20 @@ import {
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
 
+const StyledButtonContainer = styled(Box)(() => ({
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  position: "sticky",
+  padding: "var(--spacing-medium)",
+  backgroundColor: "rgba(255, 255, 255, 0.25) !important",
+  boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
+  zIndex: 1,
+  "@media (min-width: 897px)": {
+    display: "none",
+  },
+}));
+
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -28,6 +46,8 @@ const SearchPanel = () => {
   const totalItemsCount = useAppSelector(selectTotalItemsCount);
   const [currentText, setCurrentText] = useState(submittedText);
 
+  const isMedium = useMediaQuery("(min-width: 897px)");
+
   const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
 
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -37,7 +57,9 @@ const SearchPanel = () => {
   const onFilterChange = (e: SelectChangeEvent<string>, propId: string) => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
     dispatch(setFilterValue({ id: propId, value: e.target.value }));
-    dispatch(performSearch());
+    if (isMedium) {
+      dispatch(performSearch());
+    }
   };
 
   const onSubmit = () => {
@@ -58,30 +80,40 @@ const SearchPanel = () => {
       onSubmit={onSubmit}
       style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
     >
-      <Heading title={t("search")}>
-        <SearchBox
-          value={currentText}
-          onChange={onSearchChange}
-          onSubmit={onSubmit}
-          clearSearch={onClear}
-        />
-      </Heading>
-      <ContentPanel>
-        <Typography variant="h4" component="h4">
-          {isFilterActive
-            ? t("matching_results", { count: resultCount })
-            : t("directory_entries", { count: resultCount })}
-        </Typography>
-        {filterOptions.map(({ id, title, options, value }) => (
-          <SelectBox
-            key={`select-box-${id}`}
-            label={title}
-            onChange={(e) => onFilterChange(e, id)}
-            options={options}
-            value={value}
+        <Heading title={t("search")}>
+          <SearchBox
+            value={currentText}
+            onChange={onSearchChange}
+            onSubmit={onSubmit}
+            clearSearch={onClear}
           />
-        ))}
-      </ContentPanel>
+        </Heading>
+        <ContentPanel>
+          <Typography variant="h4" component="h4">
+            {isFilterActive
+              ? t("matching_results", { count: resultCount })
+              : t("directory_entries", { count: resultCount })}
+          </Typography>
+          {filterOptions.map(({ id, title, options, value }) => (
+            <SelectBox
+              key={`select-box-${id}`}
+              label={title}
+              onChange={(e) => onFilterChange(e, id)}
+              options={options}
+              value={value}
+            />
+          ))}
+        </ContentPanel>
+        <StyledButtonContainer>
+          {!isMedium && (
+            <StandardButton
+              buttonAction={onSubmit}
+              disabled={!currentText && !isFilterActive}
+            >
+              {t("Apply Filters")}
+            </StandardButton>
+          )}
+        </StyledButtonContainer>
     </form>
   );
 };
