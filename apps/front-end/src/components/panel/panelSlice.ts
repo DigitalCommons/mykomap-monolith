@@ -73,7 +73,6 @@ export const panelSlice = createAppSlice({
           },
         });
         if (response.status === 200) {
-          thunkApi.dispatch(openResultsPanel());
           const body = response.body as { index: string; name: string }[];
           return body.map(({ index, name }) => ({
             index: Number(index.substring(1)), // remove leading '@' from index

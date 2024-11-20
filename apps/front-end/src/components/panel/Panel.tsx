@@ -72,7 +72,7 @@ const Panel = () => {
 
   const handlePanelClose = () => {
     dispatch(closePanel());
-    dispatch(setSelectedTab(0));
+    if (!isMedium) dispatch(setSelectedTab(0));
     console.log("isOpen", isOpen);
   };
 

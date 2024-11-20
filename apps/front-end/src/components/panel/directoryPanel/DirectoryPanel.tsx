@@ -12,7 +12,7 @@ const StyledDirectoryPanel = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   overflowY: "auto",
-  padding: "var(--spacing-medium) 0",
+  padding: "var(--spacing-medium) 0 80px",
   maxWidth: "var(--panel-width-desktop)",
   margin: "0 auto",
   "@media (min-width: 768px)": {

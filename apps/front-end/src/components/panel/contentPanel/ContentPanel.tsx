@@ -10,7 +10,7 @@ const StyledContentPanel = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
   overflowY: "auto",
-  padding: "var(--spacing-medium)",
+  padding: "var(--spacing-medium) var(--spacing-medium) 80px",
   maxWidth: "var(--panel-width-desktop)",
   margin: "0 auto",
   "@media (min-width: 897px)": {

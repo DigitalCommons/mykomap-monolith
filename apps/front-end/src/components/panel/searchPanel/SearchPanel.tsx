@@ -5,7 +5,11 @@ import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
 import SelectBox from "../../common/selectBox/SelectBox";
 import SearchBox from "./searchBox/SearchBox";
+import StandardButton from "../../common/standardButton/StandardButton";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { styled } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
   selectText,
@@ -17,6 +21,21 @@ import {
   selectIsFilterActive,
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
+import { openResultsPanel } from "../panelSlice";
+
+const StyledButtonContainer = styled(Box)(() => ({
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  position: "sticky",
+  padding: "var(--spacing-medium)",
+  backgroundColor: "rgba(255, 255, 255, 0.25) !important",
+  boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
+  zIndex: 1,
+  "@media (min-width: 897px)": {
+    display: "none",
+  },
+}));
 
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
@@ -28,6 +47,8 @@ const SearchPanel = () => {
   const totalItemsCount = useAppSelector(selectTotalItemsCount);
   const [currentText, setCurrentText] = useState(submittedText);
 
+  const isMedium = useMediaQuery("(min-width: 897px)");
+
   const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
 
   const onSearchChange = (e: React.FormEvent<HTMLInputElement>): void => {
@@ -38,12 +59,13 @@ const SearchPanel = () => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
     dispatch(setFilterValue({ id: propId, value: e.target.value }));
     dispatch(performSearch());
+    if (isMedium) dispatch(openResultsPanel());
   };
 
   const onSubmit = () => {
     console.log(`Searching for '${submittedText}'`);
     dispatch(setText(currentText));
-    dispatch(performSearch());
+    dispatch(openResultsPanel());
   };
 
   const onClear = () => {
@@ -82,6 +104,16 @@ const SearchPanel = () => {
           />
         ))}
       </ContentPanel>
+      <StyledButtonContainer>
+        {!isMedium && (
+          <StandardButton
+            buttonAction={onSubmit}
+            disabled={!currentText && !isFilterActive}
+          >
+            {t("apply_filters")}
+          </StandardButton>
+        )}
+      </StyledButtonContainer>
     </form>
   );
 };

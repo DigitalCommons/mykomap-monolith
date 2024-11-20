@@ -191,7 +191,8 @@
           "clear_search": "Clear Search",
           "any": "Any",
           "map": "Map",
-          "about": "About"
+          "about": "About",
+          "apply_filters": "Apply Filters"
         }
       },
       "fr": {
@@ -213,7 +214,8 @@
           "clear_search": "Effacer la recherche",
           "any": "Tout afficher",
           "map": "Carte",
-          "about": "À propos"
+          "about": "À propos",
+          "apply_filters": "Appliquer les filtres"
         }
       }
     }
