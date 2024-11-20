@@ -4,7 +4,8 @@ import { apiPlugin } from "@mykomap/back-end";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
 
-const server = Fastify();
+const logger = { level: process.env.SERVER_LOG_LEVEL };
+const server = Fastify({ logger });
 const root = dirname(fileURLToPath(import.meta.url));
 
 await server.register(FastifyVite, {
