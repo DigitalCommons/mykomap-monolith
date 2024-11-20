@@ -62,9 +62,12 @@ export const start = async () => {
   try {
     // Register CORS plugin - this is primarily to allow the back end to
     // be on a different host/port.
-    await app.register(cors, {
-      origin: corsOrigin,
-    });
+    if (corsOrigin) {
+      console.log("Registering CORS at ", corsOrigin);
+      await app.register(cors, {
+        origin: corsOrigin,
+      });
+    }
 
     // Mykomap API options
     const opts = {
