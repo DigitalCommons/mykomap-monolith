@@ -68,8 +68,8 @@ export const panelSlice = createAppSlice({
           query: {
             ...search.searchQuery,
             returnProps: ["name"],
-            // page, TODO: implement pagination. For now, just fetch all results
-            // pageSize: RESULTS_PER_PAGE,
+            page: 0, // TODO: implement pagination. For now, just fetch first 200 results
+            pageSize: 200, // RESULTS_PER_PAGE,
           },
         });
         if (response.status === 200) {
