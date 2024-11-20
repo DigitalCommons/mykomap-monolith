@@ -9,7 +9,7 @@
   "scripts": {
     "clean": "rimraf dist node_modules",
     "prestart": "cross-env NODE_ENV=development npm -w ../back-end run build",
-    "start": "cross-env NODE_ENV=development VITE_API_URL=/api tsx --tsconfig tsconfig.node.json --watch --watch-path=src --watch-path=../back-end/src/ server.ts",
+    "start": "cross-env NODE_ENV=development VITE_API_URL=/api tsx watch --tsconfig tsconfig.node.json --include '../back-end/' --exclude '**/.#*' --exclude '**/vite.config.ts.timestamp*' server.ts",
     "dev": "cross-env VITE_API_URL=http://localhost:3000 vite",
     "prebuild": "npm -w ../../libs/common run build",
     "build": "tsc && vite build",
