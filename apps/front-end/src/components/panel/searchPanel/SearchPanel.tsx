@@ -55,17 +55,27 @@ const SearchPanel = () => {
     setCurrentText(e.currentTarget.value);
   };
 
-  const onFilterChange = (e: SelectChangeEvent<string>, propId: string) => {
+  const onFilterChange = async (
+    e: SelectChangeEvent<string>,
+    propId: string,
+  ) => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
     dispatch(setFilterValue({ id: propId, value: e.target.value }));
-    dispatch(performSearch());
+    await dispatch(performSearch());
     if (isMedium) dispatch(openResultsPanel());
   };
 
-  const onSubmit = () => {
+  const onApplyFilters = async () => {
+    console.log(`Applying filters`);
+    await dispatch(performSearch());
+    dispatch(openResultsPanel());
+  };
+
+  const onSubmitSearch = async () => {
     console.log(`Searching for '${submittedText}'`);
     dispatch(setText(currentText));
-    dispatch(openResultsPanel());
+    await dispatch(performSearch());
+    if (isMedium) dispatch(openResultsPanel());
   };
 
   const onClear = () => {
@@ -77,14 +87,13 @@ const SearchPanel = () => {
 
   return (
     <form
-      onSubmit={onSubmit}
       style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
     >
       <Heading title={t("search")}>
         <SearchBox
           value={currentText}
           onChange={onSearchChange}
-          onSubmit={onSubmit}
+          onSubmit={onSubmitSearch}
           clearSearch={onClear}
         />
       </Heading>
@@ -107,7 +116,7 @@ const SearchPanel = () => {
       <StyledButtonContainer>
         {!isMedium && (
           <StandardButton
-            buttonAction={onSubmit}
+            buttonAction={onApplyFilters}
             disabled={!currentText && !isFilterActive}
           >
             {t("apply_filters")}
