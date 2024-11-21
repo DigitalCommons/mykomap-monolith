@@ -5,6 +5,7 @@ import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
+import { renderIfData } from "../../../utils/jsx-utils";
 
 interface RightPaneProps {
   address?: string;
@@ -96,9 +97,9 @@ const RightPane = ({
     return address.split(",").map((line) => line.trim());
   };
 
-  return (
+  return renderIfData(
     <StyledRightPane>
-      {address || website.length ? (
+      {renderIfData(
         <StyledTopBox>
           {splitAddress(address).map((line, index) => (
             <Typography key={index}>{line}</Typography>
@@ -128,43 +129,56 @@ const RightPane = ({
               </ListItem>
             ))}
           </List>
-        </StyledTopBox>
-      ) : null}
+        </StyledTopBox>,
+        [address, ...website],
+      )}
       <StyledBottomBox>
-        <Box
-          sx={{
-            marginBottom: "var(--spacing-medium)",
-          }}
-        >
-          <Typography variant="h4">{t("organisational_structure")}</Typography>
-          <Typography variant="body1">{organisational_structure}</Typography>
-        </Box>
-        <Box
-          sx={{
-            marginBottom: "var(--spacing-medium)",
-          }}
-        >
-          <Typography variant="h4">{t("typology")}</Typography>
-          <Typography variant="body1">{typology}</Typography>
-        </Box>
-        <Box>
-          <Typography variant="h4">{t("data_sources")}</Typography>
-          <List>
-            {data_sources.map((dataSource) => (
-              <ListItem
-                key={dataSource}
-                sx={{
-                  display: "list-item",
-                  marginLeft: "var(--spacing-medium)",
-                }}
-              >
-                {dataSource}
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {renderIfData(
+          <Box
+            sx={{
+              marginBottom: "var(--spacing-medium)",
+            }}
+          >
+            <Typography variant="h4">
+              {t("organisational_structure")}
+            </Typography>
+            <Typography variant="body1">{organisational_structure}</Typography>
+          </Box>,
+          [organisational_structure],
+        )}
+        {renderIfData(
+          <Box
+            sx={{
+              marginBottom: "var(--spacing-medium)",
+            }}
+          >
+            <Typography variant="h4">{t("typology")}</Typography>
+            <Typography variant="body1">{typology}</Typography>
+          </Box>,
+          [typology],
+        )}
+        {renderIfData(
+          <Box>
+            <Typography variant="h4">{t("data_sources")}</Typography>
+            <List>
+              {data_sources.map((dataSource) => (
+                <ListItem
+                  key={dataSource}
+                  sx={{
+                    display: "list-item",
+                    marginLeft: "var(--spacing-medium)",
+                  }}
+                >
+                  {dataSource}
+                </ListItem>
+              ))}
+            </List>
+          </Box>,
+          data_sources,
+        )}
       </StyledBottomBox>
-    </StyledRightPane>
+    </StyledRightPane>,
+    [address, ...website, organisational_structure, typology, ...data_sources],
   );
 };
 

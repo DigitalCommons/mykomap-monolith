@@ -5,12 +5,13 @@ import ListItem from "@mui/material/ListItem";
 import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import { renderIfData } from "../../../utils/jsx-utils";
 
 interface LeftPaneProps {
   name: string;
   primary_activity?: string;
   description?: string;
-  dc_domains?: string[];
+  dc_domains: string[];
   hasLocation: boolean;
 }
 
@@ -104,51 +105,57 @@ const LeftPane = ({
         )}
       </StyledHeaderContainer>
       <StyledContentContainer>
-        <Box>
-          <Typography variant="h4">{t("primary_activity")}</Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              marginBottom: "var(--spacing-medium)",
-              fontWeight: "var(--font-weight-medium)",
-            }}
-          >
-            {primary_activity}
-          </Typography>
-        </Box>
+        {renderIfData(
+          <Box>
+            <Typography variant="h4">{t("primary_activity")}</Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                marginBottom: "var(--spacing-medium)",
+                fontWeight: "var(--font-weight-medium)",
+              }}
+            >
+              {primary_activity}
+            </Typography>
+          </Box>,
+          [primary_activity],
+        )}
         <Typography variant="body1">{description}</Typography>
-        <Box>
-          <Typography
-            variant="h4"
-            sx={{
-              marginBottom: "var(--spacing-xsmall) !important",
-              marginTop: "var(--spacing-large)",
-            }}
-          >
-            {t("domains")}
-          </Typography>
-          <List>
-            {dc_domains?.map((dcDomain) => (
-              <ListItem key={dcDomain}>
-                <Typography variant="body1">
-                  <Link
-                    href={`https://${dcDomain}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    sx={{
-                      color: "var(--color-text)",
-                      textDecoration: "underline",
-                      padding: "0 !important",
-                      fontSize: "var(--font-size-xsmall)",
-                    }}
-                  >
-                    {dcDomain}
-                  </Link>
-                </Typography>
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {renderIfData(
+          <Box>
+            <Typography
+              variant="h4"
+              sx={{
+                marginBottom: "var(--spacing-xsmall) !important",
+                marginTop: "var(--spacing-large)",
+              }}
+            >
+              {t("domains")}
+            </Typography>
+            <List>
+              {dc_domains?.map((dcDomain) => (
+                <ListItem key={dcDomain}>
+                  <Typography variant="body1">
+                    <Link
+                      href={`https://${dcDomain}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      sx={{
+                        color: "var(--color-text)",
+                        textDecoration: "underline",
+                        padding: "0 !important",
+                        fontSize: "var(--font-size-xsmall)",
+                      }}
+                    >
+                      {dcDomain}
+                    </Link>
+                  </Typography>
+                </ListItem>
+              ))}
+            </List>
+          </Box>,
+          dc_domains,
+        )}
       </StyledContentContainer>
     </StyledLeftPane>
   );

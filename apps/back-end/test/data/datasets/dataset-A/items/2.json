@@ -7,7 +7,7 @@
   "country_id": "GB",
   "primary_activity": "ICA220",
   "organisational_structure": "OS60",
-  "typology": "BMT10",
+  "typology": null,
   "latitude": null,
   "longitude": null,
   "geocontainer_lat": null,

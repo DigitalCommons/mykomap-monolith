@@ -70,7 +70,7 @@ const Popup = () => {
   if (open) console.log("Popup data", data);
 
   const popupComponent = data ? (
-    <StyledPopup onClick={(e) => e.stopPropagation()}>
+    <StyledPopup>
       <StylePopupInner>
         <LeftPane {...data} hasLocation={hasLocation} />
         <RightPane {...data} />
@@ -100,7 +100,14 @@ const Popup = () => {
         }}
         onClick={() => dispatch(closePopup())}
       >
-        {popupComponent}
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            maxWidth: 700,
+          }}
+        >
+          {popupComponent}
+        </div>
       </div>
     ))
   );
