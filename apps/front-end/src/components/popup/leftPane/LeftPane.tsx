@@ -5,6 +5,7 @@ import ListItem from "@mui/material/ListItem";
 import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
+import { decode } from "html-entities";
 import { renderIfData } from "../../../utils/jsx-utils";
 
 interface LeftPaneProps {
@@ -93,6 +94,9 @@ const LeftPane = ({
   hasLocation,
 }: LeftPaneProps) => {
   const { t } = useTranslation();
+  const cleanDescription = decode(
+    description?.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
+  )?.trim();
 
   return (
     <StyledLeftPane>
@@ -120,7 +124,7 @@ const LeftPane = ({
           </Box>,
           [primary_activity],
         )}
-        <Typography variant="body1">{description}</Typography>
+        <Typography variant="body1">{cleanDescription}</Typography>
         {renderIfData(
           <Box>
             <Typography
