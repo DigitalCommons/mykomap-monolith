@@ -61,8 +61,8 @@ const Panel = () => {
   };
 
   const handleTabChange = (tab: number) => {
-    if (tab === 0) {
-      dispatch(closePanel()); // Hide the panel if Map is selected
+    if (!isMedium && tab === 0) {
+      dispatch(closePanel()); // Hide the panel if Map is selected on mobile
     } else {
       dispatch(openPanel()); // Show the panel if any other tab is selected
     }
