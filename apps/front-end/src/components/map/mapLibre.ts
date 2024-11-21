@@ -337,6 +337,13 @@ export const createMap = (
       popup = undefined;
     });
 
+    map.on("movestart", () => {
+      // Close popup when the user moves the map
+      popup?.remove();
+      popupIx = undefined;
+      popup = undefined;
+    });
+
     map.on("zoomend", () => {
       // console.log("Zoom level", map.getZoom());
 
