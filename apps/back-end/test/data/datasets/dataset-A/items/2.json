@@ -12,6 +12,6 @@
   "longitude": null,
   "geocontainer_lat": null,
   "geocontainer_lon": null,
-  "geocoded_addr": null,
+  "address": null,
   "data_sources": ["CUK"]
 }

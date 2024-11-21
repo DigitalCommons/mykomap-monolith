@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 
 interface RightPaneProps {
-  geocoded_addr?: string;
+  address?: string;
   website: string[];
   organisational_structure?: string;
   typology?: string;
@@ -83,7 +83,7 @@ const StyledBottomBox = styled(Box)(() => ({
 }));
 
 const RightPane = ({
-  geocoded_addr,
+  address,
   website,
   organisational_structure,
   typology,
@@ -98,9 +98,9 @@ const RightPane = ({
 
   return (
     <StyledRightPane>
-      {geocoded_addr || website.length ? (
+      {address || website.length ? (
         <StyledTopBox>
-          {splitAddress(geocoded_addr).map((line, index) => (
+          {splitAddress(address).map((line, index) => (
             <Typography key={index}>{line}</Typography>
           ))}
           <List sx={{ marginTop: "var(--spacing-small)" }}>

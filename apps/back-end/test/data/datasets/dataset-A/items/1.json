@@ -12,6 +12,6 @@
   "longitude": 3.924728,
   "geocontainer_lat": 46.85045216,
   "geocontainer_lon": 3.92472819,
-  "geocoded_addr": "79 rue de la Mare aux Carats, 34090 Montpellier, France",
+  "address": "79 rue de la Mare aux Carats, 34090 Montpellier, France",
   "data_sources": ["DC"]
 }

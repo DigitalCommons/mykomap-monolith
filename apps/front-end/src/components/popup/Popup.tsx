@@ -67,6 +67,8 @@ const Popup = () => {
   const hasLocation = !!useAppSelector(selectLocation(popupIndex));
   const data = useAppSelector(selectPopupData);
 
+  if (open) console.log("Popup data", data);
+
   const popupComponent = data ? (
     <StyledPopup onClick={(e) => e.stopPropagation()}>
       <StylePopupInner>
