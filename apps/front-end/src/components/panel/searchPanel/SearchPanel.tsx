@@ -55,24 +55,38 @@ const SearchPanel = () => {
     setCurrentText(e.currentTarget.value);
   };
 
-  const onFilterChange = (e: SelectChangeEvent<string>, propId: string) => {
+  const onFilterChange = async (e: SelectChangeEvent<string>, propId: string) => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
-    dispatch(setFilterValue({ id: propId, value: e.target.value }));
-    dispatch(performSearch());
-    if (isMedium) dispatch(openResultsPanel());
+    await dispatch(setFilterValue({ id: propId, value: e.target.value }));
+    await dispatch(performSearch());
+    if (isMedium) await dispatch(openResultsPanel());
   };
 
-  const onSubmit = () => {
+  const onSubmitFilters = async () => {
+    console.log(`Applying filters`);
+    await dispatch(performSearch());
+    await dispatch(openResultsPanel());
+  };
+
+  const onSubmitSearch = async () => {
     console.log(`Searching for '${submittedText}'`);
-    dispatch(setText(currentText));
-    dispatch(openResultsPanel());
+    await dispatch(setText(currentText));
+    await dispatch(performSearch());
+    await dispatch(openResultsPanel());
   };
 
-  const onClear = () => {
+  const onSubmit = async () => {
+    console.log(`Submitting search form`);
+    await dispatch(setText(currentText));
+    await dispatch(performSearch());
+    await dispatch(openResultsPanel());
+  };
+
+  const onClear = async () => {
     console.log("Clearing search");
     setCurrentText("");
-    dispatch(setText(""));
-    dispatch(performSearch());
+    await dispatch(setText(""));
+    await dispatch(performSearch());
   };
 
   return (
@@ -84,7 +98,7 @@ const SearchPanel = () => {
         <SearchBox
           value={currentText}
           onChange={onSearchChange}
-          onSubmit={onSubmit}
+          onSubmit={onSubmitSearch}
           clearSearch={onClear}
         />
       </Heading>
@@ -107,7 +121,7 @@ const SearchPanel = () => {
       <StyledButtonContainer>
         {!isMedium && (
           <StandardButton
-            buttonAction={onSubmit}
+            buttonAction={onSubmitFilters}
             disabled={!currentText && !isFilterActive}
           >
             {t("apply_filters")}
