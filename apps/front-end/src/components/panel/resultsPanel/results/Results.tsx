@@ -7,6 +7,11 @@ import ResultItem from "./resultItem/ResultItem";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import { selectResults } from "../../panelSlice";
 import { openPopup } from "../../../popup/popupSlice";
+import {
+  selectIsFilterActive,
+  selectVisibleIndexes,
+} from "../../searchPanel/searchSlice";
+import { selectTotalItemsCount } from "../../../map/mapSlice";
 
 const StyledResults = styled(Box)(() => ({
   width: "100%",
@@ -25,7 +30,10 @@ const Results = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const results = useAppSelector(selectResults);
-  const resultCount = results.length;
+  const visibleIndexes = useAppSelector(selectVisibleIndexes);
+  const isFilterActive = useAppSelector(selectIsFilterActive);
+  const totalItemsCount = useAppSelector(selectTotalItemsCount);
+  const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
 
   const onItemClick = (itemIx: number) => {
     console.log(`Clicked item @${itemIx}`);
