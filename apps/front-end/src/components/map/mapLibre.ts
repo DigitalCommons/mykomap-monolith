@@ -21,7 +21,8 @@ let tooltip: Popup | undefined;
  * popup so that it can be fully seen. I've calcluated that this exponential function gives a good
  * offset.
  */
-const getMapCentreOffsetLat = (zoom: number) => 87 * Math.exp(-0.704 * zoom);
+const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
+  Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
 
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
@@ -241,7 +242,7 @@ export const createMap = (
           .flyTo({
             center: [
               coordinates[0],
-              coordinates[1] + getMapCentreOffsetLat(map.getZoom()),
+              getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
             ],
           })
           .once("moveend", () => {
@@ -283,7 +284,10 @@ export const createMap = (
 
           map
             .flyTo({
-              center: [location[0], location[1] + getMapCentreOffsetLat(zoom)],
+              center: [
+                location[0],
+                getMapCentreLatOffsetted(location[1], zoom),
+              ],
               zoom,
             })
             .once("moveend", () => {
@@ -304,7 +308,7 @@ export const createMap = (
             .flyTo({
               center: [
                 location[0],
-                location[1] + getMapCentreOffsetLat(map.getZoom()),
+                getMapCentreLatOffsetted(location[1], map.getZoom()),
               ],
             })
             .once("moveend", () => {
