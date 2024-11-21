@@ -55,43 +55,38 @@ const SearchPanel = () => {
     setCurrentText(e.currentTarget.value);
   };
 
-  const onFilterChange = async (e: SelectChangeEvent<string>, propId: string) => {
+  const onFilterChange = async (
+    e: SelectChangeEvent<string>,
+    propId: string,
+  ) => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
-    await dispatch(setFilterValue({ id: propId, value: e.target.value }));
+    dispatch(setFilterValue({ id: propId, value: e.target.value }));
     await dispatch(performSearch());
-    if (isMedium) await dispatch(openResultsPanel());
+    if (isMedium) dispatch(openResultsPanel());
   };
 
-  const onSubmitFilters = async () => {
+  const onApplyFilters = async () => {
     console.log(`Applying filters`);
     await dispatch(performSearch());
-    await dispatch(openResultsPanel());
+    dispatch(openResultsPanel());
   };
 
   const onSubmitSearch = async () => {
     console.log(`Searching for '${submittedText}'`);
-    await dispatch(setText(currentText));
+    dispatch(setText(currentText));
     await dispatch(performSearch());
-    await dispatch(openResultsPanel());
+    if (isMedium) dispatch(openResultsPanel());
   };
 
-  const onSubmit = async () => {
-    console.log(`Submitting search form`);
-    await dispatch(setText(currentText));
-    await dispatch(performSearch());
-    await dispatch(openResultsPanel());
-  };
-
-  const onClear = async () => {
+  const onClear = () => {
     console.log("Clearing search");
     setCurrentText("");
-    await dispatch(setText(""));
-    await dispatch(performSearch());
+    dispatch(setText(""));
+    dispatch(performSearch());
   };
 
   return (
     <form
-      onSubmit={onSubmit}
       style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
     >
       <Heading title={t("search")}>
@@ -121,7 +116,7 @@ const SearchPanel = () => {
       <StyledButtonContainer>
         {!isMedium && (
           <StandardButton
-            buttonAction={onSubmitFilters}
+            buttonAction={onApplyFilters}
             disabled={!currentText && !isFilterActive}
           >
             {t("apply_filters")}
