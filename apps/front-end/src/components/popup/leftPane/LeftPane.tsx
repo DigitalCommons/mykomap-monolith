@@ -8,9 +8,9 @@ import { useTranslation } from "react-i18next";
 
 interface LeftPaneProps {
   name: string;
-  primaryActivity?: string;
+  primary_activity?: string;
   description?: string;
-  dcDomains?: string[];
+  dc_domains?: string[];
   hasLocation: boolean;
 }
 
@@ -86,9 +86,9 @@ const StyledContentContainer = styled(Box)(() => ({
 
 const LeftPane = ({
   name,
-  primaryActivity,
+  primary_activity,
   description,
-  dcDomains,
+  dc_domains,
   hasLocation,
 }: LeftPaneProps) => {
   const { t } = useTranslation();
@@ -113,7 +113,7 @@ const LeftPane = ({
               fontWeight: "var(--font-weight-medium)",
             }}
           >
-            {primaryActivity}
+            {primary_activity}
           </Typography>
         </Box>
         <Typography variant="body1">{description}</Typography>
@@ -128,11 +128,13 @@ const LeftPane = ({
             {t("domains")}
           </Typography>
           <List>
-            {dcDomains?.map((dcDomain) => (
+            {dc_domains?.map((dcDomain) => (
               <ListItem key={dcDomain}>
                 <Typography variant="body1">
                   <Link
                     href={`https://${dcDomain}`}
+                    target="_blank"
+                    rel="noreferrer"
                     sx={{
                       color: "var(--color-text)",
                       textDecoration: "underline",

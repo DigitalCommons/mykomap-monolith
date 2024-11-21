@@ -1,42 +1,47 @@
+import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import { getDatasetItem } from "../../services";
+import { Config, getDatasetItem } from "../../services";
 import { getDatasetId } from "../../utils/window-utils";
+import { InnerPropSpec, PropSpecs } from "@mykomap/common";
+import { configLoaded } from "../../app/configSlice";
 
-interface PopupState {
+interface PopupSliceState {
   isOpen: boolean;
   index: number;
   id: string;
   status: string;
+  itemProps: PropSpecs;
   // TODO: handle different fields rather than hardcoding them, use config to define how they should
   // be displayed
   data: {
     name: string;
-    primaryActivity: string;
+    primary_activity: string;
     description: string;
-    dcDomains: string[];
-    address: string;
-    website: string;
-    organisationalStructure: string;
+    dc_domains: string[];
+    geocoded_addr: string;
+    website: string[];
+    organisational_structure: string;
     typology: string;
-    dataSources: string[];
+    data_sources: string[];
   };
 }
 
-const initialState: PopupState = {
+const initialState: PopupSliceState = {
   isOpen: false,
   index: -1,
   id: "",
   status: "loading",
+  itemProps: {},
   data: {
     name: "",
-    primaryActivity: "",
+    primary_activity: "",
     description: "",
-    dcDomains: [],
-    address: "",
-    website: "",
-    organisationalStructure: "",
+    dc_domains: [],
+    geocoded_addr: "",
+    website: [],
+    organisational_structure: "",
     typology: "",
-    dataSources: [],
+    data_sources: [],
   },
 };
 
@@ -61,7 +66,19 @@ export const popupSlice = createAppSlice({
         });
 
         if (response.status === 200) {
-          return response.body;
+          // Just hardcode types for now
+          return response.body as {
+            id: string;
+            name: string;
+            primary_activity: string;
+            description: string;
+            dc_domains: string[];
+            geocoded_addr: string;
+            website: string[];
+            organisational_structure: string;
+            typology: string;
+            data_sources: string[];
+          };
         } else {
           return thunkApi.rejectWithValue(
             `Failed search, status code ${response.status}`,
@@ -77,37 +94,7 @@ export const popupSlice = createAppSlice({
           state.index = action.meta.arg;
           state.isOpen = true;
 
-          // Attempt at dynamic key assignment which doesn't work:
-          // type a = keyof PopupState["data"];
-          // const data: PopupState["data"] = state.data;
-          // for (const key in state.data) {
-          //   data[key as a] = action.payload[key] as keyof typeof state.data;
-          // }
-
-          // Just hardcode for now:
-          ({
-            id: state.id,
-            name: state.data.name,
-            primary_activity: state.data.primaryActivity,
-            description: state.data.description,
-            dc_domains: state.data.dcDomains,
-            geocoded_addr: state.data.address,
-            website: state.data.website,
-            organisational_structure: state.data.organisationalStructure,
-            typology: state.data.typology,
-            data_sources: state.data.dataSources,
-          } = action.payload as {
-            id: string;
-            name: string;
-            primary_activity: string;
-            description: string;
-            dc_domains: string[];
-            geocoded_addr: string;
-            website: string;
-            organisational_structure: string;
-            typology: string;
-            data_sources: string[];
-          });
+          state.data = action.payload;
         },
         rejected: (state, action) => {
           state.status = "failed";
@@ -120,13 +107,57 @@ export const popupSlice = createAppSlice({
       },
     ),
   }),
+  extraReducers: (builder) => {
+    builder.addCase(configLoaded, (state, action) => {
+      const config = action.payload;
+      state.itemProps = config.itemProps;
+    });
+  },
   selectors: {
     selectPopupIsOpen: (popup) => popup.isOpen,
     selectPopupIndex: (popup) => popup.index,
-    selectPopupData: (popup) => popup.data,
   },
 });
 
 export const { openPopup, closePopup } = popupSlice.actions;
-export const { selectPopupIsOpen, selectPopupIndex, selectPopupData } =
-  popupSlice.selectors;
+export const { selectPopupIsOpen, selectPopupIndex } = popupSlice.selectors;
+
+export const selectPopupData = createSelector(
+  [
+    (state): PopupSliceState["data"] => state.popup.data,
+    (state): PropSpecs => state.popup.itemProps,
+    (state): Config["vocabs"] => state.config.vocabs,
+    (state): string => state.config.currentLanguage,
+  ],
+  (
+    popupData,
+    itemProps,
+    vocabs,
+    language,
+  ): PopupSliceState["data"] | undefined => {
+    if (Object.keys(itemProps).length === 0 || Object.keys(vocabs).length === 0)
+      return undefined; // Config not loaded yet
+
+    const data: any = {};
+    Object.entries(popupData).forEach(([propName, value]) => {
+      const prop = itemProps[propName];
+
+      const { innerProp, values } = (
+        prop?.type === "multi"
+          ? { innerProp: prop.of, values: value }
+          : { innerProp: prop, values: [value] }
+      ) as { innerProp: InnerPropSpec; values: string[] };
+
+      const translatedValues = values.map((value: string) =>
+        innerProp?.type === "vocab"
+          ? vocabs[innerProp.uri.split(":")[0]][language].terms[value]
+          : value,
+      );
+
+      data[propName] =
+        prop?.type === "multi" ? translatedValues : translatedValues[0];
+    });
+
+    return data;
+  },
+);

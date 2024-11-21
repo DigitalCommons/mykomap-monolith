@@ -67,14 +67,14 @@ const Popup = () => {
   const hasLocation = !!useAppSelector(selectLocation(popupIndex));
   const data = useAppSelector(selectPopupData);
 
-  const popupComponent = (
+  const popupComponent = data ? (
     <StyledPopup onClick={(e) => e.stopPropagation()}>
       <StylePopupInner>
         <LeftPane {...data} hasLocation={hasLocation} />
         <RightPane {...data} />
       </StylePopupInner>
     </StyledPopup>
-  );
+  ) : null;
 
   return (
     open &&

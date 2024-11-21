@@ -7,11 +7,11 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 
 interface RightPaneProps {
-  address?: string;
-  website?: string;
-  organisationalStructure?: string;
+  geocoded_addr?: string;
+  website: string[];
+  organisational_structure?: string;
   typology?: string;
-  dataSources: string[];
+  data_sources: string[];
 }
 
 const StyledRightPane = styled(Box)(() => ({
@@ -37,6 +37,10 @@ const StyledTopBox = styled(Box)(() => ({
   },
   "@media (min-width: 768px)": {
     borderTopRightRadius: "var(--border-radius-xlarge)",
+  },
+  "& li": {
+    display: "list-item",
+    marginLeft: 0,
   },
 }));
 
@@ -79,11 +83,11 @@ const StyledBottomBox = styled(Box)(() => ({
 }));
 
 const RightPane = ({
-  address,
+  geocoded_addr,
   website,
-  organisationalStructure,
+  organisational_structure,
   typology,
-  dataSources,
+  data_sources,
 }: RightPaneProps) => {
   const { t } = useTranslation();
 
@@ -94,22 +98,36 @@ const RightPane = ({
 
   return (
     <StyledRightPane>
-      {(address || website) && (
+      {(geocoded_addr || website.length) && (
         <StyledTopBox>
-          {splitAddress(address).map((line, index) => (
+          {splitAddress(geocoded_addr).map((line, index) => (
             <Typography key={index}>{line}</Typography>
           ))}
-          <Link
-            sx={{
-              color: "#ffffffB3",
-              textDecoration: "underline",
-              padding: "0 !important",
-              fontSize: "var(--font-size-xsmall)",
-              marginTop: "var(--spacing-medium)",
-            }}
-          >
-            {website}
-          </Link>
+          <List sx={{ marginTop: "var(--spacing-small)" }}>
+            {website.map((url) => (
+              <ListItem
+                key={url}
+                sx={{
+                  display: "list-item",
+                  marginLeft: "var(--spacing-medium)",
+                }}
+              >
+                <Link
+                  href={url}
+                  target="_blank"
+                  rel="noreferrer"
+                  sx={{
+                    color: "#ffffffB3",
+                    textDecoration: "underline",
+                    padding: "0 !important",
+                    fontSize: "var(--font-size-xsmall)",
+                  }}
+                >
+                  {url}
+                </Link>
+              </ListItem>
+            ))}
+          </List>
         </StyledTopBox>
       )}
       <StyledBottomBox>
@@ -119,7 +137,7 @@ const RightPane = ({
           }}
         >
           <Typography variant="h4">{t("organisational_structure")}</Typography>
-          <Typography variant="body1">{organisationalStructure}</Typography>
+          <Typography variant="body1">{organisational_structure}</Typography>
         </Box>
         <Box
           sx={{
@@ -132,7 +150,7 @@ const RightPane = ({
         <Box>
           <Typography variant="h4">{t("data_sources")}</Typography>
           <List>
-            {dataSources.map((dataSource) => (
+            {data_sources.map((dataSource) => (
               <ListItem
                 key={dataSource}
                 sx={{

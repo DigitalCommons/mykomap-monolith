@@ -2,7 +2,7 @@
   "id": "test/dc/R000002",
   "name": "Pears United",
   "description": "We sell pears",
-  "website": "https://pears.coop",
+  "website": ["https://pears.coop"],
   "dc_domains": ["pears.coop", "pearsunited.coop"],
   "country_id": "FR",
   "primary_activity": "ICA230",
