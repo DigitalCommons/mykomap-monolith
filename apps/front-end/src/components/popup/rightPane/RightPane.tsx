@@ -98,7 +98,7 @@ const RightPane = ({
 
   return (
     <StyledRightPane>
-      {(geocoded_addr || website.length) && (
+      {geocoded_addr || website.length ? (
         <StyledTopBox>
           {splitAddress(geocoded_addr).map((line, index) => (
             <Typography key={index}>{line}</Typography>
@@ -129,7 +129,7 @@ const RightPane = ({
             ))}
           </List>
         </StyledTopBox>
-      )}
+      ) : null}
       <StyledBottomBox>
         <Box
           sx={{
