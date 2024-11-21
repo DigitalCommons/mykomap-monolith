@@ -18,7 +18,7 @@ interface PopupSliceState {
     primary_activity: string;
     description: string;
     dc_domains: string[];
-    geocoded_addr: string;
+    address: string;
     website: string[];
     organisational_structure: string;
     typology: string;
@@ -37,7 +37,7 @@ const initialState: PopupSliceState = {
     primary_activity: "",
     description: "",
     dc_domains: [],
-    geocoded_addr: "",
+    address: "",
     website: [],
     organisational_structure: "",
     typology: "",
@@ -73,7 +73,7 @@ export const popupSlice = createAppSlice({
             primary_activity: string;
             description: string;
             dc_domains: string[];
-            geocoded_addr: string;
+            address: string;
             website: string[];
             organisational_structure: string;
             typology: string;
