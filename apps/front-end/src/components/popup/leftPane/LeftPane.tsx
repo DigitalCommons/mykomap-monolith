@@ -101,7 +101,9 @@ const LeftPane = ({
   return (
     <StyledLeftPane>
       <StyledHeaderContainer>
-        <Typography variant="h1">{name}</Typography>
+        <Typography variant="h1" sx={{ overflowWrap: "break-word" }}>
+          {name}
+        </Typography>
         {!hasLocation && (
           <Typography variant="subtitle2">
             {t("no_location_available")}

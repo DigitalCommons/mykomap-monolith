@@ -122,6 +122,8 @@ const RightPane = ({
                     textDecoration: "underline",
                     padding: "0 !important",
                     fontSize: "var(--font-size-xsmall)",
+                    overflowX: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {url}
