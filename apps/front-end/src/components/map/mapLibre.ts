@@ -41,6 +41,11 @@ const openPopup = async (
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
+  if (popup?.isOpen() && popupIx === itemIx) {
+    console.log(`Popup for item @${itemIx} already open`);
+    return;
+  }
+
   console.log(`Open popup for item @${itemIx} ${coordinates}`);
 
   // Shift the popup up a bit so it doesn't cover the marker
@@ -97,11 +102,11 @@ export const createMap = (
   const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
-    minZoom: 1.1,
+    minZoom: 1.45,
     maxZoom: 18,
     bounds: [
-      [-180, -59.9],
-      [180, 83],
+      [-169, -49.3],
+      [189, 75.6],
     ],
     attributionControl: false,
   });
@@ -172,16 +177,25 @@ export const createMap = (
         e: MapLayerMouseEvent,
         leafOffset: [number, number],
       ) => {
-        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+        const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
-        openPopup(
-          map,
-          itemIx,
-          coordinates,
-          popupCreatedCallback,
-          popupClosedCallback,
-          leafOffset,
-        );
+        map
+          .easeTo({
+            center: [
+              coordinates[0],
+              getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
+            ],
+          })
+          .once("moveend", () => {
+            openPopup(
+              map,
+              itemIx,
+              coordinates as LngLatLike,
+              popupCreatedCallback,
+              popupClosedCallback,
+              leafOffset,
+            );
+          });
       },
       onLeafHover: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
@@ -218,13 +232,17 @@ export const createMap = (
           1,
           0,
         )) as GeoJSON.Feature<GeoJSON.Point>[];
-      const zoom = await source.getClusterExpansionZoom(
+      const clusterExpansionZoom = await source.getClusterExpansionZoom(
         clusterFeature.properties?.cluster_id,
       );
 
+      if (map.getZoom() >= 18 && clusterExpansionZoom > 18) {
+        // This is a cluster that needs to be spiderfied, so don't need to fly anymore
+        return;
+      }
       map.flyTo({
         center: features[0].geometry.coordinates as LngLatLike,
-        zoom: zoom ?? undefined,
+        zoom: clusterExpansionZoom ?? undefined,
         speed: 1.5,
       });
     });
@@ -237,9 +255,19 @@ export const createMap = (
         const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
 
-        // fly to a position so that the popup is fully visible
+        if (popup?.isOpen() && popupIx === itemIx) {
+          console.log(
+            `Popup for item @${itemIx} already open so toggle closed`,
+          );
+          popup?.remove();
+          popupIx = undefined;
+          popup = undefined;
+          return;
+        }
+
+        // ease to a position so that the popup is fully visible
         map
-          .flyTo({
+          .easeTo({
             center: [
               coordinates[0],
               getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
@@ -326,6 +354,8 @@ export const createMap = (
       // Remove previous popup - remove listener to prevent looping back and confusing React code
       popup?.off("close", popupClosedCallback);
       popup?.remove();
+      popupIx = undefined;
+      popup = undefined;
       flyToThenOpenPopupRecursive();
     });
 
@@ -337,7 +367,7 @@ export const createMap = (
       popup = undefined;
     });
 
-    map.on("movestart", () => {
+    map.on("dragstart", () => {
       // Close popup when the user moves the map
       popup?.remove();
       popupIx = undefined;
@@ -362,6 +392,10 @@ export const createMap = (
           popup.remove();
         }
       }
+    });
+
+    map.on("moveend", () => {
+      console.log("aaaaa", map.getZoom(), map.getBounds());
     });
 
     map.on("zoomstart", () => {

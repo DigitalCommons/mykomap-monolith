@@ -8,6 +8,7 @@ import CloseButton from "../common/closeButton/CloseButton";
 import AboutPanel from "./aboutPanel/AboutPanel";
 import DirectoryPanel from "./directoryPanel/DirectoryPanel";
 import SearchPanel from "./searchPanel/SearchPanel";
+import ApplyFilters from "./applyFilters/ApplyFilters";
 import ResultsPanel from "../panel/resultsPanel/ResultsPanel";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -18,7 +19,13 @@ import {
   selectPanelOpen,
   selectResultsPanelOpen,
   openPanel,
+  openResultsPanel,
 } from "./panelSlice";
+import {
+  performSearch,
+  selectIsFilterActive,
+} from "../panel/searchPanel/searchSlice";
+import { useTranslation } from "react-i18next";
 
 const StyledPanel = styled(Drawer)(() => ({
   display: "flex",
@@ -36,6 +43,7 @@ const StyledPanel = styled(Drawer)(() => ({
     visibility: "visible !important",
     overflow: "visible",
     boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
+    borderRight: "none",
   },
 }));
 
@@ -52,6 +60,8 @@ const Panel = () => {
   const isOpen = useAppSelector(selectPanelOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
   const resultsOpen = useAppSelector(selectResultsPanelOpen);
+  const isFilterActive = useAppSelector(selectIsFilterActive);
+  const { t } = useTranslation();
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
@@ -79,6 +89,12 @@ const Panel = () => {
   const handleMapTapClick = () => {
     dispatch(closePanel());
     dispatch(setSelectedTab(0));
+  };
+
+  const onApplyFilters = async () => {
+    console.log(`Applying filters`);
+    await dispatch(performSearch());
+    dispatch(openResultsPanel());
   };
 
   return (
@@ -137,6 +153,13 @@ const Panel = () => {
                 boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.2)",
               }}
             >
+              {selectedTab === 2 && (
+                <ApplyFilters
+                  buttonText={t("apply_filters")}
+                  buttonAction={onApplyFilters}
+                  disabled={!isFilterActive}
+                />
+              )}
               <NavBar
                 onTabChange={handleTabChange}
                 selectedTab={selectedTab}

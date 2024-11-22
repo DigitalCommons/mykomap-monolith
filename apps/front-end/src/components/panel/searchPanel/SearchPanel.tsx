@@ -5,10 +5,7 @@ import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
 import SelectBox from "../../common/selectBox/SelectBox";
 import SearchBox from "./searchBox/SearchBox";
-import StandardButton from "../../common/standardButton/StandardButton";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import {
@@ -22,20 +19,6 @@ import {
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
 import { openResultsPanel } from "../panelSlice";
-
-const StyledButtonContainer = styled(Box)(() => ({
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-  position: "sticky",
-  padding: "var(--spacing-medium)",
-  backgroundColor: "rgba(255, 255, 255, 0.25) !important",
-  boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
-  zIndex: 1,
-  "@media (min-width: 897px)": {
-    display: "none",
-  },
-}));
 
 const SearchPanel = () => {
   const dispatch = useAppDispatch();
@@ -65,15 +48,9 @@ const SearchPanel = () => {
     if (isMedium) dispatch(openResultsPanel());
   };
 
-  const onApplyFilters = async () => {
-    console.log(`Applying filters`);
-    await dispatch(performSearch());
-    dispatch(openResultsPanel());
-  };
-
   const onSubmitSearch = async () => {
-    console.log(`Searching for '${submittedText}'`);
     dispatch(setText(currentText));
+    console.log(`Searching for '${submittedText}'`);
     await dispatch(performSearch());
     if (isMedium) dispatch(openResultsPanel());
   };
@@ -87,7 +64,12 @@ const SearchPanel = () => {
 
   return (
     <form
-      style={{ display: "flex", flexDirection: "column", overflow: "hidden" }} // Fix for search filter overflow issue
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+        paddingBottom: "80px",
+      }} // Fix for search filter overflow issue
     >
       <Heading title={t("search")}>
         <SearchBox
@@ -113,16 +95,6 @@ const SearchPanel = () => {
           />
         ))}
       </ContentPanel>
-      <StyledButtonContainer>
-        {!isMedium && (
-          <StandardButton
-            buttonAction={onApplyFilters}
-            disabled={!currentText && !isFilterActive}
-          >
-            {t("apply_filters")}
-          </StandardButton>
-        )}
-      </StyledButtonContainer>
     </form>
   );
 };
