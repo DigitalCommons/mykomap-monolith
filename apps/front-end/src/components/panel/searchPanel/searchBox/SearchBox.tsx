@@ -42,9 +42,7 @@ const StyledIconButton = styled(IconButton)(() => ({
 interface SearchBoxProps {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onSubmit: (
-    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => void;
+  onSubmit: () => void;
   clearSearch?: () => void;
 }
 
@@ -63,8 +61,13 @@ const SearchBox = ({
         value={value}
         onChange={onChange}
         onKeyUp={(event) => {
-          if (event.key === "Enter") onSubmit(event);
+          if (event.key === "Enter") {
+            event.currentTarget.blur();
+            onSubmit();
+          }
         }}
+        onBlur={onSubmit}
+        onSubmit={onSubmit}
         autoComplete="off"
         placeholder={t("search")}
         startAdornment={
