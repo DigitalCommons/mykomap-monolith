@@ -1,13 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
-import {
-  AppRoute,
-  ServerInferResponseBody,
-  TsRestResponseError,
-} from "@ts-rest/core";
+import { AppRoute, ServerInferResponseBody } from "@ts-rest/core";
 
 import { contract } from "@mykomap/common";
 import { Dataset } from "./Dataset.js";
+import { HttpError } from "../errors.js";
 
 type GetConfigBody = ServerInferResponseBody<typeof contract.getConfig, 200>;
 type SearchDatasetBody = ServerInferResponseBody<
@@ -40,11 +37,7 @@ const getDatasetOrThrow404 = (
 ): Dataset => {
   const dataset = datasets[datasetId];
 
-  if (!dataset)
-    throw new TsRestResponseError(appRoute, {
-      status: 404,
-      body: { message: `dataset ${datasetId} doesn't exist` },
-    });
+  if (!dataset) throw new HttpError(404, `dataset ${datasetId} doesn't exist`);
 
   return dataset;
 };

@@ -1,16 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import _ from "lodash";
-import { TsRestResponseError } from "@ts-rest/core";
 import { z } from "zod";
 
 import {
-  contract,
   PropDefs,
   PropDefsFactory,
   schemas,
   TextSearch,
 } from "@mykomap/common";
+import { HttpError } from "../errors.js";
 
 // Infer type from Zod schema
 type ConfigData = z.infer<typeof schemas.ConfigData>;
@@ -90,12 +89,10 @@ export class Dataset {
 
   getItem = (itemIx: number) => {
     if (!fs.existsSync(path.join(this.folderPath, "items", `${itemIx}.json`))) {
-      throw new TsRestResponseError(contract.getDatasetItem, {
-        status: 404,
-        body: {
-          message: `can't retrieve data for dataset ${this.id} item @${itemIx}`,
-        },
-      });
+      throw new HttpError(
+        404,
+        `Can't retrieve data for dataset ${this.id}, item index @${itemIx}`,
+      );
     }
 
     return JSON.parse(
@@ -135,12 +132,7 @@ export class Dataset {
 
         const propDef = this?.propDefs[propName];
         if (!propDef?.isFiltered())
-          throw new TsRestResponseError(contract.searchDataset, {
-            status: 400,
-            body: {
-              message: `Unknown propery name '${propName}'`,
-            },
-          });
+          throw new HttpError(400, `Unknown propery name '${propName}'`);
 
         const isMulti = propDef.type === "multi";
         const propMatcher = (value: string | string[]) => {
@@ -218,12 +210,7 @@ export class Dataset {
 
           for (const prop of returnProps) {
             if (item[prop] === undefined) {
-              throw new TsRestResponseError(contract.searchDataset, {
-                status: 400,
-                body: {
-                  message: `Unknown propery name '${prop}'`,
-                },
-              });
+              throw new HttpError(400, `Unknown propery name '${prop}'`);
             }
             strippedItem[prop] = item[prop];
           }
