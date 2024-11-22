@@ -172,16 +172,25 @@ export const createMap = (
         e: MapLayerMouseEvent,
         leafOffset: [number, number],
       ) => {
-        const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+        const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
-        openPopup(
-          map,
-          itemIx,
-          coordinates,
-          popupCreatedCallback,
-          popupClosedCallback,
-          leafOffset,
-        );
+        map
+          .easeTo({
+            center: [
+              coordinates[0],
+              getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
+            ],
+          })
+          .once("moveend", () => {
+            openPopup(
+              map,
+              itemIx,
+              coordinates as LngLatLike,
+              popupCreatedCallback,
+              popupClosedCallback,
+              leafOffset,
+            );
+          });
       },
       onLeafHover: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
@@ -218,13 +227,17 @@ export const createMap = (
           1,
           0,
         )) as GeoJSON.Feature<GeoJSON.Point>[];
-      const zoom = await source.getClusterExpansionZoom(
+      const clusterExpansionZoom = await source.getClusterExpansionZoom(
         clusterFeature.properties?.cluster_id,
       );
 
+      if (map.getZoom() >= 18 && clusterExpansionZoom > 18) {
+        // This is a cluster that needs to be spiderfied, so don't need to fly anymore
+        return;
+      }
       map.flyTo({
         center: features[0].geometry.coordinates as LngLatLike,
-        zoom: zoom ?? undefined,
+        zoom: clusterExpansionZoom ?? undefined,
         speed: 1.5,
       });
     });
@@ -237,9 +250,9 @@ export const createMap = (
         const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
 
-        // fly to a position so that the popup is fully visible
+        // ease to a position so that the popup is fully visible
         map
-          .flyTo({
+          .easeTo({
             center: [
               coordinates[0],
               getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
@@ -337,7 +350,7 @@ export const createMap = (
       popup = undefined;
     });
 
-    map.on("movestart", () => {
+    map.on("dragstart", () => {
       // Close popup when the user moves the map
       popup?.remove();
       popupIx = undefined;
