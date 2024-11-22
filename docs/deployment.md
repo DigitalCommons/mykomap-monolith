@@ -153,6 +153,14 @@ The steps:
     
 
 ### Step 2: setup as the application user
+- The public SSH key of `$USER` has been added as a deploy key for
+  the [`cwm-test-data`](https://github.com/DigitalCommons/cwm-test-data/settings/keys)
+  private repository.
+- This key is used when connecting to github.com. We recommend configuring this in the
+  user's `~/.ssh/config` file, since you will may need fetch updates to the data on a regular
+  basis.
+
+The steps:
 
     # source this file to get the shared configuration
     . $DEPLOY_ENV
