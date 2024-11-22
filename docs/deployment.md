@@ -66,32 +66,42 @@ Examples, at the time of writing, of the typical case for these are:
 
 ### Environment variables for deployment
 
-The `$DEPLOY_ENV` file defines some *actual* environment variables
+The `$DEPLOY_ENV` file defines some _actual_ environment variables
 which the deployment process will use. What those are set to will
-depend on your situation, so this is just a guide. 
+depend on your situation, so this is just a guide.
 
-An example of the contents of a `$DEPLOY_ENV` file, but with secret
-values redacted:
+Here is an example of how the `$DEPLOY_ENV` file may be created as the
+application user, but with secret values redacted:
 
+    cat > $DEPLOY_ENV <<EOF
     export USERDIR=/home/$USER
-    export DEPLOY_DEST=$USERDIR/deploy
+    export GIT_WORKING=/home/$USER/gitworking/mykomap-monolith
+    export DEPLOY_DEST=/home/$USER/deploy
+    export DATA_DIR=/home/$USER/deploy/data
+    export WWW_ROOT=/var/www/vhosts/maps.coop/www
+    export APP_ROOT=/var/www/vhosts/maps.coop/www/cwm
+    export VHOST_CONF=/var/www/vhosts/maps.coop/custom.conf
     export PROXY_PORT=1$UID
     export PROXY_PATH=/api
     export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
     export FE_GLITCHTIP_KEY=*REDACTED*
     export BE_GLITCHTIP_KEY=*REDACTED*
     export MAPTILER_API_KEY=*REDACTED*
+    EOF
 
-*Note: paths here should be absolute - relative paths will not work in
-general.*
+This will hardcode the variables in the file according to the app
+`$USER` and `$UID`, which should already be set by your shell by default.
+The hardcoding is necessary for Step 3, when we load these environment
+variables as a different user.
 
-*Note: the environment variables `USER` and `UID` should already be
-set by your shell by default.  `DBUS_SESSION_BUS_ADDRESS` should also
-be set in principle be if you are logged in as that user - but in
-practise is not. This is needed for the deploy script to run
-`systemctl` in user-mode.*
-   
-*Note: These variables don't strictly have to be defined in a file,
+_Note: paths here should be absolute - relative paths will not work in
+general._
+
+_Note: `DBUS_SESSION_BUS_ADDRESS` should be set in principle be if you
+are logged in as that user - but in practise is not. This is needed for
+the deploy script to run `systemctl` in user-mode._
+
+_Note: These variables don't strictly have to be defined in a file,
 it's just convenient for this illustration. You could supply them via
 other mechanisms.*
 
