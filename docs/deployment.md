@@ -64,7 +64,9 @@ Examples, at the time of writing, of the typical case for these are:
     DEPLOY_ENV=/home/$USER/gitworking/deploy.env
     DATA_DIR=/home/$USER/deploy/data
 
-### Environment variables for deployment
+## How to install for the first time
+
+### Step 1: set environment variables (as the application user)
 
 The `$DEPLOY_ENV` file defines some _actual_ environment variables
 which the deployment process will use. What those are set to will
@@ -103,16 +105,9 @@ the deploy script to run `systemctl` in user-mode._
 
 _Note: These variables don't strictly have to be defined in a file,
 it's just convenient for this illustration. You could supply them via
-other mechanisms.*
+other mechanisms._
 
-
-## How to install for the first time
-
-*Note: All these steps assume that the variables described above has
-been created and populated in a file `$DEPLOY_ENV` appropriately, as
-per the example above.*
-
-### Step 1: setup with elevated privileges
+### Step 2: setup Apache config (with elevated privileges)
 
 This step requires elevated privileges, but as it is specific to this
 application it is not performed via Ansible.
@@ -150,9 +145,11 @@ The steps:
     EOF
 
     systemctl reload apache2
-    
 
-### Step 2: setup as the application user
+### Step 3: install the app (as the application user)
+
+It assumes that:
+
 - The public SSH key of `$USER` has been added as a deploy key for
   the [`cwm-test-data`](https://github.com/DigitalCommons/cwm-test-data/settings/keys)
   private repository.
