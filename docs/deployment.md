@@ -119,18 +119,18 @@ application it is not performed via Ansible.
 
 It assumes that:
 
- - The root directory of the virtual host is at `$WWW_ROOT`
- - A symlink can be created at `$APP_ROOT` to the directory that
-   Apache should serve the application content from.
- - A file `$VHOST_CONF` can be created which contains the Apache
-   configuration in the context of the application's Virtual host.
- - The user `$USER` exists already, and its home directory is
-   accessible to the Apache user. (Typically this means that `~$USER`
-   home directory has the "execute" flag set allowing the `www-data`
-   user group or global access; perhaps by `chmod ~$USER a+x`.)
- - The user has had linger mode enabled (`loginctl enable-linger
-   $USER`) to ensure that its DBUS session starts on boot, for use by
-   user-mode systemd services.
+- The root directory of the virtual host is at `$WWW_ROOT`
+- A symlink can be created at `$APP_ROOT` to the directory that
+  Apache should serve the application content from.
+- A file `$VHOST_CONF` can be created which contains the Apache
+  configuration in the context of the application's Virtual host.
+- The user `$USER` exists already, and its home directory is
+  accessible to the Apache user. (Typically this means that `~$USER`
+  home directory has the "execute" flag set allowing the `www-data`
+  user group or global access; perhaps by `chmod a+x ~$USER`.)
+- The user has had linger mode enabled (`loginctl enable-linger
+$USER`) to ensure that its DBUS session starts on boot, for use by
+  user-mode systemd services.
 
 The steps:
 
@@ -138,7 +138,7 @@ The steps:
     . $DEPLOY_ENV
 
     # Link the content to serve into place
-    ln -sfn $APP_ROOT $GIT_WORKING/app/front-end/dist/
+    ln -sfn $GIT_WORKING/apps/front-end/dist/ $APP_ROOT
 
     # Configure reverse proxying, and symlink following.
     cat > $VHOST_CONF <<EOF
