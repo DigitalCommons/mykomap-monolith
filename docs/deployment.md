@@ -1,6 +1,7 @@
 # Deploying
 
 Conceptually, installation of these applications require:
+
 - deploying the front-end as content to be served on the web
   - configure it to use the correct path for the back end (typically `/api`)
   - also configure API keys for GlitchTip and MapTiler services
@@ -14,12 +15,13 @@ time install or an update.
 
 ## DCC Server specifics
 
-*Note: Although the application could be deployed in various scenarios in
-principle, this is the only case we specifically cater for now.*
+_Note: Although the application could be deployed in various scenarios in
+principle, this is the only case we specifically cater for now._
 
 ### What a DCC Server provides
 
 The parts relevant here are, broadly:
+
 - A Ubuntu Linux server.
 - With the Apache webserver.
 - The NodeJS runtime (using [ASDF][asdf], the version of NodeJS can be
@@ -32,7 +34,7 @@ The parts relevant here are, broadly:
 
 Without going into too much detail, this situation is currently set up
 via some Ansible playbooks in the DCC
-[technology-and-infrastructure][t-i] project. 
+[technology-and-infrastructure][t-i] project.
 
 The following instructions following assume this context.
 
@@ -44,16 +46,16 @@ For the descriptions below, we use the following placeholders for
 generality. (We write them in the style of environment variables, but
 you can equally see them as just labels.)
 
- - `$SERVER` is the ssh URI used for the hostname being deployed to.
- - `$USER` is the user being deployed to on that host.
- - `$GIT_WORKING` is the directory where `mykomap-monolith` repository
-   is checked out (or if not checked out, unpacked - in which case
-   replace `git clone` or `git pull` with an appropriate unpacking
-   process)
- - `$DATA_DIR` is the path to the directory containing data for the back-end.
- - A file exists at `$DEPLOY_ENV` defining the environment variables
-   specifically needed for deployment.
- 
+- `$SERVER` is the ssh URI used for the hostname being deployed to.
+- `$USER` is the user being deployed to on that host.
+- `$GIT_WORKING` is the directory where `mykomap-monolith` repository
+  is checked out (or if not checked out, unpacked - in which case
+  replace `git clone` or `git pull` with an appropriate unpacking
+  process)
+- `$DATA_DIR` is the path to the directory containing data for the back-end.
+- A file exists at `$DEPLOY_ENV` defining the environment variables
+  specifically needed for deployment.
+
 Examples, at the time of writing, of the typical case for these are:
 
     SERVER=dev-2
@@ -124,19 +126,19 @@ The steps:
 
     # source this file to get the shared configuration
     . $DEPLOY_ENV
-    
+
     # Link the content to serve into place
     ln -sfn $APP_ROOT $GIT_WORKING/app/front-end/dist/
 
     # Configure reverse proxying, and symlink following.
-    cat >$VHOST_CONF <<EOF
+    cat > $VHOST_CONF <<EOF
     <Directory $WWW_ROOT/..>
       Options FollowSymLinks Indexes
     </Directory>
     ProxyPass /api http://localhost:$PROXY_PORT
     ProxyPassReverse /api http://localhost:$PROXY_PORT
     EOF
-    
+
     systemctl reload apache2
     
 
@@ -157,16 +159,16 @@ The steps:
 
     # Create and deploy the application source code
     mkdir -p $GIT_WORKING
-    
+
     cd $GIT_WORKING
     git init
     git remote add origin git@github.com:DigitalCommons/mykomap-monolith
     git fetch --depth=1 # --depth optional
     git checkout main
-    
-    
+
+
     ./deploy.sh
-    
+
 The `deploy.sh` script will do the rest, including writing the `.env`
 files in the applications, which should never be stored in source control.
 
@@ -174,7 +176,7 @@ files in the applications, which should never be stored in source control.
 
 After the initial install, deploying updates is simpler.
 
-*Note: we assume `$DEPLOY_ENV` defines our environment, as before.*
+_Note: we assume `$DEPLOY_ENV` defines our environment, as before._
 
 Log in as the application user:
 
