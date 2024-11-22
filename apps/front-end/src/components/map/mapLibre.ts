@@ -97,11 +97,11 @@ export const createMap = (
   const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
-    minZoom: 1.1,
+    minZoom: 1.45,
     maxZoom: 18,
     bounds: [
-      [-180, -59.9],
-      [180, 83],
+      [-169, -49.3],
+      [189, 75.6],
     ],
     attributionControl: false,
   });
@@ -375,6 +375,10 @@ export const createMap = (
           popup.remove();
         }
       }
+    });
+
+    map.on("moveend", () => {
+      console.log("aaaaa", map.getZoom(), map.getBounds());
     });
 
     map.on("zoomstart", () => {
