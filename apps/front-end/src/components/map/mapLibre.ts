@@ -432,7 +432,7 @@ export const createMap = (
 
     map.fire("changeLanguage", { language: getLanguageFromUrl() });
 
-    map.addControl(new AttributionControl(), "top-right");
+    map.addControl(new AttributionControl({ compact: true } ), "top-right");
     map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
   });
