@@ -41,6 +41,11 @@ const openPopup = async (
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
+  if (popup?.isOpen() && popupIx === itemIx) {
+    console.log(`Popup for item @${itemIx} already open`);
+    return;
+  }
+
   console.log(`Open popup for item @${itemIx} ${coordinates}`);
 
   // Shift the popup up a bit so it doesn't cover the marker
@@ -250,6 +255,16 @@ export const createMap = (
         const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
 
+        if (popup?.isOpen() && popupIx === itemIx) {
+          console.log(
+            `Popup for item @${itemIx} already open so toggle closed`,
+          );
+          popup?.remove();
+          popupIx = undefined;
+          popup = undefined;
+          return;
+        }
+
         // ease to a position so that the popup is fully visible
         map
           .easeTo({
@@ -339,6 +354,8 @@ export const createMap = (
       // Remove previous popup - remove listener to prevent looping back and confusing React code
       popup?.off("close", popupClosedCallback);
       popup?.remove();
+      popupIx = undefined;
+      popup = undefined;
       flyToThenOpenPopupRecursive();
     });
 
