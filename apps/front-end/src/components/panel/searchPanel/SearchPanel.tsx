@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { SelectChangeEvent } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Heading from "../heading/Heading";
@@ -61,6 +61,11 @@ const SearchPanel = () => {
     dispatch(setText(""));
     dispatch(performSearch());
   };
+
+  useEffect(() => {
+    // This is needed to keep search box in sync with the search text e.g. if the search is cleared
+    setCurrentText(submittedText);
+  }, [submittedText]);
 
   return (
     <form
