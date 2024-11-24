@@ -21,7 +21,8 @@ set -vx
 #   - PROXY_PORT: the port number being proxied (e.g. '4000')
 #   - PROXY_PATH: the path being proxied (e.g. '/api')
 #   - BASE_URL_PATH # not actually used but might be in future?
-#   - GLITCHTIP_KEY
+#   - FE_GLITCHTIP_KEY
+#   - BE_GLITCHTIP_KEY
 #   - MAPTILER_API_KEY
 #   - DBUS_SESSION_BUS_ADDRESS: required for service management
 # - FIXME the user can write to DEPLOY_DEST, WWW_ROOT
@@ -84,7 +85,7 @@ cp .tool-versions "$DEPLOY_DEST"
   # FIXME these shouldn't be hardwired!
   cat >>.env <<EOF
 VITE_API_URL=/api
-VITE_GLITCHTIP_KEY=${GLITCHTIP_KEY:?}
+VITE_GLITCHTIP_KEY=${FE_GLITCHTIP_KEY:?}
 VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
 EOF
   
@@ -105,6 +106,7 @@ EOF
   cat >>"$BE_DEST/.env" <<EOF
 SERVER_DATA_ROOT=$DATA_DEST
 FASTIFY_PORT=$PROXY_PORT
+GLITCHTIP_KEY=${BE_GLITCHTIP_KEY:?}
 #   root address?
 EOF
   

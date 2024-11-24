@@ -76,7 +76,8 @@ values redacted:
     export PROXY_PORT=1$UID
     export PROXY_PATH=/api
     export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
-    export GLITCHTIP_KEY=*REDACTED*
+    export FE_GLITCHTIP_KEY=*REDACTED*
+    export BE_GLITCHTIP_KEY=*REDACTED*
     export MAPTILER_API_KEY=*REDACTED*
 
 *Note: paths here should be absolute - relative paths will not work in

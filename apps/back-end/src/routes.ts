@@ -1,4 +1,3 @@
-import { TsRestResponseError } from "@ts-rest/core";
 import { RouterImplementation } from "@ts-rest/fastify";
 import { contract } from "@mykomap/common";
 import { FastifyPluginOptions } from "fastify";
@@ -11,6 +10,7 @@ import {
   initDatasets,
   searchDataset,
 } from "./services/datasetService.js";
+import { HttpError } from "./errors.js";
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
@@ -92,10 +92,7 @@ export function MykomapRouter(
       // assume it is an Index.
       // TODO: extend this method to handle full IDs too
       if (!datasetItemIdOrIx.startsWith("@")) {
-        throw new TsRestResponseError(contract.getDatasetItem, {
-          status: 400,
-          body: { message: `We can only handle item indexes right now` },
-        });
+        throw new HttpError(400, `We can only handle item indexes right now`);
       }
 
       const itemIx = Number(datasetItemIdOrIx.substring(1));

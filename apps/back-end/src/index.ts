@@ -1,3 +1,4 @@
+import fastifySentryPlugin from "@immobiliarelabs/fastify-sentry";
 import closeWithGrace from "close-with-grace";
 import Fastify from "fastify";
 import cors from "@fastify/cors";
@@ -34,6 +35,20 @@ export const start = async () => {
     // https://github.com/ts-rest/ts-rest/issues/290
     querystringParser: (str) => qs.parse(str),
   });
+
+  // The Sentry error handler must be the first plugin registered
+  if (process.env.GLITCHTIP_KEY) {
+    console.log("Initialising Sentry...");
+    app.register(fastifySentryPlugin, {
+      dsn: `https://${process.env.GLITCHTIP_KEY}@app.glitchtip.com/9203`,
+      environment: process.env.NODE_ENV,
+      release: __BUILD_INFO__.version.join("."),
+      // Capture all uncaught or HTTP 4xx and 5xx errors
+      // Note this doesn't work for TsRestResponseErrors since they skip this middleware
+      shouldHandleError: (error) =>
+        !error.statusCode || error.statusCode >= 400,
+    });
+  }
 
   // This closes the application with a delay to clear up.
   closeWithGrace(
