@@ -58,6 +58,7 @@ const openPopup = async (
   popup = new Popup({
     closeButton: false,
     maxWidth: "none",
+    anchor: "bottom",
   })
     .setLngLat(coordinates)
     .setHTML(`<div id=${POPUP_CONTAINER_ID}></div>`)
