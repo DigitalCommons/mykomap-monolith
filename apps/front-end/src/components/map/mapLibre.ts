@@ -367,13 +367,6 @@ export const createMap = (
       popup = undefined;
     });
 
-    map.on("dragstart", () => {
-      // Close popup when the user moves the map
-      popup?.remove();
-      popupIx = undefined;
-      popup = undefined;
-    });
-
     map.on("zoomend", () => {
       // console.log("Zoom level", map.getZoom());
 
@@ -432,7 +425,7 @@ export const createMap = (
 
     map.fire("changeLanguage", { language: getLanguageFromUrl() });
 
-    map.addControl(new AttributionControl({ compact: true } ), "top-right");
+    map.addControl(new AttributionControl({ compact: true }), "top-right");
     map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
   });
