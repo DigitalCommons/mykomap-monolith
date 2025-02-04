@@ -342,6 +342,277 @@ The only strictly mandatory one is _Identifier_. Location coordinates
 of some sort is obviously needed for a marker to appear on the map,
 and a _Name_ is needed for it to be identifiable.
 
+### Example
+
+Here's a specific example of the process just described. It's based on
+the dataset currently in the back-end test data.
+
+First, the CSV data:
+
+```
+Identifier,Name,Desc,Address,Websites,Activity,Other Activities,Latitude,Longitude,Geocoded Latitude,Geocoded Longitude,Validated
+aaa,"Apple Co-op",We grow fruit.","1 Apple Way, Appleton",http://apple.coop,AM130,,0,0,51.6084367,-3.6547778,true
+bbb,"Banana Co","We straighten bananas.","1 Banana Boulevard, Skinningdale",http://banana.com,AM60,AM70;AM120,0,0,55.9646979,-3.1733052,false
+ccc,"The Cabbage Collective","We are artists.","2 Cabbage Close, Caulfield",http://cabbage.coop;http://cabbage.com,AM60,AM130,,,54.9744687,-1.6108945,true
+ddd,"The Chateau","The Chateau is not a place, it is a state of mind.",,,,,,,,,
+```
+
+Or in a more readable table format:
+
+| Identifier | Name                     | Desc                                                 | Address                      | Websites                               | Activity                          | Other Activities | Latitude | Longitude  | Geocoded Latitude | Geocoded Longitude | Validated |
+| ---------- | ------------------------ | ---------------------------------------------------- | ---------------------------- | -------------------------------------- | --------------------------------- | ---------------- | -------- | ---------- | ----------------- | ------------------ | --------- |
+| aaa        | Apple Co-op            | We grow fruit.                                      | 1 Apple Way, Appleton      | http://apple.coop                      | AM130                             |                  | 0        | 0          | 51.6084367        | -3.6547778         | true      |
+| bbb        | Banana Co              | We straighten bananas.                             | 1 Banana Boulevard, Skinningdale                          | http://banana.com | AM60 | AM70;AM120 | 0                | 0        | 55.9646979 | -3.1733052        | false              |
+| ccc        | The Cabbage Collective | We are artists.                                    | 2 Cabbage Close, Caulfield | http://cabbage.coop;http://cabbage.com | AM60                              | AM130            |          |            | 54.9744687        | -1.6108945         | true      |
+| ddd        | The Chateau            | The Chateau is not a place, it is a state of mind. |                              |                                        |                                   |                  |          |            |                   |                    |
+
+Now, the `config.json`. We can bend the strict JSON format here to use
+comments to annotate it, but in the real one comments would upset the
+JSON parser, so omit them.
+
+```
+{
+  "prefixes": {
+    // There's just one prefix defined here, because just one vocabulary
+    "https://dev.lod.coop/essglobal/2.1/standard/activities-modified/": "am"
+  },
+  "languages": ["en"], // Only one language supported: English
+  "ui": { "directory_panel_field": "activity" }, // Sets the default panel to show
+  "vocabs": {
+    "am": { // This is the Activities vocabulary
+      "en": { // The English title and term definitions follow
+        "title": "Activities (Modified)",
+        "terms": {
+          "AM10": "Arts, Media, Culture & Leisure",
+          "AM20": "Campaigning, Activism & Advocacy",
+          "AM30": "Community & Collective Spaces",
+          "AM40": "Education",
+          "AM50": "Energy",
+          "AM60": "Food",
+          "AM70": "Goods & Services",
+          "AM80": "Health, Social Care & Wellbeing",
+          "AM90": "Housing",
+          "AM100": "Money & Finance",
+          "AM110": "Nature, Conservation & Environment",
+          "AM120": "Reduce, Reuse, Repair & Recycle",
+          "AM130": "Agriculture",
+          "AM140": "Industry",
+          "AM150": "Utilities",
+          "AM160": "Transport"
+        }
+      }
+      // ... similar definitions for other languages would go here,
+      // using the same structure.
+    }
+  },
+  "itemProps": { // This defines the properties dataset items should have
+    "id": { // A unique identifier. Mandatory for the dataset to be usable.
+      "type": "value",      // Single valued
+      "from": "Identifier", // Which CSV field to read it from
+      "strict": true        // Don't tolerate nulls or blanks.
+                            // Format is "string" by default.
+    },
+    "name": { // The name of the item
+      "type": "value",
+      "search": true, // we want this to be text-searchable
+      "from": "Name"
+    },
+    "manlat": {
+      "type": "value",
+      "as": "number",    // Convert these values into numbers when loading CSV
+      "nullable": true,  // Allow nulls
+      "from": "Latitude"
+    },
+    "manlng": {
+      "type": "value",
+      "as": "number",
+      "nullable": true,
+      "from": "Longitude"
+    },
+    "lat": {
+      "type": "value",
+      "as": "number",
+      "nullable": true,
+      "from": "Geocoded Latitude"
+    },
+    "lng": {
+      "type": "value",
+      "as": "number",
+      "nullable": true,
+      "from": "Geocoded Longitude"
+    },
+    "address": {
+      "type": "value",
+      "filter": true,
+      "from": "Address"
+    },
+    "activity": {
+      "type": "vocab",   // A single-valued identifier from a vocabulary
+      "uri": "am:",      // Specifically, this vocabulary
+      "from": "Activity"
+    },
+    "otherActivities": {
+      "type": "multi",   // Multi-valued
+      "of": {
+        "type": "vocab", // Values are identifiers from a vocabulary
+        "uri": "am:"     // Specifically, this one
+      },
+      "from": "Other Activities" // When interpreting CSV, by default a
+                                 // semi-colon is used as a delimiter.
+                                 // Literal semi-colons need to be escaped
+                                 // with a backslash.
+    },
+    "websites": {
+      "type": "multi",   // Multi-valued
+      "of": {
+        "type": "value"  // Values are strings
+      },
+      "from": "Websites"
+    },
+    "validated": {
+      "type": "value",    // Single valued
+      "as": "boolean",    // Convert values to booleans, or null if they're too "weird".
+                          // Non-weird means: "true", "yes", "y", "t" or "1" count as true,
+                          // and "false", "no", "n", "f" or "0" as false. (Ignoring case
+                          // in both cases.)
+      "from": "Validated"
+    }
+  }
+}
+```
+
+Given these files as inputs, `data.csv` and `config.json`, and assuming:
+
+- these files are in `/tmp/`, which is writable
+- there is no dierctory `/tmp/out` existing
+- the current directory is `apps/back-end/`
+
+...we can then run the following to generate a dataset in `/tmp/out/`:
+
+    npm run dataset import /tmp/config.json /tmp/data.csv /tmp/out
+
+We should then get a dataset written to `/tmp/out/`.
+
+Listing that would get:
+
+```
+$ find /tmp/out -type f
+
+ /tmp/out/config.json
+ /tmp/out/items
+ /tmp/out/items/0.json
+ /tmp/out/items/1.json
+ /tmp/out/items/2.json
+ /tmp/out/items/3.json
+ /tmp/out/locations.json
+ /tmp/out/searchable.json
+```
+
+...where `config.json` should be identical to the above. The other files' contents would be as below....
+
+#### `locations.json`
+
+```
+[[-3.65478,51.60844],[-3.17331,55.9647],[-1.61089,54.97447],null]
+```
+
+#### `searchable.json`
+
+```
+{   "itemProps":
+["name","address","searchString"],
+    "values":[
+["Apple Co-op","1 Apple Way, Appleton","apple co op"],
+["Banana Co","1 Banana Boulevard, Skinningdale","banana co"],
+["The Cabbage Collective","2 Cabbage Close, Caulfield","the cabbage collective"],
+["The Chateau","","the chateau"]
+]}
+```
+
+#### `items/0.json`
+
+```
+{
+  "id": "aaa",
+  "name": "Apple Co-op",
+  "manlat": 0,
+  "manlng": 0,
+  "lat": 51.60844,
+  "lng": -3.65478,
+  "address": "1 Apple Way, Appleton",
+  "activity": "AM130",
+  "otherActivities": [],
+  "websites": [
+    "http://apple.coop"
+  ],
+  "validated": true
+}
+```
+
+#### `items/1.json`
+
+```
+{
+  "id": "bbb",
+  "name": "Banana Co",
+  "manlat": 0,
+  "manlng": 0,
+  "lat": 55.9647,
+  "lng": -3.17331,
+  "address": "1 Banana Boulevard, Skinningdale",
+  "activity": "AM60",
+  "otherActivities": [
+    "AM70",
+    "AM120"
+  ],
+  "websites": [
+    "http://banana.com"
+  ],
+  "validated": false
+}
+```
+
+#### `items/2.json`
+
+```
+{
+  "id": "ccc",
+  "name": "The Cabbage Collective",
+  "manlat": null,
+  "manlng": null,
+  "lat": 54.97447,
+  "lng": -1.61089,
+  "address": "2 Cabbage Close, Caulfield",
+  "activity": "AM60",
+  "otherActivities": [
+    "AM130"
+  ],
+  "websites": [
+    "http://cabbage.coop",
+    "http://cabbage.com"
+  ],
+  "validated": true
+}
+```
+
+#### `items/3.json`
+
+```
+{
+  "id": "ddd",
+  "name": "The Chateau",
+  "manlat": null,
+  "manlng": null,
+  "lat": null,
+  "lng": null,
+  "address": "",
+  "activity": null,
+  "otherActivities": [],
+  "websites": [],
+  "validated": false
+}
+```
+
 ## More details
 
 Here we go into more detail about the dataset files and their structure.
