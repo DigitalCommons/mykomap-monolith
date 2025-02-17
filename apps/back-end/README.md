@@ -25,3 +25,5 @@ for the tests. Of course, you can supply another directory and your own data.
 
 Alternatively this option can be set via the API plugin's option
 `serviceOptions.dataRoot`.
+
+For more information about creating data, see the "Mykomap Data" document in ... FIXME
