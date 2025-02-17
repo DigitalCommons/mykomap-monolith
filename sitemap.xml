@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/api/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/architecture/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/data-pipeline/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/deployment/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/front-end/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/monorepo/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+    <url>
+         <loc>https://digitalcommons.github.io/mykomap-monolith/server-admin-notes/</loc>
+         <lastmod>2025-02-17</lastmod>
+    </url>
+</urlset>
