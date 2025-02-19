@@ -304,6 +304,7 @@ export const createMap = (
           ) as GeoJSON.Feature<GeoJSON.Point>;
 
       let zoom = 10; // start with this zoom, then hone in
+      let spiderfied = false // spiderfy when we get into the condition
       const maxZoom = 18; // once we get to this zoom, stop
 
       const flyToThenOpenPopupRecursive = () => {
@@ -319,7 +320,7 @@ export const createMap = (
               ],
               zoom,
             })
-            .once("moveend", () => {
+            .once("moveend", async () => {
               if (zoom < maxZoom) {
                 zoom += 2;
                 flyToThenOpenPopupRecursive();
@@ -327,7 +328,15 @@ export const createMap = (
                 console.error(
                   "Maybe the feature is in a cluster and needs to be spiderfied.",
                 );
-                // TODO spiderfy the cluster
+                // spiderfy the cluster
+                map.fire('click', {
+                  lngLat: location
+                })
+
+                if (!spiderfied) {
+                  flyToThenOpenPopupRecursive();
+                  spiderfied = true;
+                }
               }
             });
         } else {
