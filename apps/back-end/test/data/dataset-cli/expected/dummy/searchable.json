@@ -1,8 +1,54 @@
-{   "itemProps":
-["name","address","searchString"],
-    "values":[
-["Apple Co-op","1 Apple Way, Appleton","apple co op"],
-["Banana Co","1 Banana Boulevard, Skinningdale","banana co"],
-["The Cabbage Collective","2 Cabbage Close, Caulfield","the cabbage collective"],
-["The Chateau","","the chateau"]
-]}
+{
+  "itemProps": [
+    "country_id",
+    "primary_activity",
+    "typology",
+    "data_sources",
+    "searchString"
+  ],
+  "values": [
+    [
+      "GB",
+      "ICA210",
+      "BMT20",
+      ["DC", "CUK"],
+      "apples coop 1 west street sheffield s1 2ab uk test coop"
+    ],
+    [
+      "FR",
+      "ICA230",
+      "BMT20",
+      ["DC"],
+      "pears united 79 rue de la mare aux carats 34090 montpellier france pears coop"
+    ],
+    ["GB", "ICA220", "BMT10", ["CUK"], "invisible collab"],
+    [
+      "AU",
+      "ICA250",
+      "BMT50",
+      ["DC"],
+      "kangaroos kangaroo valley new south wales 2577 Australia"
+    ],
+    [
+      "AU",
+      "ICA250",
+      "BMT50",
+      ["DC"],
+      "koalas north east kangaroo valley new south wales 2577 Australia"
+    ],
+    [
+      "GB",
+      "ICA210",
+      "BMT20",
+      ["DC", "CUK"],
+      "north apples coop 3 west street sheffield s1 2ab uk test coop"
+    ],
+    [
+      "GB",
+      "ICA210",
+      "BMT20",
+      ["DC", "CUK"],
+      "north apples 2 coop 5 west street sheffield s1 2ab uk test coop"
+    ]
+  ]
+}
