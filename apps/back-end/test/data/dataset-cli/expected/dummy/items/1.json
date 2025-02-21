@@ -1,18 +1,17 @@
 {
-  "id": "bbb",
-  "name": "Banana Co",
-  "manlat": 0,
-  "manlng": 0,
-  "lat": 55.9647,
-  "lng": -3.17331,
-  "address": "1 Banana Boulevard, Skinningdale",
-  "activity": "AM60",
-  "otherActivities": [
-    "AM70",
-    "AM120"
-  ],
-  "websites": [
-    "http://banana.com"
-  ],
-  "validated": false
+  "id": "test/dc/R000002",
+  "name": "Pears United",
+  "description": "We sell pears",
+  "website": ["https://pears.coop"],
+  "dc_domains": ["pears.coop", "pearsunited.coop"],
+  "country_id": "FR",
+  "primary_activity": "ICA230",
+  "organisational_structure": "OS90",
+  "typology": "BMT20",
+  "latitude": 46.850452,
+  "longitude": 3.924728,
+  "geocontainer_lat": 46.85045216,
+  "geocontainer_lon": 3.92472819,
+  "address": "79 rue de la Mare aux Carats, 34090 Montpellier, France",
+  "data_sources": ["DC"]
 }
