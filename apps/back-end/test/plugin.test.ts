@@ -32,6 +32,10 @@ describe("getDatasetLocations", () => {
         [-0.12783, 51.50748],
         [3.92473, 46.85045],
         null,
+        [150.523326, -34.731596],
+        [150.525, -34.735],
+        [-0.12783, 51.52],
+        [-0.12783, 51.52]
       ]);
     });
   });
@@ -92,15 +96,15 @@ describe("searchDataset", () => {
 
     test.each([
       "filter=country_id:GB&filter=typology:BMT20",
-      "text=1+West+Street",
-      "filter=country_id:GB&text=1+West+Street",
+      "text=West+Street",
+      "filter=country_id:GB&text=West+Street",
     ])("Search query '%s' matches only item 0", async (query) => {
       const res = await fastify.inject({
         method: "GET",
         url: `/dataset/dataset-A/search?${query}`,
       });
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toStrictEqual(["@0"]);
+      expect(res.json()).toStrictEqual(["@0", "@5", "@6"]);
     });
 
     test.each([
@@ -124,7 +128,7 @@ describe("searchDataset", () => {
           url: `/dataset/dataset-A/search?${query}`,
         });
         expect(res.statusCode).toBe(200);
-        expect(res.json()).toStrictEqual(["@0", "@1"]);
+        expect(res.json()).toStrictEqual(["@0", "@1", "@5", "@6"]);
       },
     );
 
@@ -143,7 +147,7 @@ describe("searchDataset", () => {
       },
     );
 
-    test.each(["returnProps[]=name&page=1&pageSize=2"])(
+    test.each(["returnProps[]=name&page=1&pageSize=6"])(
       "Paginated search query '%s' returns the final item",
       async (query) => {
         const res = await fastify.inject({
@@ -152,7 +156,7 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@2", name: "Invisible Collab" },
+          { index: "@6", name: "North Apples Co-op 2" },
         ]);
       },
     );
@@ -173,6 +177,10 @@ describe("searchDataset", () => {
           { index: "@0", name: "Apples Co-op" },
           { index: "@1", name: "Pears United" },
           { index: "@2", name: "Invisible Collab" },
+          { index: "@3", name: "Kangaroo Koop" },
+          { index: "@4", name: "Koala Koop" },
+          { index: "@5", name: "North Apples Co-op" },
+          { index: "@6", name: "North Apples Co-op 2" }
         ]);
       },
     );
