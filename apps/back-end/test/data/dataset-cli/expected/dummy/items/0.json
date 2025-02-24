@@ -1,17 +1,15 @@
 {
-  "id": "test/cuk/R000001",
-  "name": "Apples Co-op",
-  "description": "We sell apples",
-  "website": ["https://apples.coop", "https://orchards.coop"],
-  "dc_domains": ["apples.coop", "orchards.coop"],
-  "country_id": "GB",
-  "primary_activity": "ICA210",
-  "organisational_structure": "OS60",
-  "typology": "BMT20",
-  "latitude": 51.507476,
-  "longitude": -0.127825,
-  "geocontainer_lat": 51.50747643,
-  "geocontainer_lon": -0.12782464,
-  "address": "1 West Street, Sheffield, S1 2AB, UK",
-  "data_sources": ["DC", "CUK"]
+  "id": "aaa",
+  "name": "Apple Co-op",
+  "manlat": 0,
+  "manlng": 0,
+  "lat": 51.60844,
+  "lng": -3.65478,
+  "address": "1 Apple Way, Appleton",
+  "activity": "AM130",
+  "otherActivities": [],
+  "websites": [
+    "http://apple.coop"
+  ],
+  "validated": true
 }

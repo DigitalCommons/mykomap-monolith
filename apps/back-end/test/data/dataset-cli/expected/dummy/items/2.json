@@ -1,17 +1,18 @@
 {
-  "id": "test/cuk/R000003",
-  "name": "Invisible Collab",
-  "description": "<p>Can't find us anywhere</p> \n<p>&nbsp;</p>",
-  "website": [],
-  "dc_domains": [],
-  "country_id": "GB",
-  "primary_activity": "ICA220",
-  "organisational_structure": "OS60",
-  "typology": null,
-  "latitude": null,
-  "longitude": null,
-  "geocontainer_lat": null,
-  "geocontainer_lon": null,
-  "address": null,
-  "data_sources": ["CUK"]
+  "id": "ccc",
+  "name": "The Cabbage Collective",
+  "manlat": null,
+  "manlng": null,
+  "lat": 54.97447,
+  "lng": -1.61089,
+  "address": "2 Cabbage Close, Caulfield",
+  "activity": "AM60",
+  "otherActivities": [
+    "AM130"
+  ],
+  "websites": [
+    "http://cabbage.coop",
+    "http://cabbage.com"
+  ],
+  "validated": true
 }
