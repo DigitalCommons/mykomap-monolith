@@ -1,17 +1,13 @@
 {
-  "id": "test/dc/R000004",
-  "name": "Kangaroo Koop",
-  "description": "For kangaroos only",
-  "website": ["https://kangaroos.coop"],
-  "dc_domains": ["kangaroos.coop"],
-  "country_id": "AU",
-  "primary_activity": "ICA250",
-  "organisational_structure": "OS90",
-  "typology": "BMT50",
-  "latitude": -34.731596,
-  "longitude": 150.523326,
-  "geocontainer_lat": -34.731596,
-  "geocontainer_lon": 150.523326,
-  "address": "Kangaroo Valley, New South Wales, 2577, Australia",
-  "data_sources": ["DC"]
+  "id": "ddd",
+  "name": "The Chateau",
+  "manlat": null,
+  "manlng": null,
+  "lat": null,
+  "lng": null,
+  "address": "",
+  "activity": null,
+  "otherActivities": [],
+  "websites": [],
+  "validated": false
 }
