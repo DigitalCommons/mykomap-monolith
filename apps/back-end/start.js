@@ -1,4 +1,4 @@
 // NOTE: Assumes server has been built already into dist/
-import { start } from "./dist/index.js";
+import { Launcher } from "./dist/index.js";
 
-start();
+Launcher.start();

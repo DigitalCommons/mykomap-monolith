@@ -1,3 +1,3 @@
-import { start } from "./src/index";
+import { Launcher } from "./src/index";
 
-start();
+Launcher.start();
