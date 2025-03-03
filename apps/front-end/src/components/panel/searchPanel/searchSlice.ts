@@ -154,8 +154,8 @@ export const selectFilterOptions = createSelector(
       .map((prop) => {
         const title = prop.titleUri
           ? vocabs[prop.titleUri.split(":")[0]][language].terms[
-              prop.titleUri.split(":")[1]
-            ]
+          prop.titleUri.split(":")[1]
+          ]
           : vocabs[prop.vocabUri][language].title;
 
         return {
@@ -182,13 +182,14 @@ export const performSearch = (): AppThunk => {
       return;
     }
 
-    const { search } = getState();
+    const { search, panel } = getState();
+
     const activeFilters = search.filterableVocabProps.filter(
       (prop) => prop.value !== PROP_VALUE_ANY,
     );
     if (activeFilters.length === 0 && search.text === "") {
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
-      dispatch(populateSearchResults(0));
+      dispatch(populateSearchResults(panel.resultsPage));
       return;
     }
 
@@ -212,7 +213,7 @@ export const performSearch = (): AppThunk => {
           ),
         }),
       );
-      dispatch(populateSearchResults(0));
+      dispatch(populateSearchResults(panel.resultsPage));
       dispatch(setSearchingStatus("idle"));
     } else {
       console.error(`Failed search, status code ${response.status}`);
