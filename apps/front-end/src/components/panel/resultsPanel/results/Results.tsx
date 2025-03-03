@@ -1,6 +1,7 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
+import Pagination from "@mui/material/Pagination";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import ResultItem from "./resultItem/ResultItem";
@@ -9,10 +10,14 @@ import {
   closePanel,
   closeResultsPanel,
   selectResults,
+  selectResultsPage,
+  setResultsPage,
   setSelectedTab,
 } from "../../panelSlice";
 import { openPopup } from "../../../popup/popupSlice";
+import { RESULTS_PER_PAGE } from "../../panelSlice";
 import {
+  performSearch,
   selectIsFilterActive,
   selectVisibleIndexes,
 } from "../../searchPanel/searchSlice";
@@ -36,10 +41,12 @@ const Results = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const results = useAppSelector(selectResults);
+  const resultsPage = useAppSelector(selectResultsPage);
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const isFilterActive = useAppSelector(selectIsFilterActive);
   const totalItemsCount = useAppSelector(selectTotalItemsCount);
   const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
+  const totalPages = Math.ceil(resultCount / RESULTS_PER_PAGE);
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
@@ -79,6 +86,16 @@ const Results = () => {
           />
         ))}
       </List>
+      {totalPages > 1 && (
+        <Pagination
+          count={Math.ceil(resultCount / RESULTS_PER_PAGE)}
+          page={resultsPage + 1}
+          onChange={(event, value) => {
+            dispatch(setResultsPage(value - 1));
+            dispatch(performSearch());
+          }}
+        />
+      )}
     </StyledResults>
   );
 };
