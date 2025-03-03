@@ -3,7 +3,7 @@
   "name": "Apples Co-op",
   "description": "We sell apples",
   "website": ["https://apples.coop", "https://orchards.coop"],
-  "dc_domains": ["apples.coop", "orchards.coop"],
+  "dc_domains": ["apples.coop", "orchards.coop","https://3.coop","https://4.coop","https://5.coop","https://6reallylongdomainnamethatiwillneedanellipses.coop","https://7.coop","https://8.coop","https://9.coop","https://10.coop","https://11.coop","https://12.coop","https://13.coop"],
   "country_id": "GB",
   "primary_activity": "ICA210",
   "organisational_structure": "OS60",
