@@ -103,11 +103,13 @@ const LeftPane = ({
   const cleanDescription = decode(
     description?.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
   )?.trim();
+
   const MAX_DOMAIN_LENGTH = 25;
+  const DOMAINS_SINGLE_COlUMN = 9;
 
   //split into 2 columns if more than 10 domains
   const dcDomains =
-    dc_domains.length >= 10
+    dc_domains.length > DOMAINS_SINGLE_COlUMN
       ? [
           dc_domains.slice(0, Math.ceil(dc_domains.length / 2)),
           dc_domains.slice(Math.ceil(dc_domains.length / 2)),
@@ -172,7 +174,7 @@ const LeftPane = ({
                           }}
                         >
                           {dcDomain.length > MAX_DOMAIN_LENGTH &&
-                          dc_domains.length >= 10
+                          dc_domains.length > DOMAINS_SINGLE_COlUMN
                             ? dcDomain.slice(0, MAX_DOMAIN_LENGTH) + "(...)"
                             : dcDomain}
                         </Link>
