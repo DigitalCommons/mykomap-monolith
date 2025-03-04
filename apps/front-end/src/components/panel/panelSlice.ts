@@ -4,7 +4,7 @@ import { getDatasetId } from "../../utils/window-utils";
 import { searchDataset } from "../../services";
 import { SearchSliceState } from "./searchPanel/searchSlice";
 
-export const RESULTS_PER_PAGE = 2;
+export const RESULTS_PER_PAGE = 50;
 
 interface PanelSliceState {
   selectedTab: number;
