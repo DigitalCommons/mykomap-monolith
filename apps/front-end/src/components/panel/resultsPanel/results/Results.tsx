@@ -11,13 +11,12 @@ import {
   closeResultsPanel,
   selectResults,
   selectResultsPage,
-  setResultsPage,
+  populateSearchResults,
   setSelectedTab,
 } from "../../panelSlice";
 import { openPopup } from "../../../popup/popupSlice";
 import { RESULTS_PER_PAGE } from "../../panelSlice";
 import {
-  performSearch,
   selectIsFilterActive,
   selectVisibleIndexes,
 } from "../../searchPanel/searchSlice";
@@ -26,6 +25,7 @@ import { useMediaQuery } from "@mui/material";
 
 const StyledResults = styled(Box)(() => ({
   width: "100%",
+  flexGrow: 1,
   display: "flex",
   flexDirection: "column",
   overflow: "auto",
@@ -35,6 +35,11 @@ const StyledResults = styled(Box)(() => ({
   "@media (min-width: 768px)": {
     padding: "var(--spacing-xxlarge) 0 var(--spacing-large) 0",
   },
+}));
+
+const StyledPageNav = styled(Box)(()=>({
+  padding: "var(--spacing-medium)",
+  width: "100%",
 }));
 
 const Results = () => {
@@ -61,6 +66,7 @@ const Results = () => {
   };
 
   return (
+    <>
     <StyledResults>
       <Typography
         variant="h4"
@@ -85,18 +91,21 @@ const Results = () => {
             buttonAction={() => onItemClick(item.index)}
           />
         ))}
-      </List>
-      {totalPages > 1 && (
+      </List>      
+    </StyledResults>
+    {totalPages > 1 && (
+      <StyledPageNav>
         <Pagination
-          count={Math.ceil(resultCount / RESULTS_PER_PAGE)}
+          count={totalPages}
           page={resultsPage + 1}
           onChange={(event, value) => {
-            dispatch(setResultsPage(value - 1));
-            dispatch(performSearch());
+            dispatch(populateSearchResults(value - 1));
           }}
+          color="primary"
         />
+        </StyledPageNav>
       )}
-    </StyledResults>
+    </>
   );
 };
 

@@ -182,14 +182,14 @@ export const performSearch = (): AppThunk => {
       return;
     }
 
-    const { search, panel } = getState();
+    const { search } = getState();
 
     const activeFilters = search.filterableVocabProps.filter(
       (prop) => prop.value !== PROP_VALUE_ANY,
     );
     if (activeFilters.length === 0 && search.text === "") {
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
-      dispatch(populateSearchResults(panel.resultsPage));
+      dispatch(populateSearchResults(0));
       return;
     }
 
@@ -213,7 +213,7 @@ export const performSearch = (): AppThunk => {
           ),
         }),
       );
-      dispatch(populateSearchResults(panel.resultsPage));
+      dispatch(populateSearchResults(0));
       dispatch(setSearchingStatus("idle"));
     } else {
       console.error(`Failed search, status code ${response.status}`);
