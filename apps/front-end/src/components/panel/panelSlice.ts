@@ -4,7 +4,7 @@ import { getDatasetId } from "../../utils/window-utils";
 import { searchDataset } from "../../services";
 import { SearchSliceState } from "./searchPanel/searchSlice";
 
-export const RESULTS_PER_PAGE = 200;
+export const RESULTS_PER_PAGE = 2;
 
 interface PanelSliceState {
   selectedTab: number;
@@ -99,10 +99,7 @@ export const panelSlice = createAppSlice({
           console.error("Error fetching search results", action.payload);
         },
       },
-    ),
-    setResultsPage: create.reducer((state, action: PayloadAction<number>) => {
-      state.resultsPage = action.payload;
-    }),
+    )
   }),
   selectors: {
     selectSelectedTab: (panel) => panel.selectedTab,
@@ -123,7 +120,6 @@ export const {
   openResultsPanel,
   closeResultsPanel,
   populateSearchResults,
-  setResultsPage
 } = panelSlice.actions;
 
 export const {

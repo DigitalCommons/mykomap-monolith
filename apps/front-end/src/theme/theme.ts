@@ -289,6 +289,13 @@ const themeOptions: ThemeOptions = {
         },
       },
     },
+    MuiPaginationItem: {
+      styleOverrides: {
+        text: {
+          color: "#ffffffcc"
+        }
+      }
+    }
   },
 };
 
