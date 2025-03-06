@@ -1,6 +1,7 @@
 # Deploying
 
 Conceptually, installation of these applications require:
+
 - deploying the front-end as content to be served on the web
   - configure it to use the correct path for the back end (typically `/api`)
   - also configure API keys for GlitchTip and MapTiler services
@@ -14,12 +15,13 @@ time install or an update.
 
 ## DCC Server specifics
 
-*Note: Although the application could be deployed in various scenarios in
-principle, this is the only case we specifically cater for now.*
+_Note: Although the application could be deployed in various scenarios in
+principle, this is the only case we specifically cater for now._
 
 ### What a DCC Server provides
 
 The parts relevant here are, broadly:
+
 - A Ubuntu Linux server.
 - With the Apache webserver.
 - The NodeJS runtime (using [ASDF][asdf], the version of NodeJS can be
@@ -32,7 +34,7 @@ The parts relevant here are, broadly:
 
 Without going into too much detail, this situation is currently set up
 via some Ansible playbooks in the DCC
-[technology-and-infrastructure][t-i] project. 
+[technology-and-infrastructure][t-i] project.
 
 The following instructions following assume this context.
 
@@ -44,16 +46,16 @@ For the descriptions below, we use the following placeholders for
 generality. (We write them in the style of environment variables, but
 you can equally see them as just labels.)
 
- - `$SERVER` is the ssh URI used for the hostname being deployed to.
- - `$USER` is the user being deployed to on that host.
- - `$GIT_WORKING` is the directory where `mykomap-monolith` repository
-   is checked out (or if not checked out, unpacked - in which case
-   replace `git clone` or `git pull` with an appropriate unpacking
-   process)
- - `$DATA_DIR` is the path to the directory containing data for the back-end.
- - A file exists at `$DEPLOY_ENV` defining the environment variables
-   specifically needed for deployment.
- 
+- `$SERVER` is the ssh URI used for the hostname being deployed to.
+- `$USER` is the user being deployed to on that host.
+- `$GIT_WORKING` is the directory where `mykomap-monolith` repository
+  is checked out (or if not checked out, unpacked - in which case
+  replace `git clone` or `git pull` with an appropriate unpacking
+  process)
+- `$DATA_DIR` is the path to the directory containing data for the back-end.
+- A file exists at `$DEPLOY_ENV` defining the environment variables
+  specifically needed for deployment.
+
 Examples, at the time of writing, of the typical case for these are:
 
     SERVER=dev-2
@@ -62,85 +64,100 @@ Examples, at the time of writing, of the typical case for these are:
     DEPLOY_ENV=/home/$USER/gitworking/deploy.env
     DATA_DIR=/home/$USER/deploy/data
 
-### Environment variables for deployment
+## How to install for the first time
 
-The `$DEPLOY_ENV` file defines some *actual* environment variables
+### Step 1: set environment variables (as the application user)
+
+The `$DEPLOY_ENV` file defines some _actual_ environment variables
 which the deployment process will use. What those are set to will
-depend on your situation, so this is just a guide. 
+depend on your situation, so this is just a guide.
 
-An example of the contents of a `$DEPLOY_ENV` file, but with secret
-values redacted:
+Here is an example of how the `$DEPLOY_ENV` file may be created as the
+application user, but with secret values redacted:
 
+    cat > $DEPLOY_ENV <<EOF
     export USERDIR=/home/$USER
-    export DEPLOY_DEST=$USERDIR/deploy
+    export GIT_WORKING=/home/$USER/gitworking/mykomap-monolith
+    export DEPLOY_DEST=/home/$USER/deploy
+    export DATA_DIR=/home/$USER/deploy/data
+    export WWW_ROOT=/var/www/vhosts/maps.coop/www
+    export APP_ROOT=/var/www/vhosts/maps.coop/www/cwm
+    export VHOST_CONF=/var/www/vhosts/maps.coop/custom.conf
     export PROXY_PORT=1$UID
     export PROXY_PATH=/api
     export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
     export FE_GLITCHTIP_KEY=*REDACTED*
     export BE_GLITCHTIP_KEY=*REDACTED*
     export MAPTILER_API_KEY=*REDACTED*
+    EOF
 
-*Note: paths here should be absolute - relative paths will not work in
-general.*
+This will hardcode the variables in the file according to the app
+`$USER` and `$UID`, which should already be set by your shell by default.
+The hardcoding is necessary for Step 3, when we load these environment
+variables as a different user.
 
-*Note: the environment variables `USER` and `UID` should already be
-set by your shell by default.  `DBUS_SESSION_BUS_ADDRESS` should also
-be set in principle be if you are logged in as that user - but in
-practise is not. This is needed for the deploy script to run
-`systemctl` in user-mode.*
-   
-*Note: These variables don't strictly have to be defined in a file,
+_Note: paths here should be absolute - relative paths will not work in
+general._
+
+_Note: `DBUS_SESSION_BUS_ADDRESS` should be set in principle be if you
+are logged in as that user - but in practise is not. This is needed for
+the deploy script to run `systemctl` in user-mode._
+
+_Note: These variables don't strictly have to be defined in a file,
 it's just convenient for this illustration. You could supply them via
-other mechanisms.*
+other mechanisms._
 
-
-## How to install for the first time
-
-*Note: All these steps assume that the variables described above has
-been created and populated in a file `$DEPLOY_ENV` appropriately, as
-per the example above.*
-
-### Step 1: setup with elevated privileges
+### Step 2: setup Apache config (with elevated privileges)
 
 This step requires elevated privileges, but as it is specific to this
 application it is not performed via Ansible.
 
 It assumes that:
 
- - The root directory of the virtual host is at `$WWW_ROOT`
- - A symlink can be created at `$APP_ROOT` to the directory that
-   Apache should serve the application content from.
- - A file `$VHOST_CONF` can be created which contains the Apache
-   configuration in the context of the application's Virtual host.
- - The user `$USER` exists already, and its home directory is
-   accessible to the Apache user. (Typically this means that `~$USER`
-   home directory has the "execute" flag set allowing the `www-data`
-   user group or global access; perhaps by `chmod ~$USER a+x`.)
- - The user has had linger mode enabled (`loginctl enable-linger
-   $USER`) to ensure that its DBUS session starts on boot, for use by
-   user-mode systemd services.
+- The root directory of the virtual host is at `$WWW_ROOT`
+- A symlink can be created at `$APP_ROOT` to the directory that
+  Apache should serve the application content from.
+- A file `$VHOST_CONF` can be created which contains the Apache
+  configuration in the context of the application's Virtual host.
+- The user `$USER` exists already, and its home directory is
+  accessible to the Apache user. (Typically this means that `~$USER`
+  home directory has the "execute" flag set allowing the `www-data`
+  user group or global access; perhaps by `chmod a+x ~$USER`.)
+- The user has had linger mode enabled (`loginctl enable-linger
+$USER`) to ensure that its DBUS session starts on boot, for use by
+  user-mode systemd services.
 
 The steps:
 
     # source this file to get the shared configuration
     . $DEPLOY_ENV
-    
+
     # Link the content to serve into place
-    ln -sfn $APP_ROOT $GIT_WORKING/app/front-end/dist/
+    ln -sfn $GIT_WORKING/apps/front-end/dist/ $APP_ROOT
 
     # Configure reverse proxying, and symlink following.
-    cat >$VHOST_CONF <<EOF
+    cat > $VHOST_CONF <<EOF
     <Directory $WWW_ROOT/..>
       Options FollowSymLinks Indexes
     </Directory>
     ProxyPass /api http://localhost:$PROXY_PORT
     ProxyPassReverse /api http://localhost:$PROXY_PORT
     EOF
-    
-    systemctl reload apache2
-    
 
-### Step 2: setup as the application user
+    systemctl reload apache2
+
+### Step 3: install the app (as the application user)
+
+It assumes that:
+
+- The public SSH key of `$USER` has been added as a deploy key for
+  the [`cwm-test-data`](https://github.com/DigitalCommons/cwm-test-data/settings/keys)
+  private repository.
+- This key is used when connecting to github.com. We recommend configuring this in the
+  user's `~/.ssh/config` file, since you will may need fetch updates to the data on a regular
+  basis.
+
+The steps:
 
     # source this file to get the shared configuration
     . $DEPLOY_ENV
@@ -157,16 +174,16 @@ The steps:
 
     # Create and deploy the application source code
     mkdir -p $GIT_WORKING
-    
+
     cd $GIT_WORKING
     git init
     git remote add origin git@github.com:DigitalCommons/mykomap-monolith
     git fetch --depth=1 # --depth optional
     git checkout main
-    
-    
+
+
     ./deploy.sh
-    
+
 The `deploy.sh` script will do the rest, including writing the `.env`
 files in the applications, which should never be stored in source control.
 
@@ -174,7 +191,7 @@ files in the applications, which should never be stored in source control.
 
 After the initial install, deploying updates is simpler.
 
-*Note: we assume `$DEPLOY_ENV` defines our environment, as before.*
+_Note: we assume `$DEPLOY_ENV` defines our environment, as before._
 
 Log in as the application user:
 
