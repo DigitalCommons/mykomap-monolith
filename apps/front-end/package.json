@@ -20,7 +20,8 @@
     "lint:fix": "eslint --fix .",
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "upload-sourcemaps": "sentry-cli sourcemaps --release $npm_package_config_sentry_release upload --url-prefix /assets/ dist/assets/"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
