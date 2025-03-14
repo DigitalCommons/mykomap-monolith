@@ -4,6 +4,7 @@ import { FastifyListenOptions, fastify } from "fastify";
 import cors from "@fastify/cors";
 import qs from "qs";
 import apiPlugin from "./pluginApi.js";
+import { sentryRelease } from "@mykomap/common";
 export { apiPlugin }; // For use as a library
 
 // Something is weird about udsv, we can't import nor export Schema directly and
@@ -86,7 +87,9 @@ export class Launcher {
       await this.app.register(fastifySentryPlugin, {
         dsn: `https://${process.env.GLITCHTIP_KEY}@app.glitchtip.com/9203`,
         environment: process.env.NODE_ENV,
-        release: __BUILD_INFO__.version.join("."),
+        release: sentryRelease(__BUILD_INFO__),
+        // We don't supply `dist` as we don't currently need that level of specificity
+
         // Capture all uncaught or HTTP 4xx and 5xx errors
         // Note this doesn't work for TsRestResponseErrors since they skip this middleware
         shouldHandleError: (error) =>
