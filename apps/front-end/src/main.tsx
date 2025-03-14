@@ -10,6 +10,7 @@ import { store } from "./app/store";
 import "./index.css";
 import "./i18n";
 import GlobalCSSVariables from "./theme/GlobalCSSVariables";
+import { sentryRelease, sentryDist } from "@mykomap/common";
 
 import theme from "./theme/theme";
 
@@ -19,6 +20,8 @@ import theme from "./theme/theme";
 // by Vite via the dotenv library. https://vitejs.dev/guide/env-and-mode
 Sentry.init({
   dsn: `https://${import.meta.env.VITE_GLITCHTIP_KEY}@app.glitchtip.com/7707`,
+  release: sentryRelease(__BUILD_INFO__),
+// We don't supply `dist` as we don't currently need that level of specificity
 
   // Use Vite's concept of mode to set the environment for Glitchtip
   // (Mode != NODE_ENV, see https://vitejs.dev/guide/env-and-mode#modes)
