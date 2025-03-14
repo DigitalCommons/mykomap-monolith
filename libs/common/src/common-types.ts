@@ -1,5 +1,8 @@
 /** Defines some utility types */
 
+import { z } from "zod";
+import { schemas } from "./api/contract.js";
+
 /** Maps any type K to a type V
  *
  * Elements are explicitly optional, courtesy of Partial
@@ -22,3 +25,8 @@ export type Box2d = [Point2d, Point2d];
 export function clear<V>(obj: Assoc<string, V>) {
   Object.keys(obj).forEach((key) => delete obj[key]);
 }
+/** This describes certain parameters of the build of a software project managed by git.
+ *
+ * Specifically, this software!
+ */
+export type BuildInfo = z.infer<typeof schemas.BuildInfo>;
