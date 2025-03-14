@@ -105,9 +105,9 @@ const ConfigData = z.object({
 const BuildInfo = z.object({
   name: z.string(),
   buildTime: z.string().datetime({ offset: false }),
-  version: z.array(z.number()),
+  version: z.array(z.number()).min(1).readonly(),
   commitDesc: z.string(),
-  nodeEnv: z.enum(["production", "development"]),
+  nodeEnv: z.string(),
 });
 const ErrorInfo = z.object({ message: z.string() }).passthrough();
 
