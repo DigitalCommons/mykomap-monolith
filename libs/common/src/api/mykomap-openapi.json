@@ -949,21 +949,12 @@
                       "type": "string",
                       "format": "date-time"
                     },
-                    "version": {
-                      "type": "array",
-                      "items": {
-                        "type": "number"
-                      }
-                    },
+                    "version": {},
                     "commitDesc": {
                       "type": "string"
                     },
                     "nodeEnv": {
-                      "type": "string",
-                      "enum": [
-                        "production",
-                        "development"
-                      ]
+                      "type": "string"
                     }
                   },
                   "required": [
@@ -973,7 +964,7 @@
                     "commitDesc",
                     "nodeEnv"
                   ],
-                  "description": "information about the current Mykomap server version"
+                  "description": "information about the current Mykomap server build"
                 }
               }
             }
