@@ -1,4 +1,4 @@
-import { Box2d, Point2d } from "./common-types.js";
+import { Box2d, BuildInfo, Point2d } from "./common-types.js";
 
 /** A function which aggregates an array of numbers (or null/undefined) into a
  * single number. */
@@ -396,4 +396,23 @@ export function splitField(
   }
   subfields.push(buffer);
   return subfields;
+}
+
+/** Make a Sentry-compatible release name
+ *
+ * https://docs.sentry.io/platforms/react-native/configuration/releases/
+ * - must not contain newlines, tabs, forward or back slashes.
+ * Here we just remove all whitespace, and forward or backslashes.
+ */
+export function sentryRelease(bi: BuildInfo): string {
+  return bi.name.replace(/[\/\\\s]+/g, "") + "@" + bi.version.join(".");
+}
+
+/** Make a Sentry-compatible dist name.
+ *
+ * https://docs.sentry.io/platforms/react-native/configuration/releases/
+ * Here we omit tag and count, and use the commit ID plus any "-dirty" tag
+ */
+export function sentryDist(bi: BuildInfo): string {
+  return bi.commitDesc.split("-").slice(2).join("-");
 }
