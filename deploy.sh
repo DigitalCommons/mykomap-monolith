@@ -90,6 +90,9 @@ VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
 EOF
   
   npm run build
+
+  # This requires the glitchtip parameters in our .env
+  npm run upload-sourcemaps
   #npm deploy "$FE_DEST"
   #cp -a --copy-contents dist/. "$FE_DEST" # the . is significant
 )
