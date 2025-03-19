@@ -12,8 +12,6 @@ import {
   selectPanelOpen,
   selectResultsPanelOpen,
   closeResultsPanel,
-  closePanel,
-  setSelectedTab,
 } from "../panelSlice";
 import { clearSearch } from "../searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
