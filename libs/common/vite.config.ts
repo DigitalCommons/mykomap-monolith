@@ -33,6 +33,9 @@ export default defineConfig({
     target: "esnext",
   },
   plugins: [
-    dts({ include: ["**/*.ts", "**/*.js", "**/mykomap-openapi.json"] }),
+    dts({
+      include: ["**/*.ts", "**/*.js", "**/mykomap-openapi.json"],
+      exclude: "test/**",
+    }),
   ], // emit TS declaration files
 });
