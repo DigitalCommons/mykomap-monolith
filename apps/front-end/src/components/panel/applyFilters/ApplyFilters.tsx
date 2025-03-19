@@ -25,6 +25,18 @@ interface ApplyFiltersProps {
 const ApplyFilters = ({buttonText, buttonAction, disabled}: ApplyFiltersProps) => {
   return (
     <StyledButtonContainer>
+      {!disabled && (
+        <StandardButton
+          variant="outlined"
+          buttonAction={() => {
+            buttonAction();
+          }}
+        >
+          
+        Reset Filters
+        </StandardButton>
+      )}
+     
       <StandardButton
         buttonAction={buttonAction}
         disabled={disabled}
