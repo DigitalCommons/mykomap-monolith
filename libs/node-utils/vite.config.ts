@@ -32,6 +32,14 @@ export default defineConfig({
       formats: ["es"],
       fileName: "back-end",
     },
+    rollupOptions: {
+      // don't bundle dependencies or built-in Node.js modules
+      external: [
+        ...Object.keys(pkg.dependencies),
+        ...Object.keys(pkg.devDependencies),
+        /^node:.*/,
+      ],
+    },
     target: "esnext",
   },
   test: {
