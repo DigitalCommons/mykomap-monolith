@@ -65,14 +65,20 @@ const ResultsPanel = () => {
 
   const handleToggle = () => {
     dispatch(togglePanel());
+    console.log("panelOpen", panelOpen);
   };
 
   const handlePanelClose = () => {
+    if (!isMedium) dispatch(setSelectedTab(0));
+    dispatch(closePanel());
     dispatch(closeResultsPanel());
     console.log("panelOpen", panelOpen);
   };
 
   const handleClearSearch = () => {
+    console.log("Clear search");
+    if (!isMedium) dispatch(setSelectedTab(0));
+    // dispatch(closePanel());
     dispatch(closeResultsPanel());
     dispatch(clearSearch());
   };
