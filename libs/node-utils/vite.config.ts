@@ -32,6 +32,7 @@ export default defineConfig({
       formats: ["es"],
       fileName: "back-end",
     },
+    target: "esnext",
   },
   test: {
     globals: true,
