@@ -16,6 +16,46 @@ monorepo
       |- config.json ... includes vocabs, item prop specs, UI config
 ```
 
+## Dependencies
+
+The build order, set in the `build` runscript of the root `package.json` is:
+
+1. `libs/common`
+2. `libs/node-utils`
+3. `apps/back-end`
+4. `apps/front-end`
+
+This is because there is some common code used to label the builds,
+defined in a file `build-info.ts`. This ensures the labelling is
+generated in a consistent way in all the modules.
+
+Where does this code go? This gets complicated, as some modules are by
+design free of NodeJS dependencies, and since those are transitory,
+`libs/common` cannot have runtime NodeJS dependent
+dependencies. (Although, it *does* have `devDependencies` on
+`node-utils`, because the tests it uses `file-utils.ts` defined
+there).
+
+However: the `build-info.ts` code necessarily needs to run
+`git-depend` to obtain information about the build, if only at build
+time.
+
+
+Which means:
+- The `build-info.ts` code common to all modules needs to be in the
+  first module to compile.
+- This module cannot be in `node-utils`, or else `common` and
+  `front-end` cannot use it.
+- As `node-utils` needs the `build-info.ts` code too, at runtime and
+  build time, therefore it must depend on `common` rather than vice
+  versa.
+
+Other modules can then depend on `common` to get the `build-info.ts`
+code, and only need to pull in the `spawnSync` function from NodeJS in
+their `vite.config.ts` files, so the node dependency is only implicit
+and at build time.
+
+
 ## Ideas
 
 - Use monorepo manager (e.g. Nx, Turborepo) to manage builds
