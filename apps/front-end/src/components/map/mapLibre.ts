@@ -338,7 +338,7 @@ export const createMap = (
                 flyToThenOpenPopupRecursive();
               } else {
                 console.error(
-                  "Maybe the feature is in a cluster and needs to be spiderfied.",
+                  "Maybe the feature is in a cluster and needs to be spiderfied."
                 );
                 // spiderfy the cluster
                 map.fire("click", {
@@ -346,8 +346,21 @@ export const createMap = (
                 });
 
                 if (!spiderfied) {
-                  flyToThenOpenPopupRecursive();
                   spiderfied = true;
+                  //flyToThenOpenPopupRecursive();
+                  const newLng = location[0] + 0.00015
+
+                  const feature = getFeatureIfVisible(itemIx);
+                  console.log("getting feature for itemIx:", itemIx, feature, location)
+
+                  openPopup(
+                    map,
+                    itemIx,
+                    [newLng, location[1]] as LngLatLike,
+                    popupCreatedCallback,
+                    popupClosedCallback,
+                  );
+
                 }
               }
             });
