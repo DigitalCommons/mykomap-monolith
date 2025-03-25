@@ -89,5 +89,10 @@
     "typescript": "^5.5.4",
     "vite": "^5.0.11",
     "vitest": "^1.2.0"
+  },
+  "config": {
+    "sentry": {
+      "release": "@mykomapfront-end@4.0.0"
+    }
   }
 }
