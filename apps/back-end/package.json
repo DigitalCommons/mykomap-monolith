@@ -57,5 +57,10 @@
     "vite-node": "^2.0.5",
     "vite-plugin-dts": "^4.1.0",
     "vitest": "^1.2.0"
+  },
+  "config": {
+    "sentry": {
+      "release": "@mykomapback-end@4.0.0"
+    }
   }
 }
