@@ -180,6 +180,17 @@ export const createMap = (
       ) => {
         const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
+
+        if (popup?.isOpen() && popupIx === itemIx) {
+          console.log(
+            `Popup for item @${itemIx} already open so toggle closed`,
+          );
+          popup?.remove();
+          popupIx = undefined;
+          popup = undefined;
+          return;
+        }
+
         map
           .easeTo({
             center: [
@@ -205,6 +216,7 @@ export const createMap = (
       ) => {
         if (feature) {
           onMarkerHover(map, feature, leafOffset);
+          map.getCanvas().style.cursor = "pointer";
         } else {
           tooltip?.remove();
           map.getCanvas().style.cursor = "";
@@ -304,7 +316,7 @@ export const createMap = (
           ) as GeoJSON.Feature<GeoJSON.Point>;
 
       let zoom = 10; // start with this zoom, then hone in
-      let spiderfied = false // spiderfy when we get into the condition
+      let spiderfied = false; // spiderfy when we get into the condition
       const maxZoom = 18; // once we get to this zoom, stop
 
       const flyToThenOpenPopupRecursive = () => {
@@ -329,9 +341,9 @@ export const createMap = (
                   "Maybe the feature is in a cluster and needs to be spiderfied.",
                 );
                 // spiderfy the cluster
-                map.fire('click', {
-                  lngLat: location
-                })
+                map.fire("click", {
+                  lngLat: location,
+                });
 
                 if (!spiderfied) {
                   flyToThenOpenPopupRecursive();
@@ -419,6 +431,10 @@ export const createMap = (
     map.on("mouseleave", "unclustered-point", () => {
       tooltip?.remove();
       map.getCanvas().style.cursor = "";
+    });
+    // Cursor pointer on spiderfied cluster
+    map.on("mouseenter", "spiderfied-cluster", () => {
+      map.getCanvas().style.cursor = "pointer";
     });
 
     map.on("changeLanguage", ({ language }) => {
