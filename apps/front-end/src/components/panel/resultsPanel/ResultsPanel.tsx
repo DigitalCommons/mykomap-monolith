@@ -17,12 +17,37 @@ import {
 } from "../panelSlice";
 import { clearSearch } from "../searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
+import { keyframes } from "@emotion/react";
 
-const StyledResultsPanel = styled(Drawer)(() => ({
+const slideIn = keyframes`
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+`;
+
+const StyledResultsPanel = styled(Drawer)(({ theme }) => ({
   width: "100%",
   height: "100vh",
   position: "relative",
   overflow: "visible",
+  transition: "transform 0.3s ease, opacity 0.3s ease",
+
   "& .MuiDrawer-paper": {
     width: "100%",
     boxSizing: "border-box",
@@ -30,10 +55,13 @@ const StyledResultsPanel = styled(Drawer)(() => ({
     visibility: "visible !important",
     overflow: "visible",
     boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
+    animation: `${slideIn} 0.3s ease forwards`, // 👈 Animate on entry
   },
+
   "@media (min-width: 897px)": {
     width: "calc(var(--panel-width-desktop) + 30px)",
     transform: "translateX(var(--panel-width-desktop))",
+
     "& .MuiDrawer-paper": {
       width: "var(--panel-width-desktop)",
     },
