@@ -370,6 +370,9 @@ export const createMap = (
                 );
                 if (!spiderfied) {
                   // spiderfy the cluster
+                  // the next part is the popup opening
+                  // handled in the cluster click event listener
+
                   map.fire("click", {
                     openPopupRecursive: true,
                     lngLat: location,
