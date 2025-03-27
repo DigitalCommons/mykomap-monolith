@@ -21,9 +21,13 @@ set -vx
 #   - PROXY_PORT: the port number being proxied (e.g. '4000')
 #   - PROXY_PATH: the path being proxied (e.g. '/api')
 #   - BASE_URL_PATH # not actually used but might be in future?
-#   - FE_GLITCHTIP_KEY
-#   - BE_GLITCHTIP_KEY
-#   - MAPTILER_API_KEY
+#   - FE_GLITCHTIP_KEY - a key obtained from our account
+#   - BE_GLITCHTIP_KEY - a key obtained from our account
+#   - FE_SENTRY_AUTH_TOKEN - a token generated for the front end to use
+#   - SENTRY_URL - typically https://app.glitchtip.com
+#   - SENTRY_ORG - should be digital-commons-coop
+#   - FE_SENTRY_PROJECT - should be mykomapfront-end
+#   - MAPTILER_API_KEY - obtained from our maptiler account
 #   - DBUS_SESSION_BUS_ADDRESS: required for service management
 # - FIXME the user can write to DEPLOY_DEST, WWW_ROOT
 #   - or else, the proxy pass and WWW roots have been defined already
@@ -87,9 +91,21 @@ cp .tool-versions "$DEPLOY_DEST"
 VITE_API_URL=/api
 VITE_GLITCHTIP_KEY=${FE_GLITCHTIP_KEY:?}
 VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
+
+# npm run upload-sourcemaps, called during deployment, needs these variables
+# They should correlate to the tags used in the Glitchtip dashboard.
+SENTRY_AUTH_TOKEN=${FE_SENTRY_AUTH_TOKEN:?}
+SENTRY_API_KEY=\$VITE_GLITCHTIP_KEY
+SENTRY_URL=${SENTRY_URL:?}
+SENTRY_ORG=${SENTRY_ORG:?}
+SENTRY_PROJECT=${FE_SENTRY_PROJECT:?}
 EOF
   
   npm run build
+
+  # This requires the above sentry parameters in our .env
+  npm run upload-sourcemaps
+  
   #npm deploy "$FE_DEST"
   #cp -a --copy-contents dist/. "$FE_DEST" # the . is significant
 )
