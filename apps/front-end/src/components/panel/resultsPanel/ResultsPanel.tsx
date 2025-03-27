@@ -48,8 +48,6 @@ const StyledResultsPanel = styled(Drawer)<{
   height: "100vh",
   position: "relative",
   overflow: "visible",
-  // transition: "transform 0.3s ease, opacity 0.3s ease",
-  // animation: "slideIn 0.3s ease forwards",
 
   "& .MuiDrawer-paper": {
     width: "100%",
@@ -95,7 +93,7 @@ const ResultsPanel = () => {
   const isMedium = useMediaQuery("(min-width: 897px)");
 
   const handleToggle = () => {
-      dispatch(togglePanel());
+    dispatch(togglePanel());
   };
 
   const handlePanelClose = () => {
@@ -114,37 +112,33 @@ const ResultsPanel = () => {
 
   return (
     <>
-      {panelOpen &&
-        resultsPanelOpen && ( // Adding this stops the drawer transition working
-          <StyledResultsPanel
-            open={panelOpen && resultsPanelOpen}
-            onClosePanel={!(panelOpen && resultsPanelOpen)}
-            variant="persistent"
-            anchor="left"
+      {panelOpen && resultsPanelOpen && (
+        <StyledResultsPanel
+          open={panelOpen && resultsPanelOpen}
+          onClosePanel={!(panelOpen && resultsPanelOpen)}
+          variant="persistent"
+          anchor="left"
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-              }}
-            >
-              <StyledButtonContainer>
-                <StandardButton buttonAction={handleClearSearch}>
-                  {t("clear_search")}
-                </StandardButton>
-                {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
-              </StyledButtonContainer>
-              <Results />
-            </Box>
-            {isMedium && (
-              <PanelToggleButton
-                buttonAction={handleToggle}
-                isOpen={panelOpen}
-              />
-            )}
-          </StyledResultsPanel>
-        )}
+            <StyledButtonContainer>
+              <StandardButton buttonAction={handleClearSearch}>
+                {t("clear_search")}
+              </StandardButton>
+              {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
+            </StyledButtonContainer>
+            <Results />
+          </Box>
+          {isMedium && (
+            <PanelToggleButton buttonAction={handleToggle} isOpen={panelOpen} />
+          )}
+        </StyledResultsPanel>
+      )}
     </>
   );
 };
