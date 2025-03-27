@@ -81,8 +81,8 @@ export class Dataset {
     } else {
       throw new Error(
         `searchable.json for dataset ${this.id} has a bad format ` +
-          `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
-          `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
+        `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
+        `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
       );
     }
   }
@@ -110,6 +110,24 @@ export class Dataset {
   getLocations = (): fs.ReadStream =>
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");
 
+  getTotals = () => {
+    const totals: any = {
+      any: 0
+    };
+
+    this.searchablePropValues.forEach((itemValues) => {
+      if (totals[itemValues[1] as string]) {
+        totals[itemValues[1] as string] = totals[itemValues[1] as string] + 1;
+      }
+      else {
+        totals[itemValues[1] as string] = 1;
+      }
+
+      totals.any = totals.any + 1;
+    })
+
+    return totals;
+  }
   /**
    * Returns an array of item indexes that match the given criteria, or an array of objects if
    * returnProps is specified. Also supports pagination.
@@ -200,7 +218,7 @@ export class Dataset {
       .slice(
         (page ?? 0) * (pageSize ?? 0),
         ((page ?? visibleIndexes.length) + 1) *
-          (pageSize ?? visibleIndexes.length),
+        (pageSize ?? visibleIndexes.length),
       )
       .map((itemIx) => {
         if (returnProps) {
