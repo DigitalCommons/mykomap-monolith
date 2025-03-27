@@ -7,9 +7,8 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDirectoryOptions } from "./directorySlice";
-import { selectFeatures } from "../../map/mapSlice";
-import { selectVisibleIndexes } from "../searchPanel/searchSlice";
-import { searchDataset } from "../../../services";
+import { getTotals } from "../../../services";
+import { getDatasetId } from "../../../utils/window-utils";
 
 const StyledDirectoryPanel = styled(Box)(() => ({
   width: "100%",
@@ -25,12 +24,12 @@ const StyledDirectoryPanel = styled(Box)(() => ({
 }));
 
 const fetchResults = async () => {
-  const response = await searchDataset({
-    params: { datasetId: "delhi" },
-    query: {
-      returnProps: ["country_id"],
-    },
-  });
+  const datasetId = getDatasetId();
+  if (datasetId === null) {
+    return { failed: true };
+  }
+
+  const response = await getTotals({ params: { datasetId } });
 
   return response.body;
 };
@@ -40,17 +39,12 @@ const DirectoryPanel = () => {
 
   const directoryOptions = useAppSelector(selectDirectoryOptions);
   const activeValue = directoryOptions.value;
-
-  const [resultsTotals, setResultsTotals] = useState<number[]>([]);
+  const [resultsTotals, setResultsTotals] = useState<any>();
 
   useEffect(() => {
-    //this is where i will manipulate my list of features
-
-    fetchResults().then((results) => {
-      console.log(results);
+    fetchResults().then((results: any) => {
+      if (!results.failed) setResultsTotals(results);
     });
-
-    setResultsTotals([8, 8, 8, 8, 8, 8, 8, 8, 8]);
   }, []);
 
   return (
@@ -64,7 +58,7 @@ const DirectoryPanel = () => {
               propId={directoryOptions.id}
               {...option}
               active={option.value === activeValue}
-              resultsTotal={resultsTotals[i]}
+              resultsTotal={resultsTotals[option.value]}
             />
           ))}
         </List>

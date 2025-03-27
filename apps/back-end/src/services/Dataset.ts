@@ -111,10 +111,19 @@ export class Dataset {
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");
 
   getTotals = () => {
-    const totals = {};
+    const totals: any = {
+      any: 0
+    };
 
-    this.searchablePropValues.forEach((itemValues, itemIx) => {
-      console.log(itemValues, itemIx)
+    this.searchablePropValues.forEach((itemValues) => {
+      if (totals[itemValues[1] as string]) {
+        totals[itemValues[1] as string] = totals[itemValues[1] as string] + 1;
+      }
+      else {
+        totals[itemValues[1] as string] = 1;
+      }
+
+      totals.any = totals.any + 1;
     })
 
     return totals;
