@@ -12,8 +12,6 @@ import {
   selectPanelOpen,
   selectResultsPanelOpen,
   closeResultsPanel,
-  closePanel,
-  setSelectedTab,
 } from "../panelSlice";
 import { clearSearch } from "../searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
@@ -93,15 +91,11 @@ const ResultsPanel = () => {
   };
 
   const handlePanelClose = () => {
-    if (!isMedium) dispatch(setSelectedTab(0));
-    dispatch(closePanel());
     dispatch(closeResultsPanel());
     console.log("panelOpen", panelOpen);
   };
 
   const handleClearSearch = () => {
-    console.log("Clear search");
-    if (!isMedium) dispatch(setSelectedTab(0));
     dispatch(closeResultsPanel());
     dispatch(clearSearch());
   };
