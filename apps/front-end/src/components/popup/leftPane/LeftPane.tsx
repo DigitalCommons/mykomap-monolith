@@ -86,6 +86,12 @@ const StyledContentContainer = styled(Box)(() => ({
   },
 }));
 
+const StyledDomainListsContainer = styled(Box)(() => ({
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+}));
+
 const LeftPane = ({
   name,
   primary_activity,
@@ -97,6 +103,18 @@ const LeftPane = ({
   const cleanDescription = decode(
     description?.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
   )?.trim();
+
+  const MAX_DOMAIN_LENGTH = 25;
+  const DOMAINS_SINGLE_COlUMN = 9;
+
+  //split into 2 columns if more than 10 domains
+  const dcDomains =
+    dc_domains.length > DOMAINS_SINGLE_COlUMN
+      ? [
+          dc_domains.slice(0, Math.ceil(dc_domains.length / 2)),
+          dc_domains.slice(Math.ceil(dc_domains.length / 2)),
+        ]
+      : [dc_domains];
 
   return (
     <StyledLeftPane>
@@ -138,27 +156,34 @@ const LeftPane = ({
             >
               {t("domains")}
             </Typography>
-            <List>
-              {dc_domains?.map((dcDomain) => (
-                <ListItem key={dcDomain}>
-                  <Typography variant="body1">
-                    <Link
-                      href={`https://${dcDomain}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      sx={{
-                        color: "var(--color-text)",
-                        textDecoration: "underline",
-                        padding: "0 !important",
-                        fontSize: "var(--font-size-xsmall)",
-                      }}
-                    >
-                      {dcDomain}
-                    </Link>
-                  </Typography>
-                </ListItem>
+            <StyledDomainListsContainer>
+              {dcDomains.map((domains) => (
+                <List>
+                  {domains?.map((dcDomain) => (
+                    <ListItem key={dcDomain}>
+                      <Typography variant="body1">
+                        <Link
+                          href={`https://${dcDomain}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          sx={{
+                            color: "var(--color-text)",
+                            textDecoration: "underline",
+                            padding: "0 !important",
+                            fontSize: "var(--font-size-xsmall)",
+                          }}
+                        >
+                          {dcDomain.length > MAX_DOMAIN_LENGTH &&
+                          dc_domains.length > DOMAINS_SINGLE_COlUMN
+                            ? dcDomain.slice(0, MAX_DOMAIN_LENGTH) + "(...)"
+                            : dcDomain}
+                        </Link>
+                      </Typography>
+                    </ListItem>
+                  ))}
+                </List>
               ))}
-            </List>
+            </StyledDomainListsContainer>
           </Box>,
           dc_domains,
         )}
