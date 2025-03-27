@@ -15,12 +15,34 @@ import {
 } from "../panelSlice";
 import { clearSearch } from "../searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
+import { keyframes } from "@emotion/react";
 
-const StyledResultsPanel = styled(Drawer)(() => ({
+const slideIn = keyframes`
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+`;
+
+const slideOut = keyframes`
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+`;
+
+const StyledResultsPanel = styled(Drawer)<{
+  onClosePanel?: boolean;
+}>(({ onClosePanel }) => ({
   width: "100%",
   height: "100vh",
   position: "relative",
   overflow: "visible",
+
   "& .MuiDrawer-paper": {
     width: "100%",
     boxSizing: "border-box",
@@ -28,10 +50,13 @@ const StyledResultsPanel = styled(Drawer)(() => ({
     visibility: "visible !important",
     overflow: "visible",
     boxShadow: "0 0 20px rgba(0, 0, 0, 0.16)",
+    animation: `${onClosePanel ? slideOut : slideIn} 0.3s ease forwards`,
   },
+
   "@media (min-width: 897px)": {
     width: "calc(var(--panel-width-desktop) + 30px)",
     transform: "translateX(var(--panel-width-desktop))",
+
     "& .MuiDrawer-paper": {
       width: "var(--panel-width-desktop)",
     },
@@ -77,36 +102,33 @@ const ResultsPanel = () => {
 
   return (
     <>
-      {panelOpen &&
-        resultsPanelOpen && ( // Adding this stops the drawer transition working
-          <StyledResultsPanel
-            open={panelOpen && resultsPanelOpen}
-            variant="persistent"
-            anchor="left"
+      {panelOpen && resultsPanelOpen && (
+        <StyledResultsPanel
+          open={panelOpen && resultsPanelOpen}
+          onClosePanel={!(panelOpen && resultsPanelOpen)}
+          variant="persistent"
+          anchor="left"
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+            }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
-              }}
-            >
-              <StyledButtonContainer>
-                <StandardButton buttonAction={handleClearSearch}>
-                  {t("clear_search")}
-                </StandardButton>
-                {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
-              </StyledButtonContainer>
-              <Results />
-            </Box>
-            {isMedium && (
-              <PanelToggleButton
-                buttonAction={handleToggle}
-                isOpen={panelOpen}
-              />
-            )}
-          </StyledResultsPanel>
-        )}
+            <StyledButtonContainer>
+              <StandardButton buttonAction={handleClearSearch}>
+                {t("clear_search")}
+              </StandardButton>
+              {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
+            </StyledButtonContainer>
+            <Results />
+          </Box>
+          {isMedium && (
+            <PanelToggleButton buttonAction={handleToggle} isOpen={panelOpen} />
+          )}
+        </StyledResultsPanel>
+      )}
     </>
   );
 };

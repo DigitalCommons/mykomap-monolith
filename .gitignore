@@ -26,3 +26,7 @@ dist-ssr
 site
 
 *storybook.log
+
+
+# MS local test files
+ResultsPanel copy 2.tsx
