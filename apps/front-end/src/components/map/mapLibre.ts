@@ -231,8 +231,12 @@ export const createMap = (
     });
     spiderfy.applyTo("clusters");
 
+    type ClusterClickEvent = MapLibreGL.MapMouseEvent & {
+      itemIx?: number;
+      openPopupRecursive?: boolean;
+    };
     // inspect a cluster on click
-    map.on("click", "clusters", async (e) => {
+    map.on("click", "clusters", async (e: ClusterClickEvent) => {
       const clusterFeature: GeoJSON.Feature<GeoJSON.Point> =
         map.queryRenderedFeatures(e.point, {
           layers: ["clusters"],
@@ -249,15 +253,38 @@ export const createMap = (
         clusterFeature.properties?.cluster_id,
       );
 
-      if (map.getZoom() >= 18 && clusterExpansionZoom > 18) {
-        // This is a cluster that needs to be spiderfied, so don't need to fly anymore
-        return;
+      if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
+        map.flyTo({
+          center: features[0].geometry.coordinates as LngLatLike,
+          zoom: clusterExpansionZoom ?? undefined,
+          speed: 1.5,
+        });
       }
-      map.flyTo({
-        center: features[0].geometry.coordinates as LngLatLike,
-        zoom: clusterExpansionZoom ?? undefined,
-        speed: 1.5,
-      });
+
+      //this click came from the flyToAndOpenPopupRecursive function
+      if (e.openPopupRecursive) {
+        const { leaves } = spiderfy.spiderifiedCluster;
+
+        const index = leaves.findIndex((leaf: any) => leaf.properties.ix === e.itemIx);
+
+        const totalPoints = leaves.length;
+
+        const theta = (Math.PI * 2) / totalPoints;
+        const angle = theta * index;
+
+        const legLength = totalPoints <= 10 ? 50 : 50 + index * ((Math.PI * 2) * 2.2) / angle;
+        const x = legLength * Math.cos(angle);
+        const y = legLength * Math.sin(angle);
+
+        openPopup(
+          map,
+          e.itemIx as number,
+          e.lngLat,
+          popupCreatedCallback,
+          popupClosedCallback,
+          [x, y]
+        );
+      }
     });
 
     // When a click event occurs on a feature in the unclustered-point layer, open a popup at the
@@ -306,14 +333,11 @@ export const createMap = (
         return;
       }
 
-      const getFeatureIfVisible = (ix: number) =>
-        map
-          .queryRenderedFeatures(undefined, {
-            layers: ["unclustered-point"],
-          })
-          .find(
-            (f) => f?.properties?.ix === ix,
-          ) as GeoJSON.Feature<GeoJSON.Point>;
+      const getFeatureIfVisible = (ix: number) => {
+        const features = map.queryRenderedFeatures();
+
+        return features.find(feature => feature?.properties?.ix === ix) as GeoJSON.Feature<GeoJSON.Point>;
+      }
 
       let zoom = 10; // start with this zoom, then hone in
       let spiderfied = false; // spiderfy when we get into the condition
@@ -338,15 +362,18 @@ export const createMap = (
                 flyToThenOpenPopupRecursive();
               } else {
                 console.error(
-                  "Maybe the feature is in a cluster and needs to be spiderfied.",
+                  "Maybe the feature is in a cluster and needs to be spiderfied."
                 );
-                // spiderfy the cluster
-                map.fire("click", {
-                  lngLat: location,
-                });
-
                 if (!spiderfied) {
-                  flyToThenOpenPopupRecursive();
+                  // spiderfy the cluster
+                  // the next part is the popup opening
+                  // handled in the cluster click event listener
+
+                  map.fire("click", {
+                    openPopupRecursive: true,
+                    lngLat: location,
+                    itemIx
+                  });
                   spiderfied = true;
                 }
               }
