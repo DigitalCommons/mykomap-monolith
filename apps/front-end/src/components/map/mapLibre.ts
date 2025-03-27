@@ -181,10 +181,6 @@ export const createMap = (
         const coordinates = feature.geometry.coordinates.slice();
         const itemIx = feature.properties?.ix;
 
-        if (feature.properties) {
-          feature.properties.leafOffset = leafOffset;
-        }
-
         if (popup?.isOpen() && popupIx === itemIx) {
           console.log(
             `Popup for item @${itemIx} already open so toggle closed`,
@@ -194,8 +190,6 @@ export const createMap = (
           popup = undefined;
           return;
         }
-
-        console.log(leafOffset)
 
         map
           .easeTo({
@@ -259,7 +253,7 @@ export const createMap = (
         clusterFeature.properties?.cluster_id,
       );
 
-      if (map.getZoom() < 18 && clusterExpansionZoom >= 18) {
+      if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
         map.flyTo({
           center: features[0].geometry.coordinates as LngLatLike,
           zoom: clusterExpansionZoom ?? undefined,
@@ -277,8 +271,10 @@ export const createMap = (
 
         const theta = (Math.PI * 2) / totalPoints;
         const angle = theta * index;
-        const x = 50 * Math.cos(angle);
-        const y = 50 * Math.sin(angle);
+
+        const legLength = totalPoints <= 10 ? 50 : 50 + index * ((Math.PI * 2) * 2.2) / angle;
+        const x = legLength * Math.cos(angle);
+        const y = legLength * Math.sin(angle);
 
         openPopup(
           map,
@@ -347,7 +343,7 @@ export const createMap = (
       let spiderfied = false; // spiderfy when we get into the condition
       const maxZoom = 18; // once we get to this zoom, stop
 
-      const flyToThenOpenPopupRecursive = (signature = "") => {
+      const flyToThenOpenPopupRecursive = () => {
         const feature = getFeatureIfVisible(itemIx);
         if (!feature) {
           console.info(`Feature @${itemIx} not visible, flying to it`);
