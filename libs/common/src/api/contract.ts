@@ -95,6 +95,7 @@ const PropSpec = z.discriminatedUnion("type", [
 ]);
 const PropSpecs = z.record(z.string(), PropSpec);
 
+const TotalsData = z.record(z.string(), z.number());
 const ConfigData = z.object({
   prefixes: PrefixIndex,
   vocabs: VocabIndex,
@@ -243,6 +244,28 @@ export const contract = c.router({
       }),
       404: ErrorInfo.openapi({
         description: "no such dataset or dataset item",
+      }),
+    },
+  },
+  getTotals: {
+    method: "GET",
+    path: "/dataset/:datasetId/totals",
+    summary: "get the total number of results under each item in the directory",
+    description: "Gets the total number of results under each item in the directory.",
+    pathParams: z.object({
+      datasetId: DatasetId.openapi({
+        description: "uniquely specifies the dataset wanted",
+      }),
+    }),
+    responses: {
+      200: TotalsData.openapi({
+        description: "the total result numbers for a map",
+      }),
+      400: ErrorInfo.openapi({
+        description: "bad input parameter",
+      }),
+      404: ErrorInfo.openapi({
+        description: "no such dataset",
       }),
     },
   },

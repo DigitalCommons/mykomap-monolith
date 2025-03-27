@@ -12,6 +12,7 @@ export const {
   searchDataset,
   getDatasetItem,
   getVersion,
+  getTotals
 } = client;
 
 export type Config = ClientInferResponseBody<typeof contract.getConfig, 200>;

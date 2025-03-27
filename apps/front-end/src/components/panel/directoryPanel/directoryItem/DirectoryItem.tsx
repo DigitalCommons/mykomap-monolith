@@ -59,8 +59,13 @@ const DirectoryItem = ({
 
   return (
     <ListItem>
-      <StyledButton role="button" active={+active} onClick={handleClick}>
-        {label} ({resultsTotal})
+      <StyledButton
+        role="button"
+        active={+active}
+        disabled={!resultsTotal}
+        onClick={handleClick}
+      >
+        {label} ({resultsTotal ? resultsTotal : 0})
       </StyledButton>
     </ListItem>
   );
