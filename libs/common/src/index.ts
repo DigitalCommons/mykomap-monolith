@@ -7,3 +7,4 @@ export * from "./text-search.js";
 export * from "./prop-specs.js";
 export * from "./prop-defs.js";
 export * from "./iso639-1.js";
+export * from "./build-info.js";

@@ -102,12 +102,12 @@ const ConfigData = z.object({
   languages: z.array(Iso639Set1Code).nonempty(),
   ui: z.object({ directory_panel_field: z.string() }),
 });
-const VersionInfo = z.object({
+const BuildInfo = z.object({
   name: z.string(),
   buildTime: z.string().datetime({ offset: false }),
-  version: z.array(z.number()),
+  version: z.array(z.number()).min(1).readonly(),
   commitDesc: z.string(),
-  nodeEnv: z.enum(["production", "development"]),
+  nodeEnv: z.string(),
 });
 const ErrorInfo = z.object({ message: z.string() }).passthrough();
 
@@ -132,7 +132,7 @@ export const schemas = {
   PropSpecs,
   QName,
   ValuePropSpec,
-  VersionInfo,
+  BuildInfo,
   VocabDef,
   VocabIndex,
   VocabPropSpec,
@@ -302,8 +302,8 @@ export const contract = c.router({
     description:
       "Obtains version information about the backend Mykomap server, in the form of a JSON object",
     responses: {
-      200: VersionInfo.openapi({
-        description: "information about the current Mykomap server version",
+      200: BuildInfo.openapi({
+        description: "information about the current Mykomap server build",
       }),
     },
   },
