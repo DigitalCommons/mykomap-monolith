@@ -4,7 +4,7 @@ import { getDatasetId } from "../../utils/window-utils";
 import { searchDataset } from "../../services";
 import { SearchSliceState } from "./searchPanel/searchSlice";
 
-const RESULTS_PER_PAGE = 10;
+export const RESULTS_PER_PAGE = 50;
 
 interface PanelSliceState {
   selectedTab: number;
@@ -68,8 +68,8 @@ export const panelSlice = createAppSlice({
           query: {
             ...search.searchQuery,
             returnProps: ["name"],
-            page: 0, // TODO: implement pagination. For now, just fetch first 200 results
-            pageSize: 200, // RESULTS_PER_PAGE,
+            page: page,
+            pageSize: RESULTS_PER_PAGE
           },
         });
         if (response.status === 200) {
@@ -99,7 +99,7 @@ export const panelSlice = createAppSlice({
           console.error("Error fetching search results", action.payload);
         },
       },
-    ),
+    )
   }),
   selectors: {
     selectSelectedTab: (panel) => panel.selectedTab,
