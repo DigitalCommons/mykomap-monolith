@@ -14,6 +14,7 @@ interface DirectoryItemProps {
   value: string;
   label: string;
   active: boolean;
+  resultsTotal: number;
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
 }
 
@@ -43,6 +44,7 @@ const DirectoryItem = ({
   value,
   label,
   active,
+  resultsTotal,
   onClick,
 }: DirectoryItemProps) => {
   const dispatch = useAppDispatch();
@@ -57,8 +59,13 @@ const DirectoryItem = ({
 
   return (
     <ListItem>
-      <StyledButton role="button" active={+active} onClick={handleClick}>
-        {label}
+      <StyledButton
+        role="button"
+        active={+active}
+        disabled={!resultsTotal}
+        onClick={handleClick}
+      >
+        {label} ({resultsTotal ? resultsTotal : 0})
       </StyledButton>
     </ListItem>
   );

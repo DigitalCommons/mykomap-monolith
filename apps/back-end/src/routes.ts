@@ -7,6 +7,7 @@ import {
   getDatasetConfig,
   getDatasetItem,
   getDatasetLocations,
+  getTotals,
   initDatasets,
   searchDataset,
 } from "./services/datasetService.js";
@@ -51,7 +52,7 @@ export function MykomapRouter(
   if (!fs.existsSync(opts.mykomap.dataRoot))
     throw new Error(
       `the dataRoot plugin option is set but refers to a non-existing path: ` +
-        `'${opts.mykomap.dataRoot}'.`,
+      `'${opts.mykomap.dataRoot}'.`,
     );
 
   console.log("Initialising datasets...");
@@ -99,6 +100,12 @@ export function MykomapRouter(
       const item = getDatasetItem(datasetId, itemIx);
 
       return { status: 200, body: item };
+    },
+
+    getTotals: async ({ params: { datasetId } }) => {
+      const body = getTotals(datasetId);
+
+      return { status: 200, body };
     },
 
     getConfig: async ({ params: { datasetId } }) => {
