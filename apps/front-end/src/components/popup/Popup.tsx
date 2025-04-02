@@ -24,6 +24,9 @@ const StyledPopup = styled(Box)(({ theme }) => ({
   position: "relative",
   textAlign: "left",
   overflowY: "auto",
+  "@media (min-width: 400px)": {
+    width: 380
+  },
   "@media (min-width: 768px)": {
     width: "100%",
     height: "auto",

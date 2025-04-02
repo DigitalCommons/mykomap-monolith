@@ -107,9 +107,9 @@ const LeftPane = ({
   const MAX_DOMAIN_LENGTH = 25;
   const DOMAINS_SINGLE_COlUMN = 9;
 
-  //split into 2 columns if more than 10 domains
+  //split into 2 columns if more than 10 domains and there's room to render
   const dcDomains =
-    dc_domains.length > DOMAINS_SINGLE_COlUMN
+    dc_domains.length > DOMAINS_SINGLE_COlUMN && window.innerWidth >= 400
       ? [
           dc_domains.slice(0, Math.ceil(dc_domains.length / 2)),
           dc_domains.slice(Math.ceil(dc_domains.length / 2)),
@@ -175,7 +175,7 @@ const LeftPane = ({
                         >
                           {dcDomain.length > MAX_DOMAIN_LENGTH &&
                           dc_domains.length > DOMAINS_SINGLE_COlUMN
-                            ? dcDomain.slice(0, MAX_DOMAIN_LENGTH) + "(...)"
+                            ? dcDomain.slice(0, MAX_DOMAIN_LENGTH - 5) + "(...)"
                             : dcDomain}
                         </Link>
                       </Typography>
