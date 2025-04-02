@@ -4,6 +4,7 @@ import _ from "lodash";
 import { z } from "zod";
 
 import {
+  Dictionary,
   PropDefs,
   PropDefsFactory,
   schemas,
@@ -111,19 +112,15 @@ export class Dataset {
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");
 
   getTotals = () => {
-    const totals: any = {
+    const totals: Dictionary<number> = {
       any: 0
     };
 
     this.searchablePropValues.forEach((itemValues) => {
-      if (totals[itemValues[1] as string]) {
-        totals[itemValues[1] as string] = totals[itemValues[1] as string] + 1;
-      }
-      else {
-        totals[itemValues[1] as string] = 1;
-      }
-
-      totals.any = totals.any + 1;
+      const label = itemValues[1];
+      if (typeof label !== "string") return;
+      totals[label] = 1 + (totals[label] ?? 0);
+      totals.any = 1 + (totals.any ?? 0);
     })
 
     return totals;
