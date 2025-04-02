@@ -175,7 +175,7 @@ const LeftPane = ({
                         >
                           {dcDomain.length > MAX_DOMAIN_LENGTH &&
                           dc_domains.length > DOMAINS_SINGLE_COlUMN
-                            ? dcDomain.slice(0, MAX_DOMAIN_LENGTH) + "(...)"
+                            ? dcDomain.slice(0, MAX_DOMAIN_LENGTH - 5) + "(...)"
                             : dcDomain}
                         </Link>
                       </Typography>
