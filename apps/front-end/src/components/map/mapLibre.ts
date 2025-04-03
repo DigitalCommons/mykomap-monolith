@@ -265,14 +265,17 @@ export const createMap = (
       if (e.openPopupRecursive) {
         const { leaves } = spiderfy.spiderifiedCluster;
 
-        const index = leaves.findIndex((leaf: any) => leaf.properties.ix === e.itemIx);
+        const index = leaves.findIndex(
+          (leaf: any) => leaf.properties.ix === e.itemIx,
+        );
 
         const totalPoints = leaves.length;
 
         const theta = (Math.PI * 2) / totalPoints;
         const angle = theta * index;
 
-        const legLength = totalPoints <= 10 ? 50 : 50 + index * ((Math.PI * 2) * 2.2) / angle;
+        const legLength =
+          totalPoints <= 10 ? 50 : 50 + (index * (Math.PI * 2 * 2.2)) / angle;
         const x = legLength * Math.cos(angle);
         const y = legLength * Math.sin(angle);
 
@@ -282,7 +285,7 @@ export const createMap = (
           e.lngLat,
           popupCreatedCallback,
           popupClosedCallback,
-          [x, y]
+          [x, y],
         );
       }
     });
@@ -336,8 +339,10 @@ export const createMap = (
       const getFeatureIfVisible = (ix: number) => {
         const features = map.queryRenderedFeatures();
 
-        return features.find(feature => feature?.properties?.ix === ix) as GeoJSON.Feature<GeoJSON.Point>;
-      }
+        return features.find(
+          (feature) => feature?.properties?.ix === ix,
+        ) as GeoJSON.Feature<GeoJSON.Point>;
+      };
 
       let zoom = 10; // start with this zoom, then hone in
       let spiderfied = false; // spiderfy when we get into the condition
@@ -362,7 +367,7 @@ export const createMap = (
                 flyToThenOpenPopupRecursive();
               } else {
                 console.error(
-                  "Maybe the feature is in a cluster and needs to be spiderfied."
+                  "Maybe the feature is in a cluster and needs to be spiderfied.",
                 );
                 if (!spiderfied) {
                   // spiderfy the cluster
@@ -372,7 +377,7 @@ export const createMap = (
                   map.fire("click", {
                     openPopupRecursive: true,
                     lngLat: location,
-                    itemIx
+                    itemIx,
                   });
                   spiderfied = true;
                 }

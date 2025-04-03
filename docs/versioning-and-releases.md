@@ -86,8 +86,9 @@ integers>`. "Semantic versioning" boils down to:
 > 3. PATCH version when you make backward compatible bug fixes
 >
 > Additional labels for pre-release and build metadata are available
-> as extensions to the `MAJOR.MINOR.PATCH` format. _[Presumably as
-> > supplemental dotted integers, in our scheme]_
+> as extensions to the `MAJOR.MINOR.PATCH` format. \_[Presumably as
+>
+> > supplemental dotted integers, in our scheme]\_
 
 The current version of Mykomap has a major version of 4, following on
 from previous versions, of which it is an entire rewrite, as well as

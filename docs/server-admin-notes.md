@@ -12,14 +12,13 @@ Check the graphs to see if the server is under heavy load CPU/IO/Network, has st
 
 If it's a load issue, there's a "Rescale" tab with which we can upgrade the server to more CPU, Memory and disk space. This should be quick, but it will require a reboot.
 
-If it's something which has run amok on the server, it *may* be resolved by a reboot. Use the reset button on the "Power" tab. However, not if the disks are full, and this can't be determined from the Hetzner console directly.
+If it's something which has run amok on the server, it _may_ be resolved by a reboot. Use the reset button on the "Power" tab. However, not if the disks are full, and this can't be determined from the Hetzner console directly.
 
 Some clues might be available from the server console, which you can open using the link in the "Actions" dropdown for the server on the graph page above. This is like taking a peep at the physical monitor of the server, if it had one. If things are looking normal you'll just see a log-in prompt. But you might find some system log messages there which give you a clue.
 
-
 ## Root console things
 
-At the time of writing, there is no password access to the root (or in fact any) user accounts on the server, so you can't actually log in via the server console. But you can reset the root password on the "Rescue" tab of the Hetzner console, although this will probably trigger a reboot.  However, then you can use that to log into the server console.
+At the time of writing, there is no password access to the root (or in fact any) user accounts on the server, so you can't actually log in via the server console. But you can reset the root password on the "Rescue" tab of the Hetzner console, although this will probably trigger a reboot. However, then you can use that to log into the server console.
 
 Alternatively someone with access can add your SSH public key, if you have one, to `/root/.ssh/authorized_keys`, and then you should be able to ssh in via `root@prod-2.digitalcommons.coop` (insert correct hostname as appropriate)
 
@@ -33,30 +32,29 @@ On the console this can be done by running the command `top`, which will show an
 Tasks: 145 total,   1 running, 144 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  2.9 us,  5.9 sy,  0.0 ni, 91.2 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
 MiB Mem :   7747.9 total,   5298.0 free,    954.0 used,   1496.0 buff/cache
-MiB Swap:      0.0 total,      0.0 free,      0.0 used.   6476.3 avail Mem 
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   6476.3 avail Mem
 
-    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                                                                                                                             
-   4431 root      20   0   16916  10220   8372 S  11.8   0.1   0:00.04 sshd                                                                                                                                                                
-    395 root      19  -1  340468 115548 114352 S   5.9   1.5   0:11.21 systemd-journal                                                                                                                                                     
-      1 root      20   0  100908  11816   8416 S   0.0   0.1   0:03.54 systemd                                                                                                                                                             
-      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd                                                                                                                                                            
-      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp                                                                                                                                                              
-      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp                                                                                                                                                          
-      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 slub_flushwq                                                                                                                                                        
-      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns                                                                                                                                                               
-      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-events_highpri                                                                                                                                         
-     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq                                                                                                                                                        
-     11 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_rude_                                                                                                                                                     
-     12 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_trace                                                                                                                                                     
-     13 root      20   0       0      0      0 S   0.0   0.0   0:00.11 ksoftirqd/0                                                                                                                                                         
-     14 root      20   0       0      0      0 I   0.0   0.0   0:00.37 rcu_sched                                                                                                                                                           
-     15 root      rt   0       0      0      0 S   0.0   0.0   0:00.02 migration/0       
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   4431 root      20   0   16916  10220   8372 S  11.8   0.1   0:00.04 sshd
+    395 root      19  -1  340468 115548 114352 S   5.9   1.5   0:11.21 systemd-journal
+      1 root      20   0  100908  11816   8416 S   0.0   0.1   0:03.54 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp
+      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 slub_flushwq
+      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-events_highpri
+     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq
+     11 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_rude_
+     12 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_trace
+     13 root      20   0       0      0      0 S   0.0   0.0   0:00.11 ksoftirqd/0
+     14 root      20   0       0      0      0 I   0.0   0.0   0:00.37 rcu_sched
+     15 root      rt   0       0      0      0 S   0.0   0.0   0:00.02 migration/0
 ```
 
-The processes are sorted by load. You can switch it to sort by memory use by pressing the `m` key. The `?` key will show brief overview of the keys you can press. 
+The processes are sorted by load. You can switch it to sort by memory use by pressing the `m` key. The `?` key will show brief overview of the keys you can press.
 
 To exit, use `q`.
-
 
 ### Disk full?
 
@@ -76,9 +74,9 @@ tmpfs           775M     0  775M   0% /run/user/7003
 tmpfs           775M     0  775M   0% /run/user/7002
 ```
 
-This tells us that the main disk `/` is 75% full, with 20G available.  The other partitions can mostly be ignored. 
+This tells us that the main disk `/` is 75% full, with 20G available. The other partitions can mostly be ignored.
 
-If it's near 100% then the server is in trouble. Fixing that requires either increasing the disk size or finding some garbage or otherwise deletable files to remove.  If your technical skill is low, using the "Rescale" option mentioned in the section above is probably the safest option.  However, typical places to look are in `/var/` - safe things to delete will be in directories named `tmp` `temp` `cache` or similar. Avoid deleting logs unless you really have to, but that's another thing which can fill up.  E.g.
+If it's near 100% then the server is in trouble. Fixing that requires either increasing the disk size or finding some garbage or otherwise deletable files to remove. If your technical skill is low, using the "Rescale" option mentioned in the section above is probably the safest option. However, typical places to look are in `/var/` - safe things to delete will be in directories named `tmp` `temp` `cache` or similar. Avoid deleting logs unless you really have to, but that's another thing which can fill up. E.g.
 
 ```
 root@dev-2:~# du -sh /var/*
@@ -149,8 +147,8 @@ There's also a `halt` command, but the server will stay off if you use that.
 
 Usually devs do this when logged in as the user running the application - in this case, on dev-2 and prod-2, this will be `broccoli`.
 
-
 This shows (a simple case of) how the server is rebuilt. For more and more accurate details, see the [mykomap-monolith deployment documentation](https://digitalcommons.github.io/mykomap-monolith/deployment/).
+
 ```
 root@dev-2:~# su - broccoli               # switch from root to the broccoli user
 
@@ -240,4 +238,3 @@ root@dev-2:~# systemctl --machine broccoli@.host --user  status mykomap-backend
              ├─4242 sh -c "node ./start.js"
              └─4243 node ./start.js
 ```
-
