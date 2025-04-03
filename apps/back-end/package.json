@@ -1,6 +1,6 @@
 {
   "name": "@mykomap/back-end",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Server API for Mykomap application clients",
   "author": "Digital Commons Cooperative",
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
@@ -60,7 +60,7 @@
   },
   "config": {
     "sentry": {
-      "release": "@mykomapback-end@4.0.0"
+      "release": "@mykomapback-end@4.1.0"
     }
   }
 }

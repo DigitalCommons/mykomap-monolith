@@ -1,6 +1,6 @@
 {
   "name": "@mykomap/common",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Common definitions shared by @mykomap/front-end and @mykomap/back-end",
   "author": "Digital Commons Cooperative",
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
@@ -33,7 +33,7 @@
   },
   "config": {
     "sentry": {
-      "release": "@mykomapcommon@4.0.0"
+      "release": "@mykomapcommon@4.1.0"
     }
   }
 }

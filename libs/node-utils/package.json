@@ -1,6 +1,6 @@
 {
   "name": "@mykomap/node-utils",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "NodeJS shared definitions and utilities Mykomap applications",
   "author": "Digital Commons Cooperative",
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
@@ -31,7 +31,7 @@
   },
   "config": {
     "sentry": {
-      "release": "@mykomapnode-utils@4.0.0"
+      "release": "@mykomapnode-utils@4.1.0"
     }
   }
 }

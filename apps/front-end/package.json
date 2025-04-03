@@ -1,6 +1,6 @@
 {
   "name": "@mykomap/front-end",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "A React web application for mapping Solidarity Economy organisations",
   "author": "Digital Commons Cooperative",
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
@@ -93,7 +93,7 @@
   },
   "config": {
     "sentry": {
-      "release": "@mykomapfront-end@4.0.0"
+      "release": "@mykomapfront-end@4.1.0"
     }
   }
 }
