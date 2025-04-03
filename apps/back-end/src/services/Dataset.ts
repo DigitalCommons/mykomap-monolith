@@ -4,7 +4,6 @@ import _ from "lodash";
 import { z } from "zod";
 
 import {
-  Dictionary,
   PropDefs,
   PropDefsFactory,
   schemas,
@@ -112,8 +111,8 @@ export class Dataset {
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");
 
   getTotals = () => {
-    const totals: Dictionary<number> = {
-      any: 0
+    const totals: Record<string, number> = {
+      any: 0,
     };
 
     this.searchablePropValues.forEach((itemValues) => {
