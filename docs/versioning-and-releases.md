@@ -73,6 +73,9 @@ To facilitate that:
 
 ## Process
 
+This outlines a process for versioning and releases. The concepts are still
+important - however, an `npm` run-script has been added to help automate this, see
+
 ### Tagging releases
 
 The remainder of this process assumes that commits the repository will
@@ -128,6 +131,51 @@ So to sum up, I think we should:
   production
 - Use the semantic versioning rules above to guide the selection of
   these versions
+
+#### Automation of release tagging: `npm run release`
+
+The TL:DR; here is that to create a release with a tagged commit, you can now
+run the following from the mykomap-monolith project root directory:
+
+    # To tag a new release with a sem-ver v4.1.3:
+    npm run release v4.1.3
+
+...Which will tag the repository and rebuild it, updating the `package.json` and
+`package-lock.json` files for you, then squash the result into one commit tagged
+`v4.1.3`. After which, you can manually push the result:
+
+    git push
+    git push --tags
+
+...Or, inspect and delete the temporary branch created:
+
+    git branch -D prepare-release-v4.1.3
+
+This automates the manual process, which is roughly as follows. Although note
+that the script intentionally follows a slightly different process involving a
+squash merge, to allow for inspection of failures.
+
+The manual process is:
+
+- Ensure the code builds cleanly:
+  `npm run clean && npm ci && npm run build && npm run test`
+- Ensure any changes are committed, if this succeeds:
+  `git add -u && git commit -m "...your commit message here..."`
+- Tag the commit with the version:
+  `git tag v4.1.3`
+- Rebuild to apply the tags to the `package.json` files:
+  `npm run build`
+- Updateg the `package-lock.json` with the tags too:
+  `npm install --package-lock-only`
+- Commit that to the same commit:
+  `git add -u && git commit --amend -c HEAD`
+
+The reason these all need to be squashed into the one commit with a tag applied
+is so that GitHub (and possibly other usages) will build and archive the actual
+deployable code for that version. If in practise a deployable release needs
+extra changes following the tagged release commit (as they do in practise)
+they'll be omitted from the release archive created by GitHub if they aren't
+squashed into it.
 
 #### Reflections
 
