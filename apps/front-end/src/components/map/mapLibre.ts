@@ -413,7 +413,7 @@ export const createMap = (
     });
 
     map.on("moveend", () => {
-      console.log("aaaaa", map.getZoom(), map.getBounds());
+      // console.debug("zoom / bounds", map.getZoom(), map.getBounds());
     });
 
     map.on("zoomstart", () => {
