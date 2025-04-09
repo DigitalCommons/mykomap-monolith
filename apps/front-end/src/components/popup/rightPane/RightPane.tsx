@@ -10,13 +10,13 @@ import { renderIfData } from "../../../utils/jsx-utils";
 interface RightPaneProps {
   address?: string;
   website: string[];
-  organisational_structure?: string;
-  typology?: string;
-  data_sources: string[];
+  // organisational_structure?: string;
+  // typology?: string;
+  // data_sources: string[];
 }
 
 const StyledRightPane = styled(Box)(() => ({
-  backgroundColor: "var(--color-secondary)",
+  backgroundColor: "var(--color-secondary-light)", // changed this so that this colour fills the whole right pane. TODO: check if this breaks CWM
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
@@ -46,6 +46,7 @@ const StyledTopBox = styled(Box)(() => ({
 }));
 
 const StyledBottomBox = styled(Box)(() => ({
+  backgroundColor: "var(--color-secondary)",
   margin: "var(--spacing-large) var(--spacing-xlarge) var(--spacing-xlarge)",
   "& h4, & p, & li": {
     fontSize: "var(--font-size-small)",
@@ -86,9 +87,9 @@ const StyledBottomBox = styled(Box)(() => ({
 const RightPane = ({
   address,
   website,
-  organisational_structure,
-  typology,
-  data_sources,
+  // organisational_structure,
+  // typology,
+  // data_sources,
 }: RightPaneProps) => {
   const { t } = useTranslation();
 
@@ -134,7 +135,7 @@ const RightPane = ({
         </StyledTopBox>,
         [address, ...website],
       )}
-      <StyledBottomBox>
+      {/* <StyledBottomBox>
         {renderIfData(
           <Box
             sx={{
@@ -178,9 +179,10 @@ const RightPane = ({
           </Box>,
           data_sources,
         )}
-      </StyledBottomBox>
+      </StyledBottomBox> */}
     </StyledRightPane>,
-    [address, ...website, organisational_structure, typology, ...data_sources],
+    [address, ...website],
+    // [address, ...website, organisational_structure, typology, ...data_sources],
   );
 };
 
