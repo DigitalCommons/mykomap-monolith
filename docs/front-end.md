@@ -1,5 +1,7 @@
 # Order of data fetching / what we implement
 
+TODO: We need to tidy up this file into an actual doc
+
 - [x] getLocations (formerly getDataset) API request
 - [x] Render markers, requires:
   - array of locations
