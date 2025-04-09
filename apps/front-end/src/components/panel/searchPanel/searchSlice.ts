@@ -163,9 +163,10 @@ export const selectFilterOptions = createSelector(
           title: title,
           options: [
             { value: PROP_VALUE_ANY, label: `- ${i18n.t("any")} -` },
-            ...Object.entries(vocabs[prop.vocabUri][language].terms)
-              .map(([key, value]) => ({ value: key, label: value }))
-              .sort((a, b) => a.label.localeCompare(b.label)), // sort options alphabetically
+            ...Object.entries(vocabs[prop.vocabUri][language].terms).map(
+              ([key, value]) => ({ value: key, label: value }),
+            ),
+            // .sort((a, b) => a.label.localeCompare(b.label)), // sort options alphabetically
           ],
           value: prop.value,
         };

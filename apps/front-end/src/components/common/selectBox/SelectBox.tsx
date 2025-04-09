@@ -66,7 +66,12 @@ const SelectBox = ({
         {...props}
       >
         {options?.map((option) => (
-          <MenuItem key={option.value} value={option.value} role="option">
+          <MenuItem
+            key={option.value}
+            value={option.value}
+            role="option"
+            style={{ whiteSpace: "pre-wrap" }}
+          >
             {option.label}
           </MenuItem>
         ))}

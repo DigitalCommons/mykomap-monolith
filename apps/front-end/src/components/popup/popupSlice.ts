@@ -4,6 +4,7 @@ import { Config, getDatasetItem } from "../../services";
 import { getDatasetId } from "../../utils/window-utils";
 import { InnerPropSpec, PropSpecs } from "@mykomap/common";
 import { configLoaded } from "../../app/configSlice";
+import { Popup } from "maplibre-gl";
 
 interface PopupSliceState {
   isOpen: boolean;
@@ -15,14 +16,15 @@ interface PopupSliceState {
   // be displayed
   data: {
     name: string;
-    primary_activity: string;
+    category: string[];
+    // primary_activity: string;
     description: string;
-    dc_domains: string[];
+    // dc_domains: string[];
     address: string;
     website: string[];
-    organisational_structure: string;
-    typology: string;
-    data_sources: string[];
+    // organisational_structure: string;
+    // typology: string;
+    // data_sources: string[];
   };
 }
 
@@ -34,14 +36,15 @@ const initialState: PopupSliceState = {
   itemProps: {},
   data: {
     name: "",
-    primary_activity: "",
+    category: [],
+    // primary_activity: "",
     description: "",
-    dc_domains: [],
+    // dc_domains: [],
     address: "",
     website: [],
-    organisational_structure: "",
-    typology: "",
-    data_sources: [],
+    // organisational_structure: "",
+    // typology: "",
+    // data_sources: [],
   },
 };
 
@@ -67,18 +70,7 @@ export const popupSlice = createAppSlice({
 
         if (response.status === 200) {
           // Just hardcode types for now
-          return response.body as {
-            id: string;
-            name: string;
-            primary_activity: string;
-            description: string;
-            dc_domains: string[];
-            address: string;
-            website: string[];
-            organisational_structure: string;
-            typology: string;
-            data_sources: string[];
-          };
+          return response.body as PopupSliceState["data"] & { id: string };
         } else {
           return thunkApi.rejectWithValue(
             `Failed search, status code ${response.status}`,
