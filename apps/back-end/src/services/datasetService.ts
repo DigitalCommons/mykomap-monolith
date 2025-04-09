@@ -21,7 +21,7 @@ const datasets: { [id: string]: Dataset } = {};
 export const initDatasets = (dataRoot: string) => {
   const datasetIds = fs
     .readdirSync(path.join(dataRoot, "datasets"), { withFileTypes: true })
-    .filter((f) => f.isDirectory())
+    .filter((f) => f.isDirectory() || f.isSymbolicLink())
     .map((f) => f.name);
 
   console.log("Found datasets:", datasetIds);
