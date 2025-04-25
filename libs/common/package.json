@@ -24,6 +24,7 @@
   "devDependencies": {
     "@mykomap/node-utils": "*",
     "@openapi-ts-rest/cli": "^0.1.2",
+    "@tsconfig/node22": "^22.0.0",
     "rimraf": "^6.0.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.16",

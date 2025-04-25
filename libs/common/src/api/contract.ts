@@ -251,7 +251,8 @@ export const contract = c.router({
     method: "GET",
     path: "/dataset/:datasetId/totals",
     summary: "get the total number of results under each item in the directory",
-    description: "Gets the total number of results under each item in the directory.",
+    description:
+      "Gets the total number of results under each item in the directory.",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
         description: "uniquely specifies the dataset wanted",

@@ -292,10 +292,10 @@ const themeOptions: ThemeOptions = {
     MuiPaginationItem: {
       styleOverrides: {
         text: {
-          color: "#ffffffcc"
-        }
-      }
-    }
+          color: "#ffffffcc",
+        },
+      },
+    },
   },
 };
 

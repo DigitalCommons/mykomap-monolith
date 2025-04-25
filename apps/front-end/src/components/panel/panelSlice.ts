@@ -69,7 +69,7 @@ export const panelSlice = createAppSlice({
             ...search.searchQuery,
             returnProps: ["name"],
             page: page,
-            pageSize: RESULTS_PER_PAGE
+            pageSize: RESULTS_PER_PAGE,
           },
         });
         if (response.status === 200) {
@@ -99,7 +99,7 @@ export const panelSlice = createAppSlice({
           console.error("Error fetching search results", action.payload);
         },
       },
-    )
+    ),
   }),
   selectors: {
     selectSelectedTab: (panel) => panel.selectedTab,

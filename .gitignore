@@ -30,3 +30,5 @@ site
 
 # MS local test files
 ResultsPanel copy 2.tsx
+
+bin/do-release.mjs

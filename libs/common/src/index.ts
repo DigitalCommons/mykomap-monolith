@@ -1,4 +1,4 @@
-import specification from "./api/mykomap-openapi.json";
+import specification from "./api/mykomap-openapi.json" with { type: "json" };
 export { specification };
 export * from "./api/contract.js";
 export * from "./utils.js";

@@ -65,7 +65,7 @@ export const getDatasetLocations = (datasetId: string): fs.ReadStream => {
 export const getTotals = (datasetId: string) => {
   const dataset = getDatasetOrThrow404(contract.getDatasetLocations, datasetId);
   return dataset.getTotals();
-}
+};
 
 export const searchDataset = (
   datasetId: string,

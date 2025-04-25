@@ -1,0 +1,148 @@
+#!/usr/bin/env zx
+
+// Prints the message on stdout, and returns with the given return code
+// (which defaults to 1 - an error code)
+//
+function die(message, rc = 1) {
+  console.error("Stopping: " + message);
+  process.exit(rc);
+}
+
+// Print help, if asked for
+if (argv.help || argv.h) {
+  echo`
+Makes a release, performing the git tagging, rebuilding, and squash gymnastics to
+get all the changes into the one correctly tagged commit. You can then push the
+tag and the commit with \`git push ; git push --tags\`.
+
+The need to squash this into one commit is really to resolve a chicken-and-egg
+situation so that GitHub then creates a release archive with the *actual* code
+which should be deployed, and simply the commit which is tagged, when the
+deployable code is one or two commits after (having been rebuilt with the tag).
+
+The reason why there several commits result without this process is that the
+build needs the tag to pre-exist to infer the build label, and then the code
+with the labelled release needs to be committed, and the package-lock.json
+updated and committed.
+
+Usage:
+    do-release [opts] v<semver>             # release this semantic version
+    do-release -- [opts] --semver v<semver> # ditto
+
+Where [opts] can include:
+    --no-audit     # Don't do an \`npm audit\` check
+
+Where <semver> is a semantic version: a sequence of one or more positive
+integers delimited by periods. See https://semver.org/
+`;
+}
+
+// Attempt to get a semver
+let semver = argv.semver ?? argv._.shift();
+
+// Validate semver
+if (semver == null) die("Mandatory <semver> not given. See documentation.");
+
+semver = String(semver);
+if (!semver.match(/^v\d+([.]\d+)*$/))
+  die(`malformed semver string: "${semver}"`);
+
+const branch = `prepare-release-${semver}`;
+
+const diffstat = await $({ nothrow: true })`git diff --shortstat --exit-code`;
+if (diffstat.exitCode != 0)
+  die(
+    "Dirty repo. Refusing to proceed, you have changes to commit!\n" +
+      diffstat.stdout,
+  );
+
+const ref = $.sync`git rev-parse --abbrev-ref HEAD`.stdout.toString().trim();
+echo`recording start position: ${ref}`;
+
+$.verbose = true;
+
+//await $`npm audit`; // if this fails we need to manually handle this
+
+if (argv.audit && $`npm audit`.exitCode != 0) {
+  die(`Audit failed. Fix it or use the --no-audit flag`);
+}
+
+// Create a branch for the release
+const msg = [`-m`, `**/package.json - update version to ${semver}`];
+let state = "clean";
+
+try {
+  await $`git checkout -b ${branch}`;
+
+  // If we get here, we created a branch
+  state = "branched";
+
+  await $`git commit --allow-empty ${msg}`; // Create an empty commit to tag first
+
+  // If we get here we need to roll-back to ref on failure
+  state = "committed";
+
+  await $`git tag ${semver}`; // Tag it
+
+  // If we get here, we need to delete the tag on failure
+  state = "tagged";
+
+  await $`npm run clean`; // Now rebuild cleanly
+
+  await $`npm ci`;
+
+  await $`npm run build`;
+
+  await $`git add -u`; // Commit anything from that rebuild (i.e. new version attributes)
+
+  await $`git commit ${msg}`;
+
+  await $`npm install --package-lock-only`; // Update the package-lock.json file too
+
+  await $`git add -u`; // And commit it
+
+  await $`git commit -m "package-lock.json"`;
+
+  await $`git checkout ${ref}`; // Squash-merge the result into the parent branch
+
+  await $`git merge --squash ${branch}`;
+
+  await $`git commit ${msg}`;
+
+  await $`git tag -f ${semver}`; // Retag the resulting commit with the original tag
+
+  await $`git branch -D ${branch}`; // Delete the temporary branch
+
+  echo`Done.`;
+} catch (e) {
+  // Roll back all the things in reverse order, depending on the state
+  switch (state) {
+    case "tagged":
+      // Delete the failed tag.
+      if ((await $`git tag -fd ${semver}`.exitCode) == 0) {
+        echo`Failed to delete tag: ${semver}.`;
+      } else {
+        echo`Tag deleted: ${semver}`;
+      }
+    // fall through...
+
+    case "committed":
+      // Roll back to the original commit
+      if ((await $`git checkout -f ${ref}`.exitCode) == 0) {
+        echo`Rolled back to commit: ${ref}.`;
+      } else {
+        echo`Failed to roll back to commit: ${ref}.`;
+      }
+    // fall through...
+
+    case "branched":
+      echo`Temporary branch ${branch} left for inspection.`;
+      echo`You can delete the branch with: \`git -D ${branch}\``;
+  }
+
+  die("Failed.");
+}
+
+// Local Variables:
+// mode: javascript
+// End:

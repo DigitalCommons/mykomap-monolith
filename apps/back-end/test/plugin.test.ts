@@ -35,7 +35,7 @@ describe("getDatasetLocations", () => {
         [150.523326, -34.731596],
         [150.525, -34.735],
         [-0.12783, 51.52],
-        [-0.12783, 51.52]
+        [-0.12783, 51.52],
       ]);
     });
   });
@@ -180,7 +180,7 @@ describe("searchDataset", () => {
           { index: "@3", name: "Kangaroo Koop" },
           { index: "@4", name: "Koala Koop" },
           { index: "@5", name: "North Apples Co-op" },
-          { index: "@6", name: "North Apples Co-op 2" }
+          { index: "@6", name: "North Apples Co-op 2" },
         ]);
       },
     );

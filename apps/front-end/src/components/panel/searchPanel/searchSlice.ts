@@ -154,8 +154,8 @@ export const selectFilterOptions = createSelector(
       .map((prop) => {
         const title = prop.titleUri
           ? vocabs[prop.titleUri.split(":")[0]][language].terms[
-          prop.titleUri.split(":")[1]
-          ]
+              prop.titleUri.split(":")[1]
+            ]
           : vocabs[prop.vocabUri][language].title;
 
         return {
