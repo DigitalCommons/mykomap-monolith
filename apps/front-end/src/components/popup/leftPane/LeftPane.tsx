@@ -10,7 +10,7 @@ import { renderIfData } from "../../../utils/jsx-utils";
 
 interface LeftPaneProps {
   name: string;
-  category: string[];
+  food_system_category: string[];
   // primary_activity?: string;
   description?: string;
   // dc_domains: string[];
@@ -95,7 +95,7 @@ const StyledDomainListsContainer = styled(Box)(() => ({
 
 const LeftPane = ({
   name,
-  category,
+  food_system_category,
   // primary_activity,
   description,
   // dc_domains,
@@ -137,8 +137,8 @@ const LeftPane = ({
               marginBottom: "var(--spacing-medium)",
             }}
           >
-            <Typography variant="h4">{t("category")}</Typography>
-            {category.map((c) => (
+            <Typography variant="h4">{t("food_system_category")}</Typography>
+            {food_system_category.map((c) => (
               <Typography
                 variant="body1"
                 sx={{
@@ -150,7 +150,7 @@ const LeftPane = ({
               </Typography>
             ))}
           </Box>,
-          [...category],
+          [...food_system_category],
         )}
         <Typography variant="body1">{cleanDescription}</Typography>
         {/* {renderIfData(
