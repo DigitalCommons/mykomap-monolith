@@ -16,7 +16,7 @@ interface PopupSliceState {
   // be displayed
   data: {
     name: string;
-    category: string[];
+    food_system_category: string[];
     // primary_activity: string;
     description: string;
     // dc_domains: string[];
@@ -36,7 +36,7 @@ const initialState: PopupSliceState = {
   itemProps: {},
   data: {
     name: "",
-    category: [],
+    food_system_category: [],
     // primary_activity: "",
     description: "",
     // dc_domains: [],
