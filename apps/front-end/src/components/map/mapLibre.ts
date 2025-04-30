@@ -178,7 +178,7 @@ export const createMap = (
     });
 
     map.loadImage(mapMarkerImgUrl).then((image) => {
-      map.addImage("custom-marker", image.data);
+      map.addImage("default-marker", image.data);
     });
 
     map.addLayer({
@@ -187,7 +187,7 @@ export const createMap = (
       source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
       layout: {
-        "icon-image": "custom-marker",
+        "icon-image": "default-marker",
         "icon-offset": [0, -20], // shift marker icon up so tip is at the marker's coordinates
       },
     });
@@ -246,7 +246,7 @@ export const createMap = (
       zoomIncrement: 0,
       closeOnLeafClick: false,
       spiderLeavesLayout: {
-        "icon-image": "custom-marker",
+        "icon-image": "default-marker",
       },
     });
     spiderfy.applyTo("clusters");
