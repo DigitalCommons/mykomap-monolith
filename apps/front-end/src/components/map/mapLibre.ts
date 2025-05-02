@@ -344,9 +344,9 @@ export const createMap = (
         ) as GeoJSON.Feature<GeoJSON.Point>;
       };
 
-      let zoom = 10; // start with this zoom, then hone in
       let spiderfied = false; // spiderfy when we get into the condition
       const maxZoom = 18; // once we get to this zoom, stop
+      let zoom = maxZoom;
 
       const flyToThenOpenPopupRecursive = () => {
         const feature = getFeatureIfVisible(itemIx);
@@ -357,15 +357,11 @@ export const createMap = (
             .flyTo({
               center: [
                 location[0],
-                getMapCentreLatOffsetted(location[1], zoom),
+                getMapCentreLatOffsetted(location[1], maxZoom),
               ],
-              zoom,
+              zoom
             })
-            .once("moveend", async () => {
-              if (zoom < maxZoom) {
-                zoom += 2;
-                flyToThenOpenPopupRecursive();
-              } else {
+            .once("moveend", async () => {             
                 console.error(
                   "Maybe the feature is in a cluster and needs to be spiderfied.",
                 );
@@ -381,7 +377,6 @@ export const createMap = (
                   });
                   spiderfied = true;
                 }
-              }
             });
         } else {
           // Do a final fly to position the marker nicely without zooming,
