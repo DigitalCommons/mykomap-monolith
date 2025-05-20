@@ -12,7 +12,7 @@ interface LeftPaneProps {
   name: string;
   primary_activity?: string;
   description?: string;
-  dc_domains: string[];
+  dc_domains?: string[];
   hasLocation: boolean;
 }
 
