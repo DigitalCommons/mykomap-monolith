@@ -868,6 +868,9 @@
                       "properties": {
                         "directory_panel_field": {
                           "type": "string"
+                        },
+                        "marker_property_name": {
+                          "type": "string"
                         }
                       },
                       "required": [

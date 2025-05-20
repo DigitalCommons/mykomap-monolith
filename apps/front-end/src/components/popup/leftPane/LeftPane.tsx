@@ -10,7 +10,7 @@ import { renderIfData } from "../../../utils/jsx-utils";
 
 interface LeftPaneProps {
   name: string;
-  food_system_category: string[];
+  food_system_category?: string;
   // primary_activity?: string;
   description?: string;
   // dc_domains: string[];
@@ -138,19 +138,17 @@ const LeftPane = ({
             }}
           >
             <Typography variant="h4">{t("food_system_category")}</Typography>
-            {food_system_category.map((c) => (
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: "var(--font-weight-medium)",
-                  whiteSpace: "pre-wrap",
-                }}
-              >
-                {c}
-              </Typography>
-            ))}
+            <Typography
+              variant="body1"
+              sx={{
+                fontWeight: "var(--font-weight-medium)",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {food_system_category}
+            </Typography>
           </Box>,
-          [...food_system_category],
+          [food_system_category],
         )}
         <Typography variant="body1">{cleanDescription}</Typography>
         {/* {renderIfData(

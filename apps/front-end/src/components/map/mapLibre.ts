@@ -7,8 +7,8 @@ import type {
   MapLayerMouseEvent,
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
-import mapMarkerImgUrl from "./map-marker.png";
 import { getLanguageFromUrl } from "../../utils/window-utils";
+import markers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -112,7 +112,7 @@ export const createMap = (
     attributionControl: false,
   });
 
-  map.on("load", () => {
+  map.on("load", async () => {
     map.addSource("items-geojson", {
       type: "geojson",
       data: {
@@ -157,19 +157,33 @@ export const createMap = (
       },
     });
 
-    map.loadImage(mapMarkerImgUrl).then((image) => {
-      map.addImage("default-marker", image.data);
-    });
+    const markerList = [];
+    let index = 0;
+
+    let markerName: keyof typeof markers;
+    for (markerName in markers) {
+      const markerImage = (markers[markerName]);
+      const image = await map.loadImage(markerImage);
+      map.addImage(markerName, image.data);
+      markerList.push(index++);
+      markerList.push(markerName);
+    }
+
+    const markerLayout = {
+      "icon-image": [
+        "match",
+        ["get", "custom_marker_id"],
+        ...markerList,
+        "default-marker"
+      ]
+    }
 
     map.addLayer({
       id: "unclustered-point",
       type: "symbol",
       source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
-      layout: {
-        "icon-image": "default-marker",
-        "icon-offset": [0, -20], // shift marker icon up so tip is at the marker's coordinates
-      },
+      layout: markerLayout as any
     });
 
     const spiderfy = new Spiderfy(map, {

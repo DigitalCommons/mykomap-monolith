@@ -10,6 +10,7 @@ import {
   notNullish,
 } from "@mykomap/common";
 import { ValidationError } from "./dataset/csv.js";
+import markers from "../../front-end/src/components/map/markers.js";
 
 /** Information supplied to PropParser functions via `this` */
 export interface PropParserInfo<I, O> {
@@ -127,6 +128,7 @@ export class DatasetWriter {
     dirPath: string,
     id: string,
     items: AsyncIterable<DatasetItem>,
+    markerPropertyName: string | undefined
   ) {
     if (existsSync(dirPath))
       throw new Error(
@@ -162,8 +164,8 @@ export class DatasetWriter {
       // they stand out as different. The result is intentionally somewhat CSV-like.
       searchableFile.write(
         `{   "itemProps":\n` +
-          JSON.stringify(filterablePropNames) +
-          `,\n    "values":[\n`,
+        JSON.stringify(filterablePropNames) +
+        `,\n    "values":[\n`,
       );
 
       // Write out each item
@@ -189,6 +191,12 @@ export class DatasetWriter {
         // GeoJSON's, i.e. longitude first.
         // https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.1
         const point = toPoint2d([item.lng, item.lat], null);
+
+        if (point && markerPropertyName) {
+          const customMarkerIndex = Object.keys(markers).findIndex(markerId => markerId === item[markerPropertyName]);
+          point.push(customMarkerIndex);
+        }
+
         const pointJson = JSON.stringify(point, this.limitDecimals);
         await locationFile.write(pointJson);
 
