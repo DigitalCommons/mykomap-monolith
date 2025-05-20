@@ -82,8 +82,8 @@ const selectAllFeatures = createSelector(
       if (!location) return null; // skip non-locations here to preserve index counting
       const point: GeoJSON.Feature<GeoJSON.Point> = {
         type: "Feature",
-        geometry: { type: "Point", coordinates: location },
-        properties: { ix },
+        geometry: { type: "Point", coordinates: [location[0], location[1]] },
+        properties: { ix, custom_marker_id: location[2] },
       };
       return point;
     }),
