@@ -563,6 +563,25 @@
                               },
                               "uri": {
                                 "type": "string"
+                              },
+                              "sorted": {
+                                "oneOf": [
+                                  {
+                                    "type": "boolean"
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "asc"
+                                    ]
+                                  },
+                                  {
+                                    "type": "string",
+                                    "enum": [
+                                      "desc"
+                                    ]
+                                  }
+                                ]
                               }
                             },
                             "required": [
@@ -653,6 +672,25 @@
                                       },
                                       "uri": {
                                         "type": "string"
+                                      },
+                                      "sorted": {
+                                        "oneOf": [
+                                          {
+                                            "type": "boolean"
+                                          },
+                                          {
+                                            "type": "string",
+                                            "enum": [
+                                              "asc"
+                                            ]
+                                          },
+                                          {
+                                            "type": "string",
+                                            "enum": [
+                                              "desc"
+                                            ]
+                                          }
+                                        ]
                                       }
                                     },
                                     "required": [
