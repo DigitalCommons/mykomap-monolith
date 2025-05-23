@@ -79,6 +79,9 @@ const InnerValuePropSpec = z.object({
 const InnerVocabPropSpec = z.object({
   type: z.literal("vocab"),
   uri: AbbrevUri,
+  sorted: z
+    .union([z.boolean(), z.literal("asc"), z.literal("desc")])
+    .optional(),
 });
 const InnerPropSpec = z.union([InnerValuePropSpec, InnerVocabPropSpec]);
 const OuterMultiPropSpec = z.object({
