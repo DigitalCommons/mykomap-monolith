@@ -14,7 +14,7 @@ import type {
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 import { getLanguageFromUrl } from "../../utils/window-utils";
-import markers from "./markers";
+import markers from "../../../../back-end/src/markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
