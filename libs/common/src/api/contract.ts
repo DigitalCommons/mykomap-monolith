@@ -28,7 +28,10 @@ const Location = z.array(z.number()).min(2).max(2);
 const CustomMarkerId = z.number();
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
 const DatasetItem = z.object({}).passthrough();
-const DatasetLocations = z.array(Location.nullable(), CustomMarkerId.nullable());
+const DatasetLocations = z.array(
+  Location.nullable(),
+  CustomMarkerId.nullable(),
+);
 const NCName = ZodRegex(Rx.NCName, "Invalid NCName format");
 const QName = ZodRegex(Rx.QName, "Invalid QName format");
 const DatasetItemId = ZodRegex(
@@ -111,7 +114,10 @@ const ConfigData = z.object({
   vocabs: VocabIndex,
   itemProps: PropSpecs,
   languages: z.array(Iso639Set1Code).nonempty(),
-  ui: z.object({ directory_panel_field: z.string(), marker_property_name: z.string().optional() }),
+  ui: z.object({
+    directory_panel_field: z.string(),
+    marker_property_name: z.string().optional(),
+  }),
 });
 const BuildInfo = z.object({
   name: z.string(),

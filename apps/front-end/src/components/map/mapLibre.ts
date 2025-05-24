@@ -1,5 +1,11 @@
 import * as MapLibreGL from "maplibre-gl";
-import { AttributionControl, NavigationControl, Popup } from "maplibre-gl";
+import {
+  AttributionControl,
+  NavigationControl,
+  Popup,
+  AddLayerObject,
+  DataDrivenPropertyValueSpecification,
+} from "maplibre-gl";
 import type {
   Map,
   GeoJSONSource,
@@ -182,7 +188,7 @@ export const createMap = (
 
     let markerName: keyof typeof markers;
     for (markerName in markers) {
-      const markerImage = (markers[markerName]);
+      const markerImage = markers[markerName];
       const image = await map.loadImage(markerImage);
       map.addImage(markerName, image.data);
       markerList.push(index++);
@@ -194,17 +200,18 @@ export const createMap = (
         "match",
         ["get", "custom_marker_id"],
         ...markerList,
-        "default-marker"
-      ]
-    }
+        "default-marker",
+      ],
+    };
 
     map.addLayer({
       id: "unclustered-point",
       type: "symbol",
       source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
-      layout: markerLayout as any
-    });
+      layout:
+        markerLayout as unknown as DataDrivenPropertyValueSpecification<string>,
+    } as AddLayerObject);
 
     const spiderfy = new Spiderfy(map, {
       onLeafClick: (
