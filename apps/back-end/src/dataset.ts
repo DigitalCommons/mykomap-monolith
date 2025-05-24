@@ -128,7 +128,7 @@ export class DatasetWriter {
     dirPath: string,
     id: string,
     items: AsyncIterable<DatasetItem>,
-    markerPropertyName: string | undefined
+    markerPropertyName: string | undefined,
   ) {
     if (existsSync(dirPath))
       throw new Error(
@@ -164,8 +164,8 @@ export class DatasetWriter {
       // they stand out as different. The result is intentionally somewhat CSV-like.
       searchableFile.write(
         `{   "itemProps":\n` +
-        JSON.stringify(filterablePropNames) +
-        `,\n    "values":[\n`,
+          JSON.stringify(filterablePropNames) +
+          `,\n    "values":[\n`,
       );
 
       // Write out each item
@@ -193,7 +193,9 @@ export class DatasetWriter {
         const point = toPoint2d([item.lng, item.lat], null);
 
         if (point && markerPropertyName) {
-          const customMarkerIndex = Object.keys(markers).findIndex(markerId => markerId === item[markerPropertyName]);
+          const customMarkerIndex = Object.keys(markers).findIndex(
+            (markerId) => markerId === item[markerPropertyName],
+          );
           point.push(customMarkerIndex);
         }
 

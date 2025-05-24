@@ -140,8 +140,8 @@ describe("selectFilterOptions", () => {
         title: "Country",
         options: [
           { value: "any", label: "- any -" }, // mocked i18n returns 'any' for this translation
-          { value: "FR", label: "France" },
           { value: "GB", label: "United Kingdom" },
+          { value: "FR", label: "France" },
         ],
         value: "any",
       },
@@ -171,8 +171,8 @@ describe("selectFilterOptions", () => {
         title: "Pays",
         options: [
           { value: "any", label: "- any -" },
-          { value: "FR", label: "France" },
           { value: "GB", label: "Royaume-Uni" },
+          { value: "FR", label: "France" },
         ],
         value: "any",
       },
@@ -182,8 +182,8 @@ describe("selectFilterOptions", () => {
         options: [
           { value: "any", label: "- any -" },
           { value: "ICA210", label: "Logement" },
-          { value: "ICA230", label: "Services publics" },
           { value: "ICA220", label: "Transports" },
+          { value: "ICA230", label: "Services publics" },
         ],
         value: "any",
       },

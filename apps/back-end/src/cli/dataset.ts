@@ -69,7 +69,6 @@ export class ImportCmd extends Command {
     // Reason: we don't want anything silently stripped, and probabaly nor do we
     // want to silently pass through extras.
     const config = schemas.ConfigData.parse(await slurpJson(this.configPath));
-    console.log(config)
 
     // Our vocab definitions
     const vocabs: VocabIndex = config.vocabs; // Types from contract should be compatible
@@ -88,7 +87,12 @@ export class ImportCmd extends Command {
 
     try {
       const dsWriter = new DatasetWriter(propDefs);
-      const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader, config.ui.marker_property_name);
+      const stats = await dsWriter.writeDataset(
+        this.dataPath,
+        "id",
+        csvReader,
+        config.ui.marker_property_name,
+      );
       await cp(this.configPath, join(this.dataPath, "config.json"));
       this.context.stdout.write(
         `Success! statistics:\n${JSON.stringify(stats, null, 2)}\n`,
