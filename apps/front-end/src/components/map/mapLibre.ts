@@ -256,7 +256,7 @@ export const createMap = (
       if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
         map.jumpTo({
           center: features[0].geometry.coordinates as LngLatLike,
-          zoom: clusterExpansionZoom ?? undefined
+          zoom: clusterExpansionZoom ?? undefined,
         });
       }
 
@@ -278,6 +278,7 @@ export const createMap = (
         const x = legLength * Math.cos(angle);
         const y = legLength * Math.sin(angle);
 
+        /*
         openPopup(
           map,
           e.itemIx as number,
@@ -285,7 +286,7 @@ export const createMap = (
           popupCreatedCallback,
           popupClosedCallback,
           [x, y],
-        );
+        );*/
       }
     });
 
@@ -335,76 +336,27 @@ export const createMap = (
         return;
       }
 
-      const getFeatureIfVisible = (ix: number) => {
-        const features = map.queryRenderedFeatures();
-
-        return features.find(
-          (feature) => feature?.properties?.ix === ix,
-        ) as GeoJSON.Feature<GeoJSON.Point>;
-      };
-
-      let spiderfied = false; // spiderfy when we get into the condition
       const maxZoom = 18; // once we get to this zoom, stop
       let zoom = maxZoom;
-
-      const flyToThenOpenPopupRecursive = () => {
-        const feature = getFeatureIfVisible(itemIx);
-        if (!feature) {
-          console.info(`Feature @${itemIx} not visible, flying to it`);
-
-          map
-            .jumpTo({
-              center: [
-                location[0],
-                getMapCentreLatOffsetted(location[1], maxZoom),
-              ],
-              zoom
-            })
-            .once("moveend", async () => {             
-                console.error(
-                  "Maybe the feature is in a cluster and needs to be spiderfied.",
-                );
-                if (!spiderfied) {
-                  // spiderfy the cluster
-                  // the next part is the popup opening
-                  // handled in the cluster click event listener
-
-                  map.fire("click", {
-                    openPopupRecursive: true,
-                    lngLat: location,
-                    itemIx,
-                  });
-                  spiderfied = true;
-                }
-            });
-        } else {
-          // Do a final fly to position the marker nicely without zooming,
-          // in case the feature was already visible
-          map
-            .jumpTo({
-              center: [
-                location[0],
-                getMapCentreLatOffsetted(location[1], map.getZoom()),
-              ],
-            })
-            .once("moveend", () => {
-              openPopup(
-                map,
-                itemIx,
-                location,
-                popupCreatedCallback,
-                popupClosedCallback,
-              );
-            });
-        }
-      };
 
       // Remove previous popup - remove listener to prevent looping back and confusing React code
       popup?.off("close", popupClosedCallback);
       popup?.remove();
       popupIx = undefined;
       popup = undefined;
-      flyToThenOpenPopupRecursive();
+
+      map.jumpTo({
+        center: [location[0], getMapCentreLatOffsetted(location[1], maxZoom)],
+        zoom,
+      });
+
+      openPopup(
+        map,
+        itemIx,
+        location,
+        popupCreatedCallback,
+        popupClosedCallback
+      )      
     });
 
     map.on("closeAllPopups", () => {
