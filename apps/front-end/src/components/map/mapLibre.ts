@@ -254,10 +254,9 @@ export const createMap = (
       );
 
       if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
-        map.flyTo({
+        map.jumpTo({
           center: features[0].geometry.coordinates as LngLatLike,
-          zoom: clusterExpansionZoom ?? undefined,
-          speed: 1.5,
+          zoom: clusterExpansionZoom ?? undefined
         });
       }
 
@@ -354,7 +353,7 @@ export const createMap = (
           console.info(`Feature @${itemIx} not visible, flying to it`);
 
           map
-            .flyTo({
+            .jumpTo({
               center: [
                 location[0],
                 getMapCentreLatOffsetted(location[1], maxZoom),
@@ -382,7 +381,7 @@ export const createMap = (
           // Do a final fly to position the marker nicely without zooming,
           // in case the feature was already visible
           map
-            .flyTo({
+            .jumpTo({
               center: [
                 location[0],
                 getMapCentreLatOffsetted(location[1], map.getZoom()),
