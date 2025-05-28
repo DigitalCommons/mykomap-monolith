@@ -10,7 +10,7 @@ import {
   notNullish,
 } from "@mykomap/common";
 import { ValidationError } from "./dataset/csv.js";
-import markers from "./markers.js";
+import markers from "../../front-end/src/components/map/markers.js";
 
 /** Information supplied to PropParser functions via `this` */
 export interface PropParserInfo<I, O> {
@@ -164,8 +164,8 @@ export class DatasetWriter {
       // they stand out as different. The result is intentionally somewhat CSV-like.
       searchableFile.write(
         `{   "itemProps":\n` +
-        JSON.stringify(filterablePropNames) +
-        `,\n    "values":[\n`,
+          JSON.stringify(filterablePropNames) +
+          `,\n    "values":[\n`,
       );
 
       // Write out each item
