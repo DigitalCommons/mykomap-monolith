@@ -137,7 +137,7 @@ export const {
 export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
   searchSlice.selectors;
 
-// add sort function asc / desc / no sort
+// Add sort function asc / desc / no sort
 type Term = VocabDef["terms"];
 type TermSorter = (a: Term, b: Term) => number;
 const acendingSort: TermSorter = (a, b) => a.label.localeCompare(b.label);
@@ -185,11 +185,6 @@ export const selectFilterOptions = createSelector(
             sorter = acendingSort;
             break;
         }
-
-        // *FIXME -  Remove after testing
-        console.log(
-          `selectFilterOptions: prop.id=${prop.id}, title=${title}, sorted=${prop.sorted}`,
-        );
 
         return {
           id: prop.id,

@@ -79,6 +79,12 @@ const InnerValuePropSpec = z.object({
 const InnerVocabPropSpec = z.object({
   type: z.literal("vocab"),
   uri: AbbrevUri,
+  /**
+   * Indicates whether the options should be sorted in filter dropdowns.
+   * If set to false, no sorting will occur.
+   * sorting is set to 'asc' by default
+   * If set to 'asc' or 'desc', the options will be sorted accordingly.
+   */
   sorted: z
     .union([z.boolean(), z.literal("asc"), z.literal("desc")])
     .optional(),
