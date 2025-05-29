@@ -2,7 +2,7 @@ import { Command, Option, UsageError } from "clipanion";
 import { VocabIndex, schemas } from "@mykomap/common";
 import { slurpJson } from "@mykomap/node-utils";
 import { zodCheck } from "./clipanion-interop.js";
-import { DatasetWriter } from "../dataset.js";
+import { DatasetItem, DatasetWriter } from "../dataset.js";
 import { fromCsvFile } from "../csv.js";
 import { PropSpecs, PropDefsFactory } from "@mykomap/common";
 import { mkCsvParserGenerator } from "../dataset/csv.js";
@@ -86,13 +86,37 @@ export class ImportCmd extends Command {
     const csvReader = fromCsvFile(this.csvPath, mkTransformer);
 
     try {
-      const dsWriter = new DatasetWriter(propDefs);
-      const stats = await dsWriter.writeDataset(
-        this.dataPath,
-        "id",
-        csvReader,
-        config.ui.marker_property_name,
-      );
+      const markerName = config.ui.marker_property_name;
+      let dsWriter;
+
+      if (markerName !== undefined) {
+        const markerPropDef = propDefs[markerName];
+        if (
+          markerPropDef.uri !== undefined &&
+          markerPropDef.uri in config.vocabs
+        ) {
+          const vocab = config.vocabs[markerPropDef.uri];
+          const lang = Object.keys(vocab)[0];
+          const terms = Object.keys(vocab[lang].terms || {}); // be defensive!
+
+          // Extend DatasetWriter with an appropriate markerIndex method which
+          // looks up a marker index from the selected item property, if set, in
+          // the vocab terms.
+          dsWriter = new (class extends DatasetWriter {
+            override markerIndex(item: DatasetItem): number | undefined {
+              const value = item[markerName];
+              // note the loose inequality, matches null or undefined
+              if (value != undefined) return terms.indexOf(String(value));
+              return undefined;
+            }
+          })(propDefs);
+        }
+      }
+
+      // If not set already, use this default FIXME detect errors?
+      dsWriter ??= new DatasetWriter(propDefs);
+
+      const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader);
       await cp(this.configPath, join(this.dataPath, "config.json"));
       this.context.stdout.write(
         `Success! statistics:\n${JSON.stringify(stats, null, 2)}\n`,
