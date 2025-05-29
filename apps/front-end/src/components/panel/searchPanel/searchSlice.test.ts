@@ -286,3 +286,226 @@ describe("setFilterValue", () => {
     });
   });
 });
+
+// Test sorting of filter options
+describe("sort filter options", () => {
+  // Mock configuration for testing - non alphabetical order
+  const baseConfig = {
+    currentLanguage: "en",
+    vocabs: {
+      aci: {
+        en: {
+          title: "Economic Activity",
+          terms: {
+            ICA220: "Transport",
+            ICA210: "Housing",
+            ICA230: "Utilities",
+          },
+        },
+      },
+      coun: {
+        en: {
+          title: "Country",
+          terms: {
+            GB: "United Kingdom",
+            FR: "France",
+          },
+        },
+      },
+      ui: {
+        en: {
+          title: "Translations",
+          terms: {
+            primary_activity: "Primary Activity",
+            typology: "Typology",
+            country_id: "Country",
+          },
+        },
+      },
+    },
+  };
+
+  const getBaseState = (filterableVocabProps: any[]) => ({
+    search: {
+      text: "",
+      visibleIndexes: [],
+      searchingStatus: "idle",
+      filterableVocabProps,
+    },
+    config: structuredClone(baseConfig),
+  });
+
+  // Test default sorting (no sort specified)
+  test("sort options ascending order by default", () => {
+    const state = getBaseState([
+      {
+        id: "primary_activity",
+        titleUri: "ui:primary_activity",
+        value: "any",
+        vocabUri: "aci",
+      },
+      {
+        id: "country_id",
+        titleUri: "ui:country_id",
+        value: "any",
+        vocabUri: "coun",
+      },
+    ]);
+
+    expect(selectFilterOptions(state)).toEqual([
+      {
+        id: "primary_activity",
+        title: "Primary Activity",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "ICA210", label: "Housing" },
+          { value: "ICA220", label: "Transport" },
+          { value: "ICA230", label: "Utilities" },
+        ],
+        value: "any",
+      },
+      {
+        id: "country_id",
+        title: "Country",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "FR", label: "France" },
+          { value: "GB", label: "United Kingdom" },
+        ],
+        value: "any",
+      },
+    ]);
+  });
+
+  // Test ascending sort
+  test("sort options ascending order", () => {
+    const state = getBaseState([
+      {
+        id: "primary_activity",
+        titleUri: "ui:primary_activity",
+        value: "any",
+        vocabUri: "aci",
+        sorted: "asc",
+      },
+      {
+        id: "country_id",
+        titleUri: "ui:country_id",
+        value: "any",
+        vocabUri: "coun",
+        sorted: "asc",
+      },
+    ]);
+
+    expect(selectFilterOptions(state)).toEqual([
+      {
+        id: "primary_activity",
+        title: "Primary Activity",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "ICA210", label: "Housing" },
+          { value: "ICA220", label: "Transport" },
+          { value: "ICA230", label: "Utilities" },
+        ],
+        value: "any",
+      },
+      {
+        id: "country_id",
+        title: "Country",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "FR", label: "France" },
+          { value: "GB", label: "United Kingdom" },
+        ],
+        value: "any",
+      },
+    ]);
+  });
+
+  // Test descending sort
+  test("sort options descending order", () => {
+    const state = getBaseState([
+      {
+        id: "primary_activity",
+        titleUri: "ui:primary_activity",
+        value: "any",
+        vocabUri: "aci",
+        sorted: "desc",
+      },
+      {
+        id: "country_id",
+        titleUri: "ui:country_id",
+        value: "any",
+        vocabUri: "coun",
+        sorted: "desc",
+      },
+    ]);
+
+    expect(selectFilterOptions(state)).toEqual([
+      {
+        id: "primary_activity",
+        title: "Primary Activity",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "ICA230", label: "Utilities" },
+          { value: "ICA220", label: "Transport" },
+          { value: "ICA210", label: "Housing" },
+        ],
+        value: "any",
+      },
+      {
+        id: "country_id",
+        title: "Country",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "GB", label: "United Kingdom" },
+          { value: "FR", label: "France" },
+        ],
+        value: "any",
+      },
+    ]);
+  });
+
+  // Test sort options set to false
+  test("sort options set to false", () => {
+    const state = getBaseState([
+      {
+        id: "primary_activity",
+        titleUri: "ui:primary_activity",
+        value: "any",
+        vocabUri: "aci",
+        sorted: false,
+      },
+      {
+        id: "country_id",
+        titleUri: "ui:country_id",
+        value: "any",
+        vocabUri: "coun",
+        sorted: false,
+      },
+    ]);
+
+    expect(selectFilterOptions(state)).toEqual([
+      {
+        id: "primary_activity",
+        title: "Primary Activity",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "ICA220", label: "Transport" },
+          { value: "ICA210", label: "Housing" },
+          { value: "ICA230", label: "Utilities" },
+        ],
+        value: "any",
+      },
+      {
+        id: "country_id",
+        title: "Country",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "GB", label: "United Kingdom" },
+          { value: "FR", label: "France" },
+        ],
+        value: "any",
+      },
+    ]);
+  });
+});
