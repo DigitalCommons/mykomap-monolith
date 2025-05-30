@@ -24,6 +24,26 @@ let tooltip: Popup | undefined;
 const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
 
+function isLocationNear(location: [number, number], map: Map) {
+  const { _sw, _ne } = map.getBounds();
+  const lngMargin = (_ne.lng - _sw.lng) / 2;
+  const latMargin = (_ne.lat - _sw.lat) / 2;
+
+  const nearBox = {
+    swLng: _sw.lng - lngMargin,
+    swLat: _sw.lat - latMargin,
+    neLng: _ne.lng + lngMargin,
+    neLat: _ne.lat + latMargin,
+  };
+
+  return (
+    nearBox.swLng <= location[0] &&
+    nearBox.swLat <= location[1] &&
+    nearBox.neLng >= location[0] &&
+    nearBox.neLat >= location[1]
+  );
+}
+
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
 
@@ -336,27 +356,32 @@ export const createMap = (
         return;
       }
 
-      const maxZoom = 18; // once we get to this zoom, stop
-      let zoom = maxZoom;
-
       // Remove previous popup - remove listener to prevent looping back and confusing React code
       popup?.off("close", popupClosedCallback);
       popup?.remove();
       popupIx = undefined;
       popup = undefined;
 
-      map.jumpTo({
-        center: [location[0], getMapCentreLatOffsetted(location[1], maxZoom)],
-        zoom,
-      });
+      if (isLocationNear(location, map)) {
+        map.panTo([
+          location[0],
+          getMapCentreLatOffsetted(location[1], map.getZoom()),
+        ]);
+      } else {
+        const maxZoom = 15;
+        map.jumpTo({
+          center: [location[0], getMapCentreLatOffsetted(location[1], maxZoom)],
+          zoom: maxZoom,
+        });
+      }
 
       openPopup(
         map,
         itemIx,
         location,
         popupCreatedCallback,
-        popupClosedCallback
-      )      
+        popupClosedCallback,
+      );
     });
 
     map.on("closeAllPopups", () => {
