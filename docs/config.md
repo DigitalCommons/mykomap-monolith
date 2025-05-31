@@ -8,7 +8,7 @@ TODO: Fill this out for all config options. We currently just have a reference f
 
 ## Popup layout
 
-The `popup` config field is used to define the layout of the popups, which are dislpayed when items
+The `popup` config field is used to define the layout of the popups, which are displayed when items
 are clicked on the map. The layout config is declarative and designed to be as simple as possible,
 with the front-end handling the conversion of the config into MUI React components.
 
