@@ -247,9 +247,7 @@ export const createMap = (
       minZoomLevel: 18,
       zoomIncrement: 0,
       closeOnLeafClick: false,
-      spiderLeavesLayout: {
-        "icon-image": "default-marker",
-      },
+      spiderLeavesLayout: markerLayout as unknown as DataDrivenPropertyValueSpecification<string>,
     });
     spiderfy.applyTo("clusters");
 
