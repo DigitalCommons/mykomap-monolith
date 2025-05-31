@@ -182,6 +182,7 @@ export const createMap = (
         ...markerList,
         "default-marker",
       ],
+      "icon-anchor": "bottom"
     };
 
     map.addLayer({
