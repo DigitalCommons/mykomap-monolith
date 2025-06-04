@@ -8,6 +8,7 @@ import { populateSearchResults } from "../panelSlice";
 import { AppThunk } from "../../../app/store";
 import i18n from "../../../i18n";
 import { VocabDef } from "@mykomap/common";
+import { a } from "vitest/dist/suite-IbNSsUWN.js";
 
 type FilterableVocabProp = {
   id: string;
@@ -137,12 +138,7 @@ export const {
 export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
   searchSlice.selectors;
 
-// Add sort function asc / desc / no sort
 type Term = VocabDef["terms"];
-type TermSorter = (a: Term, b: Term) => number;
-const acendingSort: TermSorter = (a, b) => a.label.localeCompare(b.label);
-const descendingSort: TermSorter = (a, b) => b.label.localeCompare(a.label);
-const noSort: TermSorter = (a, b) => 0;
 
 export const selectFilterOptions = createSelector(
   [
@@ -169,22 +165,18 @@ export const selectFilterOptions = createSelector(
             ]
           : vocabs[prop.vocabUri][language].title;
 
-        // Check you sort via a switch function // boolean / asc / desc /undenfined
-        let sorter = acendingSort;
-        switch (prop.sorted) {
-          case "asc":
-            sorter = acendingSort;
-            break;
-          case "desc":
-            sorter = descendingSort;
-            break;
-          case false:
-            sorter = noSort;
-            break;
-          default:
-            sorter = acendingSort;
-            break;
-        }
+        // Define sorters for ascending, descending, and no sort
+        const sorters = {
+          asc: (a: Term, b: Term) => a.label.localeCompare(b.label),
+          desc: (a: Term, b: Term) => b.label.localeCompare(a.label),
+          noSort: (a: Term, b: Term) => 0,
+        };
+
+        const sorter =
+          prop.sorted === false
+            ? sorters.noSort
+            : (prop.sorted && sorters[prop.sorted as keyof typeof sorters]) ||
+              sorters.asc;
 
         return {
           id: prop.id,
