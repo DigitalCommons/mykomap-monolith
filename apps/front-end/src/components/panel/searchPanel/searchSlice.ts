@@ -8,7 +8,6 @@ import { populateSearchResults } from "../panelSlice";
 import { AppThunk } from "../../../app/store";
 import i18n from "../../../i18n";
 import { VocabDef } from "@mykomap/common";
-import { a } from "vitest/dist/suite-IbNSsUWN.js";
 
 type FilterableVocabProp = {
   id: string;
