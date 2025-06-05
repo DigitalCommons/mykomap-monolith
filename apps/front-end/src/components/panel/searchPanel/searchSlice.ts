@@ -7,12 +7,14 @@ import { getDatasetId } from "../../../utils/window-utils";
 import { populateSearchResults } from "../panelSlice";
 import { AppThunk } from "../../../app/store";
 import i18n from "../../../i18n";
+import { VocabDef } from "@mykomap/common";
 
 type FilterableVocabProp = {
   id: string;
   value: string;
   vocabUri: string;
   titleUri?: string;
+  sorted?: boolean | string;
 };
 
 type SearchQuery = {
@@ -90,6 +92,7 @@ export const searchSlice = createAppSlice({
               value: PROP_VALUE_ANY,
               vocabUri: propSpec.uri.replace(/:$/, ""), // Strip the trailing colon from this (assumed) abbrev URI
               titleUri: propSpec.titleUri,
+              sorted: propSpec.sorted,
             });
           } else if (
             propSpec.type === "multi" &&
@@ -100,6 +103,7 @@ export const searchSlice = createAppSlice({
               value: PROP_VALUE_ANY,
               vocabUri: propSpec.of.uri.replace(/:$/, ""),
               titleUri: propSpec.titleUri,
+              sorted: propSpec.of.sorted,
             });
           }
         }
@@ -133,6 +137,8 @@ export const {
 export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
   searchSlice.selectors;
 
+type Term = VocabDef["terms"];
+
 export const selectFilterOptions = createSelector(
   [
     (state): FilterableVocabProp[] => state.search.filterableVocabProps,
@@ -158,6 +164,19 @@ export const selectFilterOptions = createSelector(
             ]
           : vocabs[prop.vocabUri][language].title;
 
+        // Define sorters for ascending, descending, and no sort
+        const sorters = {
+          asc: (a: Term, b: Term) => a.label.localeCompare(b.label),
+          desc: (a: Term, b: Term) => b.label.localeCompare(a.label),
+          noSort: (a: Term, b: Term) => 0,
+        };
+
+        const sorter =
+          prop.sorted === false
+            ? sorters.noSort
+            : (prop.sorted && sorters[prop.sorted as keyof typeof sorters]) ||
+              sorters.asc;
+
         return {
           id: prop.id,
           title: title,
@@ -165,7 +184,7 @@ export const selectFilterOptions = createSelector(
             { value: PROP_VALUE_ANY, label: `- ${i18n.t("any")} -` },
             ...Object.entries(vocabs[prop.vocabUri][language].terms)
               .map(([key, value]) => ({ value: key, label: value }))
-              .sort((a, b) => a.label.localeCompare(b.label)), // sort options alphabetically
+              .sort(sorter), // sort options using the selected sorter
           ],
           value: prop.value,
         };
