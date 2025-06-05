@@ -74,7 +74,8 @@ To facilitate that:
 ## Process
 
 This outlines a process for versioning and releases. The concepts are still
-important - however, an `npm` run-script has been added to help automate this, see
+important - however, an `npm` run-script has been added to help automate this,
+see the section below, [Automation of release tagging](#automation-of-release-tagging-npm-run-release).
 
 ### Tagging releases
 
