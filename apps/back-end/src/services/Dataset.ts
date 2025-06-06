@@ -8,6 +8,7 @@ import {
   PropDefsFactory,
   schemas,
   TextSearch,
+  yesANumber,
 } from "@mykomap/common";
 import { HttpError } from "../errors.js";
 
@@ -208,7 +209,7 @@ export class Dataset {
           ? itemIx
           : "",
       )
-      .filter((v) => v !== "");
+      .filter(yesANumber);
 
     return visibleIndexes
       .slice(
