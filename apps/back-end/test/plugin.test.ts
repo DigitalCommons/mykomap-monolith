@@ -204,10 +204,13 @@ describe("searchDataset", () => {
       },
     );
 
+    // Note: pageSize=0 is prevented by the contract requiring it to be positive
+    // (gets a 400 error)
     test.each([
       "returnProps[]=name",
       "returnProps[]=name&pageSize=2",
       "returnProps[]=name&page=0",
+      "returnProps[]=name&page=1",
     ])(
       "Search query '%s' with unspecified pagination params returns all items",
       async (query) => {
