@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { open, mkdir, writeFile, FileHandle } from "node:fs/promises";
 import {
   TextSearch,
@@ -228,6 +228,12 @@ export class DatasetWriter {
       // Write the closing delimiter of these JSON files
       await locationFile.write("]");
       await searchableFile.write("\n]}");
+
+      // Write a stub about.md file
+      writeFileSync(
+        join(dirPath, "about.md"),
+        "created on: " + new Date().toLocaleString() + "\n",
+      );
     } catch (e) {
       if (e instanceof ValidationError)
         throw new Error(`validation error parsing item #${stats.counter}`, {
