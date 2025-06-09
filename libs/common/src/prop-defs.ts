@@ -17,13 +17,15 @@ import {
 } from "./prop-specs.js";
 import { stringify } from "./utils.js";
 import { schemas } from "./api/contract.js";
+import {
+  I18nVocabDef,
+  Iso639Set1Code,
+  VocabDef,
+  VocabIndex,
+} from "./common-types.js";
 
-// Infer the types of various contract values....
-export type VocabDef = z.infer<typeof schemas.VocabDef>;
-export type I18nVocabDef = z.infer<typeof schemas.I18nVocabDef>;
-export type VocabIndex = z.infer<typeof schemas.VocabIndex>;
-export type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
-export type NCName = z.infer<typeof schemas.NCName>;
+// A local alias for semantic clarity
+type NCName = string;
 
 /** The part of a property definition that is meaningfully inside a multiple */
 export type InnerDef = VocabPropDef | ValuePropDef;
