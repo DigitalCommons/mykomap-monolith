@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import _ from "lodash";
-import { z } from "zod";
+import { ConfigData } from "@mykomap/common";
 
 import {
   PropDefs,
@@ -10,9 +10,6 @@ import {
   TextSearch,
 } from "@mykomap/common";
 import { HttpError } from "../errors.js";
-
-// Infer type from Zod schema
-type ConfigData = z.infer<typeof schemas.ConfigData>;
 
 export class Dataset {
   id: string;
