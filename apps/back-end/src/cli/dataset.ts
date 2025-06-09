@@ -1,5 +1,5 @@
 import { Command, Option, UsageError } from "clipanion";
-import { VocabIndex, schemas } from "@mykomap/common";
+import { ConfigData, VocabIndex, schemas } from "@mykomap/common";
 import { slurpJson } from "@mykomap/node-utils";
 import { zodCheck } from "./clipanion-interop.js";
 import { DatasetItem, DatasetWriter } from "../dataset.js";

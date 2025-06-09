@@ -1,14 +1,11 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { z } from "zod";
 
-import { notNullish, schemas } from "@mykomap/common";
+import { notNullish, schemas, DatasetLocations } from "@mykomap/common";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
 import { getDatasetId } from "../../utils/window-utils";
 import { RootState } from "../../app/store";
-
-export type Location = z.infer<typeof schemas.Location>;
-export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
 
 export interface MapSliceState {
   allLocations: DatasetLocations;
