@@ -186,10 +186,9 @@ export const createMap = (
     const markerList = [];
     let index = 0;
 
-    let markerName: keyof typeof markers;
-    for (markerName in markers) {
-      const markerImage = markers[markerName];
+    for (let markerImage of markers) {
       const image = await map.loadImage(markerImage);
+      const markerName = "marker-" + index;
       map.addImage(markerName, image.data);
       markerList.push(index++);
       markerList.push(markerName);
