@@ -68,7 +68,9 @@ export class ImportCmd extends Command {
     //
     // Reason: we don't want anything silently stripped, and probabaly nor do we
     // want to silently pass through extras.
-    const config = schemas.ConfigData.parse(await slurpJson(this.configPath));
+    const config: ConfigData = schemas.ConfigData.parse(
+      await slurpJson(this.configPath),
+    );
 
     // Our vocab definitions
     const vocabs: VocabIndex = config.vocabs; // Types from contract should be compatible
