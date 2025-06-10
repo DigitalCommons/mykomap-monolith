@@ -4,7 +4,7 @@ import { slurpJson } from "@mykomap/node-utils";
 import { zodCheck } from "./clipanion-interop.js";
 import { DatasetItem, DatasetWriter } from "../dataset.js";
 import { fromCsvFile } from "../csv.js";
-import { PropSpecs, PropDefsFactory } from "@mykomap/common";
+import { PropSpecs, PropDefsFactory, parseAbbrevUri } from "@mykomap/common";
 import { mkCsvParserGenerator } from "../dataset/csv.js";
 import { cp } from "node:fs/promises";
 import { join } from "node:path";
@@ -89,15 +89,19 @@ export class ImportCmd extends Command {
 
     try {
       const markerName = config.ui.marker_property_name;
-      let dsWriter;
+      let dsWriter: DatasetWriter;
 
       if (markerName !== undefined) {
         const markerPropDef = propDefs[markerName];
-        if (
-          markerPropDef.uri !== undefined &&
-          markerPropDef.uri in config.vocabs
-        ) {
-          const vocab = config.vocabs[markerPropDef.uri];
+        this.context.stdout.write(
+          `Using the item property '${markerName}' to infer marker type to use,\n` +
+            `which has the vocab ${markerPropDef.uri}. Full specification:\n` +
+            `${JSON.stringify(propSpecs[markerName])}`,
+        );
+        const ncname = parseAbbrevUri(markerPropDef.uri, null);
+
+        if (ncname !== null && ncname in config.vocabs) {
+          const vocab = config.vocabs[ncname];
           const lang = Object.keys(vocab)[0];
           const terms = Object.keys(vocab[lang].terms || {}); // be defensive!
 
