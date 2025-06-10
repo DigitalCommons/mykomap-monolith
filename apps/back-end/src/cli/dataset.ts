@@ -108,12 +108,35 @@ export class ImportCmd extends Command {
           // Extend DatasetWriter with an appropriate markerIndex method which
           // looks up a marker index from the selected item property, if set, in
           // the vocab terms.
+          //
+          // Returns one of:
+          // - undefined (no value or an empty list),
+          // - the index of a vocab term (a single matching value)
+          // - the number of vocab terms (if a multiple valued list)
+          // - minus one (if a single unmatching value)
           dsWriter = new (class extends DatasetWriter {
             override markerIndex(item: DatasetItem): number | undefined {
-              const value = item[markerName];
-              // note the loose inequality, matches null or undefined
-              if (value != undefined) return terms.indexOf(String(value));
-              return undefined;
+              let value = item[markerName];
+
+              // Check there's a value present. Note the loose inequality,
+              // matches null or undefined.
+              if (value == undefined) return undefined;
+
+              if (markerPropDef.type !== "multi") {
+                // A singlar value
+                return terms.indexOf(String(value));
+              }
+
+              // Must be a list of values
+              const values = value as Array<string>;
+              switch (values.length) {
+                case 0:
+                  return undefined; // No values
+                case 1:
+                  return terms.indexOf(String(values[1])); // Single valued array
+                default:
+                  return terms.length; // Multiple value array
+              }
             }
           })(propDefs);
         }
