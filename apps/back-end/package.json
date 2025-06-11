@@ -17,7 +17,7 @@
     "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",
     "start:attached": "npm run start",
-    "test": "vitest run",
+    "test": "cross-env LC_ALL=en_GB TZ=UTC vitest run",
     "dev": "vite-node -w start.ts"
   },
   "dependencies": {
