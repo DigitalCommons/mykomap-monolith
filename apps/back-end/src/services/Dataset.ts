@@ -8,6 +8,7 @@ import {
   PropDefsFactory,
   schemas,
   TextSearch,
+  yesANumber,
 } from "@mykomap/common";
 import { HttpError } from "../errors.js";
 
@@ -126,7 +127,7 @@ export class Dataset {
   };
   /**
    * Returns an array of item indexes that match the given criteria, or an array of objects if
-   * returnProps is specified. Also supports pagination.
+   * returnProps is specified. Also supports pagination, if `page` and pageSize are defined
    */
   search = (
     filters?: string[],
@@ -208,35 +209,40 @@ export class Dataset {
           ? itemIx
           : "",
       )
-      .filter((v) => v !== "");
+      .filter(yesANumber);
 
-    return visibleIndexes
-      .slice(
-        (page ?? 0) * (pageSize ?? 0),
-        ((page ?? visibleIndexes.length) + 1) *
-          (pageSize ?? visibleIndexes.length),
-      )
-      .map((itemIx) => {
-        if (returnProps) {
-          const item = this.getItem(itemIx);
-          // Return only the requested properties
-          const strippedItem: { [prop: string]: unknown } = {};
+    // Default - no pagination (`page` or `pageSize` absent), return everything
+    let startIx = 0;
+    let endIx = visibleIndexes.length;
 
-          for (const prop of returnProps) {
-            if (item[prop] === undefined) {
-              throw new HttpError(400, `Unknown propery name '${prop}'`);
-            }
-            strippedItem[prop] = item[prop];
+    // If `page` and `pageSize` parameters given, just return the page in question.
+    // `pageSize` is constrained by the contract to be > 0
+    if (page !== undefined && pageSize != undefined) {
+      startIx = page * pageSize;
+      endIx = startIx + pageSize;
+    }
+
+    return visibleIndexes.slice(startIx, endIx).map((itemIx) => {
+      if (returnProps) {
+        const item = this.getItem(itemIx);
+        // Return only the requested properties
+        const strippedItem: { [prop: string]: unknown } = {};
+
+        for (const prop of returnProps) {
+          if (item[prop] === undefined) {
+            throw new HttpError(400, `Unknown propery name '${prop}'`);
           }
-
-          return {
-            index: `@${itemIx}`,
-            ...strippedItem,
-          };
-        } else {
-          return `@${itemIx}`;
+          strippedItem[prop] = item[prop];
         }
-      });
+
+        return {
+          index: `@${itemIx}`,
+          ...strippedItem,
+        };
+      } else {
+        return `@${itemIx}`;
+      }
+    });
   };
 }
 

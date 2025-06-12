@@ -148,7 +148,7 @@ describe("searchDataset", () => {
     );
 
     test.each(["returnProps[]=name&page=1&pageSize=6"])(
-      "Paginated search query '%s' returns the final item",
+      "Unconstrained paginated search query '%s' returns the final item",
       async (query) => {
         const res = await fastify.inject({
           method: "GET",
@@ -161,10 +161,56 @@ describe("searchDataset", () => {
       },
     );
 
+    test.each(["returnProps[]=name&page=1&pageSize=2"])(
+      "Unconstrained paginated search query '%s' returns the second page items",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual([
+          { index: "@2", name: "Invisible Collab" },
+          { index: "@3", name: "Kangaroo Koop" },
+        ]);
+      },
+    );
+
+    test.each(["returnProps[]=name&page=2&pageSize=1&filter=country_id:GB"])(
+      "Filtering paginated search query '%s' returns the second page items",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual([
+          { index: "@5", name: "North Apples Co-op" },
+        ]);
+      },
+    );
+
+    test.each(["returnProps[]=name&page=1&pageSize=1&text=apples"])(
+      "Matching paginated search query '%s' returns the second page items",
+      async (query) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/search?${query}`,
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toStrictEqual([
+          { index: "@5", name: "North Apples Co-op" },
+        ]);
+      },
+    );
+
+    // Note: pageSize=0 is prevented by the contract requiring it to be positive
+    // (gets a 400 error)
     test.each([
       "returnProps[]=name",
       "returnProps[]=name&pageSize=2",
       "returnProps[]=name&page=0",
+      "returnProps[]=name&page=1",
     ])(
       "Search query '%s' with unspecified pagination params returns all items",
       async (query) => {
