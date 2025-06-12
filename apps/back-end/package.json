@@ -29,6 +29,7 @@
     "@ts-rest/fastify": "^3.51.0",
     "clipanion": "^4.0.0-rc.4",
     "close-with-grace": "^2.1.0",
+    "diff": "^8.0.2",
     "fastify-openapi-glue": "^4.7.0",
     "fastify-plugin": "^4.5.1",
     "js-yaml": "^4.1.0",
