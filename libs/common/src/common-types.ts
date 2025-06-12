@@ -25,6 +25,16 @@ export type Box2d = [Point2d, Point2d];
 export function clear<V>(obj: Assoc<string, V>) {
   Object.keys(obj).forEach((key) => delete obj[key]);
 }
+
+// Infer types from Zod schema
+export type ConfigData = z.infer<typeof schemas.ConfigData>;
+export type DatasetLocations = z.infer<typeof schemas.DatasetLocations>;
+export type I18nVocabDef = z.infer<typeof schemas.I18nVocabDef>;
+export type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
+export type Location = z.infer<typeof schemas.Location>;
+export type VocabDef = z.infer<typeof schemas.VocabDef>;
+export type VocabIndex = z.infer<typeof schemas.VocabIndex>;
+
 /** This describes certain parameters of the build of a software project managed by git.
  *
  * Specifically, this software!

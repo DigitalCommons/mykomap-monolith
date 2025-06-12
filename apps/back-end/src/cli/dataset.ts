@@ -1,10 +1,10 @@
 import { Command, Option, UsageError } from "clipanion";
-import { VocabIndex, schemas } from "@mykomap/common";
+import { ConfigData, VocabIndex, schemas } from "@mykomap/common";
 import { slurpJson } from "@mykomap/node-utils";
 import { zodCheck } from "./clipanion-interop.js";
-import { DatasetWriter } from "../dataset.js";
+import { DatasetItem, DatasetWriter } from "../dataset.js";
 import { fromCsvFile } from "../csv.js";
-import { PropSpecs, PropDefsFactory } from "@mykomap/common";
+import { PropSpecs, PropDefsFactory, parseAbbrevUri } from "@mykomap/common";
 import { mkCsvParserGenerator } from "../dataset/csv.js";
 import { cp } from "node:fs/promises";
 import { join } from "node:path";
@@ -57,7 +57,7 @@ export class ImportCmd extends Command {
   async execute(): Promise<void> {
     this.context.stdout.write(`Configured by: ${this.configPath}\n`);
     this.context.stdout.write(`Loading from: ${this.csvPath}\n`);
-    this.context.stdout.write(`Writing to: ${this.dataPath}\n`);
+    this.context.stdout.write(`Writing to: ${this.dataPath}\n\n`);
 
     // Load the property definitions.
     //
@@ -68,7 +68,9 @@ export class ImportCmd extends Command {
     //
     // Reason: we don't want anything silently stripped, and probabaly nor do we
     // want to silently pass through extras.
-    const config = schemas.ConfigData.parse(await slurpJson(this.configPath));
+    const config: ConfigData = schemas.ConfigData.parse(
+      await slurpJson(this.configPath),
+    );
 
     // Our vocab definitions
     const vocabs: VocabIndex = config.vocabs; // Types from contract should be compatible
@@ -86,7 +88,96 @@ export class ImportCmd extends Command {
     const csvReader = fromCsvFile(this.csvPath, mkTransformer);
 
     try {
-      const dsWriter = new DatasetWriter(propDefs);
+      const markerName = config.ui.marker_property_name;
+      let dsWriter: DatasetWriter;
+
+      if (markerName !== undefined) {
+        const markerPropDef = propDefs[markerName];
+
+        if (markerPropDef == undefined)
+          throw new Error(
+            `No item property called '${markerName}' found in the config definitions`,
+          );
+        if (markerPropDef.uri == undefined)
+          throw new Error(
+            `The item property '${markerName}' is not a vocab property:\n` +
+              JSON.stringify(propSpecs[markerName]),
+          );
+
+        this.context.stdout.write(
+          `Using the item property '${markerName}' to infer marker type to use,\n` +
+            `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
+            JSON.stringify(propSpecs[markerName]) +
+            "\n\n",
+        );
+
+        // Validate markerPropDef.uri
+        const ncname = parseAbbrevUri(markerPropDef.uri, null);
+        if (ncname == null)
+          throw new Error(
+            `The marker property '${markerName}' does not have a valid ` +
+              `URI abbreviation: ` +
+              markerPropDef.uri,
+          );
+
+        if (!(ncname in config.vocabs))
+          throw new Error(
+            `The marker property '${markerName}' does not reference a known ` +
+              `vocab URI: ` +
+              markerPropDef.uri,
+          );
+
+        const vocab = config.vocabs[ncname];
+        const lang = Object.keys(vocab)[0];
+        const termIndex = vocab[lang].terms || {}; // be defensive!
+        const terms = Object.keys(termIndex);
+        this.context.stdout.write(
+          "Vocab terms are mapped to icon indexes as follows:\n" +
+            terms
+              .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
+              .join("\n") +
+            "\n\n",
+        );
+
+        // Extend DatasetWriter with an appropriate markerIndex method which
+        // looks up a marker index from the selected item property, if set, in
+        // the vocab terms.
+        //
+        // Returns one of:
+        // - undefined (no value or an empty list),
+        // - the index of a vocab term (a single matching value)
+        // - the number of vocab terms (if a multiple valued list)
+        // - minus one (if a single unmatching value)
+        dsWriter = new (class extends DatasetWriter {
+          override markerIndex(item: DatasetItem): number | undefined {
+            let value = item[markerName];
+
+            // Check there's a value present. Note the loose inequality,
+            // matches null or undefined.
+            if (value == undefined) return undefined;
+
+            if (markerPropDef.type !== "multi") {
+              // A singlar value
+              return terms.indexOf(String(value));
+            }
+
+            // Must be a list of values
+            const values = value as Array<string>;
+            switch (values.length) {
+              case 0:
+                return undefined; // No values
+              case 1:
+                return terms.indexOf(String(values[1])); // Single valued array
+              default:
+                return terms.length; // Multiple value array
+            }
+          }
+        })(propDefs);
+      }
+
+      // If not set already, use this default FIXME detect errors?
+      dsWriter ??= new DatasetWriter(propDefs);
+
       const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader);
       await cp(this.configPath, join(this.dataPath, "config.json"));
       this.context.stdout.write(

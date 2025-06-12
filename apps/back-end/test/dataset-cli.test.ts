@@ -1,6 +1,6 @@
 /// <reference types="vitest"/>
 
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { ImportCmd } from "../src/cli/dataset.js";
 
 import { rmSync } from "node:fs";
@@ -97,8 +97,16 @@ function print(result: Result) {
 test("testing dataset import", async (t) => {
   let result: number | undefined;
   try {
+    // NOTE: the locale environment variable LC_ALL must be set to "en_GB"
+    // *before* node is started for this to set the locale here correctly.
+    // Therefore this is done in the package.json runscript.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2025, 1, 1, 0));
     result = await runTest(ImportCmd);
-  } catch (e) {}
+  } catch (e) {
+  } finally {
+    vi.useRealTimers();
+  }
   expect(result).toBe(0);
   const comparison = compareSync(
     "test/tmp/dummy",

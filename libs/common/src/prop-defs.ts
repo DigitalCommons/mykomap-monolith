@@ -17,13 +17,15 @@ import {
 } from "./prop-specs.js";
 import { stringify } from "./utils.js";
 import { schemas } from "./api/contract.js";
+import {
+  I18nVocabDef,
+  Iso639Set1Code,
+  VocabDef,
+  VocabIndex,
+} from "./common-types.js";
 
-// Infer the types of various contract values....
-export type VocabDef = z.infer<typeof schemas.VocabDef>;
-export type I18nVocabDef = z.infer<typeof schemas.I18nVocabDef>;
-export type VocabIndex = z.infer<typeof schemas.VocabIndex>;
-export type Iso639Set1Code = z.infer<typeof schemas.Iso639Set1Code>;
-export type NCName = z.infer<typeof schemas.NCName>;
+// A local alias for semantic clarity
+type NCName = string;
 
 /** The part of a property definition that is meaningfully inside a multiple */
 export type InnerDef = VocabPropDef | ValuePropDef;
@@ -125,6 +127,14 @@ export abstract class CommonPropDef implements CommonPropSpec {
   readonly filter: FilterSpec | boolean;
   readonly search: boolean;
 
+  /**
+   * This indicates the vocab URI in use when that is pertinent. It is undefined otherwise
+   *
+   * In other words, it is set to a QName string if this is a VocabPropDef or a
+   * MultiPropDef of VocabPropDefs.
+   */
+  abstract readonly uri?: string;
+
   /** Constructor.
    *
    * @param init - the specification to use
@@ -174,6 +184,13 @@ export class ValuePropDef extends CommonPropDef implements ValuePropSpec {
     this.as = init.as;
     this.nullable = init.nullable === true;
     this.strict = init.strict === true;
+  }
+
+  /**
+   * This is always undefined for instances of this class, as they don't have URIs.
+   */
+  override get uri(): string | undefined {
+    return undefined;
   }
 
   override textForValue(value: unknown) {
@@ -228,9 +245,12 @@ export class MultiPropDef extends CommonPropDef implements MultiPropSpec {
   readonly of: InnerDef;
 
   /**
-   * This indicates the vocab URI in use if it contains vocab Qname. It is undefined otherwise
+   * This indicates the vocab URI in use if pertinent. It is undefined otherwise
    */
-  readonly uri?: string;
+  override get uri(): string | undefined {
+    if (this.of.type === "vocab") return this.of.uri;
+    return undefined;
+  }
 
   /**
    * This indicates the internationalised vocab definition in use if it contains vocab values. It

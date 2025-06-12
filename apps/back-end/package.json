@@ -12,12 +12,12 @@
   },
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
-    "dataset": "tsx bin/dataset.ts",
+    "dataset": "vite-node bin/dataset.ts",
     "prebuild": "npm -w ../../libs/common -w ../../libs/node-utils run build",
     "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",
     "start:attached": "npm run start",
-    "test": "vitest run",
+    "test": "cross-env LC_ALL=en_GB TZ=UTC vitest run",
     "dev": "vite-node -w start.ts"
   },
   "dependencies": {
