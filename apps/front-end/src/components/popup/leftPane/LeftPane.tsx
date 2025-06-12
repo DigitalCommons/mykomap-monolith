@@ -10,10 +10,9 @@ import { renderIfData } from "../../../utils/jsx-utils";
 
 interface LeftPaneProps {
   name: string;
-  food_system_category: string[];
-  // primary_activity?: string;
+  primary_activity?: string;
   description?: string;
-  // dc_domains: string[];
+  dc_domains?: string[];
   hasLocation: boolean;
 }
 
@@ -95,10 +94,9 @@ const StyledDomainListsContainer = styled(Box)(() => ({
 
 const LeftPane = ({
   name,
-  food_system_category,
-  // primary_activity,
+  primary_activity,
   description,
-  // dc_domains,
+  dc_domains = [],
   hasLocation,
 }: LeftPaneProps) => {
   const { t } = useTranslation();
@@ -106,17 +104,17 @@ const LeftPane = ({
     description?.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
   )?.trim();
 
-  // const MAX_DOMAIN_LENGTH = 25;
-  // const DOMAINS_SINGLE_COlUMN = 9;
+  const MAX_DOMAIN_LENGTH = 25;
+  const DOMAINS_SINGLE_COlUMN = 9;
 
-  // //split into 2 columns if more than 10 domains and there's room to render
-  // const dcDomains =
-  //   dc_domains.length > DOMAINS_SINGLE_COlUMN && window.innerWidth >= 400
-  //     ? [
-  //         dc_domains.slice(0, Math.ceil(dc_domains.length / 2)),
-  //         dc_domains.slice(Math.ceil(dc_domains.length / 2)),
-  //       ]
-  //     : [dc_domains];
+  //split into 2 columns if more than 10 domains and there's room to render
+  const dcDomains =
+    dc_domains.length > DOMAINS_SINGLE_COlUMN && window.innerWidth >= 400
+      ? [
+          dc_domains.slice(0, Math.ceil(dc_domains.length / 2)),
+          dc_domains.slice(Math.ceil(dc_domains.length / 2)),
+        ]
+      : [dc_domains];
 
   return (
     <StyledLeftPane>
@@ -132,28 +130,22 @@ const LeftPane = ({
       </StyledHeaderContainer>
       <StyledContentContainer>
         {renderIfData(
-          <Box
-            sx={{
-              marginBottom: "var(--spacing-medium)",
-            }}
-          >
-            <Typography variant="h4">{t("food_system_category")}</Typography>
-            {food_system_category.map((c) => (
-              <Typography
-                variant="body1"
-                sx={{
-                  fontWeight: "var(--font-weight-medium)",
-                  whiteSpace: "pre-wrap",
-                }}
-              >
-                {c}
-              </Typography>
-            ))}
+          <Box>
+            <Typography variant="h4">{t("primary_activity")}</Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                marginBottom: "var(--spacing-medium)",
+                fontWeight: "var(--font-weight-medium)",
+              }}
+            >
+              {primary_activity}
+            </Typography>
           </Box>,
-          [...food_system_category],
+          [primary_activity],
         )}
         <Typography variant="body1">{cleanDescription}</Typography>
-        {/* {renderIfData(
+        {renderIfData(
           <Box>
             <Typography
               variant="h4"
@@ -194,7 +186,7 @@ const LeftPane = ({
             </StyledDomainListsContainer>
           </Box>,
           dc_domains,
-        )} */}
+        )}
       </StyledContentContainer>
     </StyledLeftPane>
   );
