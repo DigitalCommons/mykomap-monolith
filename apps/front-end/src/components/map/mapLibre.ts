@@ -186,6 +186,8 @@ export const createMap = (
     const markerList = [];
     let index = 0;
 
+    console.log("Markers", markers);
+
     for (let markerImage of markers) {
       const image = await map.loadImage(markerImage);
       const markerName = "marker-" + index;
@@ -199,7 +201,7 @@ export const createMap = (
         "match",
         ["get", "custom_marker_id"],
         ...markerList,
-        "default-marker",
+        `marker-${markers.length - 1}`, // assumes the final marker in the marker list is the default marker
       ],
       "icon-anchor": "bottom",
     };
