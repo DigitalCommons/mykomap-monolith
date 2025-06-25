@@ -263,7 +263,7 @@ export const createMap = (
           map.getCanvas().style.cursor = "";
         }
       },
-      minZoomLevel: 18,
+     // minZoomLevel: 18,
       zoomIncrement: 0,
       closeOnLeafClick: false,
       spiderLeavesLayout:
@@ -317,7 +317,7 @@ export const createMap = (
           totalPoints <= 10 ? 50 : 50 + (index * (Math.PI * 2 * 2.2)) / angle;
         const x = legLength * Math.cos(angle);
         const y = legLength * Math.sin(angle);
-
+        
         /*
         openPopup(
           map,
