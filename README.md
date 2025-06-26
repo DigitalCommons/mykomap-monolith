@@ -4,7 +4,7 @@
 
 Mono-repo home to the FE/BE applications and libraries comprising Mykomap.
 
-See the full documentation [here](https://digitalcommons.github.io/mykomap-monolith/).
+See the full technical documentation [here](https://digitalcommons.github.io/mykomap-monolith/).
 
 ## Applications
 
