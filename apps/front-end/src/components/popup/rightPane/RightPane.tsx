@@ -10,16 +10,17 @@ import { renderIfData } from "../../../utils/jsx-utils";
 interface RightPaneProps {
   address?: string;
   website: string[];
-  // organisational_structure?: string;
-  // typology?: string;
-  // data_sources: string[];
+  organisational_structure?: string;
+  typology?: string;
+  data_sources?: string[];
 }
 
 const StyledRightPane = styled(Box)(() => ({
-  backgroundColor: "var(--color-secondary-light)", // changed this so that this colour fills the whole right pane. TODO: check if this breaks CWM
+  backgroundColor: "var(--color-secondary-light)",
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
+  justifyContent: "space-between",
   color: "#fff",
   fontSize: "var(--font-size-medium)",
   lineHeight: "var(--line-height-medium)",
@@ -47,7 +48,7 @@ const StyledTopBox = styled(Box)(() => ({
 
 const StyledBottomBox = styled(Box)(() => ({
   backgroundColor: "var(--color-secondary)",
-  margin: "var(--spacing-large) var(--spacing-xlarge) var(--spacing-xlarge)",
+  padding: "var(--spacing-large) var(--spacing-xlarge) var(--spacing-xlarge)",
   "& h4, & p, & li": {
     fontSize: "var(--font-size-small)",
   },
@@ -67,7 +68,6 @@ const StyledBottomBox = styled(Box)(() => ({
   "@media (min-width: 768px)": {
     overflowY: "auto",
     paddingRight: "var(--spacing-large)",
-    marginRight: "var(--spacing-small)",
     scrollbarWidth: "thin",
     scrollbarColor: "rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0.1)",
     "&::-webkit-scrollbar": {
@@ -87,9 +87,9 @@ const StyledBottomBox = styled(Box)(() => ({
 const RightPane = ({
   address,
   website,
-  // organisational_structure,
-  // typology,
-  // data_sources,
+  organisational_structure,
+  typology,
+  data_sources,
 }: RightPaneProps) => {
   const { t } = useTranslation();
 
@@ -135,7 +135,7 @@ const RightPane = ({
         </StyledTopBox>,
         [address, ...website],
       )}
-      {/* <StyledBottomBox>
+      {data_sources && <StyledBottomBox>
         {renderIfData(
           <Box
             sx={{
@@ -160,10 +160,10 @@ const RightPane = ({
           </Box>,
           [typology],
         )}
-        {renderIfData(
+        {data_sources && renderIfData(
           <Box>
             <Typography variant="h4">{t("data_sources")}</Typography>
-            <List>
+            {data_sources && <List>
               {data_sources.map((dataSource) => (
                 <ListItem
                   key={dataSource}
@@ -175,11 +175,12 @@ const RightPane = ({
                   {dataSource}
                 </ListItem>
               ))}
-            </List>
+            </List>}
           </Box>,
           data_sources,
         )}
-      </StyledBottomBox> */}
+      </StyledBottomBox>  }
+      
     </StyledRightPane>,
     [address, ...website],
     // [address, ...website, organisational_structure, typology, ...data_sources],
