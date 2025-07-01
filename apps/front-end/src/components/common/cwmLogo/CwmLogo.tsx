@@ -3,6 +3,8 @@ import CWMLogoSmall from "./cwm-logo-small.png";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { selectLogo } from "../../../app/configSlice";
+import { useAppSelector } from "../../../app/hooks";
 
 const StyledLogoWrapper = styled(Box)(() => ({
   position: "fixed",
@@ -39,18 +41,22 @@ const StyledLogoWrapper = styled(Box)(() => ({
 
 const CwmLogo = () => {
   const isMedium = useMediaQuery("(min-width: 897px)");
+  const logoConfig = useAppSelector(selectLogo);
+
+  console.log("CwmLogo", logoConfig);
+
+  if (!logoConfig || !logoConfig?.showLogo) {
+    return null; // Do not render the logo if showLogo is false
+  }
+
+  const largeLogo = logoConfig.largeLogo;
+  const smallLogo = logoConfig.smallLogo;
+  const altText = logoConfig.altText;
+
   return (
     <StyledLogoWrapper>
-      {isMedium && (
-        <img src={CWMLogo} className="large" alt="Cooperative World Map Logo" />
-      )}
-      {!isMedium && (
-        <img
-          src={CWMLogoSmall}
-          className="small"
-          alt="Cooperative World Map Logo"
-        />
-      )}
+      {isMedium && <img src={largeLogo} className="large" alt={altText} />}
+      {!isMedium && <img src={smallLogo} className="small" alt={altText} />}
     </StyledLogoWrapper>
   );
 };

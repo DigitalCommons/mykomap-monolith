@@ -906,6 +906,26 @@
                       "properties": {
                         "directory_panel_field": {
                           "type": "string"
+                        },
+                        "logo": {
+                          "type": "object",
+                          "properties": {
+                            "showLogo": {
+                              "type": "boolean"
+                            },
+                            "largeLogo": {
+                              "type": "string"
+                            },
+                            "smallLogo": {
+                              "type": "string"
+                            },
+                            "altText": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "showLogo"
+                          ]
                         }
                       },
                       "required": [
