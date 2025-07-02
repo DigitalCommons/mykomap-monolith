@@ -5,7 +5,6 @@ import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
 
 export type ConfigLogo = {
-  showLogo: boolean;
   largeLogo?: string;
   smallLogo?: string;
   altText?: string;
@@ -23,7 +22,9 @@ const initialState: ConfigSliceState = {
   currentLanguage: "en",
   languages: [],
   logo: {
-    showLogo: false,
+    largeLogo: undefined,
+    smallLogo: undefined,
+    altText: undefined,
   }
 };
 

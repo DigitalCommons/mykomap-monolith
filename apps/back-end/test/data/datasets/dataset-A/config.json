@@ -14,8 +14,6 @@
       "typology"
     ],
     "logo": {
-      "showLogo": true,
-      "largeLogo": "/assets/logos/cwm-logo.png",
       "smallLogo": "/assets/logos/cwm-logo-small.png",
       "altText": "Cooperative World Map"
     }

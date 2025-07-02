@@ -114,7 +114,6 @@ const ConfigData = z.object({
     directory_panel_field: z.string(),
     logo: z
       .object({
-        showLogo: z.boolean(),
         largeLogo: z.string().optional(),
         smallLogo: z.string().optional(),
         altText: z.string().optional(),

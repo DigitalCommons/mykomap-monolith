@@ -910,9 +910,6 @@
                         "logo": {
                           "type": "object",
                           "properties": {
-                            "showLogo": {
-                              "type": "boolean"
-                            },
                             "largeLogo": {
                               "type": "string"
                             },
@@ -922,10 +919,7 @@
                             "altText": {
                               "type": "string"
                             }
-                          },
-                          "required": [
-                            "showLogo"
-                          ]
+                          }
                         }
                       },
                       "required": [

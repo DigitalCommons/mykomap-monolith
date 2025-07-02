@@ -43,8 +43,8 @@ const Logo = () => {
 
   console.log("CwmLogo", logoConfig);
 
-  if (!logoConfig || !logoConfig?.showLogo) {
-    return null; // Do not render the logo if showLogo is false
+  if (!logoConfig || (!logoConfig.largeLogo && !logoConfig.smallLogo)) {
+    return null;
   }
 
   const largeLogo = logoConfig.largeLogo;
@@ -53,8 +53,11 @@ const Logo = () => {
 
   return (
     <StyledLogoWrapper>
-      {isMedium && <img src={largeLogo} className="large" alt={altText} />}
-      {!isMedium && <img src={smallLogo} className="small" alt={altText} />}
+      {isMedium ? (
+        <img src={largeLogo || smallLogo} className="large" alt={altText} />
+      ) : (
+        <img src={smallLogo || largeLogo} className="small" alt={altText} />
+      )}
     </StyledLogoWrapper>
   );
 };
