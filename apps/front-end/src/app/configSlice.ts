@@ -8,6 +8,14 @@ export type ConfigLogo = {
   largeLogo?: string;
   smallLogo?: string;
   altText?: string;
+  smallScreenPosition?: {
+    top?: string;
+    left?: string;
+  };
+  largeScreenPosition?: {
+    bottom?: string;
+    right?: string;
+  };
 };
 
 export interface ConfigSliceState {
@@ -25,7 +33,7 @@ const initialState: ConfigSliceState = {
     largeLogo: undefined,
     smallLogo: undefined,
     altText: undefined,
-  }
+  },
 };
 
 export const configSlice = createAppSlice({
@@ -64,8 +72,6 @@ export const configSlice = createAppSlice({
           if (action.payload.ui && action.payload.ui.logo) {
             state.logo = action.payload.ui.logo;
           }
-
-
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);

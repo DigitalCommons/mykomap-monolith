@@ -918,6 +918,28 @@
                             },
                             "altText": {
                               "type": "string"
+                            },
+                            "smallScreenPosition": {
+                              "type": "object",
+                              "properties": {
+                                "top": {
+                                  "type": "string"
+                                },
+                                "left": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "largeScreenPosition": {
+                              "type": "object",
+                              "properties": {
+                                "bottom": {
+                                  "type": "string"
+                                },
+                                "right": {
+                                  "type": "string"
+                                }
+                              }
                             }
                           }
                         }

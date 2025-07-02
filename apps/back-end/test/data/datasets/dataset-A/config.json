@@ -14,8 +14,17 @@
       "typology"
     ],
     "logo": {
+      "largeLogo": "/assets/logos/cwm-logo.png",
       "smallLogo": "/assets/logos/cwm-logo-small.png",
-      "altText": "Cooperative World Map"
+      "altText": "Cooperative World Map",
+      "smallScreenPosition": {
+        "top": "0",
+        "left": "5px"
+      },
+      "largeScreenPosition": {
+        "bottom": "-25px",
+        "right": "-5px"
+      }
     }
   },
   "itemProps": {
