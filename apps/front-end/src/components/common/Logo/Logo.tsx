@@ -1,5 +1,3 @@
-import CWMLogo from "./cwm-logo.png";
-import CWMLogoSmall from "./cwm-logo-small.png";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
