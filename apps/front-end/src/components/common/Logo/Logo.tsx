@@ -39,7 +39,7 @@ const StyledLogoWrapper = styled(Box)(() => ({
   },
 }));
 
-const CwmLogo = () => {
+const Logo = () => {
   const isMedium = useMediaQuery("(min-width: 897px)");
   const logoConfig = useAppSelector(selectLogo);
 
@@ -61,4 +61,4 @@ const CwmLogo = () => {
   );
 };
 
-export default CwmLogo;
+export default Logo;
