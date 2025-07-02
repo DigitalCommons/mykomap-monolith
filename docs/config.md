@@ -8,7 +8,6 @@ A new folder has been added `front-end/public/assets/logo` as a central store fo
 
 The `logo` field has 4 subfields
 
-- `showLogo` (required): this is a boolean, and it is necessary if a logo is to be used
 - `largeLogo`: the location of the large logo image e.g.: `/assets/logos/cwm-logo.png`
 - `smallLogo`: similar to above, the location of the small logo
 - `altText`: any alt text to be associated with the logo
@@ -16,7 +15,6 @@ The `logo` field has 4 subfields
 ```
 "ui": {
     "logo": {
-      "showLogo": true,
       "largeLogo": "/assets/logos/cwm-logo.png",
       "smallLogo": "/assets/logos/cwm-logo-small.png",
       "altText": "Cooperative World Map"
