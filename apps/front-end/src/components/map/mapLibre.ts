@@ -119,16 +119,27 @@ const onMarkerHover = (
 export const createMap = (
   popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
+  mapConfig?: {
+    // defaultZoom?: number;
+    // defaultCenter?: [number, number];
+    mapBounds?: [[number, number], [number, number]];
+  },
 ): Map => {
+  // const initialZoom = mapConfig?.defaultZoom;
+  // const initialCenter = mapConfig?.defaultCenter;
+  const initialBounds = mapConfig?.mapBounds || [
+    [-169, -49.3],
+    [189, 75.6],
+  ];
+
+  console.log("Map bounds", initialBounds);
+
   const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
     minZoom: 1.45,
     maxZoom: 18,
-    bounds: [
-      [-169, -49.3],
-      [189, 75.6],
-    ],
+    bounds: initialBounds,
     attributionControl: false,
   });
 

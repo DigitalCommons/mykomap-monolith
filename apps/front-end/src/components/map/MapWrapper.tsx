@@ -14,6 +14,7 @@ import {
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
+import { selectMapConfig } from "../../app/configSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -26,6 +27,7 @@ const MapWrapper = () => {
   const popupIndex = useAppSelector(selectPopupIndex);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
+  const mapConfig = useAppSelector(selectMapConfig);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
@@ -41,7 +43,7 @@ const MapWrapper = () => {
   };
 
   useEffect(() => {
-    map.current = createMap(popupCreatedCallback, popupClosedCallback);
+    map.current = createMap(popupCreatedCallback, popupClosedCallback, mapConfig);
     map.current.on("sourcedata", (e) => {
       if (e.isSourceLoaded && e.sourceId === "items-geojson") {
         console.log("Updated GeoJSON source");

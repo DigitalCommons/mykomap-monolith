@@ -13,6 +13,12 @@
       "organisational_structure",
       "typology"
     ],
+    "map": {
+      "mapBounds": [
+        [-5.5, 51.3],
+        [-2.5, 53.5]
+      ]
+    },
     "logo": {
       "largeLogo": "/assets/logos/cwm-logo.png",
       "smallLogo": "/assets/logos/cwm-logo-small.png",

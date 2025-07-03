@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod";
+import { map, z } from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
 import * as Rx from "../rxdefs.js";
 import RxUtils from "../rxutils.js";
@@ -112,6 +112,13 @@ const ConfigData = z.object({
   languages: z.array(Iso639Set1Code).nonempty(),
   ui: z.object({
     directory_panel_field: z.string(),
+    map: z
+      .object({
+        defaultZoom: z.number().optional(),
+        defaultCenter: z.array(z.number()).length(2).optional(),
+        mapBounds: z.array(z.array(z.number())).length(2).optional(),
+      })
+      .optional(),
     logo: z
       .object({
         largeLogo: z.string().optional(),
