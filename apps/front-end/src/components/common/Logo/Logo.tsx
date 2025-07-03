@@ -15,40 +15,41 @@ interface LogoPositionProps {
   };
 }
 
-const StyledLogoWrapper = styled(Box)<LogoPositionProps>(
-  ({ smallScreenPosition, largeScreenPosition }) => ({
-    position: "fixed",
-    top: smallScreenPosition?.top || "10px",
-    left: smallScreenPosition?.left || "10px",
-    zIndex: 0,
+const StyledLogoWrapper = styled(Box, {
+  shouldForwardProp: (prop) =>
+    prop !== "smallScreenPosition" && prop !== "largeScreenPosition",
+})<LogoPositionProps>(({ smallScreenPosition, largeScreenPosition }) => ({
+  position: "fixed",
+  top: smallScreenPosition?.top ?? "10px",
+  left: smallScreenPosition?.left ?? "10px",
+  zIndex: 0,
+  "& img": {
+    width: "100%",
+    maxWidth: "50px",
+    "&.small": {
+      display: "block",
+    },
+    "&.large": {
+      display: "none",
+    },
+  },
+  "@media (min-width: 897px)": {
+    bottom: largeScreenPosition?.bottom ?? "20px",
+    right: largeScreenPosition?.right ?? "20px",
+    top: "unset",
+    left: "unset",
     "& img": {
       width: "100%",
-      maxWidth: "50px",
+      maxWidth: "150px",
       "&.small": {
-        display: "block",
-      },
-      "&.large": {
         display: "none",
       },
-    },
-    "@media (min-width: 897px)": {
-      bottom: largeScreenPosition?.bottom || "20px",
-      right: largeScreenPosition?.right || "20px",
-      top: "unset",
-      left: "unset",
-      "& img": {
-        width: "100%",
-        maxWidth: "150px",
-        "&.small": {
-          display: "none",
-        },
-        "&.large": {
-          display: "block",
-        },
+      "&.large": {
+        display: "block",
       },
     },
-  }),
-);
+  },
+}));
 
 const Logo = () => {
   const isMedium = useMediaQuery("(min-width: 897px)");
