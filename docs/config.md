@@ -1,6 +1,6 @@
 ## Logo
 
-The `logo` config field is a child of the `ui` field and is used to define whether a logo should be displayed on the map, and if so where the logo is situated. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
+The `logo` config field is a child of the `ui` field and is used to define logo display and position on the map. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
 
 If a config file does not contain a `logo` field, no logo will be displayed on the map.
 
