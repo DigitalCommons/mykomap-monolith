@@ -110,7 +110,28 @@ const ConfigData = z.object({
   vocabs: VocabIndex,
   itemProps: PropSpecs,
   languages: z.array(Iso639Set1Code).nonempty(),
-  ui: z.object({ directory_panel_field: z.string() }),
+  ui: z.object({
+    directory_panel_field: z.string(),
+    logo: z
+      .object({
+        largeLogo: z.string().optional(),
+        smallLogo: z.string().optional(),
+        altText: z.string().optional(),
+        smallScreenPosition: z
+          .object({
+            top: z.string().optional(),
+            left: z.string().optional(),
+          })
+          .optional(),
+        largeScreenPosition: z
+          .object({
+            bottom: z.string().optional(),
+            right: z.string().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
+  }),
 });
 const BuildInfo = z.object({
   name: z.string(),
