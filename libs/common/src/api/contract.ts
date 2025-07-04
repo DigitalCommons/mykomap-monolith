@@ -117,6 +117,25 @@ const ConfigData = z.object({
   ui: z.object({
     directory_panel_field: z.string(),
     marker_property_name: z.string().optional(),
+    logo: z
+      .object({
+        largeLogo: z.string().optional(),
+        smallLogo: z.string().optional(),
+        altText: z.string().optional(),
+        smallScreenPosition: z
+          .object({
+            top: z.string().optional(),
+            left: z.string().optional(),
+          })
+          .optional(),
+        largeScreenPosition: z
+          .object({
+            bottom: z.string().optional(),
+            right: z.string().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
   }),
 });
 const BuildInfo = z.object({

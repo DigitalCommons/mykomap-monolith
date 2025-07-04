@@ -4,16 +4,36 @@ import { Config, getConfig } from "../services";
 import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
 
+export type ConfigLogo = {
+  largeLogo?: string;
+  smallLogo?: string;
+  altText?: string;
+  smallScreenPosition?: {
+    top?: string;
+    left?: string;
+  };
+  largeScreenPosition?: {
+    bottom?: string;
+    right?: string;
+  };
+};
+
 export interface ConfigSliceState {
   vocabs: Config["vocabs"];
   languages: string[];
   currentLanguage: string;
+  logo?: ConfigLogo;
 }
 
 const initialState: ConfigSliceState = {
   vocabs: {},
   currentLanguage: "en",
   languages: [],
+  logo: {
+    largeLogo: undefined,
+    smallLogo: undefined,
+    altText: undefined,
+  },
 };
 
 export const configSlice = createAppSlice({
@@ -48,6 +68,10 @@ export const configSlice = createAppSlice({
           state.vocabs = action.payload.vocabs;
           state.languages = action.payload.languages;
           state.currentLanguage = action.payload.languages[0];
+
+          if (action.payload.ui && action.payload.ui.logo) {
+            state.logo = action.payload.ui.logo;
+          }
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
@@ -61,6 +85,7 @@ export const configSlice = createAppSlice({
   }),
   selectors: {
     selectCurrentLanguage: (state) => state.currentLanguage,
+    selectLogo: (state) => state.logo,
   },
 });
 
@@ -68,4 +93,4 @@ export const configLoaded = createAction<Config>("configLoaded");
 
 export const { fetchConfig, setLanguage } = configSlice.actions;
 
-export const { selectCurrentLanguage } = configSlice.selectors;
+export const { selectCurrentLanguage, selectLogo } = configSlice.selectors;
