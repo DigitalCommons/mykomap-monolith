@@ -98,6 +98,9 @@ const RightPane = ({
     return address.split(",").map((line) => line.trim());
   };
 
+  const search = new URLSearchParams(window.location.search);
+  const isPowys = search.get("datasetId") === "powys-food-systems";
+
   return renderIfData(
     <StyledRightPane>
       {renderIfData(
@@ -127,7 +130,7 @@ const RightPane = ({
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {url}
+                  {isPowys?"Website":url}
                 </Link>
               </ListItem>
             ))}
