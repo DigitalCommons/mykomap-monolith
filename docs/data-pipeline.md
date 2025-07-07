@@ -19,7 +19,7 @@ application's `test/data` directory - equivalent to setting:
     SERVER_DATA_ROOT=test/data
 
 There should be a dataset in there which is used for unit
-testing. Using this ad the default means the back-end has a dataset
+testing. Using this as the default means the back-end has a dataset
 available out of the box.
 
 > [!NOTE]
