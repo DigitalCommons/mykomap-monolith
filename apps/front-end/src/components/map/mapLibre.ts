@@ -127,10 +127,12 @@ export const createMap = (
 ): Map => {
   // const initialZoom = mapConfig?.defaultZoom;
   // const initialCenter = mapConfig?.defaultCenter;
-  const initialBounds = mapConfig?.mapBounds || [
+  const defaultBounds = mapConfig?.mapBounds || [
     [-169, -49.3],
     [189, 75.6],
   ];
+
+   const initialBounds = mapConfig?.mapBounds || defaultBounds;
 
   console.log("Map bounds", initialBounds);
 

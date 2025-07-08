@@ -14,7 +14,7 @@ import {
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
-import { selectMapConfig } from "../../app/configSlice";
+import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -28,7 +28,8 @@ const MapWrapper = () => {
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
-  const [configLoaded, setConfigLoaded] = useState(false);
+  // const [configLoaded, setConfigLoaded] = useState(false);
+  const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
@@ -37,15 +38,18 @@ const MapWrapper = () => {
   useEffect(() => {
     // These values shouldn't be hardcoded, but are used to check if the config is loaded from the server
     // This is a temporary solution to check if the config is loaded from the server
-    const isConfigFromServer =
-      mapConfig?.mapBounds?.[0][0] !== -169 ||
-      mapConfig?.mapBounds?.[0][1] !== -49.3;
+    // const isConfigFromServer =
+    //   mapConfig?.mapBounds?.[0][0] !== -169 ||
+    //   mapConfig?.mapBounds?.[0][1] !== -49.3;
 
-    if (isConfigFromServer) {
+    // if (isConfigFromServer) {
+    //   console.log("Config loaded from server:", mapConfig);
+    //   setConfigLoaded(true);
+    // }
+    if (configStatus === "loaded") {
       console.log("Config loaded from server:", mapConfig);
-      setConfigLoaded(true);
     }
-  }, [mapConfig]);
+  }, [mapConfig, configStatus]);
 
   const popupCreatedCallback = (itemIx: number) => {
     console.log("Popup created");
@@ -58,10 +62,10 @@ const MapWrapper = () => {
   };
 
   useEffect(() => {
-    if (!configLoaded) {
-      console.log("Waiting for config to be loaded before creating map");
-      return;
-    }
+     if (configStatus !== "loaded") {
+       console.log("Waiting for config to be loaded before creating map");
+       return;
+     }
 
     if (map.current) {
       try {
@@ -89,7 +93,7 @@ const MapWrapper = () => {
     console.log("mapConfig in MapWrapper", mapConfig);
     // Clean up on unmount
     return () => map.current?.remove();
-  }, [configLoaded]);
+  }, [configStatus]);
 
   useEffect(() => {
     if (sourceLoaded) {

@@ -30,6 +30,7 @@ export interface ConfigSliceState {
   currentLanguage: string;
   map?: ConfigMap;
   logo?: ConfigLogo;
+  status: "idle" | "loading" | "loaded" | "failed";
 }
 
 const initialState: ConfigSliceState = {
@@ -49,6 +50,7 @@ const initialState: ConfigSliceState = {
     smallLogo: undefined,
     altText: undefined,
   },
+  status: "idle",
 };
 
 export const configSlice = createAppSlice({
@@ -83,6 +85,7 @@ export const configSlice = createAppSlice({
           state.vocabs = action.payload.vocabs;
           state.languages = action.payload.languages;
           state.currentLanguage = action.payload.languages[0];
+          state.status = "loaded";
 
           if (action.payload.ui && action.payload.ui.map) {
             const uiMap = action.payload.ui.map;
@@ -117,6 +120,7 @@ export const configSlice = createAppSlice({
     selectCurrentLanguage: (state) => state.currentLanguage,
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
+    selectConfigStatus: (state) => state.status,
   },
 });
 
@@ -124,5 +128,5 @@ export const configLoaded = createAction<Config>("configLoaded");
 
 export const { fetchConfig, setLanguage } = configSlice.actions;
 
-export const { selectCurrentLanguage, selectLogo, selectMapConfig } =
+export const { selectCurrentLanguage, selectLogo, selectMapConfig, selectConfigStatus } =
   configSlice.selectors;
