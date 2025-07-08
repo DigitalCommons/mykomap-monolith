@@ -9,6 +9,7 @@ import type {
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 import mapMarkerImgUrl from "./map-marker.png";
 import { getLanguageFromUrl } from "../../utils/window-utils";
+import { i, m } from "vitest/dist/reporters-yx5ZTtEV.js";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -127,12 +128,7 @@ export const createMap = (
 ): Map => {
   // const initialZoom = mapConfig?.defaultZoom;
   // const initialCenter = mapConfig?.defaultCenter;
-  const defaultBounds = mapConfig?.mapBounds || [
-    [-169, -49.3],
-    [189, 75.6],
-  ];
-
-   const initialBounds = mapConfig?.mapBounds || defaultBounds;
+  const initialBounds = mapConfig?.mapBounds;
 
   console.log("Map bounds", initialBounds);
 
