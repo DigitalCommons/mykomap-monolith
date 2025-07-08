@@ -13,6 +13,9 @@ interface RightPaneProps {
   organisational_structure?: string;
   typology?: string;
   data_sources?: string[];
+  email?: string;
+  phone?: string;
+  contact_name?: string;
 }
 
 const StyledRightPane = styled(Box)(() => ({
@@ -35,6 +38,9 @@ const StyledTopBox = styled(Box)(() => ({
   padding: "var(--spacing-large) var(--spacing-xlarge)",
   borderTopRightRadius: 0,
   "& p": {
+    fontSize: "var(--font-size-small)",
+  },
+  "& a": {
     fontSize: "var(--font-size-small)",
   },
   "@media (min-width: 768px)": {
@@ -90,6 +96,9 @@ const RightPane = ({
   organisational_structure,
   typology,
   data_sources,
+  email,
+  phone,
+  contact_name,
 }: RightPaneProps) => {
   const { t } = useTranslation();
 
@@ -99,7 +108,7 @@ const RightPane = ({
   };
 
   const search = new URLSearchParams(window.location.search);
-  const isPowys = search.get("datasetId") === "powys-food-systems";
+  const isPowys = search.get("datasetId")?.includes("powys");
 
   return renderIfData(
     <StyledRightPane>
@@ -130,60 +139,69 @@ const RightPane = ({
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {isPowys?"Website":url}
+                  {isPowys ? "Website" : url}
                 </Link>
               </ListItem>
             ))}
           </List>
+          {email && <Typography>{email}</Typography>}
+          {phone && <Typography>{phone}</Typography>}
+          {contact_name && <Typography>{contact_name}</Typography>}
         </StyledTopBox>,
         [address, ...website],
       )}
-      {data_sources && <StyledBottomBox>
-        {renderIfData(
-          <Box
-            sx={{
-              marginBottom: "var(--spacing-medium)",
-            }}
-          >
-            <Typography variant="h4">
-              {t("organisational_structure")}
-            </Typography>
-            <Typography variant="body1">{organisational_structure}</Typography>
-          </Box>,
-          [organisational_structure],
-        )}
-        {renderIfData(
-          <Box
-            sx={{
-              marginBottom: "var(--spacing-medium)",
-            }}
-          >
-            <Typography variant="h4">{t("typology")}</Typography>
-            <Typography variant="body1">{typology}</Typography>
-          </Box>,
-          [typology],
-        )}
-        {data_sources && renderIfData(
-          <Box>
-            <Typography variant="h4">{t("data_sources")}</Typography>
-            {data_sources && <List>
-              {data_sources.map((dataSource) => (
-                <ListItem
-                  key={dataSource}
-                  sx={{
-                    display: "list-item",
-                    marginLeft: "var(--spacing-medium)",
-                  }}
-                >
-                  {dataSource}
-                </ListItem>
-              ))}
-            </List>}
-          </Box>,
-          data_sources,
-        )}
-      </StyledBottomBox>  }
-      
+      {data_sources && (
+        <StyledBottomBox>
+          {renderIfData(
+            <Box
+              sx={{
+                marginBottom: "var(--spacing-medium)",
+              }}
+            >
+              <Typography variant="h4">
+                {t("organisational_structure")}
+              </Typography>
+              <Typography variant="body1">
+                {organisational_structure}
+              </Typography>
+            </Box>,
+            [organisational_structure],
+          )}
+          {renderIfData(
+            <Box
+              sx={{
+                marginBottom: "var(--spacing-medium)",
+              }}
+            >
+              <Typography variant="h4">{t("typology")}</Typography>
+              <Typography variant="body1">{typology}</Typography>
+            </Box>,
+            [typology],
+          )}
+          {data_sources &&
+            renderIfData(
+              <Box>
+                <Typography variant="h4">{t("data_sources")}</Typography>
+                {data_sources && (
+                  <List>
+                    {data_sources.map((dataSource) => (
+                      <ListItem
+                        key={dataSource}
+                        sx={{
+                          display: "list-item",
+                          marginLeft: "var(--spacing-medium)",
+                        }}
+                      >
+                        {dataSource}
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Box>,
+              data_sources,
+            )}
+        </StyledBottomBox>
+      )}
     </StyledRightPane>,
     [address, ...website],
     // [address, ...website, organisational_structure, typology, ...data_sources],
