@@ -34,7 +34,9 @@ The `logo` field has 6 subfields
 },
 ```
 
+<br />
 ---
+<br />
 
 ## Map
 
@@ -42,7 +44,7 @@ The `map` config field is also a child of the `ui` field and is used to define t
 
 The `map` field has 1 subfield
 
-- `mapBounds`: an array the countains the longitude and latitude for the map's boundaries
+- `mapBounds`: an array the countains the longitude and latitude of the map's boundaries
 
 ### The `map` config object including the **Powys** map boundaries
 
