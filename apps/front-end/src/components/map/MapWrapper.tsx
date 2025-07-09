@@ -53,7 +53,7 @@ const MapWrapper = () => {
       try {
         map.current?.remove();
       } catch (error) {
-        console.error("Error removing map:", error);
+        console.error("Error removing map instance:", error);
       }
       map.current = null;
     }
@@ -74,7 +74,15 @@ const MapWrapper = () => {
     dispatch(fetchLocations());
 
     // Clean up on unmount
-    return () => map.current?.remove();
+    return () => {
+      if (map.current) {
+        try {
+          map.current.remove();
+        } catch (error) {
+          console.error("Error removing map during component unmount:", error);
+        }
+      }
+    };
   }, [configStatus]);
 
   useEffect(() => {

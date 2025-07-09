@@ -102,6 +102,7 @@ export const configSlice = createAppSlice({
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
+          state.status = "failed";
         },
       },
     ),
@@ -122,5 +123,9 @@ export const configLoaded = createAction<Config>("configLoaded");
 
 export const { fetchConfig, setLanguage } = configSlice.actions;
 
-export const { selectCurrentLanguage, selectLogo, selectMapConfig, selectConfigStatus } =
-  configSlice.selectors;
+export const {
+  selectCurrentLanguage,
+  selectLogo,
+  selectMapConfig,
+  selectConfigStatus,
+} = configSlice.selectors;
