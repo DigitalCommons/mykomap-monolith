@@ -9,7 +9,6 @@ import type {
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
 import mapMarkerImgUrl from "./map-marker.png";
 import { getLanguageFromUrl } from "../../utils/window-utils";
-import { i, m } from "vitest/dist/reporters-yx5ZTtEV.js";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
