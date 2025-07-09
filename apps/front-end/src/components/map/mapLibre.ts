@@ -121,13 +121,9 @@ export const createMap = (
   popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
   mapConfig?: {
-    // defaultZoom?: number;
-    // defaultCenter?: [number, number];
     mapBounds?: [[number, number], [number, number]];
   },
 ): Map => {
-  // const initialZoom = mapConfig?.defaultZoom;
-  // const initialCenter = mapConfig?.defaultCenter;
   const initialBounds = mapConfig?.mapBounds;
 
   console.log("Map bounds", initialBounds);

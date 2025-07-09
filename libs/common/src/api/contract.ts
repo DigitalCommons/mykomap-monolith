@@ -114,8 +114,6 @@ const ConfigData = z.object({
     directory_panel_field: z.string(),
     map: z
       .object({
-        defaultZoom: z.number().optional(),
-        defaultCenter: z.array(z.number()).length(2).optional(),
         mapBounds: z.array(z.array(z.number())).length(2).optional(),
       })
       .optional(),

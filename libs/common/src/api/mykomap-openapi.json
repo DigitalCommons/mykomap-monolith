@@ -910,17 +910,6 @@
                         "map": {
                           "type": "object",
                           "properties": {
-                            "defaultZoom": {
-                              "type": "number"
-                            },
-                            "defaultCenter": {
-                              "type": "array",
-                              "items": {
-                                "type": "number"
-                              },
-                              "minItems": 2,
-                              "maxItems": 2
-                            },
                             "mapBounds": {
                               "type": "array",
                               "items": {

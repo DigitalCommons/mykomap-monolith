@@ -5,8 +5,6 @@ import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
 
 export type ConfigMap = {
-  // defaultZoom?: number;
-  // defaultCenter?: [number, number];
   mapBounds?: [[number, number], [number, number]];
 };
 
@@ -38,8 +36,6 @@ const initialState: ConfigSliceState = {
   currentLanguage: "en",
   languages: [],
   map: {
-    // defaultZoom: undefined,
-    // defaultCenter: undefined,
     mapBounds: [
       [-169, -49.3],
       [189, 75.6],
@@ -90,8 +86,6 @@ export const configSlice = createAppSlice({
           if (action.payload.ui && action.payload.ui.map) {
             const uiMap = action.payload.ui.map;
             state.map = {
-              // defaultZoom: uiMap.defaultZoom,
-              // defaultCenter: uiMap.defaultCenter,
               mapBounds:
                 uiMap.mapBounds && uiMap.mapBounds.length === 2
                   ? [

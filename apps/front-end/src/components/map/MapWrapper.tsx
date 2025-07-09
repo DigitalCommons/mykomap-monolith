@@ -28,28 +28,10 @@ const MapWrapper = () => {
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
-  // const [configLoaded, setConfigLoaded] = useState(false);
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
-
-  // Check if mapBounds are loaded from config
-  useEffect(() => {
-    // These values shouldn't be hardcoded, but are used to check if the config is loaded from the server
-    // This is a temporary solution to check if the config is loaded from the server
-    // const isConfigFromServer =
-    //   mapConfig?.mapBounds?.[0][0] !== -169 ||
-    //   mapConfig?.mapBounds?.[0][1] !== -49.3;
-
-    // if (isConfigFromServer) {
-    //   console.log("Config loaded from server:", mapConfig);
-    //   setConfigLoaded(true);
-    // }
-    if (configStatus === "loaded") {
-      console.log("Config loaded from server:", mapConfig);
-    }
-  }, [mapConfig, configStatus]);
 
   const popupCreatedCallback = (itemIx: number) => {
     console.log("Popup created");
@@ -62,14 +44,13 @@ const MapWrapper = () => {
   };
 
   useEffect(() => {
-     if (configStatus !== "loaded") {
-       console.log("Waiting for config to be loaded before creating map");
-       return;
-     }
+    if (configStatus !== "loaded") {
+      console.log("Waiting for config to be loaded before creating map");
+      return;
+    }
 
     if (map.current) {
       try {
-        console.log("Destroying existing map to recreate with new config");
         map.current?.remove();
       } catch (error) {
         console.error("Error removing map:", error);
@@ -82,6 +63,7 @@ const MapWrapper = () => {
       popupClosedCallback,
       mapConfig,
     );
+
     map.current.on("sourcedata", (e) => {
       if (e.isSourceLoaded && e.sourceId === "items-geojson") {
         console.log("Updated GeoJSON source");
@@ -90,7 +72,7 @@ const MapWrapper = () => {
       }
     });
     dispatch(fetchLocations());
-    console.log("mapConfig in MapWrapper", mapConfig);
+
     // Clean up on unmount
     return () => map.current?.remove();
   }, [configStatus]);
