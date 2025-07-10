@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import _ from "lodash";
-import { z } from "zod";
+import { ConfigData } from "@mykomap/common";
 
 import {
   PropDefs,
@@ -11,9 +11,6 @@ import {
   yesANumber,
 } from "@mykomap/common";
 import { HttpError } from "../errors.js";
-
-// Infer type from Zod schema
-type ConfigData = z.infer<typeof schemas.ConfigData>;
 
 export class Dataset {
   id: string;
@@ -116,15 +113,25 @@ export class Dataset {
       any: 0,
     };
 
+    // TODO: make this an argument of getTotals, so it can be used for filters as well as the
+    // directory panel
+    const propId = this.config.ui.directory_panel_field;
+    const propIndex = this.searchablePropIndexMap[propId];
+
     this.searchablePropValues.forEach((itemValues) => {
-      const label = itemValues[1];
-      if (typeof label !== "string") return;
-      totals[label] = 1 + (totals[label] ?? 0);
+      const value = itemValues[propIndex];
+      // if value is a single string, wrap it in an array
+      const valuesToCount = typeof value === "string" ? [value] : value;
+
+      valuesToCount.forEach((value) => {
+        totals[value] = 1 + (totals[value] ?? 0);
+      });
       totals.any = 1 + (totals.any ?? 0);
     });
 
     return totals;
   };
+
   /**
    * Returns an array of item indexes that match the given criteria, or an array of objects if
    * returnProps is specified. Also supports pagination, if `page` and pageSize are defined

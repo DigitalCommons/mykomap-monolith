@@ -1,5 +1,11 @@
 import * as MapLibreGL from "maplibre-gl";
-import { AttributionControl, NavigationControl, Popup } from "maplibre-gl";
+import {
+  AttributionControl,
+  NavigationControl,
+  Popup,
+  AddLayerObject,
+  DataDrivenPropertyValueSpecification,
+} from "maplibre-gl";
 import type {
   Map,
   GeoJSONSource,
@@ -7,8 +13,8 @@ import type {
   MapLayerMouseEvent,
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
-import mapMarkerImgUrl from "./map-marker.png";
 import { getLanguageFromUrl } from "../../utils/window-utils";
+import markers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -136,7 +142,7 @@ export const createMap = (
     attributionControl: false,
   });
 
-  map.on("load", () => {
+  map.on("load", async () => {
     map.addSource("items-geojson", {
       type: "geojson",
       data: {
@@ -181,20 +187,35 @@ export const createMap = (
       },
     });
 
-    map.loadImage(mapMarkerImgUrl).then((image) => {
-      map.addImage("custom-marker", image.data);
-    });
+    const markerList = [];
+    let index = 0;
+
+    for (let markerImage of markers) {
+      const image = await map.loadImage(markerImage);
+      const markerName = "marker-" + index;
+      map.addImage(markerName, image.data);
+      markerList.push(index++);
+      markerList.push(markerName);
+    }
+
+    const markerLayout = {
+      "icon-image": [
+        "match",
+        ["get", "custom_marker_id"],
+        ...markerList,
+        `marker-${markers.length - 1}`, // assumes the final marker in the marker list is the default marker
+      ],
+      "icon-anchor": "bottom",
+    };
 
     map.addLayer({
       id: "unclustered-point",
       type: "symbol",
       source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
-      layout: {
-        "icon-image": "custom-marker",
-        "icon-offset": [0, -20], // shift marker icon up so tip is at the marker's coordinates
-      },
-    });
+      layout:
+        markerLayout as unknown as DataDrivenPropertyValueSpecification<string>,
+    } as AddLayerObject);
 
     const spiderfy = new Spiderfy(map, {
       onLeafClick: (
@@ -249,9 +270,8 @@ export const createMap = (
       minZoomLevel: 18,
       zoomIncrement: 0,
       closeOnLeafClick: false,
-      spiderLeavesLayout: {
-        "icon-image": "custom-marker",
-      },
+      spiderLeavesLayout:
+        markerLayout as unknown as DataDrivenPropertyValueSpecification<string>,
     });
     spiderfy.applyTo("clusters");
 
@@ -417,7 +437,7 @@ export const createMap = (
     });
 
     map.on("moveend", () => {
-      console.log("aaaaa", map.getZoom(), map.getBounds());
+      // console.debug("zoom / bounds", map.getZoom(), map.getBounds());
     });
 
     map.on("zoomstart", () => {

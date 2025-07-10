@@ -12,12 +12,13 @@
   },
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
-    "dataset": "tsx bin/dataset.ts",
+    "dataset": "vite-node bin/dataset.ts",
+    "dataset-minimal": "vite-node bin/datasetMinimal.ts",
     "prebuild": "npm -w ../../libs/common -w ../../libs/node-utils run build",
     "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",
     "start:attached": "npm run start",
-    "test": "vitest run",
+    "test": "cross-env LC_ALL=en_GB TZ=UTC vitest run",
     "dev": "vite-node -w start.ts"
   },
   "dependencies": {
@@ -29,6 +30,8 @@
     "@ts-rest/fastify": "^3.51.0",
     "clipanion": "^4.0.0-rc.4",
     "close-with-grace": "^2.1.0",
+    "csv-parse": "^5.6.0",
+    "diff": "^8.0.2",
     "fastify-openapi-glue": "^4.7.0",
     "fastify-plugin": "^4.5.1",
     "js-yaml": "^4.1.0",

@@ -12,8 +12,8 @@ monorepo
   |- @mykomap/common
       |- API ts-rest contract + OpenAPI spec
       |- prop defs code (used by both front-end and back-end)
-  |- @mykomap/config, a folder for each dataset containing:
-      |- config.json ... includes vocabs, item prop specs, UI config
+  |- @mykomap/node-utils
+      |- common code that relies on the NodeJS runtime e.g. file utilities
 ```
 
 ## Dependencies

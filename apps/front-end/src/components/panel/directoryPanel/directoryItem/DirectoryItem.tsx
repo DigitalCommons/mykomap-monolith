@@ -27,6 +27,7 @@ const StyledButton = styled(Button)(({ active }: { active: number }) => ({
   fontWeight: "var(--font-weight-medium)",
   textDecoration: "none",
   textAlign: "left",
+  whiteSpace: "pre-wrap",
   color: active ? "var(--color-primary)" : "var(--color-text)",
   backgroundColor: "transparent",
   borderRadius: 0,
