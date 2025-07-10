@@ -12,7 +12,26 @@
       "primary_activity",
       "organisational_structure",
       "typology"
-    ]
+    ],
+    "map": {
+      "mapBounds": [
+        [-5.5, 51.3],
+        [-2.5, 53.5]
+      ]
+    },
+    "logo": {
+      "largeLogo": "/assets/logos/cwm-logo.png",
+      "smallLogo": "/assets/logos/cwm-logo-small.png",
+      "altText": "Cooperative World Map",
+      "smallScreenPosition": {
+        "top": "0",
+        "left": "5px"
+      },
+      "largeScreenPosition": {
+        "bottom": "-25px",
+        "right": "-5px"
+      }
+    }
   },
   "itemProps": {
     "id": {

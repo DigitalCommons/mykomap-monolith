@@ -909,6 +909,57 @@
                         },
                         "marker_property_name": {
                           "type": "string"
+                        "map": {
+                          "type": "object",
+                          "properties": {
+                            "mapBounds": {
+                              "type": "array",
+                              "items": {
+                                "type": "array",
+                                "items": {
+                                  "type": "number"
+                                }
+                              },
+                              "minItems": 2,
+                              "maxItems": 2
+                            }
+                          }
+                        },
+                        "logo": {
+                          "type": "object",
+                          "properties": {
+                            "largeLogo": {
+                              "type": "string"
+                            },
+                            "smallLogo": {
+                              "type": "string"
+                            },
+                            "altText": {
+                              "type": "string"
+                            },
+                            "smallScreenPosition": {
+                              "type": "object",
+                              "properties": {
+                                "top": {
+                                  "type": "string"
+                                },
+                                "left": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "largeScreenPosition": {
+                              "type": "object",
+                              "properties": {
+                                "bottom": {
+                                  "type": "string"
+                                },
+                                "right": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          }
                         }
                       },
                       "required": [
