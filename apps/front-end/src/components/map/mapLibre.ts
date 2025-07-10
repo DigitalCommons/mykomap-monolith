@@ -263,7 +263,7 @@ export const createMap = (
           map.getCanvas().style.cursor = "";
         }
       },
-      // minZoomLevel: 18,
+      minZoomLevel: 18,
       zoomIncrement: 0,
       closeOnLeafClick: false,
       spiderLeavesLayout:
