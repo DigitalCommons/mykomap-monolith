@@ -14,6 +14,7 @@ import {
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
+import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -26,6 +27,8 @@ const MapWrapper = () => {
   const popupIndex = useAppSelector(selectPopupIndex);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
+  const mapConfig = useAppSelector(selectMapConfig);
+  const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
@@ -41,7 +44,26 @@ const MapWrapper = () => {
   };
 
   useEffect(() => {
-    map.current = createMap(popupCreatedCallback, popupClosedCallback);
+    if (configStatus !== "loaded") {
+      console.log("Waiting for config to be loaded before creating map");
+      return;
+    }
+
+    if (map.current) {
+      try {
+        map.current?.remove();
+      } catch (error) {
+        console.error("Error removing map instance:", error);
+      }
+      map.current = null;
+    }
+
+    map.current = createMap(
+      popupCreatedCallback,
+      popupClosedCallback,
+      mapConfig,
+    );
+
     map.current.on("sourcedata", (e) => {
       if (e.isSourceLoaded && e.sourceId === "items-geojson") {
         console.log("Updated GeoJSON source");
@@ -52,8 +74,16 @@ const MapWrapper = () => {
     dispatch(fetchLocations());
 
     // Clean up on unmount
-    return () => map.current?.remove();
-  }, []);
+    return () => {
+      if (map.current) {
+        try {
+          map.current.remove();
+        } catch (error) {
+          console.error("Error removing map during component unmount:", error);
+        }
+      }
+    };
+  }, [configStatus]);
 
   useEffect(() => {
     if (sourceLoaded) {

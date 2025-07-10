@@ -4,6 +4,10 @@ import { Config, getConfig } from "../services";
 import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
 
+export type ConfigMap = {
+  mapBounds?: [[number, number], [number, number]];
+};
+
 export type ConfigLogo = {
   largeLogo?: string;
   smallLogo?: string;
@@ -22,18 +26,27 @@ export interface ConfigSliceState {
   vocabs: Config["vocabs"];
   languages: string[];
   currentLanguage: string;
+  map?: ConfigMap;
   logo?: ConfigLogo;
+  status: "idle" | "loading" | "loaded" | "failed";
 }
 
 const initialState: ConfigSliceState = {
   vocabs: {},
   currentLanguage: "en",
   languages: [],
+  map: {
+    mapBounds: [
+      [-169, -49.3],
+      [189, 75.6],
+    ],
+  },
   logo: {
     largeLogo: undefined,
     smallLogo: undefined,
     altText: undefined,
   },
+  status: "idle",
 };
 
 export const configSlice = createAppSlice({
@@ -68,6 +81,20 @@ export const configSlice = createAppSlice({
           state.vocabs = action.payload.vocabs;
           state.languages = action.payload.languages;
           state.currentLanguage = action.payload.languages[0];
+          state.status = "loaded";
+
+          if (action.payload.ui && action.payload.ui.map) {
+            const uiMap = action.payload.ui.map;
+            state.map = {
+              mapBounds:
+                uiMap.mapBounds && uiMap.mapBounds.length === 2
+                  ? [
+                      [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
+                      [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
+                    ]
+                  : undefined,
+            };
+          }
 
           if (action.payload.ui && action.payload.ui.logo) {
             state.logo = action.payload.ui.logo;
@@ -75,6 +102,7 @@ export const configSlice = createAppSlice({
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
+          state.status = "failed";
         },
       },
     ),
@@ -86,6 +114,8 @@ export const configSlice = createAppSlice({
   selectors: {
     selectCurrentLanguage: (state) => state.currentLanguage,
     selectLogo: (state) => state.logo,
+    selectMapConfig: (state) => state.map,
+    selectConfigStatus: (state) => state.status,
   },
 });
 
@@ -93,4 +123,9 @@ export const configLoaded = createAction<Config>("configLoaded");
 
 export const { fetchConfig, setLanguage } = configSlice.actions;
 
-export const { selectCurrentLanguage, selectLogo } = configSlice.selectors;
+export const {
+  selectCurrentLanguage,
+  selectLogo,
+  selectMapConfig,
+  selectConfigStatus,
+} = configSlice.selectors;
