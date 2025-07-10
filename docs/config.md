@@ -65,8 +65,8 @@ The `logo` field has 6 subfields
 ```
 "ui": {
   "logo": {
-    "largeLogo": "/assets/logos/cwm-logo.png",
-    "smallLogo": "/assets/logos/cwm-logo-small.png",
+    "largeLogo": "./assets/logos/cwm-logo.png",
+    "smallLogo": "./assets/logos/cwm-logo-small.png",
     "altText": "Cooperative World Map",
     "smallScreenPosition": {
       "top": "0",
