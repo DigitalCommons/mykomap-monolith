@@ -43,6 +43,7 @@ And these are the different options to define the style of an itemProp:
     ],
     "bottom-right-pane": []
   }
+```
 
 ## Logo
 
