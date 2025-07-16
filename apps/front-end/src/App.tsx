@@ -5,7 +5,7 @@ import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
 import { getLanguageFromUrl } from "./utils/window-utils";
 import Popup from "./components/popup/Popup";
-import CwmLogo from "./components/common/cwmLogo/CwmLogo";
+import Logo from "./components/common/Logo/Logo";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -34,7 +34,7 @@ const App = () => {
   return (
     <div>
       <MapWrapper />
-      <CwmLogo />
+      <Logo />
       <Panel />
       <Popup />
     </div>

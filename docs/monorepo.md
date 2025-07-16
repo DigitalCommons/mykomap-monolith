@@ -12,8 +12,8 @@ monorepo
   |- @mykomap/common
       |- API ts-rest contract + OpenAPI spec
       |- prop defs code (used by both front-end and back-end)
-  |- @mykomap/config, a folder for each dataset containing:
-      |- config.json ... includes vocabs, item prop specs, UI config
+  |- @mykomap/node-utils
+      |- common code that relies on the NodeJS runtime e.g. file utilities
 ```
 
 ## Dependencies
@@ -32,7 +32,7 @@ generated in a consistent way in all the modules.
 Where does this code go? This gets complicated, as some modules are by
 design free of NodeJS dependencies, and since those are transitory,
 `libs/common` cannot have runtime NodeJS dependent
-dependencies. (Although, it *does* have `devDependencies` on
+dependencies. (Although, it _does_ have `devDependencies` on
 `node-utils`, because the tests it uses `file-utils.ts` defined
 there).
 
@@ -40,8 +40,8 @@ However: the `build-info.ts` code necessarily needs to run
 `git-depend` to obtain information about the build, if only at build
 time.
 
-
 Which means:
+
 - The `build-info.ts` code common to all modules needs to be in the
   first module to compile.
 - This module cannot be in `node-utils`, or else `common` and
@@ -54,7 +54,6 @@ Other modules can then depend on `common` to get the `build-info.ts`
 code, and only need to pull in the `spawnSync` function from NodeJS in
 their `vite.config.ts` files, so the node dependency is only implicit
 and at build time.
-
 
 ## Ideas
 

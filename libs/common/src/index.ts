@@ -1,10 +1,12 @@
-import specification from "./api/mykomap-openapi.json";
-export { specification };
+import specification from "./api/mykomap-openapi.json" with { type: "json" };
+import RxUtils from "./rxutils.js";
+export { specification, RxUtils };
 export * from "./api/contract.js";
 export * from "./utils.js";
 export * from "./common-types.js";
 export * from "./text-search.js";
 export * from "./prop-specs.js";
 export * from "./prop-defs.js";
+export * from "./rxdefs.js";
 export * from "./iso639-1.js";
 export * from "./build-info.js";

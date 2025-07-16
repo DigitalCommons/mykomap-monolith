@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { z } from "zod";
+import { map, z } from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
 import * as Rx from "../rxdefs.js";
 import RxUtils from "../rxutils.js";
@@ -25,9 +25,13 @@ function ZodRegex(rx: RegExp, message: string) {
 }
 
 const Location = z.array(z.number()).min(2).max(2);
+const CustomMarkerId = z.number();
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
 const DatasetItem = z.object({}).passthrough();
-const DatasetLocations = z.array(Location.nullable());
+const DatasetLocations = z.array(
+  Location.nullable(),
+  CustomMarkerId.nullable(),
+);
 const NCName = ZodRegex(Rx.NCName, "Invalid NCName format");
 const QName = ZodRegex(Rx.QName, "Invalid QName format");
 const DatasetItemId = ZodRegex(
@@ -79,6 +83,15 @@ const InnerValuePropSpec = z.object({
 const InnerVocabPropSpec = z.object({
   type: z.literal("vocab"),
   uri: AbbrevUri,
+  /**
+   * Indicates whether the options should be sorted in filter dropdowns.
+   * If set to false, no sorting will occur.
+   * Sorting is set to 'asc' by default
+   * If set to 'asc' or 'desc', the options will be sorted accordingly.
+   */
+  sorted: z
+    .union([z.boolean(), z.literal("asc"), z.literal("desc")])
+    .optional(),
 });
 const InnerPropSpec = z.union([InnerValuePropSpec, InnerVocabPropSpec]);
 const OuterMultiPropSpec = z.object({
@@ -101,7 +114,34 @@ const ConfigData = z.object({
   vocabs: VocabIndex,
   itemProps: PropSpecs,
   languages: z.array(Iso639Set1Code).nonempty(),
-  ui: z.object({ directory_panel_field: z.string() }),
+  ui: z.object({
+    directory_panel_field: z.string(),
+    marker_property_name: z.string().optional(),
+    map: z
+      .object({
+        mapBounds: z.array(z.array(z.number())).length(2).optional(),
+      })
+      .optional(),
+    logo: z
+      .object({
+        largeLogo: z.string().optional(),
+        smallLogo: z.string().optional(),
+        altText: z.string().optional(),
+        smallScreenPosition: z
+          .object({
+            top: z.string().optional(),
+            left: z.string().optional(),
+          })
+          .optional(),
+        largeScreenPosition: z
+          .object({
+            bottom: z.string().optional(),
+            right: z.string().optional(),
+          })
+          .optional(),
+      })
+      .optional(),
+  }),
 });
 const BuildInfo = z.object({
   name: z.string(),
@@ -251,7 +291,8 @@ export const contract = c.router({
     method: "GET",
     path: "/dataset/:datasetId/totals",
     summary: "get the total number of results under each item in the directory",
-    description: "Gets the total number of results under each item in the directory.",
+    description:
+      "Gets the total number of results under each item in the directory.",
     pathParams: z.object({
       datasetId: DatasetId.openapi({
         description: "uniquely specifies the dataset wanted",

@@ -37,7 +37,7 @@ const StyledResults = styled(Box)(() => ({
   },
 }));
 
-const StyledPageNav = styled(Box)(()=>({
+const StyledPageNav = styled(Box)(() => ({
   padding: "var(--spacing-medium)",
   width: "100%",
 }));
@@ -67,7 +67,7 @@ const Results = () => {
 
   return (
     <>
-    <Typography
+      <Typography
         variant="h4"
         component="h4"
         sx={{
@@ -81,28 +81,28 @@ const Results = () => {
       >
         {t("matching_results", { count: resultCount })}
       </Typography>
-    <StyledResults>      
-      <List>
-        {results.map((item, index) => (
-          <ResultItem
-            key={index}
-            index={item.index}
-            name={item.name}
-            buttonAction={() => onItemClick(item.index)}
+      <StyledResults>
+        <List>
+          {results.map((item, index) => (
+            <ResultItem
+              key={index}
+              index={item.index}
+              name={item.name}
+              buttonAction={() => onItemClick(item.index)}
+            />
+          ))}
+        </List>
+      </StyledResults>
+      {totalPages > 1 && (
+        <StyledPageNav>
+          <Pagination
+            count={totalPages}
+            page={resultsPage + 1}
+            onChange={(event, value) => {
+              dispatch(populateSearchResults(value - 1));
+            }}
+            color="primary"
           />
-        ))}
-      </List>      
-    </StyledResults>
-    {totalPages > 1 && (
-      <StyledPageNav>
-        <Pagination
-          count={totalPages}
-          page={resultsPage + 1}
-          onChange={(event, value) => {
-            dispatch(populateSearchResults(value - 1));
-          }}
-          color="primary"
-        />
         </StyledPageNav>
       )}
     </>

@@ -1,18 +1,16 @@
 import fs from "node:fs";
 import path from "node:path";
 import _ from "lodash";
-import { z } from "zod";
+import { ConfigData } from "@mykomap/common";
 
 import {
   PropDefs,
   PropDefsFactory,
   schemas,
   TextSearch,
+  yesANumber,
 } from "@mykomap/common";
 import { HttpError } from "../errors.js";
-
-// Infer type from Zod schema
-type ConfigData = z.infer<typeof schemas.ConfigData>;
 
 export class Dataset {
   id: string;
@@ -81,8 +79,8 @@ export class Dataset {
     } else {
       throw new Error(
         `searchable.json for dataset ${this.id} has a bad format ` +
-        `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
-        `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
+          `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
+          `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
       );
     }
   }
@@ -115,18 +113,28 @@ export class Dataset {
       any: 0,
     };
 
+    // TODO: make this an argument of getTotals, so it can be used for filters as well as the
+    // directory panel
+    const propId = this.config.ui.directory_panel_field;
+    const propIndex = this.searchablePropIndexMap[propId];
+
     this.searchablePropValues.forEach((itemValues) => {
-      const label = itemValues[1];
-      if (typeof label !== "string") return;
-      totals[label] = 1 + (totals[label] ?? 0);
+      const value = itemValues[propIndex];
+      // if value is a single string, wrap it in an array
+      const valuesToCount = typeof value === "string" ? [value] : value;
+
+      valuesToCount.forEach((value) => {
+        totals[value] = 1 + (totals[value] ?? 0);
+      });
       totals.any = 1 + (totals.any ?? 0);
-    })
+    });
 
     return totals;
-  }
+  };
+
   /**
    * Returns an array of item indexes that match the given criteria, or an array of objects if
-   * returnProps is specified. Also supports pagination.
+   * returnProps is specified. Also supports pagination, if `page` and pageSize are defined
    */
   search = (
     filters?: string[],
@@ -208,35 +216,40 @@ export class Dataset {
           ? itemIx
           : "",
       )
-      .filter((v) => v !== "");
+      .filter(yesANumber);
 
-    return visibleIndexes
-      .slice(
-        (page ?? 0) * (pageSize ?? 0),
-        ((page ?? visibleIndexes.length) + 1) *
-        (pageSize ?? visibleIndexes.length),
-      )
-      .map((itemIx) => {
-        if (returnProps) {
-          const item = this.getItem(itemIx);
-          // Return only the requested properties
-          const strippedItem: { [prop: string]: unknown } = {};
+    // Default - no pagination (`page` or `pageSize` absent), return everything
+    let startIx = 0;
+    let endIx = visibleIndexes.length;
 
-          for (const prop of returnProps) {
-            if (item[prop] === undefined) {
-              throw new HttpError(400, `Unknown propery name '${prop}'`);
-            }
-            strippedItem[prop] = item[prop];
+    // If `page` and `pageSize` parameters given, just return the page in question.
+    // `pageSize` is constrained by the contract to be > 0
+    if (page !== undefined && pageSize != undefined) {
+      startIx = page * pageSize;
+      endIx = startIx + pageSize;
+    }
+
+    return visibleIndexes.slice(startIx, endIx).map((itemIx) => {
+      if (returnProps) {
+        const item = this.getItem(itemIx);
+        // Return only the requested properties
+        const strippedItem: { [prop: string]: unknown } = {};
+
+        for (const prop of returnProps) {
+          if (item[prop] === undefined) {
+            throw new HttpError(400, `Unknown propery name '${prop}'`);
           }
-
-          return {
-            index: `@${itemIx}`,
-            ...strippedItem,
-          };
-        } else {
-          return `@${itemIx}`;
+          strippedItem[prop] = item[prop];
         }
-      });
+
+        return {
+          index: `@${itemIx}`,
+          ...strippedItem,
+        };
+      } else {
+        return `@${itemIx}`;
+      }
+    });
   };
 }
 

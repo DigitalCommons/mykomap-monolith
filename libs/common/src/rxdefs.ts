@@ -190,3 +190,36 @@ export const DatasetItemIx = seq(/@/, min(1, /\d/));
  * DatasetItemIx patterns, so recombined they are equivalent to PathSegment)
  */
 export const DatasetItemIdOrIx = PathSegment;
+
+// Unicode all-or-nothing versions of selected significant substring-matching regexes above
+export const UAON = {
+  NCName: RxUtils.uaon(NCName),
+  QName: RxUtils.uaon(QName),
+  AbbrevUri: RxUtils.uaon(AbbrevUri),
+  DomainLabel: RxUtils.uaon(DomainLabel),
+  PctEnc: RxUtils.uaon(PctEnc),
+  PrefixUri: RxUtils.uaon(PrefixUri),
+  DatasetItemId: RxUtils.uaon(DatasetItemId),
+  DatasetItemIx: RxUtils.uaon(DatasetItemIx),
+};
+
+// Parser functions
+
+/** Converts an AbbrevUri into two NCName components, prefix and suffix.
+ *
+ * If successful, returns a string.
+ * It cannot parse the value, returns the defaultValue, if defined, or throws an exception if not.
+ */
+export function parseAbbrevUri<T = string>(
+  text: string = "",
+  defaultValue?: T,
+): string | T {
+  if (UAON.AbbrevUri.test(text)) {
+    const [ncname, _] = text.split(":");
+    return ncname;
+  }
+  if (defaultValue === undefined)
+    throw new Error(`invalid AbbrevUri: '${text}'`);
+
+  return defaultValue;
+}

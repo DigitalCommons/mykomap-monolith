@@ -19,7 +19,7 @@ application's `test/data` directory - equivalent to setting:
     SERVER_DATA_ROOT=test/data
 
 There should be a dataset in there which is used for unit
-testing. Using this ad the default means the back-end has a dataset
+testing. Using this as the default means the back-end has a dataset
 available out of the box.
 
 > [!NOTE]
@@ -359,12 +359,12 @@ ddd,"The Chateau","The Chateau is not a place, it is a state of mind.",,,,,,,,,
 
 Or in a more readable table format:
 
-| Identifier | Name                     | Desc                                                 | Address                      | Websites                               | Activity                          | Other Activities | Latitude | Longitude  | Geocoded Latitude | Geocoded Longitude | Validated |
-| ---------- | ------------------------ | ---------------------------------------------------- | ---------------------------- | -------------------------------------- | --------------------------------- | ---------------- | -------- | ---------- | ----------------- | ------------------ | --------- |
-| aaa        | Apple Co-op            | We grow fruit.                                      | 1 Apple Way, Appleton      | http://apple.coop                      | AM130                             |                  | 0        | 0          | 51.6084367        | -3.6547778         | true      |
-| bbb        | Banana Co              | We straighten bananas.                             | 1 Banana Boulevard, Skinningdale                          | http://banana.com | AM60 | AM70;AM120 | 0                | 0        | 55.9646979 | -3.1733052        | false              |
-| ccc        | The Cabbage Collective | We are artists.                                    | 2 Cabbage Close, Caulfield | http://cabbage.coop;http://cabbage.com | AM60                              | AM130            |          |            | 54.9744687        | -1.6108945         | true      |
-| ddd        | The Chateau            | The Chateau is not a place, it is a state of mind. |                              |                                        |                                   |                  |          |            |                   |                    |
+| Identifier | Name                   | Desc                                               | Address                          | Websites                               | Activity | Other Activities | Latitude | Longitude | Geocoded Latitude | Geocoded Longitude | Validated |
+| ---------- | ---------------------- | -------------------------------------------------- | -------------------------------- | -------------------------------------- | -------- | ---------------- | -------- | --------- | ----------------- | ------------------ | --------- |
+| aaa        | Apple Co-op            | We grow fruit.                                     | 1 Apple Way, Appleton            | http://apple.coop                      | AM130    |                  | 0        | 0         | 51.6084367        | -3.6547778         | true      |
+| bbb        | Banana Co              | We straighten bananas.                             | 1 Banana Boulevard, Skinningdale | http://banana.com                      | AM60     | AM70;AM120       | 0        | 0         | 55.9646979        | -3.1733052         | false     |
+| ccc        | The Cabbage Collective | We are artists.                                    | 2 Cabbage Close, Caulfield       | http://cabbage.coop;http://cabbage.com | AM60     | AM130            |          |           | 54.9744687        | -1.6108945         | true      |
+| ddd        | The Chateau            | The Chateau is not a place, it is a state of mind. |                                  |                                        |          |                  |          |           |                   |                    |
 
 Now, the `config.json`. We can bend the strict JSON format here to use
 comments to annotate it, but in the real one comments would upset the

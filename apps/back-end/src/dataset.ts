@@ -1,5 +1,5 @@
 import { join } from "node:path";
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { open, mkdir, writeFile, FileHandle } from "node:fs/promises";
 import {
   TextSearch,
@@ -72,6 +72,8 @@ export class DatasetWriter {
    * @param props - property definitions for the DatasetItems
    * @param searchProp - the special property of item index objects into which the
    * "searchable string" - the searchable text index - should be put.
+   * @param markerProp - likewise, the special property to use to select
+   * markers on the map. Can be omitted, in which case all markers will use the default.
    */
   constructor(
     readonly props: PropDefs,
@@ -189,6 +191,14 @@ export class DatasetWriter {
         // GeoJSON's, i.e. longitude first.
         // https://datatracker.ietf.org/doc/html/rfc7946#section-3.1.1
         const point = toPoint2d([item.lng, item.lat], null);
+
+        // Append the marker index, if there is one to add.
+        if (point) {
+          const markerIndex = this.markerIndex(item);
+          if (markerIndex !== undefined)
+            point.push(Math.floor(markerIndex > 0 ? markerIndex : 0));
+        }
+
         const pointJson = JSON.stringify(point, this.limitDecimals);
         await locationFile.write(pointJson);
 
@@ -218,6 +228,12 @@ export class DatasetWriter {
       // Write the closing delimiter of these JSON files
       await locationFile.write("]");
       await searchableFile.write("\n]}");
+
+      // Write a stub about.md file
+      writeFileSync(
+        join(dirPath, "about.md"),
+        "created on: " + new Date().toLocaleString() + "\n",
+      );
     } catch (e) {
       if (e instanceof ValidationError)
         throw new Error(`validation error parsing item #${stats.counter}`, {
@@ -259,5 +275,15 @@ export class DatasetWriter {
     });
 
     return normText.join(" ");
+  }
+
+  /** Computes the marker index to use for a given dataset item.
+   *
+   * Can return undefined, or a number, which should be a positive integer. Any
+   * other numbers will be truncated into a positive integer. Negative numbers
+   * become zero.
+   */
+  markerIndex(item: DatasetItem): number | undefined {
+    return undefined;
   }
 }

@@ -1,5 +1,11 @@
 import * as MapLibreGL from "maplibre-gl";
-import { AttributionControl, NavigationControl, Popup } from "maplibre-gl";
+import {
+  AttributionControl,
+  NavigationControl,
+  Popup,
+  AddLayerObject,
+  DataDrivenPropertyValueSpecification,
+} from "maplibre-gl";
 import type {
   Map,
   GeoJSONSource,
@@ -7,8 +13,8 @@ import type {
   MapLayerMouseEvent,
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
-import mapMarkerImgUrl from "./map-marker.png";
 import { getLanguageFromUrl } from "../../utils/window-utils";
+import markers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -23,6 +29,26 @@ let tooltip: Popup | undefined;
  */
 const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
+
+function isLocationNear(location: [number, number], map: Map) {
+  const { _sw, _ne } = map.getBounds();
+  const lngMargin = (_ne.lng - _sw.lng) / 2;
+  const latMargin = (_ne.lat - _sw.lat) / 2;
+
+  const nearBox = {
+    swLng: _sw.lng - lngMargin,
+    swLat: _sw.lat - latMargin,
+    neLng: _ne.lng + lngMargin,
+    neLat: _ne.lat + latMargin,
+  };
+
+  return (
+    nearBox.swLng <= location[0] &&
+    nearBox.swLat <= location[1] &&
+    nearBox.neLng >= location[0] &&
+    nearBox.neLat >= location[1]
+  );
+}
 
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
@@ -99,20 +125,24 @@ const onMarkerHover = (
 export const createMap = (
   popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
+  mapConfig?: {
+    mapBounds?: [[number, number], [number, number]];
+  },
 ): Map => {
+  const initialBounds = mapConfig?.mapBounds;
+
+  console.log("Map bounds", initialBounds);
+
   const map = new MapLibreGL.Map({
     container: "map-container",
     style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
     minZoom: 1.45,
     maxZoom: 18,
-    bounds: [
-      [-169, -49.3],
-      [189, 75.6],
-    ],
+    bounds: initialBounds,
     attributionControl: false,
   });
 
-  map.on("load", () => {
+  map.on("load", async () => {
     map.addSource("items-geojson", {
       type: "geojson",
       data: {
@@ -157,20 +187,35 @@ export const createMap = (
       },
     });
 
-    map.loadImage(mapMarkerImgUrl).then((image) => {
-      map.addImage("custom-marker", image.data);
-    });
+    const markerList = [];
+    let index = 0;
+
+    for (let markerImage of markers) {
+      const image = await map.loadImage(markerImage);
+      const markerName = "marker-" + index;
+      map.addImage(markerName, image.data);
+      markerList.push(index++);
+      markerList.push(markerName);
+    }
+
+    const markerLayout = {
+      "icon-image": [
+        "match",
+        ["get", "custom_marker_id"],
+        ...markerList,
+        `marker-${markers.length - 1}`, // assumes the final marker in the marker list is the default marker
+      ],
+      "icon-anchor": "bottom",
+    };
 
     map.addLayer({
       id: "unclustered-point",
       type: "symbol",
       source: "items-geojson",
       filter: ["!", ["has", "point_count"]],
-      layout: {
-        "icon-image": "custom-marker",
-        "icon-offset": [0, -20], // shift marker icon up so tip is at the marker's coordinates
-      },
-    });
+      layout:
+        markerLayout as unknown as DataDrivenPropertyValueSpecification<string>,
+    } as AddLayerObject);
 
     const spiderfy = new Spiderfy(map, {
       onLeafClick: (
@@ -225,9 +270,8 @@ export const createMap = (
       minZoomLevel: 18,
       zoomIncrement: 0,
       closeOnLeafClick: false,
-      spiderLeavesLayout: {
-        "icon-image": "custom-marker",
-      },
+      spiderLeavesLayout:
+        markerLayout as unknown as DataDrivenPropertyValueSpecification<string>,
     });
     spiderfy.applyTo("clusters");
 
@@ -254,10 +298,9 @@ export const createMap = (
       );
 
       if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
-        map.flyTo({
+        map.jumpTo({
           center: features[0].geometry.coordinates as LngLatLike,
           zoom: clusterExpansionZoom ?? undefined,
-          speed: 1.5,
         });
       }
 
@@ -265,25 +308,29 @@ export const createMap = (
       if (e.openPopupRecursive) {
         const { leaves } = spiderfy.spiderifiedCluster;
 
-        const index = leaves.findIndex((leaf: any) => leaf.properties.ix === e.itemIx);
+        const index = leaves.findIndex(
+          (leaf: any) => leaf.properties.ix === e.itemIx,
+        );
 
         const totalPoints = leaves.length;
 
         const theta = (Math.PI * 2) / totalPoints;
         const angle = theta * index;
 
-        const legLength = totalPoints <= 10 ? 50 : 50 + index * ((Math.PI * 2) * 2.2) / angle;
+        const legLength =
+          totalPoints <= 10 ? 50 : 50 + (index * (Math.PI * 2 * 2.2)) / angle;
         const x = legLength * Math.cos(angle);
         const y = legLength * Math.sin(angle);
 
+        /*
         openPopup(
           map,
           e.itemIx as number,
           e.lngLat,
           popupCreatedCallback,
           popupClosedCallback,
-          [x, y]
-        );
+          [x, y],
+        );*/
       }
     });
 
@@ -333,79 +380,32 @@ export const createMap = (
         return;
       }
 
-      const getFeatureIfVisible = (ix: number) => {
-        const features = map.queryRenderedFeatures();
-
-        return features.find(feature => feature?.properties?.ix === ix) as GeoJSON.Feature<GeoJSON.Point>;
-      }
-
-      let zoom = 10; // start with this zoom, then hone in
-      let spiderfied = false; // spiderfy when we get into the condition
-      const maxZoom = 18; // once we get to this zoom, stop
-
-      const flyToThenOpenPopupRecursive = () => {
-        const feature = getFeatureIfVisible(itemIx);
-        if (!feature) {
-          console.info(`Feature @${itemIx} not visible, flying to it`);
-
-          map
-            .flyTo({
-              center: [
-                location[0],
-                getMapCentreLatOffsetted(location[1], zoom),
-              ],
-              zoom,
-            })
-            .once("moveend", async () => {
-              if (zoom < maxZoom) {
-                zoom += 2;
-                flyToThenOpenPopupRecursive();
-              } else {
-                console.error(
-                  "Maybe the feature is in a cluster and needs to be spiderfied."
-                );
-                if (!spiderfied) {
-                  // spiderfy the cluster
-                  // the next part is the popup opening
-                  // handled in the cluster click event listener
-
-                  map.fire("click", {
-                    openPopupRecursive: true,
-                    lngLat: location,
-                    itemIx
-                  });
-                  spiderfied = true;
-                }
-              }
-            });
-        } else {
-          // Do a final fly to position the marker nicely without zooming,
-          // in case the feature was already visible
-          map
-            .flyTo({
-              center: [
-                location[0],
-                getMapCentreLatOffsetted(location[1], map.getZoom()),
-              ],
-            })
-            .once("moveend", () => {
-              openPopup(
-                map,
-                itemIx,
-                location,
-                popupCreatedCallback,
-                popupClosedCallback,
-              );
-            });
-        }
-      };
-
       // Remove previous popup - remove listener to prevent looping back and confusing React code
       popup?.off("close", popupClosedCallback);
       popup?.remove();
       popupIx = undefined;
       popup = undefined;
-      flyToThenOpenPopupRecursive();
+
+      if (isLocationNear(location, map)) {
+        map.panTo([
+          location[0],
+          getMapCentreLatOffsetted(location[1], map.getZoom()),
+        ]);
+      } else {
+        const maxZoom = 15;
+        map.jumpTo({
+          center: [location[0], getMapCentreLatOffsetted(location[1], maxZoom)],
+          zoom: maxZoom,
+        });
+      }
+
+      openPopup(
+        map,
+        itemIx,
+        location,
+        popupCreatedCallback,
+        popupClosedCallback,
+      );
     });
 
     map.on("closeAllPopups", () => {
@@ -437,7 +437,7 @@ export const createMap = (
     });
 
     map.on("moveend", () => {
-      console.log("aaaaa", map.getZoom(), map.getBounds());
+      // console.debug("zoom / bounds", map.getZoom(), map.getBounds());
     });
 
     map.on("zoomstart", () => {

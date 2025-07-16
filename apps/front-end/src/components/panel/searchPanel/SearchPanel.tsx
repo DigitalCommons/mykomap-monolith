@@ -93,6 +93,7 @@ const SearchPanel = () => {
         {filterOptions.map(({ id, title, options, value }) => (
           <SelectBox
             key={`select-box-${id}`}
+            id={id}
             label={title}
             onChange={(e) => onFilterChange(e, id)}
             options={options}

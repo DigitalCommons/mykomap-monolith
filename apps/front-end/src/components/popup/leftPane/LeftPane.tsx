@@ -12,7 +12,7 @@ interface LeftPaneProps {
   name: string;
   primary_activity?: string;
   description?: string;
-  dc_domains: string[];
+  dc_domains?: string[];
   hasLocation: boolean;
 }
 
@@ -96,7 +96,7 @@ const LeftPane = ({
   name,
   primary_activity,
   description,
-  dc_domains,
+  dc_domains = [],
   hasLocation,
 }: LeftPaneProps) => {
   const { t } = useTranslation();

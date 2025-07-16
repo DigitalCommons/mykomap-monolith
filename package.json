@@ -3,6 +3,9 @@
     "apps/*",
     "libs/*"
   ],
+  "bin": {
+    "do-release": "bin/do-release"
+  },
   "scripts": {
     "build": "npm run -w @mykomap/common build; npm run -w @mykomap/node-utils build; npm run --ignore-scripts -w @mykomap/back-end build; npm run --ignore-scripts -w @mykomap/front-end build",
     "clean": "npm run clean --workspaces && rimraf node_modules",
@@ -12,10 +15,12 @@
     "node-utils:": "npm run --workspace=@mykomap/node-utils",
     "prettier:check": "prettier -cu --no-color .",
     "prettier:format": "prettier -wu --no-color .",
+    "release": "bin/do-release",
     "test": "npm run test --workspaces"
   },
   "devDependencies": {
     "editorconfig": "^2.0.0",
-    "rimraf": "^6.0.1"
+    "rimraf": "^6.0.1",
+    "zx": "^8.5.0"
   }
 }

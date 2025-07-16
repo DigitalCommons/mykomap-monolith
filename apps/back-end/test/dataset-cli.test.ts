@@ -1,13 +1,14 @@
 /// <reference types="vitest"/>
 
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
 import { ImportCmd } from "../src/cli/dataset.js";
 
 import { rmSync } from "node:fs";
 import { join } from "node:path";
 import { Result, compareSync, fileCompareHandlers } from "dir-compare";
-
+import { createTwoFilesPatch } from "diff";
 import { BaseContext, Cli, CommandClass } from "clipanion";
+import { slurpSync } from "@mykomap/node-utils";
 
 const compareOptions = {
   compareFileSync: fileCompareHandlers.lineBasedFileCompare.compareSync,
@@ -55,7 +56,9 @@ function print(result: Result) {
     result.differences,
   );
 
-  result.diffSet.forEach((dif) =>
+  result.diffSet.forEach((dif) => {
+    const path1 = join(dif.path1, dif.name1);
+    const path2 = join(dif.path2, dif.name2);
     console.log(
       `Difference:\n` +
         `state: %s\n` +
@@ -64,21 +67,46 @@ function print(result: Result) {
         `  expected file: %s\n` +
         `      size: %d B; type: %s\n`,
       dif.state,
-      dif.size1 === undefined ? "-" : join(dif.path1, dif.name1),
+      dif.size1 === undefined ? "-" : path1,
       dif.size1,
       dif.type1,
-      dif.size2 === undefined ? "-" : join(dif.path2, dif.name2),
+      dif.size2 === undefined ? "-" : path2,
       dif.size2,
       dif.type2,
-    ),
-  );
+    );
+
+    if (dif.state === "distinct") {
+      if (dif.type1 === "file" && dif.type2 === "file") {
+        console.log(
+          `Unified diff:\n` +
+            createTwoFilesPatch(
+              path2,
+              path1,
+              slurpSync(path2),
+              slurpSync(path1),
+            ) +
+            "\n===================================================================\n",
+        );
+      } else {
+        console.log(`Can't diff ${dif.name1} and ${dif.name2}\n`);
+      }
+    }
+  });
 }
 
 test("testing dataset import", async (t) => {
   let result: number | undefined;
   try {
+    // NOTE: the locale environment variable LC_ALL must be set to "en_GB"
+    // *before* node is started for this to set the locale here correctly.
+    // Therefore this is done in the package.json runscript.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2025, 1, 1, 0));
     result = await runTest(ImportCmd);
-  } catch (e) {}
+  } catch (e) {
+  } finally {
+    vi.useRealTimers();
+  }
   expect(result).toBe(0);
   const comparison = compareSync(
     "test/tmp/dummy",
