@@ -7,6 +7,9 @@ import Typography from "@mui/material/Typography";
 import { useTranslation } from "react-i18next";
 import { renderIfData } from "../../../utils/jsx-utils";
 
+const search = new URLSearchParams(window.location.search);
+const isPowys = search.get("datasetId")?.includes("powys");
+
 interface RightPaneProps {
   address?: string;
   website: string[];
@@ -106,9 +109,6 @@ const RightPane = ({
     if (!address) return [];
     return address.split(",").map((line) => line.trim());
   };
-
-  const search = new URLSearchParams(window.location.search);
-  const isPowys = search.get("datasetId")?.includes("powys");
 
   return renderIfData(
     <StyledRightPane>

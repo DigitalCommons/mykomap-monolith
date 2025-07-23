@@ -8,6 +8,9 @@ import { useTranslation } from "react-i18next";
 import { decode } from "html-entities";
 import { renderIfData } from "../../../utils/jsx-utils";
 
+const search = new URLSearchParams(window.location.search);
+const isPowys = search.get("datasetId")?.includes("powys");
+
 interface LeftPaneProps {
   name: string;
   primary_activity?: string;
@@ -21,7 +24,7 @@ const StyledLeftPane = styled(Box)(() => ({
   flexDirection: "column",
   margin: "var(--spacing-large)",
   "@media (min-width: 768px)": {
-    width: "70%",
+    width: isPowys?"50%":"70%",
     flexDirection: "column",
     margin:
       "var(--spacing-large) 0 var(--spacing-xlarge) var(--spacing-xlarge)",
