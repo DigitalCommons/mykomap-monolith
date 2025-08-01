@@ -29,13 +29,15 @@ And these are the different options to define the style of an itemProp:
 - `singleColumnLimit` (number): If specified, a list will split into 2 columns if the number of values is more than this.
 - `showLabel` (defaults to `false`): If this is set to true, the label of the itemProp (taken from `titleUri` in the itemProp definition) is displayed as a heading above the value(s).
 - `hyperlinkBaseUri` (defaults to None): If `valueStyle` is `hyperlink`, this base URI is prepended to the itemProp value, to form the href.
+- `displayText` (defaults to None): If `valueStyle` is `hyperlink`, this sets the display text of the hyperlink.
 
 ```
 "popup": {
     "titleProp": "name",
     "left-pane": [
       {"itemProp": "category", "valueStyle": "text", "showLabel": true },
-      {"itemProp": "description", "valueStyle": "text" }
+      {"itemProp": "description", "valueStyle": "text" },
+      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website" }
     ],
     "top-right-pane": [
       {"itemProp": "address", "valueStyle": "address" },
