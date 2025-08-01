@@ -1004,6 +1004,10 @@
                               "hyperlinkBaseUri": {
                                 "default": "",
                                 "type": "string"
+                              },
+                              "displayText": {
+                                "default": "",
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -1042,6 +1046,10 @@
                               "hyperlinkBaseUri": {
                                 "default": "",
                                 "type": "string"
+                              },
+                              "displayText": {
+                                "default": "",
+                                "type": "string"
                               }
                             },
                             "required": [
@@ -1078,6 +1086,10 @@
                                 "type": "boolean"
                               },
                               "hyperlinkBaseUri": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "displayText": {
                                 "default": "",
                                 "type": "string"
                               }
