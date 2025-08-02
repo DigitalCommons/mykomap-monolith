@@ -109,13 +109,16 @@ const PropSpec = z.discriminatedUnion("type", [
 const PropSpecs = z.record(z.string(), PropSpec);
 const popupItem = z.object({
   itemProp: z.string(),
-  valueStyle: z.union([z.literal("text"), z.literal("address"), z.literal("hyperlink")]).default("text"),
+  valueStyle: z
+    .union([z.literal("text"), z.literal("address"), z.literal("hyperlink")])
+    .default("text"),
   showBullets: z.boolean().default(false).optional(),
   singleColumnLimit: z.number().optional(),
   showLabel: z.boolean().default(false).optional(),
   hyperlinkBaseUri: z.string().default("").optional(),
-  displayText: z.string().default("").optional()
-})
+  displayText: z.string().default("").optional(),
+  multiple: z.boolean().default(false).optional(),
+});
 
 const TotalsData = z.record(z.string(), z.number());
 const ConfigData = z.object({
@@ -151,12 +154,14 @@ const ConfigData = z.object({
       })
       .optional(),
   }),
-  popup: z.object({
-    titleProp: z.string(),
-    "left-pane": z.array(popupItem),
-    "top-right-pane": z.array(popupItem),
-    "bottom-right-pane": z.array(popupItem)
-  }).optional()
+  popup: z
+    .object({
+      titleProp: z.string(),
+      leftPane: z.array(popupItem),
+      topRightPane: z.array(popupItem),
+      bottomRightPane: z.array(popupItem),
+    })
+    .optional(),
 });
 const BuildInfo = z.object({
   name: z.string(),

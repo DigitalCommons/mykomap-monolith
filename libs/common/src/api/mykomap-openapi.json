@@ -973,7 +973,7 @@
                         "titleProp": {
                           "type": "string"
                         },
-                        "left-pane": {
+                        "leftPane": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -1008,6 +1008,10 @@
                               "displayText": {
                                 "default": "",
                                 "type": "string"
+                              },
+                              "multiple": {
+                                "default": false,
+                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1015,7 +1019,7 @@
                             ]
                           }
                         },
-                        "top-right-pane": {
+                        "topRightPane": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -1050,6 +1054,10 @@
                               "displayText": {
                                 "default": "",
                                 "type": "string"
+                              },
+                              "multiple": {
+                                "default": false,
+                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1057,7 +1065,7 @@
                             ]
                           }
                         },
-                        "bottom-right-pane": {
+                        "bottomRightPane": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -1092,6 +1100,10 @@
                               "displayText": {
                                 "default": "",
                                 "type": "string"
+                              },
+                              "multiple": {
+                                "default": false,
+                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1102,9 +1114,9 @@
                       },
                       "required": [
                         "titleProp",
-                        "left-pane",
-                        "top-right-pane",
-                        "bottom-right-pane"
+                        "leftPane",
+                        "topRightPane",
+                        "bottomRightPane"
                       ]
                     }
                   },
