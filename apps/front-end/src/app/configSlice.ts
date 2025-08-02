@@ -22,6 +22,24 @@ export type ConfigLogo = {
   };
 };
 
+export type PopupItem = {
+  itemProp: string;
+  valueStyle: "text" | "address" | "hyperlink";
+  showBullets?: boolean;
+  singleColumnLimit?: number;
+  showLabel?: boolean;
+  hyperlinkBaseUri?: string;
+  displayText?: string;
+  multiple?: boolean;
+};
+
+export type ConfigPopup = {
+  titleProp: string;
+  leftPane: PopupItem[];
+  topRightPane: PopupItem[];
+  bottomRightPane: PopupItem[];
+};
+
 export interface ConfigSliceState {
   vocabs: Config["vocabs"];
   languages: string[];
@@ -29,6 +47,7 @@ export interface ConfigSliceState {
   map?: ConfigMap;
   logo?: ConfigLogo;
   status: "idle" | "loading" | "loaded" | "failed";
+  popup?: ConfigPopup;
 }
 
 const initialState: ConfigSliceState = {
@@ -47,6 +66,12 @@ const initialState: ConfigSliceState = {
     altText: undefined,
   },
   status: "idle",
+  popup: {
+    titleProp: "name",
+    leftPane: [],
+    topRightPane: [],
+    bottomRightPane: [],
+  },
 };
 
 export const configSlice = createAppSlice({
@@ -99,6 +124,10 @@ export const configSlice = createAppSlice({
           if (action.payload.ui && action.payload.ui.logo) {
             state.logo = action.payload.ui.logo;
           }
+
+          if (action.payload.popup) {
+            state.popup = action.payload.popup;
+          }
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
@@ -112,6 +141,7 @@ export const configSlice = createAppSlice({
     }),
   }),
   selectors: {
+    selectPopup: (state) => state.popup,
     selectCurrentLanguage: (state) => state.currentLanguage,
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
@@ -126,6 +156,7 @@ export const { fetchConfig, setLanguage } = configSlice.actions;
 export const {
   selectCurrentLanguage,
   selectLogo,
+  selectPopup,
   selectMapConfig,
   selectConfigStatus,
 } = configSlice.selectors;

@@ -15,9 +15,9 @@ with the front-end handling the conversion of the config into MUI React componen
 There are 4 subfields:
 
 - `titleProp` (required): The ID of the itemProp that should be used as the popup's title
-- `left-pane`: a list of itemProps to be displayed in the popup's left pane, from top-to-bottom in the layout, including their style definition (see below for more details).
-- `top-right-pane`: same as `left-pane` but for the top-right pane of the popup
-- `bottom-right-pane`: same as `left-pane` but for the bottom-right pane of the popup
+- `leftPane`: a list of itemProps to be displayed in the popup's left pane, from top-to-bottom in the layout, including their style definition (see below for more details).
+- `topRightPane`: same as `leftPane` but for the top-right pane of the popup
+- `bottomRightPane`: same as `leftPane` but for the bottom-right pane of the popup
 
 And these are the different options to define the style of an itemProp:
 
@@ -30,20 +30,21 @@ And these are the different options to define the style of an itemProp:
 - `showLabel` (defaults to `false`): If this is set to true, the label of the itemProp (taken from `titleUri` in the itemProp definition) is displayed as a heading above the value(s).
 - `hyperlinkBaseUri` (defaults to None): If `valueStyle` is `hyperlink`, this base URI is prepended to the itemProp value, to form the href.
 - `displayText` (defaults to None): If `valueStyle` is `hyperlink`, this sets the display text of the hyperlink.
+- `multiple` (defaults to false): If this is true, the value is an array.
 
 ```
 "popup": {
     "titleProp": "name",
-    "left-pane": [
+    "leftPane": [
       {"itemProp": "category", "valueStyle": "text", "showLabel": true },
       {"itemProp": "description", "valueStyle": "text" },
-      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website" }
+      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website", multiple: true }
     ],
-    "top-right-pane": [
+    "topRightPane": [
       {"itemProp": "address", "valueStyle": "address" },
       {"itemProp": "email", "valueStyle": "hyperlink", "baseUri": "mailto:" }
     ],
-    "bottom-right-pane": []
+    "bottomRightPane": []
   }
 ```
 

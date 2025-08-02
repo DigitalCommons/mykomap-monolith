@@ -1,21 +1,12 @@
 import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
-import Typography from "@mui/material/Typography";
-import { useTranslation } from "react-i18next";
-import { renderIfData } from "../../../utils/jsx-utils";
+import { type PopupItem } from "../../../app/configSlice";
+import PopupItems from "../PopupItems";
 
 interface RightPaneProps {
-  address?: string;
-  website: string[];
-  organisational_structure?: string;
-  typology?: string;
-  data_sources?: string[];
-  email?: string;
-  phone?: string;
-  contact_name?: string;
+  data: { [key: string]: any };
+  configTop: PopupItem[];
+  configBottom: PopupItem[];
 }
 
 const StyledRightPane = styled(Box)(() => ({
@@ -90,121 +81,18 @@ const StyledBottomBox = styled(Box)(() => ({
   },
 }));
 
-const RightPane = ({
-  address,
-  website,
-  organisational_structure,
-  typology,
-  data_sources,
-  email,
-  phone,
-  contact_name,
-}: RightPaneProps) => {
-  const { t } = useTranslation();
-
-  const splitAddress = (address?: string): string[] => {
-    if (!address) return [];
-    return address.split(",").map((line) => line.trim());
-  };
-
-  const search = new URLSearchParams(window.location.search);
-  const isPowys = search.get("datasetId")?.includes("powys");
-
-  return renderIfData(
+const RightPane = ({ data, configTop, configBottom }: RightPaneProps) => {
+  return (
     <StyledRightPane>
-      {renderIfData(
-        <StyledTopBox>
-          {splitAddress(address).map((line, index) => (
-            <Typography key={index}>{line}</Typography>
-          ))}
-          <List sx={{ marginTop: "var(--spacing-small)" }}>
-            {website.map((url) => (
-              <ListItem
-                key={url}
-                sx={{
-                  display: "list-item",
-                  marginLeft: "var(--spacing-medium)",
-                }}
-              >
-                <Link
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                  sx={{
-                    color: "#ffffffB3",
-                    textDecoration: "underline",
-                    padding: "0 !important",
-                    fontSize: "var(--font-size-xsmall)",
-                    overflowX: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {isPowys ? "Website" : url}
-                </Link>
-              </ListItem>
-            ))}
-          </List>
-          {email && <Typography>{email}</Typography>}
-          {phone && <Typography>{phone}</Typography>}
-          {contact_name && <Typography>{contact_name}</Typography>}
-        </StyledTopBox>,
-        [address, ...website],
-      )}
-      {data_sources && (
+      <StyledTopBox>
+        <PopupItems data={data} config={configTop} />
+      </StyledTopBox>
+      {configBottom.length > 0 && (
         <StyledBottomBox>
-          {renderIfData(
-            <Box
-              sx={{
-                marginBottom: "var(--spacing-medium)",
-              }}
-            >
-              <Typography variant="h4">
-                {t("organisational_structure")}
-              </Typography>
-              <Typography variant="body1">
-                {organisational_structure}
-              </Typography>
-            </Box>,
-            [organisational_structure],
-          )}
-          {renderIfData(
-            <Box
-              sx={{
-                marginBottom: "var(--spacing-medium)",
-              }}
-            >
-              <Typography variant="h4">{t("typology")}</Typography>
-              <Typography variant="body1">{typology}</Typography>
-            </Box>,
-            [typology],
-          )}
-          {data_sources &&
-            renderIfData(
-              <Box>
-                <Typography variant="h4">{t("data_sources")}</Typography>
-                {data_sources && (
-                  <List>
-                    {data_sources.map((dataSource) => (
-                      <ListItem
-                        key={dataSource}
-                        sx={{
-                          display: "list-item",
-                          marginLeft: "var(--spacing-medium)",
-                        }}
-                      >
-                        {dataSource}
-                      </ListItem>
-                    ))}
-                  </List>
-                )}
-              </Box>,
-              data_sources,
-            )}
+          <PopupItems data={data} config={configBottom} />
         </StyledBottomBox>
       )}
-    </StyledRightPane>,
-    [address, ...website],
-    // [address, ...website, organisational_structure, typology, ...data_sources],
+    </StyledRightPane>
   );
 };
 

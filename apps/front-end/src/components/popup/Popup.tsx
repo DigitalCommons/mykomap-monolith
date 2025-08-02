@@ -12,6 +12,7 @@ import {
 } from "./popupSlice";
 import { POPUP_CONTAINER_ID } from "../map/mapLibre";
 import { selectLocation } from "../map/mapSlice";
+import { selectPopup } from "../../app/configSlice";
 
 const StyledPopup = styled(Box)(({ theme }) => ({
   width: 300,
@@ -69,14 +70,29 @@ const Popup = () => {
   const popupIndex = useAppSelector(selectPopupIndex);
   const hasLocation = !!useAppSelector(selectLocation(popupIndex));
   const data = useAppSelector(selectPopupData);
+  const popupConfig = useAppSelector(selectPopup) || {
+    titleProp: "name",
+    leftPane: [],
+    topRightPane: [],
+    bottomRightPane: [],
+  };
 
   if (open) console.log("Popup data", data);
 
   const popupComponent = data ? (
     <StyledPopup>
       <StylePopupInner>
-        <LeftPane {...data} hasLocation={hasLocation} />
-        <RightPane {...data} />
+        <LeftPane
+          data={data}
+          hasLocation={hasLocation}
+          config={popupConfig.leftPane}
+          titleProp={popupConfig.titleProp}
+        />
+        <RightPane
+          data={data}
+          configTop={popupConfig.topRightPane}
+          configBottom={popupConfig.bottomRightPane}
+        />
       </StylePopupInner>
     </StyledPopup>
   ) : null;

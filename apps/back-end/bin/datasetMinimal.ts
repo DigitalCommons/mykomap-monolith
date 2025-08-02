@@ -75,8 +75,7 @@ for (let item of items) {
     const [lat, lng] = item.Geocode.split(", ");
     itemOutput.lat = parseFloat(lat);
     itemOutput.lng = parseFloat(lng);
-  }
-  else {
+  } else {
     const cleanAddress = `${itemOutput.address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
 
     const geocodeResponse = await fetch(
@@ -99,7 +98,7 @@ for (let item of items) {
   searchable.values.push([
     itemOutput.food_system_categories,
     itemOutput.locality,
-    `${itemOutput.name} ${itemOutput.address}`.toLowerCase()
+    `${itemOutput.name} ${itemOutput.address}`.toLowerCase(),
   ]);
 
   await fs.writeFile(
