@@ -147,9 +147,9 @@ export const configSlice = createAppSlice({
               mapBounds:
                 uiMap.mapBounds && uiMap.mapBounds.length === 2
                   ? [
-                      [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
-                      [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
-                    ]
+                    [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
+                    [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
+                  ]
                   : undefined,
             };
           }
