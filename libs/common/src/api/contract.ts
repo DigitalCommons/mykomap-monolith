@@ -116,7 +116,7 @@ const PopupItem = z.object({
   singleColumnLimit: z.number().optional(),
   showLabel: z.boolean().default(false),
   hyperlinkBaseUri: z.string().default(""),
-  displayText: z.string().optional()
+  displayText: z.string().optional(),
 });
 
 const TotalsData = z.record(z.string(), z.number());
@@ -158,8 +158,8 @@ const ConfigData = z.object({
     leftPaneWidth: z.string().default("70%"),
     leftPane: z.array(PopupItem),
     topRightPane: z.array(PopupItem),
-    bottomRightPane: z.array(PopupItem)
-  })
+    bottomRightPane: z.array(PopupItem),
+  }),
 });
 const BuildInfo = z.object({
   name: z.string(),
@@ -290,11 +290,11 @@ export const contract = c.router({
       }),
       datasetItemIdOrIx: DatasetItemIdOrIx.openapi({
         description:
-          "uniquely specifies the dataset item wanted within the dataset",
+          "Uniquely specifies the dataset item wanted within the dataset. This param must be base64 encoded. The decoded param should start with an @ to indicate an index, otherwise it is assumed to be an id",
       }),
     }),
     responses: {
-      200: DatasetItem.openapi({
+      200: DatasetItem.extend({ index: DatasetItemIx }).openapi({
         description: "the dataset item matching the supplied ID or index",
       }),
       400: ErrorInfo.openapi({

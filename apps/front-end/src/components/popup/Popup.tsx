@@ -74,24 +74,25 @@ const Popup = () => {
 
   if (open) console.log("Popup data", data);
 
-  const popupComponent = data && popupConfig ? (
-    <StyledPopup>
-      <StylePopupInner>
-        <LeftPane
-          data={data}
-          hasLocation={hasLocation}
-          config={popupConfig.leftPane}
-          width={popupConfig.leftPaneWidth}
-          titleProp={popupConfig.titleProp}
-        />
-        <RightPane
-          data={data}
-          configTop={popupConfig.topRightPane}
-          configBottom={popupConfig.bottomRightPane}
-        />
-      </StylePopupInner>
-    </StyledPopup>
-  ) : null;
+  const popupComponent =
+    data && popupConfig ? (
+      <StyledPopup>
+        <StylePopupInner>
+          <LeftPane
+            data={data}
+            hasLocation={hasLocation}
+            config={popupConfig.leftPane}
+            width={popupConfig.leftPaneWidth}
+            titleProp={popupConfig.titleProp}
+          />
+          <RightPane
+            data={data}
+            configTop={popupConfig.topRightPane}
+            configBottom={popupConfig.bottomRightPane}
+          />
+        </StylePopupInner>
+      </StyledPopup>
+    ) : null;
 
   return (
     open &&
