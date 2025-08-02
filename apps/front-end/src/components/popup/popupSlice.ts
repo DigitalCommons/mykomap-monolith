@@ -48,7 +48,10 @@ export const popupSlice = createAppSlice({
 
         if (response.status === 200) {
           // Just hardcode types for now
-          return response.body as PopupSliceState["data"] & { id: string };
+          return response.body as PopupSliceState["data"] & {
+            id: string;
+            index: string;
+          };
         } else {
           return thunkApi.rejectWithValue(
             `Failed search, status code ${response.status}`,
@@ -63,8 +66,8 @@ export const popupSlice = createAppSlice({
           state.status = "loaded";
           state.index = action.meta.arg;
           state.isOpen = true;
-
-          state.data = action.payload;
+          const { index, ...data } = action.payload;
+          state.data = data;
         },
         rejected: (state, action) => {
           state.status = "failed";

@@ -13,6 +13,11 @@ import mockItem from "../../mockData/mockItem";
 import * as services from "../../services";
 import * as windowUtils from "../../utils/window-utils";
 
+const mockItemWithIndexZero = {
+  ...mockItem,
+  index: "@0",
+};
+
 interface LocalTestContext {
   store: AppStore;
 }
@@ -22,7 +27,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
     // Set up mocks
     vi.spyOn(services, "getDatasetItem").mockResolvedValue({
       status: 200,
-      body: mockItem,
+      body: mockItemWithIndexZero,
       headers: new Headers(),
     });
     vi.spyOn(windowUtils, "getDatasetId").mockReturnValue("test-dataset");
@@ -61,7 +66,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItem,
+      payload: mockItemWithIndexZero,
       meta: { arg: 3, requestId: "test", requestStatus: "fulfilled" },
     });
 
@@ -101,7 +106,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: differentData,
+      payload: { ...differentData, index: "@7" },
       meta: { arg: 7, requestId: "test", requestStatus: "fulfilled" },
     });
 
@@ -115,7 +120,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: emptyData,
+      payload: { ...emptyData, index: "@0" },
       meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
     });
 
@@ -132,7 +137,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
     // Open popup with mockItem data
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItem,
+      payload: mockItemWithIndexZero,
       meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
     });
 
@@ -189,8 +194,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
     // Open popup with mockItem data
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItem,
-      meta: { arg: 1, requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexZero,
+      meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
     });
 
     // Select popup data - should return French translations
