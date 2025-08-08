@@ -7,6 +7,8 @@ import {
   getDatasetConfig,
   getDatasetItemByIx,
   getDatasetItemById,
+  getDatasetItemByIx,
+  getDatasetItemById,
   getDatasetLocations,
   getTotals,
   initDatasets,
@@ -101,7 +103,7 @@ export function MykomapRouter(
       const itemId = itemIdOrIx;
       const item = getDatasetItemById(datasetId, itemId);
 
-      return { status: 200, body: item };
+      return { status: 200, body: { ...item } };
     },
 
     getTotals: async ({ params: { datasetId } }) => {
