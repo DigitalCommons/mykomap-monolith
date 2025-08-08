@@ -261,7 +261,7 @@ describe("searchDataset", () => {
 
 describe("getDatasetItem", () => {
   describe("dataset exists", () => {
-    describe("item exists", () => {
+    describe("item ix exists", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
           method: "GET",
@@ -273,7 +273,7 @@ describe("getDatasetItem", () => {
       });
     });
 
-    describe("item doesn't exist", () => {
+    describe("item ix doesn't exist", () => {
       test("status code 404", async (t) => {
         const res = await fastify.inject({
           method: "GET",
@@ -284,14 +284,36 @@ describe("getDatasetItem", () => {
     });
   });
 
-  describe("dataset does not exist", () => {
+  describe("item id exists", () => {
+    test("status code 200 and non-empty response", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/item/test.cuk.R000001",
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toBeTypeOf("object");
+      expect(res.json()).toHaveProperty("name");
+    });
+  });
+
+  describe("item id doesn't exist", () => {
     test("status code 404", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-in-your-imagination/item/@0",
+        url: "/dataset/dataset-A/item/bad.test.cuk.R000001",
       });
       expect(res.statusCode).toBe(404);
     });
+  });
+});
+
+describe("dataset does not exist", () => {
+  test("status code 404", async (t) => {
+    const res = await fastify.inject({
+      method: "GET",
+      url: "/dataset/dataset-in-your-imagination/item/@0",
+    });
+    expect(res.statusCode).toBe(404);
   });
 });
 
