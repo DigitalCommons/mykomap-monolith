@@ -966,6 +966,158 @@
                       "required": [
                         "directory_panel_field"
                       ]
+                    },
+                    "popup": {
+                      "type": "object",
+                      "properties": {
+                        "titleProp": {
+                          "type": "string"
+                        },
+                        "leftPane": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "itemProp": {
+                                "type": "string"
+                              },
+                              "valueStyle": {
+                                "default": "text",
+                                "type": "string",
+                                "enum": [
+                                  "text",
+                                  "address",
+                                  "hyperlink"
+                                ]
+                              },
+                              "showBullets": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "singleColumnLimit": {
+                                "type": "number"
+                              },
+                              "showLabel": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "hyperlinkBaseUri": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "displayText": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "multiple": {
+                                "default": false,
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "itemProp"
+                            ]
+                          }
+                        },
+                        "topRightPane": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "itemProp": {
+                                "type": "string"
+                              },
+                              "valueStyle": {
+                                "default": "text",
+                                "type": "string",
+                                "enum": [
+                                  "text",
+                                  "address",
+                                  "hyperlink"
+                                ]
+                              },
+                              "showBullets": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "singleColumnLimit": {
+                                "type": "number"
+                              },
+                              "showLabel": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "hyperlinkBaseUri": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "displayText": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "multiple": {
+                                "default": false,
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "itemProp"
+                            ]
+                          }
+                        },
+                        "bottomRightPane": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "itemProp": {
+                                "type": "string"
+                              },
+                              "valueStyle": {
+                                "default": "text",
+                                "type": "string",
+                                "enum": [
+                                  "text",
+                                  "address",
+                                  "hyperlink"
+                                ]
+                              },
+                              "showBullets": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "singleColumnLimit": {
+                                "type": "number"
+                              },
+                              "showLabel": {
+                                "default": false,
+                                "type": "boolean"
+                              },
+                              "hyperlinkBaseUri": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "displayText": {
+                                "default": "",
+                                "type": "string"
+                              },
+                              "multiple": {
+                                "default": false,
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "itemProp"
+                            ]
+                          }
+                        }
+                      },
+                      "required": [
+                        "titleProp",
+                        "leftPane",
+                        "topRightPane",
+                        "bottomRightPane"
+                      ]
                     }
                   },
                   "required": [
