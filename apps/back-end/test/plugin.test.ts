@@ -266,10 +266,35 @@ const encodeBase64 = (data: string) => {
 describe("getDatasetItem", () => {
   describe("dataset exists", () => {
     describe("item ix exists", () => {
+      describe("item ix exists", () => {
+        test("status code 200 and non-empty response", async (t) => {
+          const res = await fastify.inject({
+            method: "GET",
+            url: `/dataset/dataset-A/item/${encodeBase64("@0")}`,
+          });
+          expect(res.statusCode).toBe(200);
+          expect(res.json()).toBeTypeOf("object");
+          expect(res.json()).toHaveProperty("name");
+          expect(res.json()).toHaveProperty("index", "@0");
+        });
+      });
+
+      describe("item ix doesn't exist", () => {
+        test("status code 404", async (t) => {
+          const res = await fastify.inject({
+            method: "GET",
+            url: `/dataset/dataset-A/item/${encodeBase64("@999")}`,
+          });
+          expect(res.statusCode).toBe(404);
+        });
+      });
+    });
+
+    describe("item id exists", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: `/dataset/dataset-A/item/${encodeBase64("@0")}`,
+          url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}`,
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toBeTypeOf("object");
@@ -278,106 +303,82 @@ describe("getDatasetItem", () => {
       });
     });
 
-    describe("item ix doesn't exist", () => {
+    describe("item id doesn't exist", () => {
       test("status code 404", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: `/dataset/dataset-A/item/${encodeBase64("@999")}`,
+          url: `/dataset/dataset-A/item/${encodeBase64("bad/test/cuk/R000001")}`,
         });
         expect(res.statusCode).toBe(404);
       });
     });
   });
 
-  describe("item id exists", () => {
-    test("status code 200 and non-empty response", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}`,
-      });
-      expect(res.statusCode).toBe(200);
-      expect(res.json()).toBeTypeOf("object");
-      expect(res.json()).toHaveProperty("name");
-      expect(res.json()).toHaveProperty("index", "@0");
-    });
-  });
-
-  describe("item id doesn't exist", () => {
-    test("status code 404", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: `/dataset/dataset-A/item/${encodeBase64("bad/test/cuk/R000001")}`,
-      });
-      expect(res.statusCode).toBe(404);
-    });
-  });
-});
-
-describe("dataset does not exist", () => {
-  test("status code 404", async (t) => {
-    const res = await fastify.inject({
-      method: "GET",
-      url: `/dataset/dataset-in-your-imagination/item//${encodeBase64("@0")}`,
-    });
-    expect(res.statusCode).toBe(404);
-  });
-});
-
-describe("getAbout", () => {
-  describe("dataset exists", () => {
-    test("status code 200 and non-empty response", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: "/dataset/dataset-A/about",
-      });
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toContain("published by Mr Douglas Quaid");
-    });
-  });
-
   describe("dataset does not exist", () => {
     test("status code 404", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-in-your-imagination/about",
+        url: `/dataset/dataset-in-your-imagination/item//${encodeBase64("@0")}`,
       });
       expect(res.statusCode).toBe(404);
     });
   });
-});
 
-describe("getConfig", () => {
-  describe("dataset exists", () => {
+  describe("getAbout", () => {
+    describe("dataset exists", () => {
+      test("status code 200 and non-empty response", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-A/about",
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toContain("published by Mr Douglas Quaid");
+      });
+    });
+
+    describe("dataset does not exist", () => {
+      test("status code 404", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-in-your-imagination/about",
+        });
+        expect(res.statusCode).toBe(404);
+      });
+    });
+  });
+
+  describe("getConfig", () => {
+    describe("dataset exists", () => {
+      test("status code 200 and non-empty response", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-A/config",
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toBeTypeOf("object");
+        expect(res.json()).toHaveProperty("vocabs");
+      });
+    });
+
+    describe("dataset does not exist", () => {
+      test("status code 404", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-in-your-imagination/config",
+        });
+        expect(res.statusCode).toBe(404);
+      });
+    });
+  });
+
+  describe("getVersion", () => {
     test("status code 200 and non-empty response", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/config",
+        url: "/version",
       });
       expect(res.statusCode).toBe(200);
       expect(res.json()).toBeTypeOf("object");
-      expect(res.json()).toHaveProperty("vocabs");
+      expect(res.json()).toHaveProperty("version");
     });
   });
-
-  describe("dataset does not exist", () => {
-    test("status code 404", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: "/dataset/dataset-in-your-imagination/config",
-      });
-      expect(res.statusCode).toBe(404);
-    });
-  });
-});
-
-describe("getVersion", () => {
-  test("status code 200 and non-empty response", async (t) => {
-    const res = await fastify.inject({
-      method: "GET",
-      url: "/version",
-    });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toBeTypeOf("object");
-    expect(res.json()).toHaveProperty("version");
-  });
-});
