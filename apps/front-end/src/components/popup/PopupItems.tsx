@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { decode } from "html-entities";
-import { type PopupItem } from "../../app/configSlice";
+import { type PopupItemConfig } from "../../app/configSlice";
 import { styled } from "@mui/material/styles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -13,7 +13,7 @@ const removeHtmlTags = (text: string) =>
     text.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
   )?.trim();
 
-const Text = ({ item, text }: { item: PopupItem; text: string }) => {
+const Text = ({ itemConfig, text }: { itemConfig: PopupItemConfig; text: string }) => {
   const { t } = useTranslation();
 
   if (!text) {
@@ -22,8 +22,8 @@ const Text = ({ item, text }: { item: PopupItem; text: string }) => {
 
   return (
     <Box>
-      {item.showLabel && (
-        <Typography variant="h4">{t(item.itemProp)}</Typography>
+      {itemConfig.showLabel && (
+        <Typography variant="h4">{t(itemConfig.itemProp)}</Typography>
       )}
       <Typography
         sx={{
@@ -39,10 +39,10 @@ const Text = ({ item, text }: { item: PopupItem; text: string }) => {
 };
 
 const TextMultiple = ({
-  item,
+  itemConfig,
   texts,
 }: {
-  item: PopupItem;
+  itemConfig: PopupItemConfig;
   texts: string[];
 }) => {
   const { t } = useTranslation();
@@ -53,10 +53,10 @@ const TextMultiple = ({
 
   return (
     <>
-      {item.showLabel && (
-        <Typography variant="h4">{t(item.itemProp)}</Typography>
+      {itemConfig.showLabel && (
+        <Typography variant="h4">{t(itemConfig.itemProp)}</Typography>
       )}
-      {item.showBullets ? (
+      {itemConfig.showBullets ? (
         <List>
           {texts.map((text) => (
             <ListItem
@@ -84,7 +84,7 @@ const splitAddress = (address?: string): string[] => {
   return address.split(",").map((line) => line.trim());
 };
 
-const Address = ({ item, address }: { item: PopupItem; address: string }) => (
+const Address = ({ itemConfig, address }: { itemConfig: PopupItemConfig; address: string }) => (
   <>
     {splitAddress(address).map((line, index) => (
       <Typography key={index}>{line}</Typography>
@@ -92,10 +92,10 @@ const Address = ({ item, address }: { item: PopupItem; address: string }) => (
   </>
 );
 
-const Hyperlink = ({ item, url }: { item: PopupItem; url: string }) => (
+const Hyperlink = ({ itemConfig, url }: { itemConfig: PopupItemConfig; url: string }) => (
   <Typography variant="body1">
     <Link
-      href={`${item.hyperlinkBaseUri || ""}${url}`}
+      href={`${itemConfig.hyperlinkBaseUri || ""}${url}`}
       target="_blank"
       rel="noreferrer"
       sx={{
@@ -108,22 +108,22 @@ const Hyperlink = ({ item, url }: { item: PopupItem; url: string }) => (
         marginTop: "var(--spacing-small)",
       }}
     >
-      {item.displayText || url}
+      {itemConfig.displayText || url}
     </Link>
   </Typography>
 );
 
 const HyperlinkMultiple = ({
-  item,
+  itemConfig,
   urls,
 }: {
-  item: PopupItem;
+  itemConfig: PopupItemConfig;
   urls: string[];
 }) => {
   const { t } = useTranslation();
 
   const MAX_DOMAIN_LENGTH = 25;
-  const DOMAINS_SINGLE_COlUMN = item.singleColumnLimit || 10;
+  const DOMAINS_SINGLE_COlUMN = itemConfig.singleColumnLimit || 10;
 
   if (urls.length === 0) return null;
 
@@ -137,15 +137,15 @@ const HyperlinkMultiple = ({
   const urlCollections =
     urls.length > DOMAINS_SINGLE_COlUMN && window.innerWidth >= 400
       ? [
-          urls.slice(0, Math.ceil(urls.length / 2)),
-          urls.slice(Math.ceil(urls.length / 2)),
-        ]
+        urls.slice(0, Math.ceil(urls.length / 2)),
+        urls.slice(Math.ceil(urls.length / 2)),
+      ]
       : [urls];
 
   return (
     <>
-      {item.showLabel && (
-        <Typography variant="h4">{t(item.itemProp)}</Typography>
+      {itemConfig.showLabel && (
+        <Typography variant="h4">{t(itemConfig.itemProp)}</Typography>
       )}
       <StyledDomainListsContainer>
         {urlCollections.map((urlCollection) => (
@@ -154,7 +154,7 @@ const HyperlinkMultiple = ({
               <ListItem key={url}>
                 <Typography variant="body1">
                   <Link
-                    href={`${item.hyperlinkBaseUri || ""}${url}`}
+                    href={`${itemConfig.hyperlinkBaseUri || ""}${url}`}
                     target="_blank"
                     rel="noreferrer"
                     sx={{
@@ -165,7 +165,7 @@ const HyperlinkMultiple = ({
                     }}
                   >
                     {url.length > MAX_DOMAIN_LENGTH &&
-                    url.length > DOMAINS_SINGLE_COlUMN
+                      url.length > DOMAINS_SINGLE_COlUMN
                       ? url.slice(0, MAX_DOMAIN_LENGTH - 5) + "(...)"
                       : url}
                   </Link>
@@ -179,32 +179,32 @@ const HyperlinkMultiple = ({
   );
 };
 
-const PopupItems = ({
+const PopupItemConfigs = ({
   data,
   config,
 }: {
   data: { [key: string]: any };
-  config: PopupItem[];
+  config: PopupItemConfig[];
 }) => {
   return config.map((item) => {
     if (item.valueStyle === "text") {
       if (item.multiple) {
-        return <TextMultiple item={item} texts={data[item.itemProp]} />;
+        return <TextMultiple itemConfig={item} texts={data[item.itemProp]} />;
       } else {
-        return <Text item={item} text={data[item.itemProp]} />;
+        return <Text itemConfig={item} text={data[item.itemProp]} />;
       }
     }
     if (item.valueStyle === "address") {
-      return <Address item={item} address={data[item.itemProp]} />;
+      return <Address itemConfig={item} address={data[item.itemProp]} />;
     }
     if (item.valueStyle === "hyperlink") {
       if (item.multiple) {
-        return <HyperlinkMultiple item={item} urls={data[item.itemProp]} />;
+        return <HyperlinkMultiple itemConfig={item} urls={data[item.itemProp]} />;
       } else {
-        return <Hyperlink item={item} url={data[item.itemProp]} />;
+        return <Hyperlink itemConfig={item} url={data[item.itemProp]} />;
       }
     }
   });
 };
 
-export default PopupItems;
+export default PopupItemConfigs;

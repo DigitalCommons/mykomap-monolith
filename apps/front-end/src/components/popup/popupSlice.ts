@@ -11,8 +11,6 @@ interface PopupSliceState {
   id: string;
   status: string;
   itemProps: PropSpecs;
-  // TODO: handle different fields rather than hardcoding them, use config to define how they should
-  // be displayed
   data: {
     [key: string]: any;
   };

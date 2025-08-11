@@ -1006,12 +1006,7 @@
                                 "type": "string"
                               },
                               "displayText": {
-                                "default": "",
                                 "type": "string"
-                              },
-                              "multiple": {
-                                "default": false,
-                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1052,12 +1047,7 @@
                                 "type": "string"
                               },
                               "displayText": {
-                                "default": "",
                                 "type": "string"
-                              },
-                              "multiple": {
-                                "default": false,
-                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1098,12 +1088,7 @@
                                 "type": "string"
                               },
                               "displayText": {
-                                "default": "",
                                 "type": "string"
-                              },
-                              "multiple": {
-                                "default": false,
-                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1125,7 +1110,8 @@
                     "vocabs",
                     "itemProps",
                     "languages",
-                    "ui"
+                    "ui",
+                    "popup"
                   ],
                   "description": "various configured parameters for a map"
                 }

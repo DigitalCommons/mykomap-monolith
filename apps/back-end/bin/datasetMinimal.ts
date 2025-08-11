@@ -58,7 +58,7 @@ for (let item of items) {
     name: item.Title_Eng,
     description: item["Text for popup"].replaceAll("\r", ""),
     address: item.Address.replaceAll("\r", ""),
-    website: [item.Link],
+    website: item.Link,
     primary_food_system_category,
     food_system_categories,
     locality,
