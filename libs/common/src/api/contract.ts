@@ -153,13 +153,12 @@ const ConfigData = z.object({
       })
       .optional(),
   }),
-  popup: z
-    .object({
-      titleProp: z.string(),
-      leftPane: z.array(PopupItem),
-      topRightPane: z.array(PopupItem),
-      bottomRightPane: z.array(PopupItem),
-    })
+  popup: z.object({
+    titleProp: z.string(),
+    leftPane: z.array(PopupItem),
+    topRightPane: z.array(PopupItem),
+    bottomRightPane: z.array(PopupItem)
+  })
 });
 const BuildInfo = z.object({
   name: z.string(),
