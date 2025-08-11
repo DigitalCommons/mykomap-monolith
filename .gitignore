@@ -12,6 +12,8 @@ node_modules
 dist
 dist-ssr
 *.local
+vite.config.*.timestamp*
+vitest.config.*.timestamp*
 
 # Editor directories and files
 .idea
