@@ -4,7 +4,6 @@ import { Config, getDatasetItem } from "../../services";
 import { getDatasetId } from "../../utils/window-utils";
 import { InnerPropSpec, PropSpecs } from "@mykomap/common";
 import { configLoaded } from "../../app/configSlice";
-import { Popup } from "maplibre-gl";
 
 interface PopupSliceState {
   isOpen: boolean;
@@ -12,19 +11,8 @@ interface PopupSliceState {
   id: string;
   status: string;
   itemProps: PropSpecs;
-  // TODO: handle different fields rather than hardcoding them, use config to define how they should
-  // be displayed
   data: {
-    name: string;
-    food_system_category: string[];
-    // primary_activity: string;
-    description: string;
-    // dc_domains: string[];
-    address: string;
-    website: string[];
-    // organisational_structure: string;
-    // typology: string;
-    // data_sources: string[];
+    [key: string]: any;
   };
 }
 
@@ -34,18 +22,7 @@ const initialState: PopupSliceState = {
   id: "",
   status: "loading",
   itemProps: {},
-  data: {
-    name: "",
-    food_system_category: [],
-    // primary_activity: "",
-    description: "",
-    // dc_domains: [],
-    address: "",
-    website: [],
-    // organisational_structure: "",
-    // typology: "",
-    // data_sources: [],
-  },
+  data: {},
 };
 
 export const popupSlice = createAppSlice({

@@ -973,7 +973,7 @@
                         "titleProp": {
                           "type": "string"
                         },
-                        "left-pane": {
+                        "leftPane": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -1006,7 +1006,6 @@
                                 "type": "string"
                               },
                               "displayText": {
-                                "default": "",
                                 "type": "string"
                               }
                             },
@@ -1015,7 +1014,7 @@
                             ]
                           }
                         },
-                        "top-right-pane": {
+                        "topRightPane": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -1048,7 +1047,6 @@
                                 "type": "string"
                               },
                               "displayText": {
-                                "default": "",
                                 "type": "string"
                               }
                             },
@@ -1057,7 +1055,7 @@
                             ]
                           }
                         },
-                        "bottom-right-pane": {
+                        "bottomRightPane": {
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -1090,7 +1088,6 @@
                                 "type": "string"
                               },
                               "displayText": {
-                                "default": "",
                                 "type": "string"
                               }
                             },
@@ -1102,9 +1099,9 @@
                       },
                       "required": [
                         "titleProp",
-                        "left-pane",
-                        "top-right-pane",
-                        "bottom-right-pane"
+                        "leftPane",
+                        "topRightPane",
+                        "bottomRightPane"
                       ]
                     }
                   },
@@ -1113,7 +1110,8 @@
                     "vocabs",
                     "itemProps",
                     "languages",
-                    "ui"
+                    "ui",
+                    "popup"
                   ],
                   "description": "various configured parameters for a map"
                 }

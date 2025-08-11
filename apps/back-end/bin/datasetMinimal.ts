@@ -58,7 +58,7 @@ for (let item of items) {
     name: item.Title_Eng,
     description: item["Text for popup"].replaceAll("\r", ""),
     address: item.Address.replaceAll("\r", ""),
-    website: [item.Link],
+    website: item.Link,
     primary_food_system_category,
     food_system_categories,
     locality,
@@ -75,8 +75,7 @@ for (let item of items) {
     const [lat, lng] = item.Geocode.split(", ");
     itemOutput.lat = parseFloat(lat);
     itemOutput.lng = parseFloat(lng);
-  }
-  else {
+  } else {
     const cleanAddress = `${itemOutput.address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
 
     const geocodeResponse = await fetch(
@@ -99,7 +98,7 @@ for (let item of items) {
   searchable.values.push([
     itemOutput.food_system_categories,
     itemOutput.locality,
-    `${itemOutput.name} ${itemOutput.address}`.toLowerCase()
+    `${itemOutput.name} ${itemOutput.address}`.toLowerCase(),
   ]);
 
   await fs.writeFile(
