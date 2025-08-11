@@ -112,12 +112,11 @@ const PopupItem = z.object({
   valueStyle: z
     .union([z.literal("text"), z.literal("address"), z.literal("hyperlink")])
     .default("text"),
-  showBullets: z.boolean().default(false).optional(),
+  showBullets: z.boolean().default(false),
   singleColumnLimit: z.number().optional(),
-  showLabel: z.boolean().default(false).optional(),
-  hyperlinkBaseUri: z.string().default("").optional(),
-  displayText: z.string().default("").optional(),
-  multiple: z.boolean().default(false).optional(),
+  showLabel: z.boolean().default(false),
+  hyperlinkBaseUri: z.string().default(""),
+  displayText: z.string().optional()
 });
 
 const TotalsData = z.record(z.string(), z.number());

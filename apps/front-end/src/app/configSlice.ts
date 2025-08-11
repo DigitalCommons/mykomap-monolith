@@ -3,6 +3,7 @@ import { createAppSlice } from "./createAppSlice";
 import { Config, getConfig } from "../services";
 import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
+import PopupItemConfigs from "../components/popup/PopupItems";
 
 export type ConfigMap = {
   mapBounds?: [[number, number], [number, number]];
@@ -22,22 +23,32 @@ export type ConfigLogo = {
   };
 };
 
-export type PopupItem = {
+export type PopupItemConfigNoMultiple = {
   itemProp: string;
   valueStyle: "text" | "address" | "hyperlink";
-  showBullets?: boolean;
+  showBullets: boolean;
   singleColumnLimit?: number;
-  showLabel?: boolean;
-  hyperlinkBaseUri?: string;
+  showLabel: boolean;
+  hyperlinkBaseUri: string;
   displayText?: string;
-  multiple?: boolean;
+}
+
+export type ConfigPopupNoMultiple = {
+  titleProp: string;
+  leftPane: PopupItemConfigNoMultiple[];
+  topRightPane: PopupItemConfigNoMultiple[];
+  bottomRightPane: PopupItemConfigNoMultiple[];
+};
+
+export type PopupItemConfig = PopupItemConfigNoMultiple & {
+  multiple: boolean;
 };
 
 export type ConfigPopup = {
   titleProp: string;
-  leftPane: PopupItem[];
-  topRightPane: PopupItem[];
-  bottomRightPane: PopupItem[];
+  leftPane: PopupItemConfig[];
+  topRightPane: PopupItemConfig[];
+  bottomRightPane: PopupItemConfig[];
 };
 
 export interface ConfigSliceState {
@@ -73,6 +84,18 @@ const initialState: ConfigSliceState = {
     bottomRightPane: [],
   },
 };
+
+function deriveMultiples(popupConfigRaw: ConfigPopupNoMultiple, itemProps: any) {
+  const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
+  const popupConfig: ConfigPopup = {
+    titleProp: popupConfigRaw.titleProp,
+    leftPane: leftPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
+    topRightPane: topRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
+    bottomRightPane: bottomRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
+  }
+
+  return popupConfig;
+}
 
 export const configSlice = createAppSlice({
   name: "config",
@@ -114,9 +137,9 @@ export const configSlice = createAppSlice({
               mapBounds:
                 uiMap.mapBounds && uiMap.mapBounds.length === 2
                   ? [
-                      [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
-                      [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
-                    ]
+                    [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
+                    [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
+                  ]
                   : undefined,
             };
           }
@@ -125,9 +148,7 @@ export const configSlice = createAppSlice({
             state.logo = action.payload.ui.logo;
           }
 
-          if (action.payload.popup) {
-            state.popup = action.payload.popup;
-          }
+          state.popup = deriveMultiples(action.payload.popup, action.payload.itemProps);
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
@@ -141,7 +162,7 @@ export const configSlice = createAppSlice({
     }),
   }),
   selectors: {
-    selectPopup: (state) => state.popup,
+    selectPopupConfig: (state) => state.popup,
     selectCurrentLanguage: (state) => state.currentLanguage,
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
@@ -156,7 +177,7 @@ export const { fetchConfig, setLanguage } = configSlice.actions;
 export const {
   selectCurrentLanguage,
   selectLogo,
-  selectPopup,
+  selectPopupConfig,
   selectMapConfig,
   selectConfigStatus,
 } = configSlice.selectors;

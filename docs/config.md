@@ -30,7 +30,6 @@ And these are the different options to define the style of an itemProp:
 - `showLabel` (defaults to `false`): If this is set to true, the label of the itemProp (taken from `titleUri` in the itemProp definition) is displayed as a heading above the value(s).
 - `hyperlinkBaseUri` (defaults to None): If `valueStyle` is `hyperlink`, this base URI is prepended to the itemProp value, to form the href.
 - `displayText` (defaults to None): If `valueStyle` is `hyperlink`, this sets the display text of the hyperlink.
-- `multiple` (defaults to false): If this is true, the value is an array.
 
 ```
 "popup": {
@@ -38,7 +37,7 @@ And these are the different options to define the style of an itemProp:
     "leftPane": [
       {"itemProp": "category", "valueStyle": "text", "showLabel": true },
       {"itemProp": "description", "valueStyle": "text" },
-      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website", multiple: true }
+      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website",  }
     ],
     "topRightPane": [
       {"itemProp": "address", "valueStyle": "address" },
