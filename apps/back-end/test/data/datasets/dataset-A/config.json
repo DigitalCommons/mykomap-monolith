@@ -4,7 +4,10 @@
     "https://dev.lod.coop/essglobal/2.1/standard/base-membership-type/": "bmt",
     "https://dev.lod.coop/essglobal/2.1/standard/organisational-structure/": "os"
   },
-  "languages": ["en", "fr"],
+  "languages": [
+    "en",
+    "fr"
+  ],
   "ui": {
     "directory_panel_field": "country_id",
     "filterableFields": [
@@ -15,8 +18,14 @@
     ],
     "map": {
       "mapBounds": [
-        [-5.5, 51.3],
-        [-2.5, 53.5]
+        [
+          -5.5,
+          51.3
+        ],
+        [
+          -2.5,
+          53.5
+        ]
       ]
     },
     "logo": {
@@ -43,7 +52,9 @@
       "search": true,
       "from": "Name"
     },
-    "description": { "type": "value" },
+    "description": {
+      "type": "value"
+    },
     "lat": {
       "type": "value",
       "from": "Geocoded Latitude"
@@ -66,7 +77,9 @@
     },
     "dc_domains": {
       "type": "multi",
-      "of": { "type": "value" },
+      "of": {
+        "type": "value"
+      },
       "titleUri": "ui:domains"
     },
     "country_id": {
@@ -93,7 +106,10 @@
     },
     "data_sources": {
       "type": "multi",
-      "of": { "type": "vocab", "uri": "dso:" },
+      "of": {
+        "type": "vocab",
+        "uri": "dso:"
+      },
       "filter": true,
       "titleUri": "ui:data_sources"
     }
@@ -240,5 +256,11 @@
         }
       }
     }
+  },
+  "popup": {
+    "titleProp": "name",
+    "leftPane": [],
+    "topRightPane": [],
+    "bottomRightPane": []
   }
 }
