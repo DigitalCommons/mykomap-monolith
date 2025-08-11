@@ -1,19 +1,15 @@
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import Link from "@mui/material/Link";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import { decode } from "html-entities";
-import { renderIfData } from "../../../utils/jsx-utils";
+import { type PopupItem } from "../../../app/configSlice";
+import PopupItems from "../PopupItems";
 
 interface LeftPaneProps {
-  name: string;
-  primary_activity?: string;
-  description?: string;
-  dc_domains?: string[];
+  data: { [key: string]: any };
   hasLocation: boolean;
+  config: PopupItem[];
+  titleProp: string;
 }
 
 const StyledLeftPane = styled(Box)(() => ({
@@ -86,41 +82,14 @@ const StyledContentContainer = styled(Box)(() => ({
   },
 }));
 
-const StyledDomainListsContainer = styled(Box)(() => ({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "space-between",
-}));
-
-const LeftPane = ({
-  name,
-  primary_activity,
-  description,
-  dc_domains = [],
-  hasLocation,
-}: LeftPaneProps) => {
+const LeftPane = ({ data, hasLocation, config, titleProp }: LeftPaneProps) => {
   const { t } = useTranslation();
-  const cleanDescription = decode(
-    description?.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
-  )?.trim();
-
-  const MAX_DOMAIN_LENGTH = 25;
-  const DOMAINS_SINGLE_COlUMN = 9;
-
-  //split into 2 columns if more than 10 domains and there's room to render
-  const dcDomains =
-    dc_domains.length > DOMAINS_SINGLE_COlUMN && window.innerWidth >= 400
-      ? [
-          dc_domains.slice(0, Math.ceil(dc_domains.length / 2)),
-          dc_domains.slice(Math.ceil(dc_domains.length / 2)),
-        ]
-      : [dc_domains];
 
   return (
     <StyledLeftPane>
       <StyledHeaderContainer>
         <Typography variant="h1" sx={{ overflowWrap: "break-word" }}>
-          {name}
+          {data[titleProp]}
         </Typography>
         {!hasLocation && (
           <Typography variant="subtitle2">
@@ -129,64 +98,7 @@ const LeftPane = ({
         )}
       </StyledHeaderContainer>
       <StyledContentContainer>
-        {renderIfData(
-          <Box>
-            <Typography variant="h4">{t("primary_activity")}</Typography>
-            <Typography
-              variant="body1"
-              sx={{
-                marginBottom: "var(--spacing-medium)",
-                fontWeight: "var(--font-weight-medium)",
-              }}
-            >
-              {primary_activity}
-            </Typography>
-          </Box>,
-          [primary_activity],
-        )}
-        <Typography variant="body1">{cleanDescription}</Typography>
-        {renderIfData(
-          <Box>
-            <Typography
-              variant="h4"
-              sx={{
-                marginBottom: "var(--spacing-xsmall) !important",
-                marginTop: "var(--spacing-large)",
-              }}
-            >
-              {t("domains")}
-            </Typography>
-            <StyledDomainListsContainer>
-              {dcDomains.map((domains) => (
-                <List>
-                  {domains?.map((dcDomain) => (
-                    <ListItem key={dcDomain}>
-                      <Typography variant="body1">
-                        <Link
-                          href={`https://${dcDomain}`}
-                          target="_blank"
-                          rel="noreferrer"
-                          sx={{
-                            color: "var(--color-text)",
-                            textDecoration: "underline",
-                            padding: "0 !important",
-                            fontSize: "var(--font-size-xsmall)",
-                          }}
-                        >
-                          {dcDomain.length > MAX_DOMAIN_LENGTH &&
-                          dc_domains.length > DOMAINS_SINGLE_COlUMN
-                            ? dcDomain.slice(0, MAX_DOMAIN_LENGTH - 5) + "(...)"
-                            : dcDomain}
-                        </Link>
-                      </Typography>
-                    </ListItem>
-                  ))}
-                </List>
-              ))}
-            </StyledDomainListsContainer>
-          </Box>,
-          dc_domains,
-        )}
+        <PopupItems data={data} config={config} />
       </StyledContentContainer>
     </StyledLeftPane>
   );
