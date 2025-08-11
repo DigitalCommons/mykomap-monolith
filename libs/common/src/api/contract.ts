@@ -153,9 +153,9 @@ const ConfigData = z.object({
   }),
   popup: z.object({
     titleProp: z.string(),
-    "left-pane": z.array(PopupItem),
-    "top-right-pane": z.array(PopupItem),
-    "bottom-right-pane": z.array(PopupItem)
+    leftPane: z.array(PopupItem),
+    topRightPane: z.array(PopupItem),
+    bottomRightPane: z.array(PopupItem)
   })
 });
 const BuildInfo = z.object({
