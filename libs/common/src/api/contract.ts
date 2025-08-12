@@ -155,6 +155,7 @@ const ConfigData = z.object({
   }),
   popup: z.object({
     titleProp: z.string(),
+    leftPaneWidth: z.string().default("70%"),
     leftPane: z.array(PopupItem),
     topRightPane: z.array(PopupItem),
     bottomRightPane: z.array(PopupItem)
