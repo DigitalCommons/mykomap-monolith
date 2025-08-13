@@ -133,9 +133,10 @@ const onMarkerHover = (
 export const createMap = (
   popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
+  mapCreated: () => void,
   mapConfig?: {
     mapBounds?: [[number, number], [number, number]];
-  },
+  }
 ): Map => {
   const initialBounds = mapConfig?.mapBounds;
 
@@ -381,6 +382,8 @@ export const createMap = (
     });
 
     map.on("openPopup", async ({ itemIx, location }) => {
+      console.log("received open popup")
+
       if (popup?.isOpen() && popupIx === itemIx) return;
 
       if (location === null) {
@@ -491,6 +494,8 @@ export const createMap = (
     map.addControl(new AttributionControl({ compact: true }), "top-right");
     map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
+
+    mapCreated();
   });
 
   return map;
