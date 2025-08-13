@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -30,17 +31,23 @@ const MapWrapper = () => {
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
+  const [mapCreated, setMapCreated] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
 
   const popupCreatedCallback = (itemIx: number) => {
     console.log("Popup created");
     dispatch(openPopup(itemIx));
+    searchParams.set("popupId", `${itemIx}`);
+    setSearchParams(searchParams);
   };
 
   const popupClosedCallback = () => {
     console.log("Popup closed");
     dispatch(closePopup());
+    searchParams.delete("popupId");
+    setSearchParams(searchParams);
   };
 
   useEffect(() => {
@@ -61,7 +68,8 @@ const MapWrapper = () => {
     map.current = createMap(
       popupCreatedCallback,
       popupClosedCallback,
-      mapConfig,
+      () => setMapCreated(true),
+      mapConfig
     );
 
     map.current.on("sourcedata", (e) => {
@@ -71,7 +79,7 @@ const MapWrapper = () => {
         setSourceLoaded(true);
       }
     });
-    dispatch(fetchLocations());
+    dispatch(fetchLocations())
 
     // Clean up on unmount
     return () => {
@@ -116,6 +124,14 @@ const MapWrapper = () => {
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
+
+  useEffect(() => {
+    const itemIx = searchParams.get("popupId");
+    if (itemIx && mapCreated) {
+      dispatch(openPopup(parseInt(itemIx)));
+    }
+
+  }, [searchParams, mapCreated])
 
   const updateMapData = async () => {
     if (isFilterActive) {
