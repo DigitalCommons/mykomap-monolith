@@ -102,11 +102,11 @@ const openPopup = async (
     .setLngLat(coordinates)
     .setHTML(`<div id=${POPUP_CONTAINER_ID}></div>`)
     .addTo(map)
-    .addClassName(`popup-ix-${itemIx}`)
+    .addClassName(`popup-ix-${itemId}`)
     .setOffset(popupOffset)
     .on("close", popupClosedCallback);
 
-  popupCreatedCallback(itemIx);
+  popupCreatedCallback(itemId);
 };
 
 const onMarkerHover = (
@@ -260,7 +260,7 @@ export const createMap = (
           .once("moveend", () => {
             openPopup(
               map,
-              itemIx,
+              itemId,
               coordinates as LngLatLike,
               popupCreatedCallback,
               popupClosedCallback,
@@ -377,7 +377,7 @@ export const createMap = (
           .once("moveend", () => {
             openPopup(
               map,
-              itemIx,
+              itemId,
               coordinates as LngLatLike,
               popupCreatedCallback,
               popupClosedCallback,
@@ -417,7 +417,7 @@ export const createMap = (
 
       openPopup(
         map,
-        itemIx,
+        itemId,
         location,
         popupCreatedCallback,
         popupClosedCallback,

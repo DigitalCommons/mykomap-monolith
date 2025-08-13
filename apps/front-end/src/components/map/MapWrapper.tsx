@@ -162,6 +162,13 @@ const MapWrapper = () => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
 
+  useEffect(() => {
+    const id = searchParams.get("popupId");
+    if (id && mapCreated) {
+      dispatch(openPopup(id));
+    }
+  }, [searchParams, mapCreated]);
+
   const updateMapData = async () => {
     if (isFilterActive) {
       console.log(`Found ${visibleIndexes?.length} items that matched`);

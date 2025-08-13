@@ -62,8 +62,6 @@ const Results = () => {
   const onItemClick = (itemIx: number) => {
     console.log(`Clicked item @${itemIx}`);
     dispatch(openPopup(`@${itemIx}`));
-    // searchParams.set("popupId", `@${itemIx}`);
-    // setSearchParams(searchParams);
     dispatch(closePanel());
     if (!isMedium) {
       dispatch(setSelectedTab(0));
