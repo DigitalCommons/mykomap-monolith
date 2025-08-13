@@ -12,6 +12,7 @@ import {
   closePopup,
   openPopup,
   selectPopupIndex,
+  selectPopupId,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
@@ -26,6 +27,7 @@ const MapWrapper = () => {
   );
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const popupId = useAppSelector(selectPopupId);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
@@ -36,10 +38,10 @@ const MapWrapper = () => {
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
 
-  const popupCreatedCallback = (itemIx: number) => {
-    console.log("Popup created");
-    dispatch(openPopup(itemIx));
-    searchParams.set("popupId", `${itemIx}`);
+  const popupCreatedCallback = (id: string) => {
+    console.log("Popup created", id);
+    dispatch(openPopup(id));
+    searchParams.set("popupId", id);
     setSearchParams(searchParams);
   };
 
@@ -107,7 +109,7 @@ const MapWrapper = () => {
       console.log("Opening popup");
       if (popupLocation) {
         map?.current?.fire("openPopup", {
-          itemIx: popupIndex,
+          itemId: popupId,
           location: popupLocation,
         });
       } else {
@@ -126,9 +128,9 @@ const MapWrapper = () => {
   }, [language]);
 
   useEffect(() => {
-    const itemIx = searchParams.get("popupId");
-    if (itemIx && mapCreated) {
-      dispatch(openPopup(parseInt(itemIx)));
+    const id = searchParams.get("popupId");
+    if (id && mapCreated) {
+      dispatch(openPopup(id));
     }
 
   }, [searchParams, mapCreated])
