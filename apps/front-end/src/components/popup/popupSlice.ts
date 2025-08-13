@@ -34,7 +34,7 @@ export const popupSlice = createAppSlice({
       state.isOpen = false;
     }),
     openPopup: create.asyncThunk(
-      async (index: number, thunkApi) => {
+      async (idOrIndex: string, thunkApi) => {
         const datasetId = getDatasetId();
         if (datasetId === null) {
           return thunkApi.rejectWithValue(
@@ -43,7 +43,7 @@ export const popupSlice = createAppSlice({
         }
 
         const response = await getDatasetItem({
-          params: { datasetId, datasetItemIdOrIx: `@${index}` },
+          params: { datasetId, datasetItemIdOrIx: idOrIndex },
         });
 
         if (response.status === 200) {
@@ -61,7 +61,8 @@ export const popupSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           state.status = "loaded";
-          state.index = action.meta.arg;
+          state.index = action.payload.itemIx;
+          state.id = action.payload.id;
           state.isOpen = true;
 
           state.data = action.payload;
@@ -86,11 +87,12 @@ export const popupSlice = createAppSlice({
   selectors: {
     selectPopupIsOpen: (popup) => popup.isOpen,
     selectPopupIndex: (popup) => popup.index,
+    selectPopupId: (popup) => popup.id
   },
 });
 
 export const { openPopup, closePopup } = popupSlice.actions;
-export const { selectPopupIsOpen, selectPopupIndex } = popupSlice.selectors;
+export const { selectPopupIsOpen, selectPopupIndex, selectPopupId } = popupSlice.selectors;
 
 export const selectPopupData = createSelector(
   [
