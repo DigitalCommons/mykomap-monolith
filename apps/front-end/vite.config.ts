@@ -31,14 +31,7 @@ export default defineConfig({
   build: {
     sourcemap: true,
   },
-  test: {
-    globals: true,
-    environment: "jsdom",
-    setupFiles: "src/setupTests",
-    env: {
-      VITE_API_URL: "/api",
-    },
-  },
+
   base: "./",
   root,
 });

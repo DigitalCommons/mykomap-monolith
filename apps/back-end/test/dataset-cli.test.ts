@@ -56,9 +56,9 @@ function print(result: Result) {
     result.differences,
   );
 
-  result.diffSet.forEach((dif) => {
-    const path1 = join(dif.path1, dif.name1);
-    const path2 = join(dif.path2, dif.name2);
+  result.diffSet?.forEach((dif) => {
+    const path1 = join(dif.path1!, dif.name1!);
+    const path2 = join(dif.path2!, dif.name2!);
     console.log(
       `Difference:\n` +
         `state: %s\n` +
@@ -99,7 +99,7 @@ test("testing dataset import", async (t) => {
   try {
     // NOTE: the locale environment variable LC_ALL must be set to "en_GB"
     // *before* node is started for this to set the locale here correctly.
-    // Therefore this is done in the package.json runscript.
+    // This is done in the vitest.config.ts file.
     vi.useFakeTimers();
     vi.setSystemTime(new Date(2025, 1, 1, 0));
     result = await runTest(ImportCmd);
