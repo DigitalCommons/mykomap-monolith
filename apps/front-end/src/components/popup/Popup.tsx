@@ -70,22 +70,18 @@ const Popup = () => {
   const popupIndex = useAppSelector(selectPopupIndex);
   const hasLocation = !!useAppSelector(selectLocation(popupIndex));
   const data = useAppSelector(selectPopupData);
-  const popupConfig = useAppSelector(selectPopupConfig) || {
-    titleProp: "name",
-    leftPane: [],
-    topRightPane: [],
-    bottomRightPane: [],
-  };
+  const popupConfig = useAppSelector(selectPopupConfig);
 
   if (open) console.log("Popup data", data);
 
-  const popupComponent = data ? (
+  const popupComponent = data && popupConfig ? (
     <StyledPopup>
       <StylePopupInner>
         <LeftPane
           data={data}
           hasLocation={hasLocation}
           config={popupConfig.leftPane}
+          width={popupConfig.leftPaneWidth}
           titleProp={popupConfig.titleProp}
         />
         <RightPane

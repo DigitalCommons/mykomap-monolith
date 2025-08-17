@@ -35,6 +35,7 @@ export type PopupItemConfigNoMultiple = {
 
 export type ConfigPopupNoMultiple = {
   titleProp: string;
+  leftPaneWidth: string;
   leftPane: PopupItemConfigNoMultiple[];
   topRightPane: PopupItemConfigNoMultiple[];
   bottomRightPane: PopupItemConfigNoMultiple[];
@@ -46,6 +47,7 @@ export type PopupItemConfig = PopupItemConfigNoMultiple & {
 
 export type ConfigPopup = {
   titleProp: string;
+  leftPaneWidth: string;
   leftPane: PopupItemConfig[];
   topRightPane: PopupItemConfig[];
   bottomRightPane: PopupItemConfig[];
@@ -79,6 +81,7 @@ const initialState: ConfigSliceState = {
   status: "idle",
   popup: {
     titleProp: "name",
+    leftPaneWidth: "70%",
     leftPane: [],
     topRightPane: [],
     bottomRightPane: [],
@@ -89,6 +92,7 @@ function deriveMultiples(popupConfigRaw: ConfigPopupNoMultiple, itemProps: any) 
   const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
   const popupConfig: ConfigPopup = {
     titleProp: popupConfigRaw.titleProp,
+    leftPaneWidth: popupConfigRaw.leftPaneWidth,
     leftPane: leftPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
     topRightPane: topRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
     bottomRightPane: bottomRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),

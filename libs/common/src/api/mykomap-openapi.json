@@ -973,6 +973,10 @@
                         "titleProp": {
                           "type": "string"
                         },
+                        "leftPaneWidth": {
+                          "default": "70%",
+                          "type": "string"
+                        },
                         "leftPane": {
                           "type": "array",
                           "items": {
