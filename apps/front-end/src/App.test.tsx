@@ -1,4 +1,5 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { BrowserRouter, Routes, Route } from "react-router";
 import App from "./App";
 import { renderWithProviders } from "./utils/test-utils";
 
@@ -13,7 +14,11 @@ import { renderWithProviders } from "./utils/test-utils";
 // });
 
 test("App should have correct initial render on mobile", () => {
-  renderWithProviders(<App />);
+  renderWithProviders(<BrowserRouter>
+    <Routes>
+      <Route path="/" element={<App />} />
+    </Routes>
+  </BrowserRouter>);
 
   waitFor(() => {
     expect(screen.getByText("search")).toBeInTheDocument();
