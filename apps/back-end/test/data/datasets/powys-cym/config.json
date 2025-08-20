@@ -1,0 +1,213 @@
+{
+  "prefixes": {
+    "https://dev.lod.coop/powys/fsc": "fsc",
+    "https://dev.lod.coop/ui": "ui"
+  },
+  "currentLanguage": "cy",
+  "languages": [
+    "cy"
+  ],
+  "ui": {
+    "directory_panel_field": "food_system_categories",
+    "marker_property_name": "primary_food_system_category",
+    "map": {
+      "mapBounds": [
+        [
+          -5.5,
+          51.3
+        ],
+        [
+          -2.5,
+          53.5
+        ]
+      ]
+    }
+  },
+  "itemProps": {
+    "id": {
+      "type": "value",
+      "from": "Identifier"
+    },
+    "name": {
+      "type": "value",
+      "search": true,
+      "from": "Name"
+    },
+    "description": {
+      "type": "value",
+      "from": "Description"
+    },
+    "lat": {
+      "type": "value",
+      "from": "Geo Container Latitude"
+    },
+    "lng": {
+      "type": "value",
+      "from": "Geo Container Longitude"
+    },
+    "address": {
+      "type": "value",
+      "search": true,
+      "from": "Street Address"
+    },
+    "geocoded_address": {
+      "type": "value",
+      "from": "Geocoded Address"
+    },
+    "geocoder_confidence": {
+      "type": "value",
+      "from": "Geo Container Confidence"
+    },
+    "website": {
+      "type": "value",
+      "from": "Website"
+    },
+    "primary_food_system_category": {
+      "type": "vocab",
+      "uri": "fsc:",
+      "from": "Primary Food System Category ID"
+    },
+    "food_system_categories": {
+      "type": "multi",
+      "of": {
+        "type": "vocab",
+        "uri": "fsc:",
+        "sorted": false
+      },
+      "titleUri": "ui:food_system_categories",
+      "filter": true,
+      "from": "Food System Category IDs"
+    },
+    "locality": {
+      "type": "vocab",
+      "uri": "loc:",
+      "titleUri": "ui:locality",
+      "filter": true,
+      "from": "Locality ID"
+    },
+    "email": {
+      "type": "value",
+      "from": "Email address"
+    },
+    "phone": {
+      "type": "value",
+      "from": "Phone number"
+    },
+    "contact_name": {
+      "type": "value",
+      "from": "Contact name"
+    }
+  },
+  "vocabs": {
+    "fsc": {
+      "cy": {
+        "title": "Food System Category",
+        "terms": {
+          "ep": "Darpariaeth bwyd cymunedol",
+          "ep-fb": " - Banc bwyd",
+          "ep-cf": " - Oergell gymunedol",
+          "ep-pm": " - Prydau bwyd talu yr hyn rydych chi'n ei deimlo",
+          "ep-fs": " - Rhannu bwyd cymunedol",
+          "ep-sm": " - Prydau a rennir",
+          "cg": "Tyfu cymunedol",
+          "cg-ie": " - Bwyd Bendigedig",
+          "cg-ga": " - Gardd gymunedol",
+          "cg-or": " - Perllan gymunedol",
+          "cg-al": " - Rhandiroedd",
+          "lp": "Darparwr bwyd lleol",
+          "lp-gr": " - Ffermwr/tyfwr",
+          "lp-cr": " - Caffi/bwyty",
+          "lp-mk": " - Marchnad",
+          "lp-sp": " - Siop",
+          "ev": "Digwyddiadau",
+          "ev-ff": " - Gŵyl",
+          "ev-cc": " - Dosbarthiadau coginio"
+        }
+      }
+    },
+    "loc": {
+      "cy": {
+        "title": "Locality",
+        "terms": {
+          "bl": "Llanfair-ym-Muallt a Llanwrtyd",
+          "br": "Aberhonddu",
+          "ch": "Crucywel",
+          "ht": "Y Gelli Gandryll a Thalgarth",
+          "kp": "Trefyclo a Llanandras",
+          "ld": "Llanidloes",
+          "lf": "Llanfyllin",
+          "lr": "Llandrindod a Rhaeadr Gwy",
+          "lc": "Llanfair Caereinion",
+          "mh": "Machynlleth",
+          "ms": "Sir Fynwy",
+          "nt": "Y Drenewydd",
+          "op": "Y tu allan i Bowys",
+          "wm": "Y Trallwng a Threfaldwyn",
+          "yg": "Ystradgynlais"
+        }
+      }
+    },
+    "ui": {
+      "cy": {
+        "title": "Translations",
+        "terms": {
+          "directory": "Cyfeiriadur",
+          "food_system_categories": "Categori",
+          "primary_food_system_category": "Categori",
+          "locality": "Tref",
+          "matching_results_zero": "Dim canlyniadau cyfatebol",
+          "matching_results_one": "{{count}} canlyniad cyfatebol",
+          "matching_results_other": "{{count}} canlyniadau cyfatebol",
+          "directory_entries_zero": "Dim cofnodion cyfeiriadur",
+          "directory_entries_one": "{{count}} cofnod cyfeiriadur",
+          "directory_entries_other": "{{count}} cofnodion cyfeiriadur",
+          "search": "Chwilio",
+          "clear_search": "Clirio’r chwiliad",
+          "any": "Unrhyw",
+          "map": "Map",
+          "about": "Ynghylch",
+          "no_location_available": "Dim lleoliad ar gael"
+        }
+      }
+    }
+  },
+  "popup": {
+    "titleProp": "name",
+    "leftPaneWidth": "55%",
+    "leftPane": [
+      {
+        "itemProp": "primary_food_system_category",
+        "valueStyle": "text",
+        "showLabel": true
+      },
+      {
+        "itemProp": "description",
+        "valueStyle": "text"
+      }
+    ],
+    "topRightPane": [
+      {
+        "itemProp": "address",
+        "valueStyle": "address"
+      },
+      {
+        "itemProp": "website",
+        "valueStyle": "hyperlink",
+        "displayText": "Website"
+      },
+      {
+        "itemProp": "email",
+        "valueStyle": "text"
+      },
+      {
+        "itemProp": "phone",
+        "valueStyle": "text"
+      },
+      {
+        "itemProp": "contact_name",
+        "valueStyle": "text"
+      }
+    ],
+    "bottomRightPane": []
+  }
+}

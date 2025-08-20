@@ -1,0 +1,1 @@
+"This map shows the food system across Powys, including community food provision, growing, commercial producers and events. \n\nIf you have any questions, or would like to add or amend any entries, please email chloe.masefield@cultivate.uk.com. \n\nThe Powys Food Systems map has been funded by Bwyd Powys Food, the sustainable food partnership for Powys."
