@@ -1,4 +1,4 @@
-import { Config } from "../services";
+import { Config } from "../services/types";
 
 const mockConfig: Config = {
   prefixes: {
@@ -10,6 +10,19 @@ const mockConfig: Config = {
   languages: ["en", "fr"],
   ui: {
     directory_panel_field: "country_id",
+    map: {
+      mapBounds: [
+        [-169, -49.3],
+        [189, 75.6],
+      ],
+    },
+    logo: {
+      largeLogo: "./assets/logos/cwm-logo.png",
+      smallLogo: "./assets/logos/cwm-logo-small.png",
+      altText: "Cooperative World Map",
+      smallScreenPosition: { top: "10px", left: "10px" },
+      largeScreenPosition: { bottom: "20px", right: "20px" },
+    },
   },
   itemProps: {
     id: {
@@ -62,7 +75,7 @@ const mockConfig: Config = {
     },
     data_sources: {
       type: "multi",
-      of: { type: "vocab", uri: "dso:" },
+      of: { type: "vocab", uri: "dso:", sorted: false },
       filter: true,
     },
   },
@@ -179,10 +192,40 @@ const mockConfig: Config = {
   },
   popup: {
     titleProp: "name",
-    leftPane: [],
-    topRightPane: [],
-    bottomRightPane: []
-  }
+    leftPane: [
+      {
+        itemProp: "name",
+        valueStyle: "text",
+        showBullets: false,
+        showLabel: true,
+        hyperlinkBaseUri: "",
+      },
+      {
+        itemProp: "description",
+        valueStyle: "text",
+        showBullets: false,
+        showLabel: false,
+        hyperlinkBaseUri: "",
+      },
+      {
+        itemProp: "primary_activity",
+        valueStyle: "text",
+        showBullets: false,
+        showLabel: true,
+        hyperlinkBaseUri: "",
+      },
+    ],
+    topRightPane: [
+      {
+        itemProp: "address",
+        valueStyle: "address",
+        showBullets: false,
+        showLabel: false,
+        hyperlinkBaseUri: "",
+      },
+    ],
+    bottomRightPane: [],
+  },
 };
 
 export default mockConfig;

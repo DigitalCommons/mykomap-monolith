@@ -1,9 +1,9 @@
-import { createAction, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
-import { Config, getConfig } from "../services";
+import { getConfig } from "../services";
+import { Config } from "../services/types";
 import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
-import PopupItemConfigs from "../components/popup/PopupItems";
 
 export type ConfigMap = {
   mapBounds?: [[number, number], [number, number]];
@@ -31,7 +31,7 @@ export type PopupItemConfigNoMultiple = {
   showLabel: boolean;
   hyperlinkBaseUri: string;
   displayText?: string;
-}
+};
 
 export type ConfigPopupNoMultiple = {
   titleProp: string;
@@ -85,14 +85,26 @@ const initialState: ConfigSliceState = {
   },
 };
 
-function deriveMultiples(popupConfigRaw: ConfigPopupNoMultiple, itemProps: any) {
+function deriveMultiples(
+  popupConfigRaw: ConfigPopupNoMultiple,
+  itemProps: any,
+) {
   const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
   const popupConfig: ConfigPopup = {
     titleProp: popupConfigRaw.titleProp,
-    leftPane: leftPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
-    topRightPane: topRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
-    bottomRightPane: bottomRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
-  }
+    leftPane: leftPane.map((itemConfig) => ({
+      ...itemConfig,
+      multiple: itemProps[itemConfig.itemProp].type === "multi",
+    })),
+    topRightPane: topRightPane.map((itemConfig) => ({
+      ...itemConfig,
+      multiple: itemProps[itemConfig.itemProp].type === "multi",
+    })),
+    bottomRightPane: bottomRightPane.map((itemConfig) => ({
+      ...itemConfig,
+      multiple: itemProps[itemConfig.itemProp].type === "multi",
+    })),
+  };
 
   return popupConfig;
 }
@@ -114,8 +126,8 @@ export const configSlice = createAppSlice({
           params: { datasetId: datasetId },
         });
         if (response.status === 200) {
+          console.log("Fetched config", response.body);
           thunkApi.dispatch(configLoaded(response.body));
-          i18n.loadLanguages(response.body.languages);
           return response.body;
         } else {
           return thunkApi.rejectWithValue(
@@ -125,30 +137,7 @@ export const configSlice = createAppSlice({
       },
       {
         fulfilled: (state, action) => {
-          console.log("Config", action.payload);
-          state.vocabs = action.payload.vocabs;
-          state.languages = action.payload.languages;
-          state.currentLanguage = action.payload.languages[0];
-          state.status = "loaded";
-
-          if (action.payload.ui && action.payload.ui.map) {
-            const uiMap = action.payload.ui.map;
-            state.map = {
-              mapBounds:
-                uiMap.mapBounds && uiMap.mapBounds.length === 2
-                  ? [
-                    [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
-                    [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
-                  ]
-                  : undefined,
-            };
-          }
-
-          if (action.payload.ui && action.payload.ui.logo) {
-            state.logo = action.payload.ui.logo;
-          }
-
-          state.popup = deriveMultiples(action.payload.popup, action.payload.itemProps);
+          // We handle the data in the extraReducers, so that configLoaded can be used in UTs
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
@@ -161,6 +150,39 @@ export const configSlice = createAppSlice({
         state.currentLanguage = action.payload;
     }),
   }),
+  extraReducers: (builder) => {
+    builder.addCase(configLoaded, (state, action) => {
+      state.vocabs = action.payload.vocabs;
+
+      state.languages = action.payload.languages;
+      state.currentLanguage = action.payload.languages[0];
+      i18n.loadLanguages(action.payload.languages);
+
+      if (action.payload.ui && action.payload.ui.map) {
+        const uiMap = action.payload.ui.map;
+        state.map = {
+          mapBounds:
+            uiMap.mapBounds && uiMap.mapBounds.length === 2
+              ? [
+                  [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
+                  [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
+                ]
+              : undefined,
+        };
+      }
+
+      if (action.payload.ui && action.payload.ui.logo) {
+        state.logo = action.payload.ui.logo;
+      }
+
+      state.popup = deriveMultiples(
+        action.payload.popup,
+        action.payload.itemProps,
+      );
+
+      state.status = "loaded";
+    });
+  },
   selectors: {
     selectPopupConfig: (state) => state.popup,
     selectCurrentLanguage: (state) => state.currentLanguage,
