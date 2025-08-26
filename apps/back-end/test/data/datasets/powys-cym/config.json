@@ -3,9 +3,9 @@
     "https://dev.lod.coop/powys/fsc": "fsc",
     "https://dev.lod.coop/ui": "ui"
   },
-  "currentLanguage": "cy",
   "languages": [
-    "cy"
+    "cy",
+    "en"
   ],
   "ui": {
     "directory_panel_field": "food_system_categories",
@@ -101,7 +101,7 @@
   "vocabs": {
     "fsc": {
       "cy": {
-        "title": "Food System Category",
+        "title": "Categori System Bwyd",
         "terms": {
           "ep": "Darpariaeth bwyd cymunedol",
           "ep-fb": " - Banc bwyd",
@@ -123,11 +123,35 @@
           "ev-ff": " - Gŵyl",
           "ev-cc": " - Dosbarthiadau coginio"
         }
+      },
+      "en": {
+        "title": "Food System Category",
+        "terms": {
+          "ep": "Community food provision",
+          "ep-fb": " - Food bank",
+          "ep-cf": " - Community fridge",
+          "ep-pm": " - Pay as you feel meals",
+          "ep-fs": " - Community food share",
+          "ep-sm": " - Shared meals",
+          "cg": "Community growing",
+          "cg-ie": " - Incredible Edible",
+          "cg-ga": " - Community garden",
+          "cg-or": " - Community orchard",
+          "cg-al": " - Allotments",
+          "lp": "Local food provider",
+          "lp-gr": " - Farmer/grower",
+          "lp-cr": " - Cafe/restaurant",
+          "lp-mk": " - Market",
+          "lp-sp": " - Shop",
+          "ev": "Events",
+          "ev-ff": " - Festival",
+          "ev-cc": " - Cooking classes"
+        }
       }
     },
     "loc": {
       "cy": {
-        "title": "Locality",
+        "title": "Ardal",
         "terms": {
           "bl": "Llanfair-ym-Muallt a Llanwrtyd",
           "br": "Aberhonddu",
@@ -145,11 +169,31 @@
           "wm": "Y Trallwng a Threfaldwyn",
           "yg": "Ystradgynlais"
         }
+      },
+      "en": {
+        "title": "Locality",
+        "terms": {
+          "bl": "Builth & Llanwrtyd",
+          "br": "Brecon",
+          "ch": "Crickhowell",
+          "ht": "Hay & Talgarth",
+          "kp": "Knighton & Presteigne",
+          "ld": "Llanidloes",
+          "lf": "Llanfyllin",
+          "lr": "Llandrindod & Rhayader",
+          "lc": "Llanfair Caereinion",
+          "mh": "Machynlleth",
+          "ms": "Monmouthshire",
+          "nt": "Newtown",
+          "op": "Outside Powys",
+          "wm": "Welshpool & Montgomery",
+          "yg": "Ystradgynlais"
+        }
       }
     },
     "ui": {
       "cy": {
-        "title": "Translations",
+        "title": "Cyfieithiadau",
         "terms": {
           "directory": "Cyfeiriadur",
           "food_system_categories": "Categori",
@@ -157,16 +201,49 @@
           "locality": "Tref",
           "matching_results_zero": "Dim canlyniadau cyfatebol",
           "matching_results_one": "{{count}} canlyniad cyfatebol",
+          "matching_results_two": "{{count}} canlyniadau cyfatebol",
+          "matching_results_few": "{{count}} canlyniadau cyfatebol",
+          "matching_results_many": "{{count}} canlyniadau cyfatebol",
           "matching_results_other": "{{count}} canlyniadau cyfatebol",
           "directory_entries_zero": "Dim cofnodion cyfeiriadur",
           "directory_entries_one": "{{count}} cofnod cyfeiriadur",
+          "directory_entries_two": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_few": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_many": "{{count}} gofnodion cyfeiriadur",
           "directory_entries_other": "{{count}} cofnodion cyfeiriadur",
           "search": "Chwilio",
-          "clear_search": "Clirio’r chwiliad",
+          "clear_search": "Clirio'r chwiliad",
           "any": "Unrhyw",
           "map": "Map",
           "about": "Ynghylch",
           "no_location_available": "Dim lleoliad ar gael"
+        }
+      },
+      "en": {
+        "title": "Translations",
+        "terms": {
+          "directory": "Directory",
+          "food_system_categories": "Category",
+          "primary_food_system_category": "Category",
+          "locality": "Town",
+          "matching_results_zero": "No matching results",
+          "matching_results_one": "{{count}} matching result",
+          "matching_results_two": "{{count}} matching results",
+          "matching_results_few": "{{count}} matching results",
+          "matching_results_many": "{{count}} matching results",
+          "matching_results_other": "{{count}} matching results",
+          "directory_entries_zero": "No directory entries",
+          "directory_entries_one": "{{count}} directory entry",
+          "directory_entries_two": "{{count}} directory entries",
+          "directory_entries_few": "{{count}} directory entries",
+          "directory_entries_many": "{{count}} directory entries",
+          "directory_entries_other": "{{count}} directory entries",
+          "search": "Search",
+          "clear_search": "Clear Search",
+          "any": "Any",
+          "map": "Map",
+          "about": "About",
+          "no_location_available": "No location available"
         }
       }
     }
