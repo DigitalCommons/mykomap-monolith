@@ -47,6 +47,12 @@ And these are the different options to define the style of an itemProp:
   }
 ```
 
+<br />
+
+---
+
+<br />
+
 ## Logo
 
 The `logo` config field is a child of the `ui` field and is used to define logo display and position on the map. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
@@ -141,4 +147,57 @@ The `map` field has 1 subfield
     }
   }
 },
+```
+
+<br />
+
+---
+
+<br />
+
+## Pluralisation
+
+Pluralisation rules can differ per language, requiring the use of extra suffixes. `zero`, `one` and `other` are sufficient for English, Spanish, French and Hindi, and fine for our current instance of CWM. However, Welsh and Arabic have six categories according to **[CLDR ](https://cldr.unicode.org/index/cldr-spec/plural-rules)** and **[i18next](https://www.i18next.com/translation-function/plurals)** follows this: 
+   - `zero` (when n = 0)
+   - `one` (when n = 10)
+   - `two` (when n = 2)
+   - `few` (when n= 3)
+   - `many` (when n = 6)
+   - `other` (everything else)
+
+Omission of the required plural forms will cause the translation to fallback to the default language. [This tool](https://jsfiddle.net/6bpxsgd4) can be used to determine the necessary plural suffixes, and list of the two letter ISO language codes can be found [here](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes).
+<br>
+
+### Welsh UI translations including `two`, `few` and `many`
+
+```
+"ui": {
+      "cy": {
+        "title": "Cyfieithiadau",
+        "terms": {
+          "directory": "Cyfeiriadur",
+          "food_system_categories": "Categori",
+          "primary_food_system_category": "Categori",
+          "locality": "Tref",
+          "matching_results_zero": "Dim canlyniadau cyfatebol",
+          "matching_results_one": "{{count}} canlyniad cyfatebol",
+          "matching_results_two": "{{count}} canlyniadau cyfatebol",
+          "matching_results_few": "{{count}} canlyniadau cyfatebol",
+          "matching_results_many": "{{count}} canlyniadau cyfatebol",
+          "matching_results_other": "{{count}} canlyniadau cyfatebol",
+          "directory_entries_zero": "Dim cofnodion cyfeiriadur",
+          "directory_entries_one": "{{count}} cofnod cyfeiriadur",
+          "directory_entries_two": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_few": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_many": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_other": "{{count}} cofnodion cyfeiriadur",
+          "search": "Chwilio",
+          "clear_search": "Clirio'r chwiliad",
+          "any": "Unrhyw",
+          "map": "Map",
+          "about": "Ynghylch",
+          "no_location_available": "Dim lleoliad ar gael"
+        }
+      }
+    }
 ```
