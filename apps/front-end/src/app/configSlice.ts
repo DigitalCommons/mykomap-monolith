@@ -90,12 +90,13 @@ const initialState: ConfigSliceState = {
 
 function deriveMultiples(popupConfigRaw: ConfigPopupNoMultiple, itemProps: any) {
   const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
+  const processMulti = (itemConfig: PopupItemConfigNoMultiple) => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })
   const popupConfig: ConfigPopup = {
     titleProp: popupConfigRaw.titleProp,
     leftPaneWidth: popupConfigRaw.leftPaneWidth,
-    leftPane: leftPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
-    topRightPane: topRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
-    bottomRightPane: bottomRightPane.map(itemConfig => ({ ...itemConfig, multiple: itemProps[itemConfig.itemProp].type === "multi" })),
+    leftPane: leftPane.map(processMulti),
+    topRightPane: topRightPane.map(processMulti),
+    bottomRightPane: bottomRightPane.map(processMulti),
   }
 
   return popupConfig;

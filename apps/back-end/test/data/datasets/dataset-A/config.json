@@ -260,8 +260,23 @@
   "popup": {
     "titleProp": "name",
     "leftPaneWidth": "70%",
-    "leftPane": [],
-    "topRightPane": [],
+    "leftPane": [
+      {
+        "itemProp": "primary_activity",
+        "valueStyle": "text",
+        "showLabel": true
+      }
+    ],
+    "topRightPane": [
+      {
+        "itemProp": "address",
+        "valueStyle": "address"
+      },
+      {
+        "itemProp": "website",
+        "valueStyle": "hyperlink"
+      }
+    ],
     "bottomRightPane": []
   }
 }
