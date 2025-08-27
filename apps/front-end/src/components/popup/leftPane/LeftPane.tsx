@@ -9,15 +9,16 @@ interface LeftPaneProps {
   data: { [key: string]: any };
   hasLocation: boolean;
   config: PopupItemConfig[];
+  width: string;
   titleProp: string;
 }
 
-const StyledLeftPane = styled(Box)(() => ({
+const StyledLeftPane = styled(Box)(({ width }) => ({
   display: "flex",
   flexDirection: "column",
   margin: "var(--spacing-large)",
   "@media (min-width: 768px)": {
-    width: "70%",
+    width: width,
     flexDirection: "column",
     margin:
       "var(--spacing-large) 0 var(--spacing-xlarge) var(--spacing-xlarge)",
@@ -82,11 +83,11 @@ const StyledContentContainer = styled(Box)(() => ({
   },
 }));
 
-const LeftPane = ({ data, hasLocation, config, titleProp }: LeftPaneProps) => {
+const LeftPane = ({ data, hasLocation, config, width, titleProp }: LeftPaneProps) => {
   const { t } = useTranslation();
 
   return (
-    <StyledLeftPane>
+    <StyledLeftPane width={width}>
       <StyledHeaderContainer>
         <Typography variant="h1" sx={{ overflowWrap: "break-word" }}>
           {data[titleProp]}
