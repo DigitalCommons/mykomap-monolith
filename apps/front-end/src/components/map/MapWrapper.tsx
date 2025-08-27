@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { useSearchParams } from "react-router";
+import { type SetURLSearchParams } from "react-router";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -18,7 +18,7 @@ import {
 import { selectCurrentLanguage } from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 
-const MapWrapper = () => {
+const MapWrapper = ({ searchParams, setSearchParams }: { searchParams: URLSearchParams, setSearchParams: SetURLSearchParams }) => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
   // If there is no filter active , visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
@@ -36,7 +36,6 @@ const MapWrapper = () => {
   const [mapCreated, setMapCreated] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
-  const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
 
   const popupCreatedCallback = (id: string) => {
     console.log("Popup created", id);

@@ -1,3 +1,4 @@
+import { type SetURLSearchParams } from "react-router";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import NavBar from "./navBar/navBar";
@@ -55,7 +56,7 @@ const StyledBox = styled(Box)(() => ({
   backgroundColor: "#fff",
 }));
 
-const Panel = () => {
+const Panel = ({ searchParams, setSearchParams }: { searchParams: URLSearchParams, setSearchParams: SetURLSearchParams }) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectPanelOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
@@ -112,7 +113,7 @@ const Panel = () => {
             >
               <NavBar onTabChange={handleTabChange} selectedTab={selectedTab} />
               {selectedTab === 0 && <DirectoryPanel />}
-              {selectedTab === 1 && <SearchPanel />}
+              {selectedTab === 1 && <SearchPanel searchParams={searchParams} setSearchParams={setSearchParams} />}
               {selectedTab === 2 && <AboutPanel />}
             </Box>
             {!(isOpen && resultsOpen) && (
@@ -140,7 +141,7 @@ const Panel = () => {
               <>
                 <CloseButton buttonAction={handlePanelClose} />
                 {selectedTab === 1 && <DirectoryPanel />}
-                {selectedTab === 2 && <SearchPanel />}
+                {selectedTab === 2 && <SearchPanel searchParams={searchParams} setSearchParams={setSearchParams} />}
                 {selectedTab === 3 && <AboutPanel />}
               </>
             )}
