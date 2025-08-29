@@ -12,8 +12,8 @@ const mockConfig: Config = {
     directory_panel_field: "country_id",
     map: {
       mapBounds: [
-        [-169, -49.3],
-        [189, 75.6],
+        [-139, -59.3],
+        [179, 74.6],
       ],
     },
     logo: {

@@ -46,21 +46,21 @@ describe<LocalTestContext>("panel reducer", (it) => {
     expect(selectPanelOpen(store.getState())).toBe(false);
   });
 
-  it("should handle openPanel", ({ store }) => {
+  it("should handle openPanel and closePanel", ({ store }) => {
     expect(selectPanelOpen(store.getState())).toBe(false);
 
     store.dispatch(openPanel());
-
     expect(selectPanelOpen(store.getState())).toBe(true);
-  });
 
-  it("should handle closePanel", ({ store }) => {
-    // First open the panel
+    // Should stay open
     store.dispatch(openPanel());
     expect(selectPanelOpen(store.getState())).toBe(true);
 
     store.dispatch(closePanel());
+    expect(selectPanelOpen(store.getState())).toBe(false);
 
+    // Should stay closed
+    store.dispatch(closePanel());
     expect(selectPanelOpen(store.getState())).toBe(false);
   });
 
@@ -76,21 +76,21 @@ describe<LocalTestContext>("panel reducer", (it) => {
     expect(selectResultsPanelOpen(store.getState())).toBe(false);
   });
 
-  it("should handle openResultsPanel", ({ store }) => {
+  it("should handle openResultsPanel and closeResultsPanel", ({ store }) => {
     expect(selectResultsPanelOpen(store.getState())).toBe(false);
 
     store.dispatch(openResultsPanel());
-
     expect(selectResultsPanelOpen(store.getState())).toBe(true);
-  });
 
-  it("should handle closeResultsPanel", ({ store }) => {
-    // First open the results panel
+    // Should stay open
     store.dispatch(openResultsPanel());
     expect(selectResultsPanelOpen(store.getState())).toBe(true);
 
     store.dispatch(closeResultsPanel());
+    expect(selectResultsPanelOpen(store.getState())).toBe(false);
 
+    // Should stay closed
+    store.dispatch(closeResultsPanel());
     expect(selectResultsPanelOpen(store.getState())).toBe(false);
   });
 

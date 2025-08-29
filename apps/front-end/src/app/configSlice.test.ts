@@ -67,21 +67,8 @@ describe<LocalTestContext>("config reducer", (it) => {
     expect(state.config.vocabs).toEqual(mockConfig.vocabs);
     expect(state.config.languages).toEqual(mockConfig.languages);
     expect(state.config.currentLanguage).toBe("en");
-    expect(state.config.map).toEqual({
-      mapBounds: [
-        [-169, -49.3],
-        [189, 75.6],
-      ],
-    });
+    expect(state.config.map).toEqual(mockConfig.ui.map);
     expect(state.config.logo).toEqual(mockConfig.ui.logo);
-  });
-
-  it("should handle fetchConfig pending", ({ store }) => {
-    expect(selectConfigStatus(store.getState())).toBe("idle");
-
-    // The fetchConfig action doesn't have a pending case, so we'll test the initial state
-    // and then test the fulfilled case
-    expect(selectConfigStatus(store.getState())).toBe("idle");
   });
 
   it("should handle fetchConfig rejected", ({ store }) => {
@@ -123,12 +110,7 @@ describe<LocalTestContext>("config reducer", (it) => {
     store.dispatch(configLoaded(mockConfig));
 
     const updatedMapConfig = selectMapConfig(store.getState());
-    expect(updatedMapConfig).toEqual({
-      mapBounds: [
-        [-169, -49.3],
-        [189, 75.6],
-      ],
-    });
+    expect(updatedMapConfig).toEqual(mockConfig.ui.map);
   });
 
   it("should handle config without map bounds", ({ store }) => {
