@@ -20,7 +20,6 @@ import {
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
 import { openResultsPanel } from "../panelSlice";
-import ApplyFilters from "../applyFilters/ApplyFilters";
 
 const SearchPanel = ({
   searchParams,
@@ -98,7 +97,7 @@ const SearchPanel = ({
   }, [searchParams]);
 
   useEffect(() => {
-    const filters = JSON.parse(searchParams.get("filters") || "");
+    const filters = JSON.parse(searchParams.get("filters") || "{}");
 
     if (filters) {
       setTimeout(() => {
