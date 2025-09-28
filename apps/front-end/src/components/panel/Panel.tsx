@@ -27,6 +27,7 @@ import {
   selectIsFilterActive,
 } from "../panel/searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const StyledPanel = styled(Drawer)(() => ({
   display: "flex",
@@ -56,7 +57,13 @@ const StyledBox = styled(Box)(() => ({
   backgroundColor: "#fff",
 }));
 
-const Panel = ({ searchParams, setSearchParams }: { searchParams: URLSearchParams, setSearchParams: SetURLSearchParams }) => {
+const Panel = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectPanelOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
@@ -98,6 +105,18 @@ const Panel = ({ searchParams, setSearchParams }: { searchParams: URLSearchParam
     dispatch(openResultsPanel());
   };
 
+  // open search panel if url contains filters or search text
+  useEffect(() => {
+    const filters = searchParams.get("filters");
+    const searchText = searchParams.get("searchText");
+
+    if (filters || searchText) {
+      console.log(filters, searchText);
+      dispatch(openPanel());
+      dispatch(setSelectedTab(1));
+    }
+  }, []);
+
   return (
     <>
       {/* Desktop view  */}
@@ -113,7 +132,12 @@ const Panel = ({ searchParams, setSearchParams }: { searchParams: URLSearchParam
             >
               <NavBar onTabChange={handleTabChange} selectedTab={selectedTab} />
               {selectedTab === 0 && <DirectoryPanel />}
-              {selectedTab === 1 && <SearchPanel searchParams={searchParams} setSearchParams={setSearchParams} />}
+              {selectedTab === 1 && (
+                <SearchPanel
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                />
+              )}
               {selectedTab === 2 && <AboutPanel />}
             </Box>
             {!(isOpen && resultsOpen) && (
@@ -141,7 +165,12 @@ const Panel = ({ searchParams, setSearchParams }: { searchParams: URLSearchParam
               <>
                 <CloseButton buttonAction={handlePanelClose} />
                 {selectedTab === 1 && <DirectoryPanel />}
-                {selectedTab === 2 && <SearchPanel searchParams={searchParams} setSearchParams={setSearchParams} />}
+                {selectedTab === 2 && (
+                  <SearchPanel
+                    searchParams={searchParams}
+                    setSearchParams={setSearchParams}
+                  />
+                )}
                 {selectedTab === 3 && <AboutPanel />}
               </>
             )}

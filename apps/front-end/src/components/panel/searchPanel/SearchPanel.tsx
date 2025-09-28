@@ -20,8 +20,15 @@ import {
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
 import { openResultsPanel } from "../panelSlice";
+import ApplyFilters from "../applyFilters/ApplyFilters";
 
-const SearchPanel = ({ searchParams, setSearchParams }: { searchParams: URLSearchParams, setSearchParams: SetURLSearchParams }) => {
+const SearchPanel = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const submittedText = useAppSelector(selectText);
@@ -43,7 +50,7 @@ const SearchPanel = ({ searchParams, setSearchParams }: { searchParams: URLSearc
     const filters = JSON.parse(searchParams.get("filters") || "{}");
     filters[id] = value;
     searchParams.set("filters", JSON.stringify(filters));
-  }
+  };
 
   const onFilterChange = async (
     e: SelectChangeEvent<string>,
@@ -71,6 +78,7 @@ const SearchPanel = ({ searchParams, setSearchParams }: { searchParams: URLSearc
     setCurrentText("");
     dispatch(setText(""));
     searchParams.delete("searchText");
+    searchParams.delete("filters");
     setSearchParams(searchParams);
     dispatch(performSearch());
   };
@@ -79,6 +87,28 @@ const SearchPanel = ({ searchParams, setSearchParams }: { searchParams: URLSearc
     // This is needed to keep search box in sync with the search text e.g. if the search is cleared
     setCurrentText(submittedText);
   }, [submittedText]);
+
+  useEffect(() => {
+    const searchText = searchParams.get("searchText");
+
+    if (searchText) {
+      dispatch(setText(searchText));
+      dispatch(performSearch());
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const filters = JSON.parse(searchParams.get("filters") || "");
+
+    if (filters) {
+      setTimeout(() => {
+        Object.keys(filters).forEach((filterId) => {
+          dispatch(setFilterValue({ id: filterId, value: filters[filterId] }));
+        });
+        dispatch(performSearch());
+      }, 500);
+    }
+  }, [searchParams]);
 
   return (
     <form
