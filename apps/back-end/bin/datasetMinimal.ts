@@ -6,7 +6,7 @@ const { GEOCODE_TOKEN } = process.env;
 const rawConfig = await fs.readFile(`./tmp/config.json`);
 const config = JSON.parse(rawConfig.toString());
 
-const rawCSV = await fs.readFile(`./tmp/powys-food-systems.csv`);
+const rawCSV = await fs.readFile(`./tmp/powys-eng.csv`);
 const input = rawCSV.toString();
 
 const rawAbout = await fs.readFile(`./tmp/about.md`);
@@ -58,7 +58,7 @@ for (let item of items) {
     name: item.Title_Eng,
     description: item["Text for popup"].replaceAll("\r", ""),
     address: item.Address.replaceAll("\r", ""),
-    website: [item.Link],
+    website: item.Link,
     primary_food_system_category,
     food_system_categories,
     locality,
@@ -71,18 +71,24 @@ for (let item of items) {
     phone: item["Phone number"],
   };
 
-  const cleanAddress = `${itemOutput.address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
+  if (item.Geocode) {
+    const [lat, lng] = item.Geocode.split(", ");
+    itemOutput.lat = parseFloat(lat);
+    itemOutput.lng = parseFloat(lng);
+  } else {
+    const cleanAddress = `${itemOutput.address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
 
-  const geocodeResponse = await fetch(
-    `https://api.mapbox.com/search/geocode/v6/forward?q=${cleanAddress}&access_token=${GEOCODE_TOKEN}&bbox=-5.4,51.35,-2.6,53.53`,
-  );
-  const geocodeResult = await geocodeResponse.json();
+    const geocodeResponse = await fetch(
+      `https://api.mapbox.com/search/geocode/v6/forward?q=${cleanAddress}&access_token=${GEOCODE_TOKEN}&bbox=-5.4,51.35,-2.6,53.53`,
+    );
+    const geocodeResult = await geocodeResponse.json();
 
-  const location = geocodeResult.features[0];
+    const location = geocodeResult.features[0];
 
-  itemOutput.lng = location.geometry.coordinates[0];
-  itemOutput.lat = location.geometry.coordinates[1];
-  itemOutput.geocoded_address = location.properties.full_address;
+    itemOutput.lng = location.geometry.coordinates[0];
+    itemOutput.lat = location.geometry.coordinates[1];
+    itemOutput.geocoded_address = location.properties.full_address;
+  }
 
   const markerIndex = Object.keys(foodCategories).findIndex(
     (category) => category === primary_food_system_category,
@@ -92,7 +98,7 @@ for (let item of items) {
   searchable.values.push([
     itemOutput.food_system_categories,
     itemOutput.locality,
-    itemOutput.address,
+    `${itemOutput.name} ${itemOutput.address}`.toLowerCase(),
   ]);
 
   await fs.writeFile(

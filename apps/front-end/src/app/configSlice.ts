@@ -22,6 +22,36 @@ export type ConfigLogo = {
   };
 };
 
+export type PopupItemConfigNoMultiple = {
+  itemProp: string;
+  valueStyle: "text" | "address" | "hyperlink";
+  showBullets: boolean;
+  singleColumnLimit?: number;
+  showLabel: boolean;
+  hyperlinkBaseUri: string;
+  displayText?: string;
+};
+
+export type ConfigPopupNoMultiple = {
+  titleProp: string;
+  leftPaneWidth: string;
+  leftPane: PopupItemConfigNoMultiple[];
+  topRightPane: PopupItemConfigNoMultiple[];
+  bottomRightPane: PopupItemConfigNoMultiple[];
+};
+
+export type PopupItemConfig = PopupItemConfigNoMultiple & {
+  multiple: boolean;
+};
+
+export type ConfigPopup = {
+  titleProp: string;
+  leftPaneWidth: string;
+  leftPane: PopupItemConfig[];
+  topRightPane: PopupItemConfig[];
+  bottomRightPane: PopupItemConfig[];
+};
+
 export interface ConfigSliceState {
   vocabs: Config["vocabs"];
   languages: string[];
@@ -29,6 +59,7 @@ export interface ConfigSliceState {
   map?: ConfigMap;
   logo?: ConfigLogo;
   status: "idle" | "loading" | "loaded" | "failed";
+  popup?: ConfigPopup;
 }
 
 const initialState: ConfigSliceState = {
@@ -47,7 +78,34 @@ const initialState: ConfigSliceState = {
     altText: undefined,
   },
   status: "idle",
+  popup: {
+    titleProp: "name",
+    leftPaneWidth: "70%",
+    leftPane: [],
+    topRightPane: [],
+    bottomRightPane: [],
+  },
 };
+
+function deriveMultiples(
+  popupConfigRaw: ConfigPopupNoMultiple,
+  itemProps: any,
+) {
+  const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
+  const processMulti = (itemConfig: PopupItemConfigNoMultiple) => ({
+    ...itemConfig,
+    multiple: itemProps[itemConfig.itemProp].type === "multi",
+  });
+  const popupConfig: ConfigPopup = {
+    titleProp: popupConfigRaw.titleProp,
+    leftPaneWidth: popupConfigRaw.leftPaneWidth,
+    leftPane: leftPane.map(processMulti),
+    topRightPane: topRightPane.map(processMulti),
+    bottomRightPane: bottomRightPane.map(processMulti),
+  };
+
+  return popupConfig;
+}
 
 export const configSlice = createAppSlice({
   name: "config",
@@ -99,6 +157,11 @@ export const configSlice = createAppSlice({
           if (action.payload.ui && action.payload.ui.logo) {
             state.logo = action.payload.ui.logo;
           }
+
+          state.popup = deriveMultiples(
+            action.payload.popup,
+            action.payload.itemProps,
+          );
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
@@ -112,6 +175,7 @@ export const configSlice = createAppSlice({
     }),
   }),
   selectors: {
+    selectPopupConfig: (state) => state.popup,
     selectCurrentLanguage: (state) => state.currentLanguage,
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
@@ -126,6 +190,7 @@ export const { fetchConfig, setLanguage } = configSlice.actions;
 export const {
   selectCurrentLanguage,
   selectLogo,
+  selectPopupConfig,
   selectMapConfig,
   selectConfigStatus,
 } = configSlice.selectors;

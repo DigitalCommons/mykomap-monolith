@@ -107,6 +107,17 @@ const PropSpec = z.discriminatedUnion("type", [
   MultiPropSpec,
 ]);
 const PropSpecs = z.record(z.string(), PropSpec);
+const PopupItem = z.object({
+  itemProp: z.string(),
+  valueStyle: z
+    .union([z.literal("text"), z.literal("address"), z.literal("hyperlink")])
+    .default("text"),
+  showBullets: z.boolean().default(false),
+  singleColumnLimit: z.number().optional(),
+  showLabel: z.boolean().default(false),
+  hyperlinkBaseUri: z.string().default(""),
+  displayText: z.string().optional()
+});
 
 const TotalsData = z.record(z.string(), z.number());
 const ConfigData = z.object({
@@ -142,6 +153,13 @@ const ConfigData = z.object({
       })
       .optional(),
   }),
+  popup: z.object({
+    titleProp: z.string(),
+    leftPaneWidth: z.string().default("70%"),
+    leftPane: z.array(PopupItem),
+    topRightPane: z.array(PopupItem),
+    bottomRightPane: z.array(PopupItem)
+  })
 });
 const BuildInfo = z.object({
   name: z.string(),

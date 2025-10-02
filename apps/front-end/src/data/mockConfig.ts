@@ -177,6 +177,13 @@ const mockConfig: Config = {
       },
     },
   },
+  popup: {
+    titleProp: "name",
+    leftPaneWidth: "70%",
+    leftPane: [],
+    topRightPane: [],
+    bottomRightPane: []
+  }
 };
 
 export default mockConfig;

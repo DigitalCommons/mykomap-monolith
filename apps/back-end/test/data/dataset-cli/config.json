@@ -2,8 +2,12 @@
   "prefixes": {
     "https://dev.lod.coop/essglobal/2.1/standard/activities-modified/": "am"
   },
-  "languages": ["en"],
-  "ui": { "directory_panel_field": "activity" },
+  "languages": [
+    "en"
+  ],
+  "ui": {
+    "directory_panel_field": "activity"
+  },
   "vocabs": {
     "am": {
       "en": {
@@ -36,7 +40,9 @@
       "strict": true
     },
     "name": {
-      "type": "value", "filter": true, "search": true,
+      "type": "value",
+      "filter": true,
+      "search": true,
       "from": "Name"
     },
     "manlat": {
@@ -61,7 +67,7 @@
       "type": "value",
       "as": "number",
       "nullable": true,
-      "from": "Geocoded Longitude"      
+      "from": "Geocoded Longitude"
     },
     "address": {
       "type": "value",
@@ -93,5 +99,12 @@
       "as": "boolean",
       "from": "Validated"
     }
+  },
+  "popup": {
+    "titleProp": "name",
+    "leftPaneWidth": "70%",
+    "leftPane": [],
+    "topRightPane": [],
+    "bottomRightPane": []
   }
 }

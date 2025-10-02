@@ -3,6 +3,7 @@
     "esbenp.prettier-vscode",
     "editorconfig.editorconfig",
     "yoavbls.pretty-ts-errors",
-    "deinsoftware.vitest-snippets"
+    "deinsoftware.vitest-snippets",
+    "hediet.vscode-drawio"
   ]
 }
