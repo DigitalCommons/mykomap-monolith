@@ -18,6 +18,9 @@ import markers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
+/** The level to which we zoom when jumping to a popup, on clicking a search result */
+const POPUP_INITIAL_ZOOM = 15;
+
 let popup: Popup | undefined;
 let popupIx: number | undefined;
 let tooltip: Popup | undefined;
@@ -30,7 +33,12 @@ let tooltip: Popup | undefined;
 const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
 
-function isLocationNear(location: [number, number], map: Map) {
+const isLocationNear = (location: [number, number], map: Map) => {
+  const currentZoom = map.getZoom();
+  if (currentZoom < POPUP_INITIAL_ZOOM) {
+    return false; // too far out to be considered "near", marker is likely to be clustered
+  }
+
   const { _sw, _ne } = map.getBounds();
   const lngMargin = (_ne.lng - _sw.lng) / 2;
   const latMargin = (_ne.lat - _sw.lat) / 2;
@@ -48,7 +56,7 @@ function isLocationNear(location: [number, number], map: Map) {
     nearBox.neLng >= location[0] &&
     nearBox.neLat >= location[1]
   );
-}
+};
 
 const getTooltip = (name: string): string =>
   `<div class="px-[0.75rem] py-2">${name}</div>`;
@@ -392,10 +400,12 @@ export const createMap = (
           getMapCentreLatOffsetted(location[1], map.getZoom()),
         ]);
       } else {
-        const maxZoom = 15;
         map.jumpTo({
-          center: [location[0], getMapCentreLatOffsetted(location[1], maxZoom)],
-          zoom: maxZoom,
+          center: [
+            location[0],
+            getMapCentreLatOffsetted(location[1], POPUP_INITIAL_ZOOM),
+          ],
+          zoom: POPUP_INITIAL_ZOOM,
         });
       }
 
