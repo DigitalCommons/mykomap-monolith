@@ -101,10 +101,11 @@ export class Dataset {
   };
 
   getItemById = (itemId: string) => {
+    console.log("itemid", itemId)
     // Use searchable if it has ids, otherwise loop through items
     if (this.searchablePropIndexMap.id) {
-      const itemIx = this.searchablePropValues.findIndex(item => item.includes(itemId));
-      if (itemIx) {
+      const itemIx = this.searchablePropValues.findIndex(item => item[this.searchablePropIndexMap.id] == itemId);
+      if (itemIx > -1) {
         const item = this.getItemByIx(itemIx);
         return { ...item, itemIx }
       }

@@ -41,6 +41,8 @@ export const popupSlice = createAppSlice({
           );
         }
 
+        console.log("helllo!!!", atob(`@${index}`))
+
         const response = await getDatasetItem({
           params: { datasetId, datasetItemIdOrIx: `@${index}` },
         });

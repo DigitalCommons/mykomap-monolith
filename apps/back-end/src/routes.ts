@@ -12,7 +12,7 @@ import {
   initDatasets,
   searchDataset,
 } from "./services/datasetService.js";
-import { HttpError } from "./errors.js";
+
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
@@ -90,20 +90,22 @@ export function MykomapRouter(
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
-      // datasetItemIdOrIx could be either an ID or an Index. But for the purposes here, just
-      // assume it is an Index.
-      // TODO: extend this method to handle full IDs too
-      if (datasetItemIdOrIx.startsWith("@")) {
-        const itemIx = Number(datasetItemIdOrIx.substring(1));
+      console.log("helllooo?", datasetItemIdOrIx)
+
+      const itemIdOrIx = btoa(datasetItemIdOrIx);
+      console.log(itemIdOrIx)
+
+      if (itemIdOrIx.startsWith("@")) {
+        const itemIx = Number(itemIdOrIx.substring(1));
         const item = getDatasetItemByIx(datasetId, itemIx);
 
         return { status: 200, body: { ...item, itemIx } };
       }
 
-      const itemId = datasetItemIdOrIx;
+      const itemId = itemIdOrIx;
       const item = getDatasetItemById(datasetId, itemId);
 
-      return { status: 200, body: { ...item } };
+      return { status: 200, body: item };
     },
 
     getTotals: async ({ params: { datasetId } }) => {

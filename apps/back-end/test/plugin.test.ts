@@ -288,7 +288,7 @@ describe("getDatasetItem", () => {
     test("status code 200 and non-empty response", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/item/test.cuk.R000001",
+        url: "/dataset/dataset-A/item/test%2Fcuk%2FR000001",
       });
       expect(res.statusCode).toBe(200);
       expect(res.json()).toBeTypeOf("object");
@@ -300,7 +300,7 @@ describe("getDatasetItem", () => {
     test("status code 404", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/item/bad.test.cuk.R000001",
+        url: "/dataset/dataset-A/item/bad%2Ftest%2Fcuk%2FR000001",
       });
       expect(res.statusCode).toBe(404);
     });
