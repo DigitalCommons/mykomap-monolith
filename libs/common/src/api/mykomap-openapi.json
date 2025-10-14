@@ -1018,10 +1018,6 @@
                               },
                               "displayText": {
                                 "type": "string"
-                              },
-                              "multiple": {
-                                "default": false,
-                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1063,10 +1059,6 @@
                               },
                               "displayText": {
                                 "type": "string"
-                              },
-                              "multiple": {
-                                "default": false,
-                                "type": "boolean"
                               }
                             },
                             "required": [
@@ -1108,10 +1100,6 @@
                               },
                               "displayText": {
                                 "type": "string"
-                              },
-                              "multiple": {
-                                "default": false,
-                                "type": "boolean"
                               }
                             },
                             "required": [
