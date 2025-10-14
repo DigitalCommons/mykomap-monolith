@@ -1,4 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { Buffer } from 'buffer';
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetItem } from "../../services";
 import { Config } from "../../services/types";
@@ -76,8 +77,9 @@ export const popupSlice = createAppSlice({
           state.status = "failed";
           // state.allLocations = [];
           console.error(
-            `Error fetching popup content for item @${action.meta.arg}`,
+            `Error fetching popup content for item ${action.meta.arg}`,
             action.payload,
+            state.data
           );
         },
       },

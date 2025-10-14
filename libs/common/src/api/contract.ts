@@ -27,7 +27,7 @@ function ZodRegex(rx: RegExp, message: string) {
 const Location = z.array(z.number()).min(2).max(2);
 const CustomMarkerId = z.number();
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
-const DatasetItem = z.object({}).passthrough();
+const DatasetItem = z.object({ itemIx: z.number() }).passthrough();
 const DatasetLocations = z.array(
   Location.nullable(),
   CustomMarkerId.nullable(),
