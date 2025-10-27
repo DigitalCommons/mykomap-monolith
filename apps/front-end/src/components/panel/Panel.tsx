@@ -63,6 +63,9 @@ const Panel = ({
 }: {
   searchParams: URLSearchParams;
   setSearchParams: SetURLSearchParams;
+  onTabChange?: any;
+  onLinkClick?: any;
+  onTogglePanel?: any;
 }) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectPanelOpen);
