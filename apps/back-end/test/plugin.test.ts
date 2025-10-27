@@ -263,13 +263,17 @@ const encodeBase64 = (data: string) => {
   return Buffer.from(data).toString('base64');
 }
 
+const encodeBase64 = (data: string) => {
+  return Buffer.from(data).toString('base64');
+}
+
 describe("getDatasetItem", () => {
   describe("dataset exists", () => {
     describe("item ix exists", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: `/dataset/dataset-A/item/${encodeBase64('@0')}`,
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}`,
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toBeTypeOf("object");
@@ -281,7 +285,7 @@ describe("getDatasetItem", () => {
       test("status code 404", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: `/dataset/dataset-A/item/${encodeBase64('@999')}`,
+          url: `/dataset/dataset-A/item/${encodeBase64("@999")}`,
         });
         expect(res.statusCode).toBe(404);
       });
