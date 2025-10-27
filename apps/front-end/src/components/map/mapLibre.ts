@@ -377,7 +377,7 @@ export const createMap = (
           .once("moveend", () => {
             openPopup(
               map,
-              itemId,
+              itemIx,
               coordinates as LngLatLike,
               popupCreatedCallback,
               popupClosedCallback,
