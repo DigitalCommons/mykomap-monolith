@@ -258,13 +258,12 @@ describe("searchDataset", () => {
     });
   });
 });
-
 const encodeBase64 = (data: string) => {
-  return Buffer.from(data).toString("base64");
-};
+  return Buffer.from(data).toString('base64');
+}
 
-describe("dataset exists", () => {
-  describe("item ix exists", () => {
+describe("getDatasetItem", () => {
+  describe("dataset exists", () => {
     describe("item ix exists", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
