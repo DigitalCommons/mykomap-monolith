@@ -53,6 +53,7 @@ if (container) {
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<App />} />
+              <Route path="/cwm" element={<App />} />
             </Routes>
           </BrowserRouter>
         </ThemeProvider>
