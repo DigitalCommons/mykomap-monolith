@@ -349,11 +349,11 @@ export const createMap = (
       if (e.features) {
         const feature = e.features[0] as GeoJSON.Feature<GeoJSON.Point>;
         const coordinates = feature.geometry.coordinates.slice();
-        const itemId = feature.properties ? `@${feature.properties.ix}` : "-1";
+        const itemIx = feature.properties ? `@${feature.properties.ix}` : "-1";
 
-        if (popup?.isOpen() && popupId === itemId) {
+        if (popup?.isOpen() && popupId === itemIx) {
           console.log(
-            `Popup for item @${itemId} already open so toggle closed`,
+            `Popup for item @${itemIx} already open so toggle closed`,
           );
           popup?.remove();
           popupId = undefined;
@@ -372,7 +372,7 @@ export const createMap = (
           .once("moveend", () => {
             openPopup(
               map,
-              itemId,
+              itemIx,
               coordinates as LngLatLike,
               popupCreatedCallback,
               popupClosedCallback,

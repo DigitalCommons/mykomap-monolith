@@ -18,7 +18,13 @@ import {
 import { selectCurrentLanguage } from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 
-const MapWrapper = ({ searchParams, setSearchParams }: { searchParams: URLSearchParams, setSearchParams: SetURLSearchParams }) => {
+const MapWrapper = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
   // If there is no filter active , visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
@@ -70,7 +76,7 @@ const MapWrapper = ({ searchParams, setSearchParams }: { searchParams: URLSearch
       popupCreatedCallback,
       popupClosedCallback,
       () => setMapCreated(true),
-      mapConfig
+      mapConfig,
     );
 
     map.current.on("sourcedata", (e) => {
@@ -80,7 +86,7 @@ const MapWrapper = ({ searchParams, setSearchParams }: { searchParams: URLSearch
         setSourceLoaded(true);
       }
     });
-    dispatch(fetchLocations())
+    dispatch(fetchLocations());
 
     // Clean up on unmount
     return () => {
@@ -131,8 +137,7 @@ const MapWrapper = ({ searchParams, setSearchParams }: { searchParams: URLSearch
     if (id && mapCreated) {
       dispatch(openPopup(id));
     }
-
-  }, [searchParams, mapCreated])
+  }, [mapCreated]);
 
   const updateMapData = async () => {
     if (isFilterActive) {
