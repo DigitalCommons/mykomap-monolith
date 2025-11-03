@@ -1,4 +1,15 @@
-# Architecture diagrams
+# Architecture
+
+## Key requirements
+
+Before diving in to the architecture, let's outline some key requirements & design decisions that led to this architecture.
+
+- We need to display hundreds of thousands of markers, and for these to load as quickly as possible with a slow connection
+- Searching and filtering the results must be fast
+
+For these reasons, serving all the data straight to a front-end is not viable. In order to reduce loading times and computational load on the clients, we need a back-end that has access to all the data and can perform searches on it, then serves the front-end clients with the minimum required data it needs to render the UI.
+
+> **_NOTE:_** In order to minimise the amount of data served to the front-end, we don't include dataset item IDs, only an array of their locations. Therefore the front-end generally refers to items by their array index. An item's index is persistent in the short term, e.g. within a single browser session, but can change when new data is loaded into the back-end. An item's ID is more stable, ideally permanent.
 
 ## System architecture
 
@@ -10,12 +21,17 @@
 
 ### Notes
 
-- We try to adhere to the Redux principle of having a [single source of truth](https://redux.js.org/understanding/thinking-in-redux/three-principles#single-source-of-truth).
+- We adhere to the Redux principle of having a [single source of truth](https://redux.js.org/understanding/thinking-in-redux/three-principles#single-source-of-truth). Breaking this principle is the biggest source of poor _spaghetti_ code and bugs. In practice, it means that before tracking any new state (i.e. any information/data served by the back-end or arising from a user action), pause and think:
+
+  - Is this actually new state, or can it be derived from state that we are already storing somewhere?
+  - If it is actually new state, where is the best place for it to live? This should be a single place. Usually it is the Redux store or, if it is contained within a single UI component and the rest of the app doesn't need to know about it, it can be internal React state within that component.
 
 - We create a plain MapLibreGL component and use its API directly, rather than using a binding such as `react-map-gl`. Although this
   would integrate more nicely with React and Redux hooks, it adds overhead and we can't guarantee that the binding library will always be
-  maintained. Instead, we simply pass marker data and MapLibre click events through a MapWrapper React component. It is possible to avoid using a wrapper and
-  subscribe to the Redux store without React, but this would be more complicated.
+  maintained. Instead, we simply pass marker data and MapLibre click events through a MapWrapper React component, as follows:
+  - MapWrapper holds a reference to a MapLibre object. It can interact with this object to directly set the
+    GeoJSON data that it renders. It sends custom events, including data, to the MapLibre object by calling `fire("eventName")` on the object.
+  - The `mapLibre.ts` file holds the code internal to the MapLibre object. It can react to events fired by MapWrapper with the `map.on("eventName", callback)` listener. And it can fire events back to MapWrapper by calling the callbacks that were passed into the `createMap` function.
 
 ## Back-end architecture
 
