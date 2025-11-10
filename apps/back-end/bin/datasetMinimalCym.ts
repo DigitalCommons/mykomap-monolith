@@ -3,24 +3,27 @@ import { parse } from "csv-parse/sync";
 
 const { GEOCODE_TOKEN } = process.env;
 
-const rawConfig = await fs.readFile(`./tmp/config.json`);
+const rawConfig = await fs.readFile(`./tmp/config.cym.json`);
 const config = JSON.parse(rawConfig.toString());
 
-const rawCSV = await fs.readFile(`./tmp/powys-cym-new.csv`);
+const rawCSV = await fs.readFile(`./tmp/2025.10.11.powys_food_systems.csv`);
 const input = rawCSV.toString();
 
-const rawAbout = await fs.readFile(`./tmp/about.md`);
+const rawAbout = await fs.readFile(`./tmp/about.cym.md`);
 const about = rawAbout.toString();
 
 const items = parse(input, {
   columns: true,
   skip_empty_lines: true,
 })
-  .filter((item) => item.ID)
-  .sort((a, b) => (a.Title_Cym < b.Title_Cym ? -1 : 1));
+  .filter((item: any) => item.ID)
+  .sort((a: any, b: any) => (a.Title_Cym < b.Title_Cym ? -1 : 1));
 
-await fs.mkdir("./tmp/out");
-await fs.mkdir("./tmp/out/datasets");
+// Uncomment if haven't run datasetMinimal before
+
+//await fs.mkdir("./tmp/out");
+//await fs.mkdir("./tmp/out/datasets");
+
 await fs.mkdir("./tmp/out/datasets/powys-cym");
 await fs.mkdir("./tmp/out/datasets/powys-cym/items");
 
@@ -52,10 +55,6 @@ for (let item of items) {
   const locality = Object.keys(localities).find(
     (key) => localities[key] === item.Town_Cym,
   );
-
-  console.log("primary_food_system_category", primary_food_system_category);
-  console.log("food_system_categories", food_system_categories);
-  console.log("locality", locality);
 
   const itemOutput = {
     id: item.ID,
