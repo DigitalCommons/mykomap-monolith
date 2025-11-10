@@ -36,24 +36,24 @@ const searchable: {
   values: [],
 };
 
-const foodCategories = config.vocabs.fsc.cy.terms;
-const localities = config.vocabs.loc.cy.terms;
+const foodCategories = config.vocabs.fsc.en.terms;
+const localities = config.vocabs.loc.en.terms;
 
 let i = 0;
 for (let item of items) {
   console.log("item ", i);
 
   const primary_food_system_category = Object.keys(foodCategories).find(
-    (key) => foodCategories[key] === item.Category_Cym,
+    (key) => foodCategories[key] === item.Category,
   );
   const food_system_categories = [
     primary_food_system_category,
     Object.keys(foodCategories).find(
-      (key) => foodCategories[key] === " - " + item.Subcategory_Cym,
+      (key) => foodCategories[key] === " - " + item.Subcategory,
     ),
   ];
   const locality = Object.keys(localities).find(
-    (key) => localities[key] === item.Town_Cym,
+    (key) => localities[key] === item.Town,
   );
 
   const itemOutput = {
