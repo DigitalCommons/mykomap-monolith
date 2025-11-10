@@ -3,13 +3,13 @@ import { parse } from "csv-parse/sync";
 
 const { GEOCODE_TOKEN } = process.env;
 
-const rawConfig = await fs.readFile(`./tmp/config.en.json`);
+const rawConfig = await fs.readFile(`./tmp/config.cym.json`);
 const config = JSON.parse(rawConfig.toString());
 
 const rawCSV = await fs.readFile(`./tmp/2025.10.11.powys_food_systems.csv`);
 const input = rawCSV.toString();
 
-const rawAbout = await fs.readFile(`./tmp/about.en.md`);
+const rawAbout = await fs.readFile(`./tmp/about.cym.md`);
 const about = rawAbout.toString();
 
 const items = parse(input, {
@@ -17,12 +17,15 @@ const items = parse(input, {
   skip_empty_lines: true,
 })
   .filter((item: any) => item.ID)
-  .sort((a: any, b: any) => (a.Title_Eng < b.Title_Eng ? -1 : 1));
+  .sort((a: any, b: any) => (a.Title_Cym < b.Title_Cym ? -1 : 1));
 
-await fs.mkdir("./tmp/out");
-await fs.mkdir("./tmp/out/datasets");
-await fs.mkdir("./tmp/out/datasets/powys-eng");
-await fs.mkdir("./tmp/out/datasets/powys-eng/items");
+// Uncomment if haven't run datasetMinimal before
+
+//await fs.mkdir("./tmp/out");
+//await fs.mkdir("./tmp/out/datasets");
+
+await fs.mkdir("./tmp/out/datasets/powys-cym");
+await fs.mkdir("./tmp/out/datasets/powys-cym/items");
 
 const locations: [number, number, number][] = [];
 const searchable: {
@@ -33,30 +36,30 @@ const searchable: {
   values: [],
 };
 
-const foodCategories = config.vocabs.fsc.en.terms;
-const localities = config.vocabs.loc.en.terms;
+const foodCategories = config.vocabs.fsc.cy.terms;
+const localities = config.vocabs.loc.cy.terms;
 
 let i = 0;
 for (let item of items) {
   console.log("item ", i);
 
   const primary_food_system_category = Object.keys(foodCategories).find(
-    (key) => foodCategories[key] === item.Category,
+    (key) => foodCategories[key] === item.Category_Cym,
   );
   const food_system_categories = [
     primary_food_system_category,
     Object.keys(foodCategories).find(
-      (key) => foodCategories[key] === " - " + item.Subcategory,
+      (key) => foodCategories[key] === " - " + item.Subcategory_Cym,
     ),
   ];
   const locality = Object.keys(localities).find(
-    (key) => localities[key] === item.Town,
+    (key) => localities[key] === item.Town_Cym,
   );
 
   const itemOutput = {
     id: item.ID,
-    name: item.Title_Eng,
-    description: item["Text for popup"].replaceAll("\r", ""),
+    name: item.Title_Cym || item.Title_Eng,
+    description: item["Text for popup_Cym"].replaceAll("\r", "") || item["Text for popup"].replaceAll("\r", ""),
     address: item.Address.replaceAll("\r", ""),
     website: item.Link,
     primary_food_system_category,
@@ -102,7 +105,7 @@ for (let item of items) {
   ]);
 
   await fs.writeFile(
-    `./tmp/out/datasets/powys-eng/items/${i}.json`,
+    `./tmp/out/datasets/powys-cym/items/${i}.json`,
     JSON.stringify(itemOutput),
   );
 
@@ -110,18 +113,18 @@ for (let item of items) {
 }
 
 await fs.writeFile(
-  "./tmp/out/datasets/powys-eng/locations.json",
+  "./tmp/out/datasets/powys-cym/locations.json",
   JSON.stringify(locations),
 );
 await fs.writeFile(
-  "./tmp/out/datasets/powys-eng/searchable.json",
+  "./tmp/out/datasets/powys-cym/searchable.json",
   JSON.stringify(searchable),
 );
 await fs.writeFile(
-  "./tmp/out/datasets/powys-eng/config.json",
+  "./tmp/out/datasets/powys-cym/config.json",
   JSON.stringify(config),
 );
 await fs.writeFile(
-  "./tmp/out/datasets/powys-eng/about.md",
+  "./tmp/out/datasets/powys-cym/about.md",
   JSON.stringify(about),
 );
