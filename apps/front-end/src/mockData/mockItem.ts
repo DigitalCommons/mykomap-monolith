@@ -36,6 +36,7 @@ const mockItem = {
   geocontainer_lon: -0.92472819,
   address: "123 Western Road, Brighton, East Sussex, BN1 2AB, United Kingdom",
   data_sources: ["ICA", "DC"],
+  itemIx: 0
 };
 
 export default mockItem;

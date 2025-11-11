@@ -42,10 +42,12 @@ export const popupSlice = createAppSlice({
           );
         }
 
-        console.log("helllo!!!", atob(`@${index}`))
+        const encodeBase64 = (data: string) => {
+          return Buffer.from(data).toString("base64");
+        };
 
         const response = await getDatasetItem({
-          params: { datasetId, datasetItemIdOrIx: idOrIndex },
+          params: { datasetId, datasetItemIdOrIx: encodeBase64(idOrIndex) },
         });
 
         if (response.status === 200) {
@@ -65,8 +67,9 @@ export const popupSlice = createAppSlice({
           state.status = "loading";
         },
         fulfilled: (state, action) => {
+          console.log("fullfilled", action);
           state.status = "loaded";
-          state.index = action.payload.itemIx;
+          state.index = action.payload.itemIx || 0;
           state.id = action.payload.id;
           state.isOpen = true;
           const { index, ...data } = action.payload;
@@ -92,12 +95,13 @@ export const popupSlice = createAppSlice({
   selectors: {
     selectPopupIsOpen: (popup) => popup.isOpen,
     selectPopupIndex: (popup) => popup.index,
-    selectPopupId: (popup) => popup.id
+    selectPopupId: (popup) => popup.id,
   },
 });
 
 export const { openPopup, closePopup } = popupSlice.actions;
-export const { selectPopupIsOpen, selectPopupIndex, selectPopupId } = popupSlice.selectors;
+export const { selectPopupIsOpen, selectPopupIndex, selectPopupId } =
+  popupSlice.selectors;
 
 export const selectPopupData = createSelector(
   [
