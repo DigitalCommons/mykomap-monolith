@@ -90,10 +90,7 @@ export function MykomapRouter(
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
-      console.log("helllooo?", datasetItemIdOrIx)
-
       const itemIdOrIx = btoa(datasetItemIdOrIx);
-      console.log(itemIdOrIx)
 
       if (itemIdOrIx.startsWith("@")) {
         const itemIx = Number(itemIdOrIx.substring(1));
