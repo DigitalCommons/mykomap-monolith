@@ -1,6 +1,7 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
-import { Config, getDatasetItem } from "../../services";
+import { getDatasetItem } from "../../services";
+import { Config } from "../../services/types";
 import { getDatasetId } from "../../utils/window-utils";
 import { InnerPropSpec, PropSpecs } from "@mykomap/common";
 import { configLoaded } from "../../app/configSlice";

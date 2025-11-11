@@ -14,6 +14,7 @@
     "clean": "rimraf node_modules dist node-dist",
     "dataset": "vite-node bin/dataset.ts",
     "dataset-minimal": "vite-node bin/datasetMinimal.ts",
+    "dataset-minimal-cym": "vite-node bin/datasetMinimalCym.ts",
     "prebuild": "npm -w ../../libs/common -w ../../libs/node-utils run build",
     "build": "vite build --ssr src/index.ts --outDir dist",
     "start": "node ./start.js",

@@ -1,140 +1,143 @@
-import { configLoaded } from "../../../app/configSlice";
+import type { AppStore } from "../../../app/store";
+import { makeStore } from "../../../app/store";
+import { configLoaded, setLanguage } from "../../../app/configSlice";
 import {
-  searchSlice,
   selectFilterOptions,
   setFilterValue,
+  setText,
+  clearSearch,
+  updateVisibleIndexes,
+  selectText,
+  selectVisibleIndexes,
+  selectIsFilterActive,
 } from "./searchSlice";
-import mockConfig from "../../../data/mockConfig";
+import mockConfig from "../../../mockData/mockConfig";
 
-const reducer = searchSlice.reducer;
+interface LocalTestContext {
+  store: AppStore;
+}
 
-describe("config load", () => {
-  test("should populate filterableVocabProps", () => {
-    expect(
-      reducer(
-        {
-          text: "",
-          visibleIndexes: [],
-          searchingStatus: "idle",
-          filterableVocabProps: [],
-          searchQuery: {},
-        },
-        configLoaded(mockConfig),
-      ),
-    ).toEqual({
-      text: "",
-      visibleIndexes: [],
-      searchingStatus: "idle",
-      filterableVocabProps: [
-        {
-          id: "country_id",
-          titleUri: undefined,
-          value: "any",
-          vocabUri: "coun",
-        },
-        {
-          id: "primary_activity",
-          titleUri: "ui:primary_activity",
-          value: "any",
-          vocabUri: "aci",
-        },
-        {
-          id: "typology",
-          titleUri: "ui:typology",
-          value: "any",
-          vocabUri: "bmt",
-        },
-        {
-          id: "data_sources",
-          titleUri: undefined,
-          value: "any",
-          vocabUri: "dso",
-        },
-      ],
-      searchQuery: {},
-    });
+describe<LocalTestContext>("search reducer", (it) => {
+  beforeEach<LocalTestContext>((context) => {
+    const store = makeStore();
+    context.store = store;
+  });
+
+  it("should populate filterableVocabProps on config load", ({ store }) => {
+    store.dispatch(configLoaded(mockConfig));
+
+    const state = store.getState();
+    expect(state.search.filterableVocabProps).toEqual([
+      {
+        id: "country_id",
+        titleUri: undefined,
+        value: "any",
+        vocabUri: "coun",
+        sorted: undefined,
+      },
+      {
+        id: "primary_activity",
+        titleUri: "ui:primary_activity",
+        value: "any",
+        vocabUri: "aci",
+        sorted: undefined,
+      },
+      {
+        id: "typology",
+        titleUri: "ui:typology",
+        value: "any",
+        vocabUri: "bmt",
+        sorted: undefined,
+      },
+      {
+        id: "data_sources",
+        titleUri: undefined,
+        value: "any",
+        vocabUri: "dso",
+        sorted: false,
+      },
+    ]);
+  });
+
+  it("should handle setText", ({ store }) => {
+    expect(selectText(store.getState())).toBe("");
+
+    store.dispatch(setText("test search"));
+
+    expect(selectText(store.getState())).toBe("test search");
+  });
+
+  it("should handle setFilterValue", ({ store }) => {
+    store.dispatch(configLoaded(mockConfig));
+
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("any");
+
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("FR");
+  });
+
+  it("should handle updateVisibleIndexes", ({ store }) => {
+    expect(selectVisibleIndexes(store.getState())).toEqual([]);
+
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { text: "test" },
+        visibleIndexes: [1, 2, 3],
+      }),
+    );
+
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2, 3]);
+    expect(store.getState().search.searchQuery).toEqual({ text: "test" });
+  });
+
+  it("should handle clearSearch", ({ store }) => {
+    store.dispatch(configLoaded(mockConfig));
+    store.dispatch(setText("test"));
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { text: "test" },
+        visibleIndexes: [1, 2, 3],
+      }),
+    );
+
+    expect(selectText(store.getState())).toBe("test");
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2, 3]);
+
+    store.dispatch(clearSearch());
+
+    expect(selectText(store.getState())).toBe("");
+    expect(selectVisibleIndexes(store.getState())).toEqual([]);
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("any");
+  });
+
+  it("should selectIsFilterActive correctly", ({ store }) => {
+    expect(selectIsFilterActive(store.getState())).toBe(false);
+
+    store.dispatch(setText("test"));
+    expect(selectIsFilterActive(store.getState())).toBe(true);
+
+    store.dispatch(setText(""));
+    store.dispatch(configLoaded(mockConfig));
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+    expect(selectIsFilterActive(store.getState())).toBe(true);
   });
 });
 
-describe("selectFilterOptions", () => {
-  const state = {
-    search: {
-      text: "",
-      visibleIndexes: [],
-      searchingStatus: "idle",
-      filterableVocabProps: [
-        {
-          id: "country_id",
-          titleUri: undefined,
-          value: "any",
-          vocabUri: "coun",
-        },
-        {
-          id: "primary_activity",
-          titleUri: "ui:primary_activity",
-          value: "any",
-          vocabUri: "aci",
-        },
-      ],
-    },
-    config: {
-      currentLanguage: "en",
-      languages: ["en", "fr"],
-      vocabs: {
-        aci: {
-          en: {
-            title: "Economic Activity",
-            terms: {
-              ICA210: "Housing",
-              ICA220: "Transport",
-              ICA230: "Utilities",
-            },
-          },
-          fr: {
-            title: "Secteur économique",
-            terms: {
-              ICA210: "Logement",
-              ICA220: "Transports",
-              ICA230: "Services publics",
-            },
-          },
-        },
-        coun: {
-          en: {
-            title: "Country",
-            terms: {
-              GB: "United Kingdom",
-              FR: "France",
-            },
-          },
-          fr: {
-            title: "Pays",
-            terms: {
-              GB: "Royaume-Uni",
-              FR: "France",
-            },
-          },
-        },
-        ui: {
-          en: {
-            title: "Translations",
-            terms: {
-              primary_activity: "Primary Activity",
-            },
-          },
-          fr: {
-            title: "Traductions",
-            terms: {
-              primary_activity: "Activité principale",
-            },
-          },
-        },
-      },
-    },
-  };
+describe<LocalTestContext>("selectFilterOptions", (it) => {
+  beforeEach<LocalTestContext>((context) => {
+    const store = makeStore();
+    context.store = store;
+    store.dispatch(configLoaded(mockConfig));
+  });
 
-  test("English language", () => {
-    expect(selectFilterOptions(state)).toEqual([
+  it("should return filter options in English with correct sorting", ({
+    store,
+  }) => {
+    store.dispatch(setLanguage("en"));
+
+    expect(selectFilterOptions(store.getState())).toEqual([
       {
         id: "country_id",
         title: "Country",
@@ -156,16 +159,50 @@ describe("selectFilterOptions", () => {
         ],
         value: "any",
       },
+      {
+        id: "typology",
+        title: "Typology",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "BMT10", label: "Consumer/Users" },
+          { value: "BMT20", label: "Producers" },
+          { value: "BMT30", label: "Workers" },
+        ],
+        value: "any",
+      },
+      {
+        id: "data_sources",
+        options: [
+          { label: "- any -", value: "any" },
+          {
+            label: "Co-operatives UK",
+            value: "CUK",
+          },
+          {
+            label: "DotCoop",
+            value: "DC",
+          },
+          {
+            label: "International Cooperative Alliance",
+            value: "ICA",
+          },
+          {
+            label: "National Cooperative Business Association (USA)",
+            value: "NCBA",
+          },
+        ],
+        title: "Data Source",
+        value: "any",
+      },
     ]);
   });
 
-  test("French language", () => {
-    expect(
-      selectFilterOptions({
-        ...state,
-        config: { ...state.config, currentLanguage: "fr" },
-      }),
-    ).toEqual([
+  it("should return filter options in French with correct sorting", ({
+    store,
+  }) => {
+    store.dispatch(setLanguage("fr"));
+
+    expect(selectFilterOptions(store.getState())).toEqual([
       {
         id: "country_id",
         title: "Pays",
@@ -187,323 +224,39 @@ describe("selectFilterOptions", () => {
         ],
         value: "any",
       },
-    ]);
-  });
-});
-
-describe("setFilterValue", () => {
-  test("set a filter that was unset", () => {
-    expect(
-      reducer(
-        {
-          text: "",
-          visibleIndexes: [],
-          searchingStatus: "idle",
-          filterableVocabProps: [
-            {
-              id: "country_id",
-              titleUri: undefined,
-              value: "any",
-              vocabUri: "coun",
-            },
-            {
-              id: "primary_activity",
-              titleUri: "ui:primary_activity",
-              value: "any",
-              vocabUri: "aci",
-            },
-          ],
-          searchQuery: {},
-        },
-        setFilterValue({ id: "country_id", value: "fr" }),
-      ),
-    ).toEqual({
-      text: "",
-      visibleIndexes: [],
-      searchingStatus: "idle",
-      filterableVocabProps: [
-        {
-          id: "country_id",
-          titleUri: undefined,
-          value: "fr",
-          vocabUri: "coun",
-        },
-        {
-          id: "primary_activity",
-          titleUri: "ui:primary_activity",
-          value: "any",
-          vocabUri: "aci",
-        },
-      ],
-      searchQuery: {},
-    });
-  });
-
-  test("change a filter that was already set", () => {
-    expect(
-      reducer(
-        {
-          text: "",
-          visibleIndexes: [],
-          searchingStatus: "idle",
-          filterableVocabProps: [
-            {
-              id: "country_id",
-              titleUri: undefined,
-              value: "fr",
-              vocabUri: "coun",
-            },
-            {
-              id: "primary_activity",
-              titleUri: "ui:primary_activity",
-              value: "any",
-              vocabUri: "aci",
-            },
-          ],
-          searchQuery: {},
-        },
-        setFilterValue({ id: "country_id", value: "gb" }),
-      ),
-    ).toEqual({
-      text: "",
-      visibleIndexes: [],
-      searchingStatus: "idle",
-      filterableVocabProps: [
-        {
-          id: "country_id",
-          titleUri: undefined,
-          value: "gb",
-          vocabUri: "coun",
-        },
-        {
-          id: "primary_activity",
-          titleUri: "ui:primary_activity",
-          value: "any",
-          vocabUri: "aci",
-        },
-      ],
-      searchQuery: {},
-    });
-  });
-});
-
-// Test sorting of filter options
-describe("sort filter options", () => {
-  // Mock configuration for testing - non alphabetical order
-  const baseConfig = {
-    currentLanguage: "en",
-    vocabs: {
-      aci: {
-        en: {
-          title: "Economic Activity",
-          terms: {
-            ICA220: "Transport",
-            ICA210: "Housing",
-            ICA230: "Utilities",
+      {
+        id: "typology",
+        title: "Typologie",
+        options: [
+          { value: "any", label: "- any -" },
+          { value: "BMT10", label: "Consommateurs/usagers" },
+          { value: "BMT20", label: "Producteurs" },
+          { value: "BMT30", label: "Travailleurs" },
+        ],
+        value: "any",
+      },
+      {
+        id: "data_sources",
+        options: [
+          { label: "- any -", value: "any" },
+          {
+            label: "Co-operatives UK",
+            value: "CUK",
           },
-        },
-      },
-      coun: {
-        en: {
-          title: "Country",
-          terms: {
-            GB: "United Kingdom",
-            FR: "France",
+          {
+            label: "DotCoop",
+            value: "DC",
           },
-        },
-      },
-      ui: {
-        en: {
-          title: "Translations",
-          terms: {
-            primary_activity: "Primary Activity",
-            typology: "Typology",
-            country_id: "Country",
+          {
+            label: "Alliance coopérative internationale",
+            value: "ICA",
           },
-        },
-      },
-    },
-  };
-
-  const getBaseState = (filterableVocabProps: any[]) => ({
-    search: {
-      text: "",
-      visibleIndexes: [],
-      searchingStatus: "idle",
-      filterableVocabProps,
-    },
-    config: structuredClone(baseConfig),
-  });
-
-  // Test default sorting (no sort specified)
-  test("sort options ascending order by default", () => {
-    const state = getBaseState([
-      {
-        id: "primary_activity",
-        titleUri: "ui:primary_activity",
-        value: "any",
-        vocabUri: "aci",
-      },
-      {
-        id: "country_id",
-        titleUri: "ui:country_id",
-        value: "any",
-        vocabUri: "coun",
-      },
-    ]);
-
-    expect(selectFilterOptions(state)).toEqual([
-      {
-        id: "primary_activity",
-        title: "Primary Activity",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "ICA210", label: "Housing" },
-          { value: "ICA220", label: "Transport" },
-          { value: "ICA230", label: "Utilities" },
+          {
+            label: "National Cooperative Business Association (USA)",
+            value: "NCBA",
+          },
         ],
-        value: "any",
-      },
-      {
-        id: "country_id",
-        title: "Country",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "FR", label: "France" },
-          { value: "GB", label: "United Kingdom" },
-        ],
-        value: "any",
-      },
-    ]);
-  });
-
-  // Test ascending sort
-  test("sort options ascending order", () => {
-    const state = getBaseState([
-      {
-        id: "primary_activity",
-        titleUri: "ui:primary_activity",
-        value: "any",
-        vocabUri: "aci",
-        sorted: "asc",
-      },
-      {
-        id: "country_id",
-        titleUri: "ui:country_id",
-        value: "any",
-        vocabUri: "coun",
-        sorted: "asc",
-      },
-    ]);
-
-    expect(selectFilterOptions(state)).toEqual([
-      {
-        id: "primary_activity",
-        title: "Primary Activity",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "ICA210", label: "Housing" },
-          { value: "ICA220", label: "Transport" },
-          { value: "ICA230", label: "Utilities" },
-        ],
-        value: "any",
-      },
-      {
-        id: "country_id",
-        title: "Country",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "FR", label: "France" },
-          { value: "GB", label: "United Kingdom" },
-        ],
-        value: "any",
-      },
-    ]);
-  });
-
-  // Test descending sort
-  test("sort options descending order", () => {
-    const state = getBaseState([
-      {
-        id: "primary_activity",
-        titleUri: "ui:primary_activity",
-        value: "any",
-        vocabUri: "aci",
-        sorted: "desc",
-      },
-      {
-        id: "country_id",
-        titleUri: "ui:country_id",
-        value: "any",
-        vocabUri: "coun",
-        sorted: "desc",
-      },
-    ]);
-
-    expect(selectFilterOptions(state)).toEqual([
-      {
-        id: "primary_activity",
-        title: "Primary Activity",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "ICA230", label: "Utilities" },
-          { value: "ICA220", label: "Transport" },
-          { value: "ICA210", label: "Housing" },
-        ],
-        value: "any",
-      },
-      {
-        id: "country_id",
-        title: "Country",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "GB", label: "United Kingdom" },
-          { value: "FR", label: "France" },
-        ],
-        value: "any",
-      },
-    ]);
-  });
-
-  // Test sort options set to false
-  test("sort options set to false", () => {
-    const state = getBaseState([
-      {
-        id: "primary_activity",
-        titleUri: "ui:primary_activity",
-        value: "any",
-        vocabUri: "aci",
-        sorted: false,
-      },
-      {
-        id: "country_id",
-        titleUri: "ui:country_id",
-        value: "any",
-        vocabUri: "coun",
-        sorted: false,
-      },
-    ]);
-
-    expect(selectFilterOptions(state)).toEqual([
-      {
-        id: "primary_activity",
-        title: "Primary Activity",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "ICA220", label: "Transport" },
-          { value: "ICA210", label: "Housing" },
-          { value: "ICA230", label: "Utilities" },
-        ],
-        value: "any",
-      },
-      {
-        id: "country_id",
-        title: "Country",
-        options: [
-          { value: "any", label: "- any -" },
-          { value: "GB", label: "United Kingdom" },
-          { value: "FR", label: "France" },
-        ],
+        title: "Source de données",
         value: "any",
       },
     ]);

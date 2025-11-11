@@ -1,6 +1,6 @@
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
-import type { Config } from "../../../services";
+import type { Config } from "../../../services/types";
 import { searchDataset } from "../../../services";
 import { configLoaded } from "../../../app/configSlice";
 import { getDatasetId } from "../../../utils/window-utils";
@@ -123,7 +123,6 @@ export const searchSlice = createAppSlice({
   },
 });
 
-// TODO: add this to ui vocabs so it is translatable
 const PROP_VALUE_ANY = "any";
 
 export const {
