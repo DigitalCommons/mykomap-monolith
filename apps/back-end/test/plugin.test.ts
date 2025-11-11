@@ -259,13 +259,17 @@ describe("searchDataset", () => {
   });
 });
 
+const encodeBase64 = (data: string) => {
+  return Buffer.from(data).toString('base64');
+}
+
 describe("getDatasetItem", () => {
   describe("dataset exists", () => {
     describe("item ix exists", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: "/dataset/dataset-A/item/@0",
+          url: `/dataset/dataset-A/item/${encodeBase64('@0')}`,
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toBeTypeOf("object");
@@ -277,7 +281,7 @@ describe("getDatasetItem", () => {
       test("status code 404", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: "/dataset/dataset-A/item/@999",
+          url: `/dataset/dataset-A/item/${encodeBase64('@999')}`,
         });
         expect(res.statusCode).toBe(404);
       });
@@ -288,7 +292,7 @@ describe("getDatasetItem", () => {
     test("status code 200 and non-empty response", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/item/test%2Fcuk%2FR000001",
+        url: `/dataset/dataset-A/item/${encodeBase64('test/cuk/R000001')}`,
       });
       expect(res.statusCode).toBe(200);
       expect(res.json()).toBeTypeOf("object");
@@ -300,7 +304,7 @@ describe("getDatasetItem", () => {
     test("status code 404", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/item/bad%2Ftest%2Fcuk%2FR000001",
+        url: `/dataset/dataset-A/item/${encodeBase64("bad/test/cuk/R000001")}`,
       });
       expect(res.statusCode).toBe(404);
     });
@@ -311,7 +315,7 @@ describe("dataset does not exist", () => {
   test("status code 404", async (t) => {
     const res = await fastify.inject({
       method: "GET",
-      url: "/dataset/dataset-in-your-imagination/item/@0",
+      url: `/dataset/dataset-in-your-imagination/item//${encodeBase64("@0")}`,
     });
     expect(res.statusCode).toBe(404);
   });
