@@ -78,13 +78,13 @@ export class Dataset {
     } else {
       throw new Error(
         `searchable.json for dataset ${this.id} has a bad format ` +
-          `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
-          `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
+        `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
+        `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
       );
     }
   }
 
-  getItem = (itemIx: number) => {
+  getItemByIx = (itemIx: number) => {
     if (!fs.existsSync(path.join(this.folderPath, "items", `${itemIx}.json`))) {
       throw new HttpError(
         404,
@@ -98,6 +98,31 @@ export class Dataset {
         "utf8",
       ),
     );
+  };
+
+  getItemById = (itemId: string) => {
+    console.log("itemid", itemId)
+    // Use searchable if it has ids, otherwise loop through items
+    if (this.searchablePropIndexMap.id) {
+      const itemIx = this.searchablePropValues.findIndex(item => item[this.searchablePropIndexMap.id] == itemId);
+      if (itemIx > -1) {
+        const item = this.getItemByIx(itemIx);
+        return { ...item, itemIx }
+      }
+    }
+    else {
+      for (let itemIx = 0; itemIx < this.searchablePropValues.length; itemIx++) {
+        const item = this.getItemByIx(itemIx);
+        if (item.id === itemId) {
+          return { ...item, itemIx };
+        }
+      }
+    }
+
+    throw new HttpError(
+      404,
+      `Can't retrieve data for dataset ${this.id}, item id ${itemId}`,
+    )
   };
 
   getConfig = () => this.config;
@@ -230,7 +255,7 @@ export class Dataset {
 
     return visibleIndexes.slice(startIx, endIx).map((itemIx) => {
       if (returnProps) {
-        const item = this.getItem(itemIx);
+        const item = this.getItemByIx(itemIx);
         // Return only the requested properties
         const strippedItem: { [prop: string]: unknown } = {};
 

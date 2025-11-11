@@ -136,7 +136,6 @@ export const configSlice = createAppSlice({
       },
       {
         fulfilled: (state, action) => {
-          // We handle the data in the extraReducers, so that configLoaded can be used in UTs
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
