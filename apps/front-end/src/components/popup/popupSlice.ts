@@ -42,8 +42,12 @@ export const popupSlice = createAppSlice({
           );
         }
 
+        const encodeBase64 = (data: string) => {
+          return Buffer.from(data).toString('base64');
+        }
+
         const response = await getDatasetItem({
-          params: { datasetId, datasetItemIdOrIx: idOrIndex },
+          params: { datasetId, datasetItemIdOrIx: encodeBase64(idOrIndex) },
         });
 
         if (response.status === 200) {
@@ -60,8 +64,9 @@ export const popupSlice = createAppSlice({
           state.status = "loading";
         },
         fulfilled: (state, action) => {
+          console.log("fullfilled", action)
           state.status = "loaded";
-          state.index = action.payload.itemIx;
+          state.index = action.payload.itemIx || 0;
           state.id = action.payload.id;
           state.isOpen = true;
 
