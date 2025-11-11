@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSearchParams } from "react-router";
 import MapWrapper from "./components/map/MapWrapper";
 import Panel from "./components/panel/Panel";
 import { fetchConfig, setLanguage } from "./app/configSlice";
@@ -9,6 +10,7 @@ import Logo from "./components/common/Logo/Logo";
 
 const App = () => {
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
 
   /** Startup tasks */
   useEffect(() => {
@@ -33,9 +35,9 @@ const App = () => {
 
   return (
     <div>
-      <MapWrapper />
+      <MapWrapper searchParams={searchParams} setSearchParams={setSearchParams} />
       <Logo />
-      <Panel />
+      <Panel searchParams={searchParams} setSearchParams={setSearchParams} />
       <Popup />
     </div>
   );

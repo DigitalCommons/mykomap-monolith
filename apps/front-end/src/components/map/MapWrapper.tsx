@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { type SetURLSearchParams } from "react-router";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -11,12 +12,19 @@ import {
   closePopup,
   openPopup,
   selectPopupIndex,
+  selectPopupId,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 
-const MapWrapper = () => {
+const MapWrapper = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
   // If there is no filter active , visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
@@ -25,22 +33,28 @@ const MapWrapper = () => {
   );
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const popupId = useAppSelector(selectPopupId);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
+  const [mapCreated, setMapCreated] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
 
-  const popupCreatedCallback = (itemIx: number) => {
-    console.log("Popup created");
-    dispatch(openPopup(itemIx));
+  const popupCreatedCallback = (id: string) => {
+    console.log("Popup created", id);
+    dispatch(openPopup(id));
+    searchParams.set("popupId", id);
+    setSearchParams(searchParams);
   };
 
   const popupClosedCallback = () => {
     console.log("Popup closed");
     dispatch(closePopup());
+    searchParams.delete("popupId");
+    setSearchParams(searchParams);
   };
 
   useEffect(() => {
@@ -61,6 +75,7 @@ const MapWrapper = () => {
     map.current = createMap(
       popupCreatedCallback,
       popupClosedCallback,
+      () => setMapCreated(true),
       mapConfig,
     );
 
@@ -99,7 +114,7 @@ const MapWrapper = () => {
       console.log("Opening popup");
       if (popupLocation) {
         map?.current?.fire("openPopup", {
-          itemIx: popupIndex,
+          itemId: popupId,
           location: popupLocation,
         });
       } else {
@@ -116,6 +131,13 @@ const MapWrapper = () => {
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
+
+  useEffect(() => {
+    const id = searchParams.get("popupId");
+    if (id && mapCreated) {
+      dispatch(openPopup(id));
+    }
+  }, [mapCreated]);
 
   const updateMapData = async () => {
     if (isFilterActive) {

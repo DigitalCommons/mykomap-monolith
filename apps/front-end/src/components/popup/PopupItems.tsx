@@ -13,7 +13,13 @@ const removeHtmlTags = (text: string) =>
     text.replace(/<[^<>]+(>)/g, ""), // remove HTML tags
   )?.trim();
 
-const Text = ({ itemConfig, text }: { itemConfig: PopupItemConfig; text: string }) => {
+const Text = ({
+  itemConfig,
+  text,
+}: {
+  itemConfig: PopupItemConfig;
+  text: string;
+}) => {
   const { t } = useTranslation();
 
   if (!text) {
@@ -84,7 +90,13 @@ const splitAddress = (address?: string): string[] => {
   return address.split(",").map((line) => line.trim());
 };
 
-const Address = ({ itemConfig, address }: { itemConfig: PopupItemConfig; address: string }) => (
+const Address = ({
+  itemConfig,
+  address,
+}: {
+  itemConfig: PopupItemConfig;
+  address: string;
+}) => (
   <>
     {splitAddress(address).map((line, index) => (
       <Typography key={index}>{line}</Typography>
@@ -92,7 +104,13 @@ const Address = ({ itemConfig, address }: { itemConfig: PopupItemConfig; address
   </>
 );
 
-const Hyperlink = ({ itemConfig, url }: { itemConfig: PopupItemConfig; url: string }) => (
+const Hyperlink = ({
+  itemConfig,
+  url,
+}: {
+  itemConfig: PopupItemConfig;
+  url: string;
+}) => (
   <Typography variant="body1">
     <Link
       href={`${itemConfig.hyperlinkBaseUri || ""}${url}`}
@@ -137,9 +155,9 @@ const HyperlinkMultiple = ({
   const urlCollections =
     urls.length > DOMAINS_SINGLE_COlUMN && window.innerWidth >= 400
       ? [
-        urls.slice(0, Math.ceil(urls.length / 2)),
-        urls.slice(Math.ceil(urls.length / 2)),
-      ]
+          urls.slice(0, Math.ceil(urls.length / 2)),
+          urls.slice(Math.ceil(urls.length / 2)),
+        ]
       : [urls];
 
   return (
@@ -165,7 +183,7 @@ const HyperlinkMultiple = ({
                     }}
                   >
                     {url.length > MAX_DOMAIN_LENGTH &&
-                      url.length > DOMAINS_SINGLE_COlUMN
+                    url.length > DOMAINS_SINGLE_COlUMN
                       ? url.slice(0, MAX_DOMAIN_LENGTH - 5) + "(...)"
                       : url}
                   </Link>
@@ -199,7 +217,9 @@ const PopupItemConfigs = ({
     }
     if (item.valueStyle === "hyperlink") {
       if (item.multiple) {
-        return <HyperlinkMultiple itemConfig={item} urls={data[item.itemProp]} />;
+        return (
+          <HyperlinkMultiple itemConfig={item} urls={data[item.itemProp]} />
+        );
       } else {
         return <Hyperlink itemConfig={item} url={data[item.itemProp]} />;
       }

@@ -1,3 +1,4 @@
+import { useSearchParams } from "react-router";
 import ListItem from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
@@ -49,11 +50,19 @@ const DirectoryItem = ({
   onClick,
 }: DirectoryItemProps) => {
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
+
+  const filtersToUrl = (id: string, value: string) => {
+    const filters = JSON.parse(searchParams.get("filters") || "{}");
+    filters[id] = value;
+    searchParams.set("filters", JSON.stringify(filters));
+  }
 
   const handleClick = (e: React.MouseEvent) => {
     console.log(`Clicked ${value}`);
     dispatch(clearSearch());
     dispatch(setFilterValue({ id: propId, value }));
+    filtersToUrl(propId, value);
     dispatch(performSearch());
     dispatch(openResultsPanel());
   };
