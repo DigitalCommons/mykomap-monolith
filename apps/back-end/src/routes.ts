@@ -91,9 +91,7 @@ export function MykomapRouter(
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
-      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, "base64").toString(
-        "utf8",
-      );
+      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, 'base64').toString('utf8');
 
       if (itemIdOrIx.startsWith("@")) {
         const itemIx = Number(itemIdOrIx.substring(1));
