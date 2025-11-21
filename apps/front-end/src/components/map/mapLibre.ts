@@ -427,7 +427,7 @@ export const createMap = (
     });
 
     map.on("zoomend", () => {
-      // console.log("Zoom level", map.getZoom());
+      console.log("Zoom level", map.getZoom());
 
       if (popup?.isOpen()) {
         const ix = Array.from(popup?._container.classList)
