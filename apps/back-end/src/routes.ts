@@ -13,7 +13,6 @@ import {
   searchDataset,
 } from "./services/datasetService.js";
 
-
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
   /** Options specifically used by Mykomap Api plugin go in here */
@@ -53,7 +52,7 @@ export function MykomapRouter(
   if (!fs.existsSync(opts.mykomap.dataRoot))
     throw new Error(
       `the dataRoot plugin option is set but refers to a non-existing path: ` +
-      `'${opts.mykomap.dataRoot}'.`,
+        `'${opts.mykomap.dataRoot}'.`,
     );
 
   console.log("Initialising datasets...");
@@ -90,13 +89,15 @@ export function MykomapRouter(
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
-      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, 'base64').toString('utf8');
+      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, "base64").toString(
+        "utf8",
+      );
 
       if (itemIdOrIx.startsWith("@")) {
         const itemIx = Number(itemIdOrIx.substring(1));
         const item = getDatasetItemByIx(datasetId, itemIx);
 
-        return { status: 200, body: { ...item, itemIx } };
+        return { status: 200, body: { ...item, index: `@${itemIx}` } };
       }
 
       const itemId = itemIdOrIx;
