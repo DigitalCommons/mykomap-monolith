@@ -1,0 +1,1041 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://digitalcommons.github.io/mykomap-monolith/versioning-and-releases/">
+      
+      
+        <link rel="prev" href="../server-admin-notes/">
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Versioning and Releases - Mykomap Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#versioning-and-releases" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mykomap Docs" class="md-header__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mykomap Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Versioning and Releases
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mykomap Docs" class="md-nav__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mykomap Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monorepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-admin-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tagging-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagging releases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tagging releases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automation-of-release-tagging-npm-run-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation of release tagging: npm run release
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reflections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reflections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preparing-the-code-for-a-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preparing the code for a deploy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploying
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#background" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Background
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#tagging-releases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tagging releases
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tagging releases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#automation-of-release-tagging-npm-run-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation of release tagging: npm run release
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reflections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reflections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preparing-the-code-for-a-deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preparing the code for a deploy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploying" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Deploying
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="versioning-and-releases">Versioning and Releases<a class="headerlink" href="#versioning-and-releases" title="Permanent link">#</a></h1>
+<p>Here we describe a suggested process for releasing code. Specifically
+with regard to consistent labelling which is required for matching
+issues tracked using the Sentry API to the code context in which they
+occurred.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>This document is a work in progress.</p>
+<p>It was written as a starting point for a more comprehensive guide,
+following a <a href="https://github.com/DigitalCommons/mykomap-monolith/pull/129#pullrequestreview-2717344967">suggestion in a PR</a>.</p>
+</blockquote>
+<h2 id="background">Background<a class="headerlink" href="#background" title="Permanent link">#</a></h2>
+<p>The <a href="https://docs.sentry.io/">Sentry API</a> is a mechanism for reporting errors in
+deployed applications. We use an open source service supporting the
+API, called <a href="https://glitchtip.com/">Glitchtip</a>, to receive them.</p>
+<p>When an error is detected, a call is made to the API with some tags
+and other metrics characterising the problem. One of these tags is the
+Sentry API <a href="https://docs.sentry.io/platforms/javascript/configuration/releases/#setting-a-release">release tag</a>. This is matched to source maps
+uploaded previously to the API, allowing minified code, which is
+fairly unintelligible, to be shown in un-minified form. The match is
+done based on the filename and the release tag (and the <a href="https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/cli/#optional-steps">dist
+tag</a> if one is set).</p>
+<p>In addition, the release tag and some other information is shown in
+the Glitchtip issue report. These need to be sufficient to allow
+developers inspecting these report to identify the version of the
+code-base in which the issue was created, so needs the commit ID in
+addition to the release.</p>
+<p>So in order to get <em>legible source code</em> when viewing the report:</p>
+<ul>
+<li>We need consistent release tags created in the build.</li>
+<li>The source map files need to be deployed with the (minified)
+  source. (In the front-end at least.)</li>
+<li>These need to be labelled with the appropriate release tag.</li>
+<li>The release tag also needs to be included in the application's
+  initial Sentry API initialisation.</li>
+</ul>
+<p>To facilitate that:</p>
+<ul>
+<li>All Mykomap modules use the same mechanism to deduce the build info
+  at build time and insert it into the source code.</li>
+<li>This is reported by the back-end module's <code>version</code> endpoint, the on
+  the console in the front-end.</li>
+<li>The version is inferred from the last git tag with the format
+  <code>v&lt;semantic-version&gt;</code> where the semantic version is a sequence of
+  positive integers delimited with periods. e.g. <code>v4.1.3</code></li>
+<li>The "build description" is generated using <code>git describe</code> and has
+  the form <code>v&lt;semantic-version&gt;-&lt;commits&gt;-g&lt;commit-id&gt;[-dirty]</code>,
+  e.g. <code>v4.1.3-23-b3dfba0</code>, where:</li>
+<li><code>v&lt;semantic-version&gt;</code> is the last matching version tag</li>
+<li><code>&lt;commits&gt;</code> is the number of commits on this branch since that tagged commit</li>
+<li><code>&lt;commit-id&gt;</code> is the current truncated commit ID, containing 7 or
+    more characters.</li>
+<li><code>-dirty</code> is appended if the repository working directory has any
+    modifications on build.</li>
+<li>The semantic version is inserted into each modules' <code>package.json</code>
+  as the <code>"version"</code> attribute.</li>
+<li>The Sentry API release tag is derived from it, and has the form
+  <code>&lt;module-name&gt;@&lt;semantic-version&gt;</code>, where the former is the module
+  name, modified to follow the rules defined <a href="https://docs.sentry.io/platforms/javascript/configuration/releases/#setting-a-release">here</a> and
+  the latter is the semantic version above.
+  e.g. <code>@mykomapfront-end@4.0.0</code> (the slash after <code>@mykomap/</code> is
+  illegal and is removed.) The former is included to distinguish the
+  modules.</li>
+<li>It is inserted into the front end module's <code>package.json</code> in the
+  attribute <code>"config.sentry.release"</code>.</li>
+</ul>
+<h2 id="process">Process<a class="headerlink" href="#process" title="Permanent link">#</a></h2>
+<p>This outlines a process for versioning and releases. The concepts are still
+important - however, an <code>npm</code> run-script has been added to help automate this,
+see the section below, <a href="#automation-of-release-tagging-npm-run-release">Automation of release tagging</a>.</p>
+<h3 id="tagging-releases">Tagging releases<a class="headerlink" href="#tagging-releases" title="Permanent link">#</a></h3>
+<p>The remainder of this process assumes that commits the repository will
+have periodic <a href="https://semver.org/">semantic versioning</a> tags applied, of the form <code>v&lt;dotted
+integers&gt;</code>. "Semantic versioning" boils down to:</p>
+<blockquote>
+<p>Given a version number <code>MAJOR.MINOR.PATCH</code>, increment the:</p>
+<ol>
+<li>MAJOR version when you make incompatible API changes</li>
+<li>MINOR version when you add functionality in a backward compatible manner</li>
+<li>PATCH version when you make backward compatible bug fixes</li>
+</ol>
+<p>Additional labels for pre-release and build metadata are available
+as extensions to the <code>MAJOR.MINOR.PATCH</code> format. _[Presumably as</p>
+<blockquote>
+<p>supplemental dotted integers, in our scheme]_</p>
+</blockquote>
+</blockquote>
+<p>The current version of Mykomap has a major version of 4, following on
+from previous versions, of which it is an entire rewrite, as well as
+incompatible to (insofar as it even had an API).</p>
+<p>Our version of Mykomap does have an API, exposed by the back-end, and
+consumed by the front end. As these are intended to interoperate, we
+store both, plus libraries with shared data, in a "monorepo" - a
+single repository containing all of the related projects. Although we
+would like to maintain some independence between the components, and
+possibly allow them to be split apart again in the future, this does
+mean there is in practice a form of strong coupling between them - if
+not explicit, then possibly inadvertent couplings are likely to exist.</p>
+<p>And as such all components naturally have the same semantic version,
+stamped in their <code>package.json</code> files' <code>"version"</code> attribute.</p>
+<p>However, the API <em>is</em> intended to be consumed - or to be able to be -
+by external systems. Which is clearly the main sense a semantic
+versioning system would apply here. Therefore we should be tagging our
+releases to reflect changes in that.</p>
+<p>A second consideration is the idea that we are (at least in practice)
+aiming to use a modified version of <a href="https://trunkbaseddevelopment.com/">"trunk based
+development"</a>. I say "modified" as we now seem
+to have a distinct <code>dev</code> branch as well as a <code>main</code> branch, but the
+former should always be a fast-forward-merge away from the latter, so
+can be seen as a continuous branch.</p>
+<p>Tags should be placed on this branch. The semantics of <code>main</code> are such
+that anything on that branch is (or could be) deployed in production,
+and so should be given a release tag.</p>
+<p>So to sum up, I think we should:</p>
+<ul>
+<li>Create a new version tag every time something is deployed to
+  production</li>
+<li>Use the semantic versioning rules above to guide the selection of
+  these versions</li>
+</ul>
+<h4 id="automation-of-release-tagging-npm-run-release">Automation of release tagging: <code>npm run release</code><a class="headerlink" href="#automation-of-release-tagging-npm-run-release" title="Permanent link">#</a></h4>
+<p>The TL:DR; here is that to create a release with a tagged commit, you can now
+run the following from the mykomap-monolith project root directory:</p>
+<pre><code># To tag a new release with a sem-ver v4.1.3:
+npm run release v4.1.3
+</code></pre>
+<p>...Which will tag the repository and rebuild it, updating the <code>package.json</code> and
+<code>package-lock.json</code> files for you, then squash the result into one commit tagged
+<code>v4.1.3</code>. After which, you can manually push the result:</p>
+<pre><code>git push
+git push --tags
+</code></pre>
+<p>...Or, inspect and delete the temporary branch created:</p>
+<pre><code>git branch -D prepare-release-v4.1.3
+</code></pre>
+<p>This automates the manual process, which is roughly as follows. Although note
+that the script intentionally follows a slightly different process involving a
+squash merge, to allow for inspection of failures.</p>
+<p>The manual process is:</p>
+<ul>
+<li>Ensure the code builds cleanly:
+  <code>npm run clean &amp;&amp; npm ci &amp;&amp; npm run build &amp;&amp; npm run test</code></li>
+<li>Ensure any changes are committed, if this succeeds:
+  <code>git add -u &amp;&amp; git commit -m "...your commit message here..."</code></li>
+<li>Tag the commit with the version:
+  <code>git tag v4.1.3</code></li>
+<li>Rebuild to apply the tags to the <code>package.json</code> files:
+  <code>npm run build</code></li>
+<li>Updateg the <code>package-lock.json</code> with the tags too:
+  <code>npm install --package-lock-only</code></li>
+<li>Commit that to the same commit:
+  <code>git add -u &amp;&amp; git commit --amend -c HEAD</code></li>
+</ul>
+<p>The reason these all need to be squashed into the one commit with a tag applied
+is so that GitHub (and possibly other usages) will build and archive the actual
+deployable code for that version. If in practise a deployable release needs
+extra changes following the tagged release commit (as they do in practise)
+they'll be omitted from the release archive created by GitHub if they aren't
+squashed into it.</p>
+<h4 id="reflections">Reflections<a class="headerlink" href="#reflections" title="Permanent link">#</a></h4>
+<p>A consequence is that deployments using <code>dev</code> will have the version of
+the last production build, just with a different build specification.</p>
+<p>Possibly this is unhelpful - in retrospect I wonder if we should
+adjust our build labelling to special-case this region beyond <code>main</code>
+and give them release tags which clearly identify them as different,
+and "in development".</p>
+<p>An alternative might be to extend the semantic versioning beyond
+<code>main</code> and onto <code>dev</code>, with the idea that this is a continuous
+process. That would however beg the question about why we need <code>dev</code>,
+perhaps we only need <code>main</code>.</p>
+<p>A third might be to adopt the even/odd versioning schemes used by some
+software: minor version numbers which are even are considered
+"development releases", and those which are odd are "production
+releases". Then the <code>dev</code> branch would be tagged with even minor
+versions, and a transition to releasing for production would require
+switching to odd minor versions. But I think this would imply we
+should change our deployment and sprints processes accordingly, to
+acknowledge this distinction and partitioned our work into attending
+to development of new features, release of those features to
+production, and post-release bug-fixes.</p>
+<p>Disclaimer: all of these reflections are beyond the scope of current
+work, and need to be discussed by the team.</p>
+<h3 id="preparing-the-code-for-a-deploy">Preparing the code for a deploy<a class="headerlink" href="#preparing-the-code-for-a-deploy" title="Permanent link">#</a></h3>
+<p>When preparing to deploy, locally in the development working
+directory, we need to:</p>
+<ul>
+<li>Ensure the tests all run successfully. <code>npm run tests</code></li>
+<li>Apply any Git version tag you want to appear in the build, first (in
+  the format described above). e.g. <code>git tag v4.1.3</code>.</li>
+<li>Run the build - the version attributes will be updated in all the
+  <code>package.json</code> files, and the Sentry release tag in the front-end's.</li>
+<li>Commit these changes to Git.</li>
+<li><code>git push</code> the changes.</li>
+</ul>
+<h3 id="deploying">Deploying<a class="headerlink" href="#deploying" title="Permanent link">#</a></h3>
+<p>On the server where the code is being deployed:</p>
+<ul>
+<li>Ensure <code>apps/front-end/.env</code> includes the environment parameters (as described below).</li>
+<li>Check out the correct commit.</li>
+<li>Ensure there are no other uncommitted changes (to avoid the <code>-dirty</code>
+  suffix).</li>
+<li>Run the build - the code will be tagged with the correct build info,
+  including the commit ID.</li>
+<li>Invoke the front-end module's run-script <code>upload-sourcemaps</code> to
+  upload the source-map files via the Sentry API.</li>
+</ul>
+<p>The environment parameters needed by <code>npm run upload-sourcemaps</code> are:</p>
+<ul>
+<li><code>GLITCHTIP_KEY</code> - obtain this from our Glitchtip account, it's the
+  alphanumeric code set in the <code>glitchtip_key</code> parameter of the
+  <em>Security Endpoint URL</em>, found under <em>Settings -&gt; Projects -&gt;
+  @mykomap/front-end</em>.</li>
+<li><code>SENTRY_AUTH_TOKEN</code> - obtain this from our Glitchtip account, there
+  is one generated already, called <em>SentryCli</em>, accessible under
+  <em>Profile -&gt; Auth Tokens</em>.</li>
+<li><code>SENTRY_URL</code> - typically <code>https://app.glitchtip.com</code></li>
+<li><code>SENTRY_ORG</code> - should be <code>digital-commons-coop</code></li>
+<li><code>SENTRY_PROJECT</code> - should be <code>mykomapfront-end</code></li>
+</ul>
+<blockquote>
+<p>[!NOTE]</p>
+<p>The environment parameters set in the <code>deploy.sh</code> script are
+slightly different, because of the wider context there. See the
+comments in the script itself for details.</p>
+<p>[!NOTE]</p>
+<p>The upload is performed in a run-script by the <a href="https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/cli/">Sentry CLI</a>.
+It could in future use the Sentry <a href="https://docs.sentry.io/platforms/javascript/sourcemaps/uploading/vite/">Vite plugin</a>, which may be simpler.</p>
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

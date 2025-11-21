@@ -1,0 +1,1035 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://digitalcommons.github.io/mykomap-monolith/server-admin-notes/">
+      
+      
+        <link rel="prev" href="../monorepo/">
+      
+      
+        <link rel="next" href="../versioning-and-releases/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>In case of server problems - Mykomap Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#in-case-of-server-problems" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mykomap Docs" class="md-header__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mykomap Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              In case of server problems
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mykomap Docs" class="md-nav__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mykomap Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monorepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hetzner-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hetzner Cloud
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#root-console-things" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Root console things
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Root console things">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-the-cpu-memory-load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's the CPU / Memory load?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disk-full" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disk full?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rebooting-from-the-root-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rebooting from the root console
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-and-restarting-the-mykomap-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring and restarting the mykomap server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring and restarting the mykomap server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#as-the-application-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        As the application user...
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#as-the-root-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        As the root user...
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versioning-and-releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#hetzner-cloud" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hetzner Cloud
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#root-console-things" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Root console things
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Root console things">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#whats-the-cpu-memory-load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What's the CPU / Memory load?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disk-full" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Disk full?
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rebooting-from-the-root-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rebooting from the root console
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monitoring-and-restarting-the-mykomap-server" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring and restarting the mykomap server
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Monitoring and restarting the mykomap server">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#as-the-application-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        As the application user...
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#as-the-root-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        As the root user...
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="in-case-of-server-problems">In case of server problems<a class="headerlink" href="#in-case-of-server-problems" title="Permanent link">#</a></h1>
+<h2 id="hetzner-cloud">Hetzner Cloud<a class="headerlink" href="#hetzner-cloud" title="Permanent link">#</a></h2>
+<p>First port of call is probably Hetzner. The login should be in our password store service. Then you need to navigate to Hetzner's Cloud services (Their Robot site is for bare metal.)</p>
+<p>Check the graphs to see if the server is under heavy load CPU/IO/Network, has stopped, or is otherwise having problems. There is a dropdown which can switch the view from "Live" to an overview of the last hour, day, month, etc.</p>
+<ul>
+<li>List of DCC servers: https://console.hetzner.cloud/projects/1450952/servers</li>
+<li>Prod-2 graphs: https://console.hetzner.cloud/projects/1450952/servers/39640291/graphs</li>
+<li>Dev-2 graphs: https://console.hetzner.cloud/projects/1450952/servers/36089475/graphs</li>
+</ul>
+<p>If it's a load issue, there's a "Rescale" tab with which we can upgrade the server to more CPU, Memory and disk space. This should be quick, but it will require a reboot.</p>
+<p>If it's something which has run amok on the server, it <em>may</em> be resolved by a reboot. Use the reset button on the "Power" tab. However, not if the disks are full, and this can't be determined from the Hetzner console directly.</p>
+<p>Some clues might be available from the server console, which you can open using the link in the "Actions" dropdown for the server on the graph page above. This is like taking a peep at the physical monitor of the server, if it had one. If things are looking normal you'll just see a log-in prompt. But you might find some system log messages there which give you a clue.</p>
+<h2 id="root-console-things">Root console things<a class="headerlink" href="#root-console-things" title="Permanent link">#</a></h2>
+<p>At the time of writing, there is no password access to the root (or in fact any) user accounts on the server, so you can't actually log in via the server console. But you can reset the root password on the "Rescue" tab of the Hetzner console, although this will probably trigger a reboot. However, then you can use that to log into the server console.</p>
+<p>Alternatively someone with access can add your SSH public key, if you have one, to <code>/root/.ssh/authorized_keys</code>, and then you should be able to ssh in via <code>root@prod-2.digitalcommons.coop</code> (insert correct hostname as appropriate)</p>
+<p>However, when the server is in real trouble, perhaps because it can't cope with the load, typically logging into the console is fraught with problems. In which case using the Hetzner console is better.</p>
+<h3 id="whats-the-cpu-memory-load">What's the CPU / Memory load?<a class="headerlink" href="#whats-the-cpu-memory-load" title="Permanent link">#</a></h3>
+<p>On the console this can be done by running the command <code>top</code>, which will show an updating table of processes like this:</p>
+<pre><code>Tasks: 145 total,   1 running, 144 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  2.9 us,  5.9 sy,  0.0 ni, 91.2 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   7747.9 total,   5298.0 free,    954.0 used,   1496.0 buff/cache
+MiB Swap:      0.0 total,      0.0 free,      0.0 used.   6476.3 avail Mem
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   4431 root      20   0   16916  10220   8372 S  11.8   0.1   0:00.04 sshd
+    395 root      19  -1  340468 115548 114352 S   5.9   1.5   0:11.21 systemd-journal
+      1 root      20   0  100908  11816   8416 S   0.0   0.1   0:03.54 systemd
+      2 root      20   0       0      0      0 S   0.0   0.0   0:00.00 kthreadd
+      3 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_gp
+      4 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 rcu_par_gp
+      5 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 slub_flushwq
+      6 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 netns
+      8 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 kworker/0:0H-events_highpri
+     10 root       0 -20       0      0      0 I   0.0   0.0   0:00.00 mm_percpu_wq
+     11 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_rude_
+     12 root      20   0       0      0      0 S   0.0   0.0   0:00.00 rcu_tasks_trace
+     13 root      20   0       0      0      0 S   0.0   0.0   0:00.11 ksoftirqd/0
+     14 root      20   0       0      0      0 I   0.0   0.0   0:00.37 rcu_sched
+     15 root      rt   0       0      0      0 S   0.0   0.0   0:00.02 migration/0
+</code></pre>
+<p>The processes are sorted by load. You can switch it to sort by memory use by pressing the <code>m</code> key. The <code>?</code> key will show brief overview of the keys you can press.</p>
+<p>To exit, use <code>q</code>.</p>
+<h3 id="disk-full">Disk full?<a class="headerlink" href="#disk-full" title="Permanent link">#</a></h3>
+<p>You can check the disk's capacity and free space with <code>df -h</code>. At the time of writing, the output looks like this:</p>
+<pre><code>root@dev-2:~# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           775M  936K  774M   1% /run
+/dev/sda1        75G   53G   20G  74% /
+tmpfs           3.8G     0  3.8G   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda15      253M  6.1M  246M   3% /boot/efi
+tmpfs           775M     0  775M   0% /run/user/0
+tmpfs           775M     0  775M   0% /run/user/7001
+tmpfs           775M     0  775M   0% /run/user/7003
+tmpfs           775M     0  775M   0% /run/user/7002
+</code></pre>
+<p>This tells us that the main disk <code>/</code> is 75% full, with 20G available. The other partitions can mostly be ignored.</p>
+<p>If it's near 100% then the server is in trouble. Fixing that requires either increasing the disk size or finding some garbage or otherwise deletable files to remove. If your technical skill is low, using the "Rescale" option mentioned in the section above is probably the safest option. However, typical places to look are in <code>/var/</code> - safe things to delete will be in directories named <code>tmp</code> <code>temp</code> <code>cache</code> or similar. Avoid deleting logs unless you really have to, but that's another thing which can fill up. E.g.</p>
+<pre><code>root@dev-2:~# du -sh /var/*
+2.6M    /var/backups
+121M    /var/cache
+4.0K    /var/crash
+40G     /var/lib
+4.0K    /var/local
+0       /var/lock
+4.5G    /var/log
+4.0K    /var/mail
+4.0K    /var/opt
+0       /var/run
+28K     /var/spool
+14M     /var/tmp
+112M    /var/www
+root@dev-2:~# du -sh /var/tmp.*
+du: cannot access '/var/tmp.*': No such file or directory
+root@dev-2:~# du -sh /var/tmp/*
+4.0K    /var/tmp/cloud-init
+8.0K    /var/tmp/systemd-private-5d313365530846358c648b6ed26b16fd-apache2.service-k3rsZh
+8.0K    /var/tmp/systemd-private-5d313365530846358c648b6ed26b16fd-systemd-logind.service-nMa2no
+8.0K    /var/tmp/systemd-private-5d313365530846358c648b6ed26b16fd-systemd-resolved.service-bGGS1b
+8.0K    /var/tmp/systemd-private-5d313365530846358c648b6ed26b16fd-systemd-timesyncd.service-jAqmK6
+14M     /var/tmp/virtuoso
+root@dev-2:~# du -sh /var/log/*
+4.0K    /var/log/alternatives.log
+12K     /var/log/alternatives.log.1
+4.0K    /var/log/alternatives.log.10.gz
+4.0K    /var/log/alternatives.log.11.gz
+4.0K    /var/log/alternatives.log.12.gz
+4.0K    /var/log/alternatives.log.2.gz
+4.0K    /var/log/alternatives.log.3.gz
+[...elided]
+</code></pre>
+<p>If you're really hunting for the culprit, you can get a sorted list of directories and files by size using:</p>
+<pre><code>root@dev-2:~# du -cax / | sort -rn | tee filesizes.txt | head
+55008892        total
+55008892        /
+46799932        /var
+41895664        /var/lib
+33852844        /var/lib/mysql
+32256420        /var/lib/mysql/property_boundaries
+18362384        /var/lib/mysql/property_boundaries/land_ownership_polygons.ibd
+11341836        /var/lib/mysql/property_boundaries/pending_inspire_polygons.ibd
+7584452         /var/lib/backups
+7584448         /var/lib/backups/property_boundaries.borg
+</code></pre>
+<p>This also writes the list to <code>filesizes.txt</code> which you can inspect with <code>less filesizes.txt</code> (press the 'h' key after running it for help, or run <code>man less</code> for the manual page)</p>
+<h2 id="rebooting-from-the-root-console">Rebooting from the root console<a class="headerlink" href="#rebooting-from-the-root-console" title="Permanent link">#</a></h2>
+<p>You can do that like this:</p>
+<pre><code>root@dev-2:~# reboot
+</code></pre>
+<p>There's also a <code>halt</code> command, but the server will stay off if you use that.</p>
+<h2 id="monitoring-and-restarting-the-mykomap-server">Monitoring and restarting the mykomap server<a class="headerlink" href="#monitoring-and-restarting-the-mykomap-server" title="Permanent link">#</a></h2>
+<h3 id="as-the-application-user">As the application user...<a class="headerlink" href="#as-the-application-user" title="Permanent link">#</a></h3>
+<p>Usually devs do this when logged in as the user running the application - in this case, on dev-2 and prod-2, this will be <code>broccoli</code>.</p>
+<p>This shows (a simple case of) how the server is rebuilt. For more and more accurate details, see the <a href="https://digitalcommons.github.io/mykomap-monolith/deployment/">mykomap-monolith deployment documentation</a>.</p>
+<pre><code>root@dev-2:~# su - broccoli               # switch from root to the broccoli user
+
+broccoli@dev-2:~$ cd ~/deploy/data/       # switch to the data directory
+
+broccoli@dev-2:~/deploy/data$ git pull    # pull the latest data (simple case, assumes no branch switching needed)
+Already up to date.
+
+broccoli@dev-2:~/deploy/data$ cd ~/gitworking/mykomap-monolith/            # switch to the app directory
+
+broccoli@dev-2:~/gitworking/mykomap-monolith$ git pull
+Already up to date.
+
+broccoli@dev-2:~/gitworking/mykomap-monolith$ . ~/gitworking/deploy.env   # load the environment variables needed to rebuild the app and restart the service
+
+broccoli@dev-2:~/gitworking/mykomap-monolith$ systemctl status --user mykomap-backend.service  # Check the app service status
+● mykomap-backend.service - Mykomap back-end process manager for broccoli
+     Loaded: loaded (/home/broccoli/.config/systemd/user/mykomap-backend.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2024-11-24 17:48:10 UTC; 6min ago
+       Docs: https://github.com/DigitalCommons/mykomap-monolith/
+   Main PID: 4056 (npm run start:a)
+      Tasks: 35 (limit: 9242)
+     Memory: 151.5M
+        CPU: 12.869s
+     CGroup: /user.slice/user-7002.slice/user@7002.service/app.slice/mykomap-backend.service
+             ├─4056 &quot;npm run start:attached&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;
+             ├─4203 sh -c &quot;npm run start&quot;
+             ├─4204 &quot;npm run start&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;
+             ├─4242 sh -c &quot;node ./start.js&quot;
+             └─4243 node ./start.js
+
+Nov 24 17:54:34 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470874892,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1d&quot;,&quot;req&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;/dataset/delhi/search?filter%5B0%5D=data_sources%3A&gt;
+Nov 24 17:54:34 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470874910,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1d&quot;,&quot;res&quot;:{&quot;statusCode&quot;:200},&quot;responseTime&quot;:17.900402000173926,&quot;msg&quot;:&quot;request comple&gt;
+Nov 24 17:54:40 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470880871,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1e&quot;,&quot;req&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;/dataset/delhi/search?filter%5B0%5D=data_sources%3A&gt;
+Nov 24 17:54:40 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470880902,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1e&quot;,&quot;res&quot;:{&quot;statusCode&quot;:200},&quot;responseTime&quot;:30.778594000265002,&quot;msg&quot;:&quot;request comple&gt;
+Nov 24 17:54:41 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470881048,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1f&quot;,&quot;req&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;/dataset/delhi/search?filter%5B0%5D=data_sources%3A&gt;
+Nov 24 17:54:41 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470881067,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1f&quot;,&quot;res&quot;:{&quot;statusCode&quot;:200},&quot;responseTime&quot;:19.006068999879062,&quot;msg&quot;:&quot;request comple&gt;
+Nov 24 17:54:41 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470881068,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1g&quot;,&quot;req&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;/dataset/delhi/search?filter%5B0%5D=data_sources%3A&gt;
+Nov 24 17:54:41 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470881107,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1g&quot;,&quot;res&quot;:{&quot;statusCode&quot;:200},&quot;responseTime&quot;:38.5415049996227,&quot;msg&quot;:&quot;request complete&gt;
+Nov 24 17:54:41 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470881209,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1h&quot;,&quot;req&quot;:{&quot;method&quot;:&quot;GET&quot;,&quot;url&quot;:&quot;/dataset/delhi/search?filter%5B0%5D=data_sources%3A&gt;
+Nov 24 17:54:41 dev-2.digitalcommons.coop bash[4243]: {&quot;level&quot;:30,&quot;time&quot;:1732470881238,&quot;pid&quot;:4243,&quot;hostname&quot;:&quot;dev-2.digitalcommons.coop&quot;,&quot;reqId&quot;:&quot;req-1h&quot;,&quot;res&quot;:{&quot;statusCode&quot;:200},&quot;responseTime&quot;:28.585051000118256,&quot;msg&quot;:&quot;request comple&gt;
+
+broccoli@dev-2:~/gitworking/mykomap-monolith$ ./deploy.sh # start the rebuild. should restart the server automatically
+
+[... detailed output elided]
+
+</code></pre>
+<h3 id="as-the-root-user">As the root user...<a class="headerlink" href="#as-the-root-user" title="Permanent link">#</a></h3>
+<p>But this can also be done as the root user, perhaps with more ease, because of one less step. In this example, the server status is checked, then it is restarted, then started (which should do nothing if it already started) then the status is checked again. You can see the process number and memory usage change.</p>
+<pre><code>root@dev-2:~# systemctl --machine broccoli@.host --user  status mykomap-backend
+● mykomap-backend.service - Mykomap back-end process manager for broccoli
+     Loaded: loaded (/home/broccoli/.config/systemd/user/mykomap-backend.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2024-11-24 17:14:53 UTC; 33min ago
+       Docs: https://github.com/DigitalCommons/mykomap-monolith/
+   Main PID: 3498
+      Tasks: 35 (limit: 9242)
+     Memory: 168.9M
+        CPU: 8.240s
+     CGroup: /user.slice/user-7002.slice/user@7002.service/app.slice/mykomap-backend.service
+             ├─3498 &quot;npm run start:attached&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;
+             ├─3643 sh -c &quot;npm run start&quot;
+             ├─3644 &quot;npm run start&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;
+             ├─3682 sh -c &quot;node ./start.js&quot;
+             └─3683 node ./start.js
+
+root@dev-2:~# systemctl --machine broccoli@.host --user  restart mykomap-backend
+
+root@dev-2:~# systemctl --machine broccoli@.host --user  start mykomap-backend
+
+root@dev-2:~# systemctl --machine broccoli@.host --user  status mykomap-backend
+● mykomap-backend.service - Mykomap back-end process manager for broccoli
+     Loaded: loaded (/home/broccoli/.config/systemd/user/mykomap-backend.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2024-11-24 17:48:10 UTC; 8s ago
+       Docs: https://github.com/DigitalCommons/mykomap-monolith/
+   Main PID: 4056
+      Tasks: 35 (limit: 9242)
+     Memory: 196.5M
+        CPU: 2.977s
+     CGroup: /user.slice/user-7002.slice/user@7002.service/app.slice/mykomap-backend.service
+             ├─4056 &quot;npm run start:attached&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;
+             ├─4203 sh -c &quot;npm run start&quot;
+             ├─4204 &quot;npm run start&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;
+             ├─4242 sh -c &quot;node ./start.js&quot;
+             └─4243 node ./start.js
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

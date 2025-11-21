@@ -1,0 +1,1014 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://digitalcommons.github.io/mykomap-monolith/deployment/">
+      
+      
+        <link rel="prev" href="../data-pipeline/">
+      
+      
+        <link rel="next" href="../monorepo/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Deploying - Mykomap Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#deploying" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mykomap Docs" class="md-header__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mykomap Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Deploying
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mykomap Docs" class="md-nav__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mykomap Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dcc-server-specifics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DCC Server specifics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DCC Server specifics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-dcc-server-provides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a DCC Server provides
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#definitions-for-convenience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions, for convenience
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-install-for-the-first-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to install for the first time
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to install for the first time">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-set-environment-variables-as-the-application-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: set environment variables (as the application user)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-setup-apache-config-with-elevated-privileges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: setup Apache config (with elevated privileges)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-install-the-app-as-the-application-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: install the app (as the application user)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-make-subsequent-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to make subsequent updates
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monorepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-admin-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versioning-and-releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#dcc-server-specifics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DCC Server specifics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DCC Server specifics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-a-dcc-server-provides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What a DCC Server provides
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#definitions-for-convenience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Definitions, for convenience
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-install-for-the-first-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to install for the first time
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to install for the first time">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-set-environment-variables-as-the-application-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: set environment variables (as the application user)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-setup-apache-config-with-elevated-privileges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: setup Apache config (with elevated privileges)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-install-the-app-as-the-application-user" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: install the app (as the application user)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-make-subsequent-updates" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to make subsequent updates
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="deploying">Deploying<a class="headerlink" href="#deploying" title="Permanent link">#</a></h1>
+<p>Conceptually, installation of these applications require:</p>
+<ul>
+<li>deploying the front-end as content to be served on the web</li>
+<li>configure it to use the correct path for the back end (typically <code>/api</code>)</li>
+<li>also configure API keys for GlitchTip and MapTiler services</li>
+<li>deploying the back end to be run as a persistent node process</li>
+<li>configure it to use the right path to the data folder</li>
+<li>deploy the data in the path expected by the back-end</li>
+<li>reverse-proxying the back end to be accessible on the same domain as the front end</li>
+</ul>
+<p>This document describes the required steps to achieve the above, either for a first
+time install or an update.</p>
+<h2 id="dcc-server-specifics">DCC Server specifics<a class="headerlink" href="#dcc-server-specifics" title="Permanent link">#</a></h2>
+<p><em>Note: Although the application could be deployed in various scenarios in
+principle, this is the only case we specifically cater for now.</em></p>
+<h3 id="what-a-dcc-server-provides">What a DCC Server provides<a class="headerlink" href="#what-a-dcc-server-provides" title="Permanent link">#</a></h3>
+<p>The parts relevant here are, broadly:</p>
+<ul>
+<li>A Ubuntu Linux server.</li>
+<li>With the Apache webserver.</li>
+<li>The NodeJS runtime (using <a href="https://asdf-vm.com/">ASDF</a>, the version of NodeJS can be
+  specified in the app with <a href="https://asdf-vm.com/manage/configuration.html"><code>.tool-versions</code></a>)</li>
+<li>User-mode SystemD services.</li>
+<li>A dedicated user for the application.</li>
+</ul>
+<p>Without going into too much detail, this situation is currently set up
+via some Ansible playbooks in the DCC
+<a href="https://github.com/DigitalCommons/technology-and-infrastructure">technology-and-infrastructure</a> project.</p>
+<p>The following instructions following assume this context.</p>
+<h3 id="definitions-for-convenience">Definitions, for convenience<a class="headerlink" href="#definitions-for-convenience" title="Permanent link">#</a></h3>
+<p>For the descriptions below, we use the following placeholders for
+generality. (We write them in the style of environment variables, but
+you can equally see them as just labels.)</p>
+<ul>
+<li><code>$SERVER</code> is the ssh URI used for the hostname being deployed to.</li>
+<li><code>$USER</code> is the user being deployed to on that host.</li>
+<li><code>$GIT_WORKING</code> is the directory where <code>mykomap-monolith</code> repository
+  is checked out (or if not checked out, unpacked - in which case
+  replace <code>git clone</code> or <code>git pull</code> with an appropriate unpacking
+  process)</li>
+<li><code>$DATA_DIR</code> is the path to the directory containing data for the back-end.</li>
+<li>A file exists at <code>$DEPLOY_ENV</code> defining the environment variables
+  specifically needed for deployment.</li>
+</ul>
+<p>Examples, at the time of writing, of the typical case for these are:</p>
+<pre><code>SERVER=dev-2
+USER=broccoli
+GIT_WORKING=/home/$USER/gitworking/mykomap-monolith
+DEPLOY_ENV=/home/$USER/gitworking/deploy.env
+DATA_DIR=/home/$USER/deploy/data
+</code></pre>
+<h2 id="how-to-install-for-the-first-time">How to install for the first time<a class="headerlink" href="#how-to-install-for-the-first-time" title="Permanent link">#</a></h2>
+<h3 id="step-1-set-environment-variables-as-the-application-user">Step 1: set environment variables (as the application user)<a class="headerlink" href="#step-1-set-environment-variables-as-the-application-user" title="Permanent link">#</a></h3>
+<p>The <code>$DEPLOY_ENV</code> file defines some <em>actual</em> environment variables
+which the deployment process will use. What those are set to will
+depend on your situation, so this is just a guide.</p>
+<p>Here is an example of how the <code>$DEPLOY_ENV</code> file may be created as the
+application user, but with secret values redacted:</p>
+<pre><code>cat &gt; $DEPLOY_ENV &lt;&lt;EOF
+export USERDIR=/home/$USER
+export GIT_WORKING=/home/$USER/gitworking/mykomap-monolith
+export DEPLOY_DEST=/home/$USER/deploy
+export DATA_DIR=/home/$USER/deploy/data
+export WWW_ROOT=/var/www/vhosts/maps.coop/www
+export APP_ROOT=/var/www/vhosts/maps.coop/www/cwm
+export VHOST_CONF=/var/www/vhosts/maps.coop/custom.conf
+export PROXY_PORT=1$UID
+export PROXY_PATH=/api
+export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
+export FE_GLITCHTIP_KEY=*REDACTED*
+export BE_GLITCHTIP_KEY=*REDACTED*
+export MAPTILER_API_KEY=*REDACTED*
+EOF
+</code></pre>
+<p>This will hardcode the variables in the file according to the app
+<code>$USER</code> and <code>$UID</code>, which should already be set by your shell by default.
+The hardcoding is necessary for Step 3, when we load these environment
+variables as a different user.</p>
+<p><em>Note: paths here should be absolute - relative paths will not work in
+general.</em></p>
+<p><em>Note: <code>DBUS_SESSION_BUS_ADDRESS</code> should be set in principle be if you
+are logged in as that user - but in practise is not. This is needed for
+the deploy script to run <code>systemctl</code> in user-mode.</em></p>
+<p><em>Note: These variables don't strictly have to be defined in a file,
+it's just convenient for this illustration. You could supply them via
+other mechanisms.</em></p>
+<h3 id="step-2-setup-apache-config-with-elevated-privileges">Step 2: setup Apache config (with elevated privileges)<a class="headerlink" href="#step-2-setup-apache-config-with-elevated-privileges" title="Permanent link">#</a></h3>
+<p>This step requires elevated privileges, but as it is specific to this
+application it is not performed via Ansible.</p>
+<p>It assumes that:</p>
+<ul>
+<li>The root directory of the virtual host is at <code>$WWW_ROOT</code></li>
+<li>A symlink can be created at <code>$APP_ROOT</code> to the directory that
+  Apache should serve the application content from.</li>
+<li>A file <code>$VHOST_CONF</code> can be created which contains the Apache
+  configuration in the context of the application's Virtual host.</li>
+<li>The user <code>$USER</code> exists already, and its home directory is
+  accessible to the Apache user. (Typically this means that <code>~$USER</code>
+  home directory has the "execute" flag set allowing the <code>www-data</code>
+  user group or global access; perhaps by <code>chmod a+x ~$USER</code>.)</li>
+<li>The user has had linger mode enabled (<code>loginctl enable-linger
+$USER</code>) to ensure that its DBUS session starts on boot, for use by
+  user-mode systemd services.</li>
+</ul>
+<p>The steps:</p>
+<pre><code># source this file to get the shared configuration
+. $DEPLOY_ENV
+
+# Link the content to serve into place
+ln -sfn $GIT_WORKING/apps/front-end/dist/ $APP_ROOT
+
+# Configure reverse proxying, and symlink following.
+cat &gt; $VHOST_CONF &lt;&lt;EOF
+&lt;Directory $WWW_ROOT/..&gt;
+  Options FollowSymLinks Indexes
+&lt;/Directory&gt;
+ProxyPass /api http://localhost:$PROXY_PORT
+ProxyPassReverse /api http://localhost:$PROXY_PORT
+EOF
+
+systemctl reload apache2
+</code></pre>
+<h3 id="step-3-install-the-app-as-the-application-user">Step 3: install the app (as the application user)<a class="headerlink" href="#step-3-install-the-app-as-the-application-user" title="Permanent link">#</a></h3>
+<p>It assumes that:</p>
+<ul>
+<li>The public SSH key of <code>$USER</code> has been added as a deploy key for
+  the <a href="https://github.com/DigitalCommons/cwm-test-data/settings/keys"><code>cwm-test-data</code></a>
+  private repository.</li>
+<li>This key is used when connecting to github.com. We recommend configuring this in the
+  user's <code>~/.ssh/config</code> file, since you will may need fetch updates to the data on a regular
+  basis.</li>
+</ul>
+<p>The steps:</p>
+<pre><code># source this file to get the shared configuration
+. $DEPLOY_ENV
+
+# Create and populate the data directory (an example - the details may vary)
+# Amounts to a git clone --depth=1 git@github.com:DigitalCommons/cwm-test-data
+# Except it works when $GIT_WORKING exists already.
+mkdir -p $DATA_DIR
+cd $DATA_DIR
+git init
+git remote add origin git@github.com:DigitalCommons/cwm-test-data.git
+git fetch --depth=1 # --depth optional
+git checkout main
+
+# Create and deploy the application source code
+mkdir -p $GIT_WORKING
+
+cd $GIT_WORKING
+git init
+git remote add origin git@github.com:DigitalCommons/mykomap-monolith
+git fetch --depth=1 # --depth optional
+git checkout main
+
+
+./deploy.sh
+</code></pre>
+<p>The <code>deploy.sh</code> script will do the rest, including writing the <code>.env</code>
+files in the applications, which should never be stored in source control.</p>
+<h2 id="how-to-make-subsequent-updates">How to make subsequent updates<a class="headerlink" href="#how-to-make-subsequent-updates" title="Permanent link">#</a></h2>
+<p>After the initial install, deploying updates is simpler.</p>
+<p><em>Note: we assume <code>$DEPLOY_ENV</code> defines our environment, as before.</em></p>
+<p>Log in as the application user:</p>
+<pre><code>ssh $SERVER      # log-in as root
+su - $USER       # change to the target user
+</code></pre>
+<p>Then perform the update:</p>
+<pre><code>cd $GIT_WORKING  # change to the deployed directory
+. $DEPLOY_ENV    # set the configuration
+cd mykomap-monolith
+git pull         # typically you will need to update the source files in some way
+./deploy.sh      # run the deploy script
+</code></pre>
+<p>The <code>deploy.sh</code> script will do the rest, including writing the <code>.env</code>
+files in the applications, which should never be stored in source control.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>

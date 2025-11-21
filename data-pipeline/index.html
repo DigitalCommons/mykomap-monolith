@@ -1,0 +1,2209 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://digitalcommons.github.io/mykomap-monolith/data-pipeline/">
+      
+      
+        <link rel="prev" href="../config/">
+      
+      
+        <link rel="next" href="../deployment/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>Mykomap Data - Mykomap Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#mykomap-data" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mykomap Docs" class="md-header__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mykomap Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Mykomap Data
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mykomap Docs" class="md-nav__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mykomap Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-is-the-data-stored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where is the data stored?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-format-is-the-mykomap-data-stored-as" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What format is the Mykomap data stored as?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-is-the-format-like-this" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is the format like this?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-create-a-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to create a dataset.
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to create a dataset.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites-and-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites and process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites and process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-csv-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The CSV file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standardcsv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        standard.csv
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#locationsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        locations.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#searchablejson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        searchable.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items0json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/0.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items1json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/1.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items2json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/2.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items3json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/3.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="More details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aboutmd-mandatory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        about.md (mandatory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configjson-mandatory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config.json (mandatory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locationsjson-mandatory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        locations.json (mandatory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#searchablejson_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        searchable.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itemprops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        itemProps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="itemProps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        values
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#searchstring-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        searchString construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glossary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glossary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monorepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-admin-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versioning-and-releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-is-the-data-stored" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Where is the data stored?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-format-is-the-mykomap-data-stored-as" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What format is the Mykomap data stored as?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-is-the-format-like-this" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why is the format like this?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-to-create-a-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to create a dataset.
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How to create a dataset.">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites-and-process" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites and process
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites and process">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#configjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-csv-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The CSV file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#standardcsv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        standard.csv
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#locationsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        locations.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#searchablejson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        searchable.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items0json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/0.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items1json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/1.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items2json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/2.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items3json" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/3.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#more-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        More details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="More details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aboutmd-mandatory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        about.md (mandatory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configjson-mandatory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        config.json (mandatory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#locationsjson-mandatory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        locations.json (mandatory)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#searchablejson_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        searchable.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#itemprops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        itemProps
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="itemProps">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#values" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        values
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#searchstring-construction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        searchString construction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        items/
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glossary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Glossary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="mykomap-data">Mykomap Data<a class="headerlink" href="#mykomap-data" title="Permanent link">#</a></h1>
+<p>This aims to describe the Mykomap 4.x back-end data format, and the
+process for generating it.</p>
+<h2 id="where-is-the-data-stored">Where is the data stored?<a class="headerlink" href="#where-is-the-data-stored" title="Permanent link">#</a></h2>
+<p>Mykomap's data is stored in JSON files below a designated directory on
+the server.</p>
+<p>The back-end application needs to be configured with the path to this
+directory with an entry in <code>.env</code>:</p>
+<pre><code>SERVER_DATA_ROOT=/some/path
+</code></pre>
+<p>If this is not set, the default is to use the data in the back-end
+application's <code>test/data</code> directory - equivalent to setting:</p>
+<pre><code>SERVER_DATA_ROOT=test/data
+</code></pre>
+<p>There should be a dataset in there which is used for unit
+testing. Using this as the default means the back-end has a dataset
+available out of the box.</p>
+<blockquote>
+<p>[!NOTE]
+The <code>SERVER_DATA_ROOT</code> path can be relative, in which case it is
+relative to the current working directory of the
+application. Typically, when run from an <code>npm</code> run-script, this is
+the root back-end application directory.</p>
+</blockquote>
+<h2 id="what-format-is-the-mykomap-data-stored-as">What format is the Mykomap data stored as?<a class="headerlink" href="#what-format-is-the-mykomap-data-stored-as" title="Permanent link">#</a></h2>
+<p>The directory structure looks like this, in schematic form:</p>
+<pre><code>&lt;dataroot&gt;/
+           &lt;dataset X&gt;/
+                       about.md
+                       config.json
+                       locations.json
+                       searchable.json
+                       items/
+                             0.json
+                             ... &lt;more item files&gt; ...
+                             &lt;N&gt;.json
+           &lt;dataset Y&gt;/
+                       ... &lt;same files as above&gt; ...
+                       items/
+                             ... &lt;item files&gt; ...
+           ... &lt;more datasets&gt; ...
+</code></pre>
+<blockquote>
+<p>[!INFO]
+File names in the schematic above should be interpreted literally -
+except when enclosed in angle brackets, which means the name is
+symbolic.</p>
+</blockquote>
+<p>A brief synopsis of these files' structure and purpose:</p>
+<ul>
+<li><code>about.md</code>: A human readable description of the dataset, in <a href="https://en.wikipedia.org/wiki/Markdown">markdown</a>
+  format. It gets shown in the "about" side-bar panel of the map.</li>
+<li><code>config.json</code>: Meta-data for the dataset, such as property schema,
+  vocabulary definitions, and map configuration parameters goes here.</li>
+<li><code>locations.json</code>: An ordered list of longitude/latitude locations,
+  one per data item.</li>
+<li><code>searchable.json</code>: An ordered index of the searchable and filterable
+  item properties.</li>
+<li><code>items/*.json</code>: These files store the full information for each data
+  item.</li>
+</ul>
+<p>More details of these files can be found in the section below, under
+<a href="#more-details">More Details</a>.</p>
+<h2 id="why-is-the-format-like-this">Why is the format like this?<a class="headerlink" href="#why-is-the-format-like-this" title="Permanent link">#</a></h2>
+<p>The aims of this format's design are to:</p>
+<ul>
+<li>Support very large dataset sizes, of approaching 500 thousand items.</li>
+<li>Allow maximally fast responses to browsers loading and querying
+  these datasets via the API, by storing data in a form identical to
+  that being served to API clients.</li>
+<li>Leverage JSON where possible. This format has highly optimised
+  native support on browser platforms, whereas other formats such as
+  <a href="https://en.wikipedia.org/wiki/Comma-separated_values">CSV</a> usually cannot compete because they need to be parsed in
+  JavaScript - this usually results in more memory use and slower
+  parsing speeds.</li>
+<li>Avoid the need for a relational or triple-store database, which
+  comes with some overhead, both in resources and cognition.</li>
+<li>Minimise the verbosity of data so far as possible, such that file
+  sizes are not too large.</li>
+<li>"Keep It Simple" so far as possible, we want a format which is easy
+  to understand and work with - when it does not affect the above
+  goals.</li>
+<li>Build on the concepts and precedents of earlier Mykomap data. For
+  instance, we utilise <a href="https://en.wikipedia.org/wiki/Simple_Knowledge_Organization_System">SKOS</a> vocabularies and [QNames][qnames],
+  and we use more or less the same property definition and vocabulary
+  schema.</li>
+</ul>
+<p>In the first instance, when a map is loaded, we want to minimise the
+delay between opening a map link and the user seeing pins appear on
+the map. With a large number of pins, some sort of clustering of item
+locations is needed, and the clustering algorithm contributes the
+largest amount to that delay.</p>
+<p>We use [MapLibre][maplibre] to do this clustering, which uses a
+well-optimised algorithm. This library is based on the open source
+version of the commercial [MapBox][mapbox] library, and is much faster
+than [Leaflet][leaflet] with the
+<a href="https://github.com/Leaflet/Leaflet.markercluster">Leaflet.markercluster</a> plug-in that was used for
+earlier versions of Mykomap. Nevertheless, it can take a small number
+of seconds to load a file with half a million locations and then
+cluster them, yet alone when extra data is added.</p>
+<p>As main information needed up-front when loading a map are the pin
+locations, these are stored by themselves in a file <code>locations.json</code>
+as a minimised JSON array of coordinate pairs, without white-space and
+with a restricted number of decimal places. This can be sent verbatim
+as soon as the dataset ID is known.</p>
+<p>Item IDs are omitted from this <code>locations.json</code> file, which further
+minimises the size of the data. Instead of using IDs, dataset items
+are loaded in a predefined order and then identified within the
+context of the dataset by their index number. This has some
+consequences, however, described later.</p>
+<p>As most of the other information about the items will not be needed
+until a user starts to browse the pins on the map, loading this
+information is deferred. The full information for each dataset item is
+stored in a separate file for it, with a name constructed from the
+item index number (not the item ID - a consequence of the locations
+not having IDs included). JSON is also used here, but since these
+files are relatively small, they are indented for readability. A
+dataset item's ID can be found by looking in these files.</p>
+<p>After the locations, something which is also needed early on loading a map,</p>
+<p>Although typically much smaller and less urgently required than
+locations data, what's needed next when loading a map are the
+following:</p>
+<ul>
+<li>Vocabulary definitions, which is shown in the side-bar filters;</li>
+<li>The item property schema, which dictates how items should be
+  interpreted, searched, and displayed; and</li>
+<li>The map configuration settings, which dictate how the map is rendered.</li>
+</ul>
+<p>These are all stored as JSON and indented for readability in <code>config.json</code>.</p>
+<p>Finally, there needs to be an index for filtering by category and text
+searches. This is stored as JSON in <code>searchable.json</code>.</p>
+<p>As this file can be a lot of items, this file can become quite large
+and we need to be parsimonious with formatting characters. Therefore
+is not indented, and uses arrays rather than objects, to avoid
+repeating the keys for every item. However, for the sake of human
+readability and inspection, it is broken up such that headers are
+defined on the first line, and each subsequent line is data for one
+item, in the defined order. The result reads somewhat like a CSV file.</p>
+<h2 id="how-to-create-a-dataset">How to create a dataset.<a class="headerlink" href="#how-to-create-a-dataset" title="Permanent link">#</a></h2>
+<p>Typically, the data for datasets is supplied in some format defined by
+the supplier. Common examples are spreadsheets; CSV or TSV files; and
+JSON, possibly via some API over the web; or in some cases sent
+manually by email.</p>
+<p>In addition to the data itself, we need definitions of the semantics
+and syntax within the data - such as the taxonomies, any mark-up or
+encoding schemes, and identifiers used. These are typically sent by
+email... or, in the worst case, we must try to infer them from the
+data.</p>
+<p>It is a requirement that the data is logically tabular - a sequence of
+items sharing the same set of properties - and that each dataset item
+representing an entry in the map or directory has a unique identifier
+within the dataset.</p>
+<p>We then need to transform this into the prerequisites for the <code>dataset
+import</code> tool, which generates Mykomap datasets.</p>
+<h3 id="prerequisites-and-process">Prerequisites and process<a class="headerlink" href="#prerequisites-and-process" title="Permanent link">#</a></h3>
+<p>There are two specific files needed as prerequisites for <code>dataset import</code>.</p>
+<ul>
+<li>A CSV file with a compatible suitable schema, including a row for
+  each dataset item.</li>
+<li>A <code>config.json</code> file containing all the required metadata.</li>
+</ul>
+<p>More about these below, but the latter is typically the same one used
+in the dataset - in fact the <code>dataset</code> tool copies it into place in
+the output folder.</p>
+<p>The output is a new folder, containing the dataset files. The name of
+this folder is interpreted as the (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">URI-component encoded</a>)
+dataset ID when it is written or copied into the root data directory
+(set by <code>SERVER_DATA_ROOT</code> in the back-end's <code>.env</code> file.)</p>
+<blockquote>
+<p>[!INFO]
+The <code>dataset</code> command will not write the data if the output
+directory already exists. It is up to you to delete a directory
+first if you want to overwrite it - this to make it harder to
+accidentally overwrite something else with the data.</p>
+</blockquote>
+<p>The <code>dataset</code> tool is part of the <code>back-end</code> application, and can be
+run from the <code>apps/back-end</code> project directory using <code>npm</code>. The
+commands supports various subcommands, and the relevant one for
+importing data is <code>import</code>.</p>
+<p>It can be used like this:</p>
+<pre><code>npm run dataset import $CONFIG $CSV $OUTPUT_DIR
+</code></pre>
+<p>Where:</p>
+<ul>
+<li><code>$CONFIG</code> should be the path to the <code>config.json</code> file,</li>
+<li><code>$CSV</code> should be the path to the CSV file,</li>
+<li><code>$OUTPUT_DIR</code> should be the path to write the output dataset files to.</li>
+</ul>
+<blockquote>
+<p>[!INFO]
+More details can be obtained by running the command</p>
+<pre><code>npm run dataset -- import --help
+</code></pre>
+</blockquote>
+<h4 id="configjson"><code>config.json</code><a class="headerlink" href="#configjson" title="Permanent link">#</a></h4>
+<p>The full schema of this file is outside the scope of this document,
+for the sake of keeping it fairly short. It's also likely to evolve
+from the exact schema at the time of writing.</p>
+<p>For now I will just note that some of the information needed for
+<code>config.json</code> must be composed manually; and some, those parts
+describing the vocabularies, can be obtained from the <code>open-data</code>
+pipeline's output file, <code>vocabs.json</code>.</p>
+<blockquote>
+<p>[!NOTE]
+Beware that the name of this file is configurable and may
+vary from case to case, although the default is <code>vocabs.json</code>.</p>
+<p>[!INFO]
+The format of <code>vocabs.json</code> files are very similar (if historically
+not quite identical) to <code>config.json</code>'s <code>vocabs</code> attribute. The
+information is composed from one or more existing <a href="https://en.wikipedia.org/wiki/Simple_Knowledge_Organization_System">SKOS</a>
+vocabularies.</p>
+</blockquote>
+<p>Another important function of the <code>config.json</code> file is to describe
+the properties of the dataset items, which is done in the <code>itemProps</code>
+attribute.</p>
+<p>And finally, these descriptions include an attribute <code>from</code> which
+identifies which CSV header to source the property value from. This is
+for the benefit of the <code>dataset</code> command.</p>
+<h4 id="the-csv-file">The CSV file<a class="headerlink" href="#the-csv-file" title="Permanent link">#</a></h4>
+<p>The format of this file is essentially dictated by <code>config.json</code>'s
+<code>itemProps.&lt;item&gt;.from</code> attribute, as described above. The CSV may
+have more headers than this - these will be ignored.</p>
+<p>CSV fields are interpreted depending on the other attributes of the
+<code>itemProps</code> property descriptions. See [More Details][#more-details]
+below.</p>
+<h4 id="standardcsv"><code>standard.csv</code><a class="headerlink" href="#standardcsv" title="Permanent link">#</a></h4>
+<p>Each of the datasets in the <a href="https://github.com/DigitalCommons/open-data/">open-data</a> project output a CSV file
+containing the data in a normalised form, with added or refined
+information (typically geocoded locations). This is typically what we
+use as input to the <code>dataset import</code> command.</p>
+<p>This CSV file has a set of standard headers. It can also have any
+number of arbitrary optional extras. For historical reasons this
+schema is called the "Standard CSV format", and the file is called
+<code>standard.csv</code></p>
+<p>Optionally <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a> data can also be generated by <a href="https://github.com/DigitalCommons/open-data/">open-data</a>
+datasets, but this is not useful for <code>dataset import</code>.</p>
+<blockquote>
+<p>[!INFO]
+This step is performed by code in the <a href="https://github.com/DigitalCommons/open-data/">open-data</a> and <a href="https://github.com/DigitalCommons/se-open-data/">se-open-data</a>
+projects, and typically published on http://data.digitalcommons.coop/</p>
+</blockquote>
+<p>In the current incarnation of the schema, the standard headers are:</p>
+<ul>
+<li>Identifier</li>
+<li>Name</li>
+<li>Description</li>
+<li>Organisational Structure</li>
+<li>Primary Activity</li>
+<li>Activities</li>
+<li>Street Address</li>
+<li>Locality</li>
+<li>Region</li>
+<li>Postcode</li>
+<li>Country ID</li>
+<li>Territory ID</li>
+<li>Website</li>
+<li>Phone</li>
+<li>Email</li>
+<li>Twitter</li>
+<li>Facebook</li>
+<li>Companies House Number</li>
+<li>Qualifiers</li>
+<li>Membership Type</li>
+<li>Latitude</li>
+<li>Longitude</li>
+<li>Geo Container</li>
+<li>Geo Container Confidence</li>
+<li>Geo Container Latitude</li>
+<li>Geo Container Longitude</li>
+<li>Geocoded Address</li>
+</ul>
+<p>However, any given dataset can have arbitrary additional headers added
+when convenient.</p>
+<blockquote>
+<p>[!INFO]
+More of the gory details of the semantics are embedded as comments in the code and data
+<a href="https://github.com/DigitalCommons/se-open-data/blob/master/lib/se_open_data/csv/schemas.rb">here</a>.</p>
+</blockquote>
+<p>Many of these headers are in fact somewhat specific to the ICA and
+Co-ops UK datasets, and often left blank. The key ones for most
+purposes are:</p>
+<ul>
+<li><em>Identifier</em>: an arbitrary but unique (to the dataset) string.</li>
+<li><em>Name</em>: an arbitrary short string; displayed as pin names.</li>
+<li><em>Street Address</em>: an arbitrary string which can be combined into an
+  address for geocoding, if necessary, and/or displayed on pin pop-ups.</li>
+<li><em>Locality</em>: ditto; combined into the address.</li>
+<li><em>Region</em>: ditto; combined into the address.</li>
+<li><em>Postcode</em>: ditto; combined into the address, and/or used as for geocoding.</li>
+<li><em>Country ID</em>: ditto; combined into the address, and/or used as a filter category.</li>
+<li><em>Latitude</em>: a decimal number; indicates a manually supplied location.</li>
+<li><em>Longitude</em>: a decimal number; indicates a manually supplied location.</li>
+<li><em>Geo Container</em>: a unique URI representing the location; typically
+  an open-street-map location URL.</li>
+<li><em>Geo Container Confidence</em>: a decimal; interpreted as a percentage
+  that indicates the geocoding confidence.</li>
+<li><em>Geo Container Latitude</em>: a decimal number; indicates a geocoded
+  location.</li>
+<li><em>Geo Container Longitude</em>: a decimal number; indicates a geocoded location.</li>
+<li><em>Geocoded Address</em>: an arbitrary string which records the (typically
+  cleaned up) address which was actually passed to the geocoder; used
+  for diagnosing problems with geocoded locations.</li>
+</ul>
+<p>The only strictly mandatory one is <em>Identifier</em>. Location coordinates
+of some sort is obviously needed for a marker to appear on the map,
+and a <em>Name</em> is needed for it to be identifiable.</p>
+<h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">#</a></h3>
+<p>Here's a specific example of the process just described. It's based on
+the dataset currently in the back-end test data.</p>
+<p>First, the CSV data:</p>
+<pre><code>Identifier,Name,Desc,Address,Websites,Activity,Other Activities,Latitude,Longitude,Geocoded Latitude,Geocoded Longitude,Validated
+aaa,&quot;Apple Co-op&quot;,We grow fruit.&quot;,&quot;1 Apple Way, Appleton&quot;,http://apple.coop,AM130,,0,0,51.6084367,-3.6547778,true
+bbb,&quot;Banana Co&quot;,&quot;We straighten bananas.&quot;,&quot;1 Banana Boulevard, Skinningdale&quot;,http://banana.com,AM60,AM70;AM120,0,0,55.9646979,-3.1733052,false
+ccc,&quot;The Cabbage Collective&quot;,&quot;We are artists.&quot;,&quot;2 Cabbage Close, Caulfield&quot;,http://cabbage.coop;http://cabbage.com,AM60,AM130,,,54.9744687,-1.6108945,true
+ddd,&quot;The Chateau&quot;,&quot;The Chateau is not a place, it is a state of mind.&quot;,,,,,,,,,
+</code></pre>
+<p>Or in a more readable table format:</p>
+<table>
+<thead>
+<tr>
+<th>Identifier</th>
+<th>Name</th>
+<th>Desc</th>
+<th>Address</th>
+<th>Websites</th>
+<th>Activity</th>
+<th>Other Activities</th>
+<th>Latitude</th>
+<th>Longitude</th>
+<th>Geocoded Latitude</th>
+<th>Geocoded Longitude</th>
+<th>Validated</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>aaa</td>
+<td>Apple Co-op</td>
+<td>We grow fruit.</td>
+<td>1 Apple Way, Appleton</td>
+<td>http://apple.coop</td>
+<td>AM130</td>
+<td></td>
+<td>0</td>
+<td>0</td>
+<td>51.6084367</td>
+<td>-3.6547778</td>
+<td>true</td>
+</tr>
+<tr>
+<td>bbb</td>
+<td>Banana Co</td>
+<td>We straighten bananas.</td>
+<td>1 Banana Boulevard, Skinningdale</td>
+<td>http://banana.com</td>
+<td>AM60</td>
+<td>AM70;AM120</td>
+<td>0</td>
+<td>0</td>
+<td>55.9646979</td>
+<td>-3.1733052</td>
+<td>false</td>
+</tr>
+<tr>
+<td>ccc</td>
+<td>The Cabbage Collective</td>
+<td>We are artists.</td>
+<td>2 Cabbage Close, Caulfield</td>
+<td>http://cabbage.coop;http://cabbage.com</td>
+<td>AM60</td>
+<td>AM130</td>
+<td></td>
+<td></td>
+<td>54.9744687</td>
+<td>-1.6108945</td>
+<td>true</td>
+</tr>
+<tr>
+<td>ddd</td>
+<td>The Chateau</td>
+<td>The Chateau is not a place, it is a state of mind.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Now, the <code>config.json</code>. We can bend the strict JSON format here to use
+comments to annotate it, but in the real one comments would upset the
+JSON parser, so omit them.</p>
+<pre><code>{
+  &quot;prefixes&quot;: {
+    // There's just one prefix defined here, because just one vocabulary
+    &quot;https://dev.lod.coop/essglobal/2.1/standard/activities-modified/&quot;: &quot;am&quot;
+  },
+  &quot;languages&quot;: [&quot;en&quot;], // Only one language supported: English
+  &quot;ui&quot;: { &quot;directory_panel_field&quot;: &quot;activity&quot; }, // Sets the default panel to show
+  &quot;vocabs&quot;: {
+    &quot;am&quot;: { // This is the Activities vocabulary
+      &quot;en&quot;: { // The English title and term definitions follow
+        &quot;title&quot;: &quot;Activities (Modified)&quot;,
+        &quot;terms&quot;: {
+          &quot;AM10&quot;: &quot;Arts, Media, Culture &amp; Leisure&quot;,
+          &quot;AM20&quot;: &quot;Campaigning, Activism &amp; Advocacy&quot;,
+          &quot;AM30&quot;: &quot;Community &amp; Collective Spaces&quot;,
+          &quot;AM40&quot;: &quot;Education&quot;,
+          &quot;AM50&quot;: &quot;Energy&quot;,
+          &quot;AM60&quot;: &quot;Food&quot;,
+          &quot;AM70&quot;: &quot;Goods &amp; Services&quot;,
+          &quot;AM80&quot;: &quot;Health, Social Care &amp; Wellbeing&quot;,
+          &quot;AM90&quot;: &quot;Housing&quot;,
+          &quot;AM100&quot;: &quot;Money &amp; Finance&quot;,
+          &quot;AM110&quot;: &quot;Nature, Conservation &amp; Environment&quot;,
+          &quot;AM120&quot;: &quot;Reduce, Reuse, Repair &amp; Recycle&quot;,
+          &quot;AM130&quot;: &quot;Agriculture&quot;,
+          &quot;AM140&quot;: &quot;Industry&quot;,
+          &quot;AM150&quot;: &quot;Utilities&quot;,
+          &quot;AM160&quot;: &quot;Transport&quot;
+        }
+      }
+      // ... similar definitions for other languages would go here,
+      // using the same structure.
+    }
+  },
+  &quot;itemProps&quot;: { // This defines the properties dataset items should have
+    &quot;id&quot;: { // A unique identifier. Mandatory for the dataset to be usable.
+      &quot;type&quot;: &quot;value&quot;,      // Single valued
+      &quot;from&quot;: &quot;Identifier&quot;, // Which CSV field to read it from
+      &quot;strict&quot;: true        // Don't tolerate nulls or blanks.
+                            // Format is &quot;string&quot; by default.
+    },
+    &quot;name&quot;: { // The name of the item
+      &quot;type&quot;: &quot;value&quot;,
+      &quot;search&quot;: true, // we want this to be text-searchable
+      &quot;from&quot;: &quot;Name&quot;
+    },
+    &quot;manlat&quot;: {
+      &quot;type&quot;: &quot;value&quot;,
+      &quot;as&quot;: &quot;number&quot;,    // Convert these values into numbers when loading CSV
+      &quot;nullable&quot;: true,  // Allow nulls
+      &quot;from&quot;: &quot;Latitude&quot;
+    },
+    &quot;manlng&quot;: {
+      &quot;type&quot;: &quot;value&quot;,
+      &quot;as&quot;: &quot;number&quot;,
+      &quot;nullable&quot;: true,
+      &quot;from&quot;: &quot;Longitude&quot;
+    },
+    &quot;lat&quot;: {
+      &quot;type&quot;: &quot;value&quot;,
+      &quot;as&quot;: &quot;number&quot;,
+      &quot;nullable&quot;: true,
+      &quot;from&quot;: &quot;Geocoded Latitude&quot;
+    },
+    &quot;lng&quot;: {
+      &quot;type&quot;: &quot;value&quot;,
+      &quot;as&quot;: &quot;number&quot;,
+      &quot;nullable&quot;: true,
+      &quot;from&quot;: &quot;Geocoded Longitude&quot;
+    },
+    &quot;address&quot;: {
+      &quot;type&quot;: &quot;value&quot;,
+      &quot;filter&quot;: true,
+      &quot;from&quot;: &quot;Address&quot;
+    },
+    &quot;activity&quot;: {
+      &quot;type&quot;: &quot;vocab&quot;,   // A single-valued identifier from a vocabulary
+      &quot;uri&quot;: &quot;am:&quot;,      // Specifically, this vocabulary
+      &quot;from&quot;: &quot;Activity&quot;
+    },
+    &quot;otherActivities&quot;: {
+      &quot;type&quot;: &quot;multi&quot;,   // Multi-valued
+      &quot;of&quot;: {
+        &quot;type&quot;: &quot;vocab&quot;, // Values are identifiers from a vocabulary
+        &quot;uri&quot;: &quot;am:&quot;     // Specifically, this one
+      },
+      &quot;from&quot;: &quot;Other Activities&quot; // When interpreting CSV, by default a
+                                 // semi-colon is used as a delimiter.
+                                 // Literal semi-colons need to be escaped
+                                 // with a backslash.
+    },
+    &quot;websites&quot;: {
+      &quot;type&quot;: &quot;multi&quot;,   // Multi-valued
+      &quot;of&quot;: {
+        &quot;type&quot;: &quot;value&quot;  // Values are strings
+      },
+      &quot;from&quot;: &quot;Websites&quot;
+    },
+    &quot;validated&quot;: {
+      &quot;type&quot;: &quot;value&quot;,    // Single valued
+      &quot;as&quot;: &quot;boolean&quot;,    // Convert values to booleans, or null if they're too &quot;weird&quot;.
+                          // Non-weird means: &quot;true&quot;, &quot;yes&quot;, &quot;y&quot;, &quot;t&quot; or &quot;1&quot; count as true,
+                          // and &quot;false&quot;, &quot;no&quot;, &quot;n&quot;, &quot;f&quot; or &quot;0&quot; as false. (Ignoring case
+                          // in both cases.)
+      &quot;from&quot;: &quot;Validated&quot;
+    }
+  }
+}
+</code></pre>
+<p>Given these files as inputs, <code>data.csv</code> and <code>config.json</code>, and assuming:</p>
+<ul>
+<li>these files are in <code>/tmp/</code>, which is writable</li>
+<li>there is no dierctory <code>/tmp/out</code> existing</li>
+<li>the current directory is <code>apps/back-end/</code></li>
+</ul>
+<p>...we can then run the following to generate a dataset in <code>/tmp/out/</code>:</p>
+<pre><code>npm run dataset import /tmp/config.json /tmp/data.csv /tmp/out
+</code></pre>
+<p>We should then get a dataset written to <code>/tmp/out/</code>.</p>
+<p>Listing that would get:</p>
+<pre><code>$ find /tmp/out -type f
+
+ /tmp/out/config.json
+ /tmp/out/items
+ /tmp/out/items/0.json
+ /tmp/out/items/1.json
+ /tmp/out/items/2.json
+ /tmp/out/items/3.json
+ /tmp/out/locations.json
+ /tmp/out/searchable.json
+</code></pre>
+<p>...where <code>config.json</code> should be identical to the above. The other files' contents would be as below....</p>
+<h4 id="locationsjson"><code>locations.json</code><a class="headerlink" href="#locationsjson" title="Permanent link">#</a></h4>
+<pre><code>[[-3.65478,51.60844],[-3.17331,55.9647],[-1.61089,54.97447],null]
+</code></pre>
+<h4 id="searchablejson"><code>searchable.json</code><a class="headerlink" href="#searchablejson" title="Permanent link">#</a></h4>
+<pre><code>{   &quot;itemProps&quot;:
+[&quot;name&quot;,&quot;address&quot;,&quot;searchString&quot;],
+    &quot;values&quot;:[
+[&quot;Apple Co-op&quot;,&quot;1 Apple Way, Appleton&quot;,&quot;apple co op&quot;],
+[&quot;Banana Co&quot;,&quot;1 Banana Boulevard, Skinningdale&quot;,&quot;banana co&quot;],
+[&quot;The Cabbage Collective&quot;,&quot;2 Cabbage Close, Caulfield&quot;,&quot;the cabbage collective&quot;],
+[&quot;The Chateau&quot;,&quot;&quot;,&quot;the chateau&quot;]
+]}
+</code></pre>
+<h4 id="items0json"><code>items/0.json</code><a class="headerlink" href="#items0json" title="Permanent link">#</a></h4>
+<pre><code>{
+  &quot;id&quot;: &quot;aaa&quot;,
+  &quot;name&quot;: &quot;Apple Co-op&quot;,
+  &quot;manlat&quot;: 0,
+  &quot;manlng&quot;: 0,
+  &quot;lat&quot;: 51.60844,
+  &quot;lng&quot;: -3.65478,
+  &quot;address&quot;: &quot;1 Apple Way, Appleton&quot;,
+  &quot;activity&quot;: &quot;AM130&quot;,
+  &quot;otherActivities&quot;: [],
+  &quot;websites&quot;: [
+    &quot;http://apple.coop&quot;
+  ],
+  &quot;validated&quot;: true
+}
+</code></pre>
+<h4 id="items1json"><code>items/1.json</code><a class="headerlink" href="#items1json" title="Permanent link">#</a></h4>
+<pre><code>{
+  &quot;id&quot;: &quot;bbb&quot;,
+  &quot;name&quot;: &quot;Banana Co&quot;,
+  &quot;manlat&quot;: 0,
+  &quot;manlng&quot;: 0,
+  &quot;lat&quot;: 55.9647,
+  &quot;lng&quot;: -3.17331,
+  &quot;address&quot;: &quot;1 Banana Boulevard, Skinningdale&quot;,
+  &quot;activity&quot;: &quot;AM60&quot;,
+  &quot;otherActivities&quot;: [
+    &quot;AM70&quot;,
+    &quot;AM120&quot;
+  ],
+  &quot;websites&quot;: [
+    &quot;http://banana.com&quot;
+  ],
+  &quot;validated&quot;: false
+}
+</code></pre>
+<h4 id="items2json"><code>items/2.json</code><a class="headerlink" href="#items2json" title="Permanent link">#</a></h4>
+<pre><code>{
+  &quot;id&quot;: &quot;ccc&quot;,
+  &quot;name&quot;: &quot;The Cabbage Collective&quot;,
+  &quot;manlat&quot;: null,
+  &quot;manlng&quot;: null,
+  &quot;lat&quot;: 54.97447,
+  &quot;lng&quot;: -1.61089,
+  &quot;address&quot;: &quot;2 Cabbage Close, Caulfield&quot;,
+  &quot;activity&quot;: &quot;AM60&quot;,
+  &quot;otherActivities&quot;: [
+    &quot;AM130&quot;
+  ],
+  &quot;websites&quot;: [
+    &quot;http://cabbage.coop&quot;,
+    &quot;http://cabbage.com&quot;
+  ],
+  &quot;validated&quot;: true
+}
+</code></pre>
+<h4 id="items3json"><code>items/3.json</code><a class="headerlink" href="#items3json" title="Permanent link">#</a></h4>
+<pre><code>{
+  &quot;id&quot;: &quot;ddd&quot;,
+  &quot;name&quot;: &quot;The Chateau&quot;,
+  &quot;manlat&quot;: null,
+  &quot;manlng&quot;: null,
+  &quot;lat&quot;: null,
+  &quot;lng&quot;: null,
+  &quot;address&quot;: &quot;&quot;,
+  &quot;activity&quot;: null,
+  &quot;otherActivities&quot;: [],
+  &quot;websites&quot;: [],
+  &quot;validated&quot;: false
+}
+</code></pre>
+<h2 id="more-details">More details<a class="headerlink" href="#more-details" title="Permanent link">#</a></h2>
+<p>Here we go into more detail about the dataset files and their structure.</p>
+<h3 id="datasets">Datasets<a class="headerlink" href="#datasets" title="Permanent link">#</a></h3>
+<p>At the top level below <code>&lt;dataroot&gt;</code>, which is whatever
+<code>SERVER_DATA_ROOT</code> has been configured with, there are zero or more
+directories: one for each dataset. All the data for a dataset is
+contained within its dataset directory.</p>
+<p>The names of the directories are intepreted as the dataset IDs,
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent">URI-component encoded</a> to ensure that they
+are well-formed directory names: characters like "/" are encoded as
+"%2F", for instance.</p>
+<blockquote>
+<p>[!NOTE]
+The data inside a dataset directory does not refer to its own ID, so
+the directory can be renamed freely without breaking the data
+structure within.</p>
+</blockquote>
+<p>Inside these top-level directories are a number of mandatory data
+files, and a sub-directory named <code>items</code> which contains a data file
+for each of the dataset's items.</p>
+<h3 id="aboutmd-mandatory"><code>about.md</code> (mandatory)<a class="headerlink" href="#aboutmd-mandatory" title="Permanent link">#</a></h3>
+<p>This file contains a free-form human-readable description of the
+dataset in Markdown format.</p>
+<p>It will be shown in the "about" panel of the map when this dataset is
+selected. You can put anything you like in here, but you should keep
+this viewing context in mind.</p>
+<blockquote>
+<p>[!WARNING] Currently there is no localisation support for this file,
+this should be added in future.</p>
+</blockquote>
+<h3 id="configjson-mandatory"><code>config.json</code> (mandatory)<a class="headerlink" href="#configjson-mandatory" title="Permanent link">#</a></h3>
+<p>This is a JSON data file that describes:</p>
+<ul>
+<li>the properties shared by dataset item, and the mapping to this from
+  CSV columns,</li>
+<li>vocabularies and localisations thereof used in the data (AKA taxonomies),</li>
+<li>and map configuration details.</li>
+</ul>
+<p>The schema and semantics of this file is more complex than the other
+files. The formal specification is defined by the <code>ConfigData</code> type
+contract in <a href="../libs/common/src/api/contract.ts"><code>contract.ts</code></a> - refer to that for the full
+details of nested properties.</p>
+<p>Here we list the top-level elements and their purpose.</p>
+<blockquote>
+<p>[!WARNING] Although correct at the time of writing, this is subject
+to change.</p>
+</blockquote>
+<ul>
+<li><code>prefixes</code>: An object mapping <a href="https://en.wikipedia.org/wiki/Simple_Knowledge_Organization_System">SKOS</a> vocabulary URIs to the
+  abbreviations used in [QNames][qnames] ("qualified names") in the
+  rest of the file. QNames are a mechanism used in both
+  <a href="https://en.wikipedia.org/wiki/RDF/XML">RDF/XML</a> and <a href="https://en.wikipedia.org/wiki/Turtle_(syntax)">Turtle</a> file formats for encoding
+  <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">RDF</a> linked data</li>
+<li><code>languages</code>: An array of two-character <a href="https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes">ISO-639-1</a> codes.
+  It enumerates the languages that are supported by the vocabularies,
+  defined in the <code>vocabs</code> property. There should be at least one
+  element. The first element is assumed to be the default language to use.</li>
+<li><code>ui</code>: A collection of user-interface settings for the map when
+  showing this dataset. For example: the side panel to show by
+  default. These are likely to change, and not strictly necessary for
+  generating a dataset.</li>
+<li>
+<p><code>itemProps</code>: An object defining the properties required for each
+  data item. The keys define the property IDs, and the values their
+  definitions, which are sub-objects. A non-exhaustive list of the
+  most important properties of dataset-item property definitions are:</p>
+</li>
+<li>
+<p><code>type</code>: Required, indicates the basic property type, and can be one of the following:</p>
+<ul>
+<li><code>"value"</code>, this property represents a single literal strings;</li>
+<li><code>"vocab"</code>, this property represents a single identifier from a
+  specific vocabulary defined in this file;</li>
+<li><code>"multi"</code>, this property represents a multi-valued property,
+  containing instances of either <code>vocab</code> or <code>value</code>.</li>
+</ul>
+</li>
+<li><code>of</code>: Required for <code>"multi"</code> properties - defines the type of
+    the multiple values. Can be <code>"value"</code> or <code>"vocab"</code>.</li>
+<li><code>filter</code>: Optional, indicates if the property should be
+    filterable; boolean, defaults to false.</li>
+<li><code>search</code>: Optional, indicates if the property should be
+    text-searchable; boolean, defaults to false.</li>
+<li><code>from</code>: Optional, used when importing datasets from CSV. It
+    indicates the name of a CSV column header to use as the source for
+    this field. If absent, this field will not get populated by the importer.</li>
+<li><code>nullable</code>: Optional, indicates whether null values are permitted
+    in the data without triggering an error. (Note that for CSV data,
+    an empty field counts as null.) Boolean, defaults to true.</li>
+<li><code>strict</code>: Optional, indicates whether to be sloppy or strict when interpreting CSV data.</li>
+<li>
+<p><code>as</code>: Optional, hints on the interpretation of data when converting from CSV.
+    Can be one of:</p>
+<ul>
+<li><code>"string"</code>: interpret as a string.</li>
+<li><code>"boolean"</code>: interpret as a boolean.</li>
+<li><code>"number"</code>: interpret as a number.</li>
+</ul>
+</li>
+<li>
+<p><code>vocabs</code>: An object defining the vocabularies used in the vocab
+  properties of dataset items. Keys are vocabulary abbreviations as
+  defined in <code>prefixes</code>. They map to a vocabulary definition for each
+  language - keyed by a language code defined in <code>languages</code>. Each
+  vocabulary definition is in the context of that language, and has a
+  title for the vocabulary and a mapping from term IDs to term labels
+  for that language. All this is to allow identifiers representing
+  vocabulary terms (typically IDs, [QNames][qnames], or full URIs)
+  into localised labels. This useful both for interpreting dataset item
+  properties, but also localisation of the user interface.</p>
+</li>
+</ul>
+<h3 id="locationsjson-mandatory"><code>locations.json</code> (mandatory)<a class="headerlink" href="#locationsjson-mandatory" title="Permanent link">#</a></h3>
+<p>This is a JSON data file that contains an array of locations, one for
+each item in the dataset.</p>
+<p>The order of this array is significant. The Nth item in the locations
+array represents the location of the Nth item in the dataset. There
+must be one item in the array for each item in the dataset.</p>
+<p>Each location is represented by an array of two floating point
+coordinates:</p>
+<pre><code>[&lt;longitude&gt;, &lt;latitude&gt;],
+</code></pre>
+<p>Or, if there is no location for that item, just a null as a
+placeholder:</p>
+<pre><code>null,
+</code></pre>
+<blockquote>
+<p>[!NOTE]
+Typically, the coordinates stored in the array only use just enough
+decimal places to identify a street address on the map uniquely
+throughout the world and no more: five. This is avoid the file from
+becoming unnecessarily big; JSON floating point representations can
+be quite long.</p>
+<p>For similar reasons, all white-space and newlines are omitted. This
+will make human inspection of very large files somewhat awkward but
+this is considered worth the inconvenience. If necessary the file
+can be piped through a tool like <code>jq</code> or <code>sed</code> to unpack it for
+inspection.</p>
+</blockquote>
+<h3 id="searchablejson_1"><code>searchable.json</code><a class="headerlink" href="#searchablejson_1" title="Permanent link">#</a></h3>
+<p>This is a JSON data file that contains an index of the searchable
+properties of the dataset items.</p>
+<p>The formal specification of this file, such that it exists, is defined
+in the source code currently.</p>
+<p>In brief: it is a JSON object with two properties:</p>
+<ul>
+<li><code>itemProps</code>, a list of property IDs, and</li>
+<li><code>values</code>, a list of property value arrays.</li>
+</ul>
+<p>Like this:</p>
+<pre><code>{
+  &quot;itemProps&quot;: [
+    ...
+  ],
+  &quot;values&quot;: [
+    ...
+  ]
+}
+</code></pre>
+<blockquote>
+<p>[!INFO]
+Note, this example is indented for readability, but the actual file is
+somewhat minimised and omits superfluous white-space. <code>itemProps</code> is
+inserted on the first line, and subsequent lines define items in the
+values array, one per line in the predefined order.</p>
+</blockquote>
+<h3 id="itemprops"><code>itemProps</code><a class="headerlink" href="#itemprops" title="Permanent link">#</a></h3>
+<p><code>itemProps</code> defines how to interpret the value arrays. For example:</p>
+<pre><code>"itemProps": [
+  "country_id",
+  "primary_activity",
+  "typology",
+  "data_sources",
+  "searchString"
+],
+...
+</code></pre>
+<p>The elements refer to the property IDs defined in <code>config.json</code>.</p>
+<p>In this case, this indicates that there are four properties which can
+be searched by drop-down filter.</p>
+<p>The fifth element <code>searchString</code> is special: it's not a real property
+of the dataset item, but synthesised from them; and is always present
+(if only as an empty string). It represents the text-searchable
+content of the dataset item, normalised to punctuation-free lower case
+words.</p>
+<h4 id="values"><code>values</code><a class="headerlink" href="#values" title="Permanent link">#</a></h4>
+<p>The <code>values</code> array must contain one element for each of the dataset
+items.</p>
+<p>The order of the <code>values</code> array is significant: the Nth item of the
+<code>values</code> array corresponds to the Nth dataset item.</p>
+<p>Each element of <code>values</code> is an array of property values the same size
+as the <code>itemProps</code> array. For instance:</p>
+<pre><code>...
+"values": [
+  [
+    "GB",
+    "ICA210",
+    "BMT20",
+    ["DC", "CUK"],
+    "housing 1 west street sheffield s1 2ab uk apples coop"
+  ],
+  ...
+
+]
+</code></pre>
+<p>In this example, the first dataset item has a <code>country_id</code> of <code>"GB"</code>,
+a <code>primary_activity</code> of <code>"ICA212"</code>, and so on.</p>
+<p>The <code>searchString</code> text is the last element.</p>
+<h4 id="searchstring-construction"><code>searchString</code> construction<a class="headerlink" href="#searchstring-construction" title="Permanent link">#</a></h4>
+<p>To illustrate where <code>searchString</code> comes from, consider an example
+case where text-searchable properties have been configured in
+<code>config.json</code> to be:</p>
+<ul>
+<li><code>activities</code>,</li>
+<li><code>address</code> and</li>
+<li><code>name</code>.</li>
+</ul>
+<p>These must be valid dataset item properties of course, but don't
+necessarily need to be properties listed in <code>itemProps</code>.</p>
+<p>Let's say the values of those properties are:</p>
+<ul>
+<li><code>"ICA210"</code> - an activity ID which would be expanded to "Housing" in English;</li>
+<li><code>"1 West Street, Sheffield S1 2AB, UK"</code> (an address), and</li>
+<li><code>"Apples Co-op"</code> (the organisation name).</li>
+</ul>
+<p>The <code>searchString</code> value will be those values concatenated, with
+punctuation removed and text down-cased, like this:</p>
+<blockquote>
+<p>housing 1 west street sheffield s1 2ab uk apples coop</p>
+</blockquote>
+<p>This means that a search for "housing" or "west street" will match.</p>
+<blockquote>
+<p>[!WARNING]
+This illustration assumes vocab term ID are expanded into English,
+which a) may not be implemented yet, and b) obviously won't support
+multi-lingual text searches. This may be addressed in future. Also,
+the type of matching for multiple words may be adjusted.</p>
+</blockquote>
+<h3 id="items"><code>items/</code><a class="headerlink" href="#items" title="Permanent link">#</a></h3>
+<p>This directory contains one file for each dataset item. The files are
+named according to the item index, with a <code>.json</code> suffix. Their base
+names are decimal integers, starting with zero. Therefore <code>0.json</code> is
+the file for the first dataset item, <code>1.json</code> the second, and so on.</p>
+<p>Each file contains a JSON object mapping all of the defined dataset
+item property IDs to values.</p>
+<p>There must be an <code>id</code> property, which is the ID of the item, whose
+format is determined by the dataset - it must be unique to the
+dataset.</p>
+<p>There should be a <code>name</code> property, which is a short human-readable
+name for the item. This is not mandated, but is advisable.</p>
+<p>And there should be <code>latitude</code> and <code>longitude</code> properties, which are
+decimal latitude/longitude coordinates of the item, if it has one. If
+absent, then the item will be included in search results, but will not
+have a pin on the map.</p>
+<p>These and all other fields must be as defined by the <code>itemProps</code> field
+in <code>config.json</code>.</p>
+<p>Absent values should be <code>null</code>, or <code>[]</code> if the property is a
+multi-valued property.</p>
+<p>Vocabulary properties should be a bare valid vocab term identifier,
+without any prefix or URI.</p>
+<p>For example:</p>
+<pre><code>{
+  &quot;id&quot;: &quot;test/cuk/R000001&quot;,
+  &quot;name&quot;: &quot;Apples Co-op&quot;,
+  &quot;description&quot;: &quot;We sell apples&quot;,
+  &quot;website&quot;: [&quot;https://apples.coop&quot;, &quot;https://orchards.coop&quot;],
+  &quot;dc_domains&quot;: [&quot;apples.coop&quot;, &quot;orchards.coop&quot;],
+  &quot;country_id&quot;: &quot;GB&quot;,
+  &quot;primary_activity&quot;: &quot;ICA210&quot;,
+  &quot;organisational_structure&quot;: &quot;OS60&quot;,
+  &quot;typology&quot;: &quot;BMT20&quot;,
+  &quot;latitude&quot;: 51.507476,
+  &quot;longitude&quot;: -0.127825,
+  &quot;geocontainer_lat&quot;: 51.50747643,
+  &quot;geocontainer_lon&quot;: -0.12782464,
+  &quot;address&quot;: &quot;1 West Street, Sheffield, S1 2AB, UK&quot;,
+  &quot;data_sources&quot;: [&quot;DC&quot;, &quot;CUK&quot;]
+}
+</code></pre>
+<h2 id="glossary">Glossary<a class="headerlink" href="#glossary" title="Permanent link">#</a></h2>
+<ul>
+<li><em>category</em>: when used here, loosely means the same as <em>vocabulary</em>.</li>
+<li><em>CSV</em>: "comma-separated values" - a common format for storing
+  tabular data in text files. See <a href="https://en.wikipedia.org/wiki/Comma-separated_values">Wikipedia</a>. Or CSV files begin
+  with a line which contain the <em>headers</em> which define names for the
+  fields found in the following rows. Note that a CSV row <em>may</em> span
+  more than one line, as it can contain embedded newlines.</li>
+<li><em>data root</em>: the root directory in which to find Mykomap dataset files.</li>
+<li><em>dataset</em>: a collection of information for use in a Mykomap;
+  typically consists of an ordered collection of items with some metadata
+  describing the properties and types of those properties.</li>
+<li><em>dataset ID</em>: a unique identifier for a dataset.</li>
+<li><em>dataset item</em>: represents a single entry in a dataset, typically
+  representing an organisation, usually with an associated location
+  and various other properties.</li>
+<li><em>dataset item ID</em>: a unique identifier for a dataset item.</li>
+<li><em>dataset item index</em>: a unique zero-based index number for a dataset
+  item.</li>
+<li><em>dataset item property</em>: a named attribute of a dataset item, which
+  can have one of a number of pre-defined values and types.</li>
+<li><em>field</em>: one of the components of a data record, such as in a CSV
+  file or a database table. Often used to refer to a JSON or
+  JavaScript <em>property</em>. We try to consistently use it to mean
+  elements of a CSV row in the context of Mykomap.</li>
+<li><em>property</em>: one of the components of a JSON or JavaScript object;
+  sometimes also referred to as a <em>field</em> or an <em>attribute</em>. We try
+  and refer consistently to <em>properties</em> in the context of Mykomap.</li>
+<li><em>QName</em>: a scheme for representing URIs in a more succinct form within
+  contexts where brevity and readability is useful. See <a href="https://en.wikipedia.org/wiki/QName">Wikipedia</a> for more information.</li>
+<li><em>RDF</em>: "Resource Description Format": a formal scheme for representing semantic descriptions of concepts and their relationships as subject-predicate-object triplets in a machine-readable way. See <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework">Wikipedia</a>.</li>
+<li><em>RDF/XML</em>: a file encoding for RDF based on XML. See <a href="https://en.wikipedia.org/wiki/RDF/XML">Wikipedia</a>.</li>
+<li><em>SKOS</em>: a linked-data standard for describing a collection of terms,
+  representing concepts, identified by a URI. Terms are also
+  identified by URIs sharing the same stem as the vocabulary's URI,
+  followed by a unique identifier. The vocabulary has a localised
+  title, and each term can have one or more localised labels. More
+  properties can be ascribed to terms and the vocabulary, but see the
+  definition on <a href="https://en.wikipedia.org/wiki/Simple_Knowledge_Organization_System">Wikipedia</a> for more details.</li>
+<li><em>taxonomy</em>: when used here, loosely means the same as <em>vocabulary</em>.</li>
+<li><em>Turtle</em>: a more succinct and readable file encoding for RDF than RDF/XML. See <a href="https://en.wikipedia.org/wiki/Turtle_(syntax)">Wikipedia</a>.</li>
+<li><em>vocabulary</em>: a set of pre-defined labels for some set of concepts,
+  in this context usually a <em>SKOS</em> vocabulary.</li>
+<li><em>vocabulary term</em>: a concept from a <em>vocabulary</em>.</li>
+<li><em>vocabulary URI</em>: a unique identifier and namespace for a <em>vocabulary</em>.</li>
+<li><em>vocabulary prefix</em>: a short locally-defined identifier representing
+  a full URI for the sake of brevity - the first half of a <em>QName</em></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+    
+  </body>
+</html>
