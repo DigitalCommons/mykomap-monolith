@@ -42,9 +42,14 @@ const getDatasetOrThrow404 = (
   return dataset;
 };
 
-export const getDatasetItem = (datasetId: string, datasetItemIx: number) => {
+export const getDatasetItemByIx = (datasetId: string, datasetItemIx: number) => {
   const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
-  return dataset.getItem(datasetItemIx);
+  return dataset.getItemByIx(datasetItemIx);
+};
+
+export const getDatasetItemById = (datasetId: string, datasetItemId: string) => {
+  const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
+  return dataset.getItemById(datasetItemId);
 };
 
 export const getDatasetConfig = (datasetId: string): GetConfigBody => {

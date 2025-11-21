@@ -258,7 +258,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "uniquely specifies the dataset item wanted within the dataset"
+            "description": "Uniquely specifies the dataset item wanted within the dataset. This param must be base64 encoded. The decoded param should start with an @ to indicate an index, otherwise it is assumed to be an id"
           }
         ],
         "operationId": "getDatasetItem",
@@ -269,7 +269,14 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {},
+                  "properties": {
+                    "index": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "index"
+                  ],
                   "additionalProperties": true,
                   "description": "the dataset item matching the supplied ID or index"
                 }
