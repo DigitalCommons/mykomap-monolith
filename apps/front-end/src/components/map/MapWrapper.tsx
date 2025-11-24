@@ -34,22 +34,21 @@ const MapWrapper = () => {
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const [mapCreated, setMapCreated] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
-  const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
+  const [searchParams, setSearchParams] = useSearchParams(
+    new window.URLSearchParams(),
+  );
 
-  const popupCreatedCallback = (id: string) => {
-    console.log("Popup created", id);
-    dispatch(openPopup(id));
-    searchParams.set("popupId", id);
-    setSearchParams(searchParams);
+  const popupCreatedCallback = (ix: string) => {
+    console.log("Popup created", ix);
+    dispatch(openPopup(ix));
   };
 
   const popupClosedCallback = () => {
     console.log("Popup closed");
     dispatch(closePopup());
-    searchParams.delete("popupId");
-    setSearchParams(searchParams);
   };
 
   useEffect(() => {
@@ -71,7 +70,7 @@ const MapWrapper = () => {
       popupCreatedCallback,
       popupClosedCallback,
       () => setMapCreated(true),
-      mapConfig
+      mapConfig,
     );
 
     map.current.on("sourcedata", (e) => {
@@ -81,7 +80,7 @@ const MapWrapper = () => {
         setSourceLoaded(true);
       }
     });
-    dispatch(fetchLocations())
+    dispatch(fetchLocations());
 
     // Clean up on unmount
     return () => {
@@ -104,12 +103,22 @@ const MapWrapper = () => {
   }, [features, sourceLoaded]);
 
   useEffect(() => {
+    if (!loaded && mapCreated) {
+      const id = searchParams.get("popupId");
+      if (id && mapCreated) {
+        dispatch(openPopup(id));
+      }
+      setLoaded(true);
+    }
     // Keep the mapLibre popup in sync with the Redux state
     if (popupIsOpen) {
+      searchParams.set("popupId", popupId);
+      setSearchParams(searchParams);
+
       console.log("Opening popup");
       if (popupLocation) {
         map?.current?.fire("openPopup", {
-          itemId: popupId,
+          itemIx: `@${popupIndex}`,
           location: popupLocation,
         });
       } else {
@@ -118,22 +127,21 @@ const MapWrapper = () => {
         // This is handled in Popup.tsx
       }
     } else {
+      if (loaded) {
+        searchParams.delete("popupId");
+        setSearchParams(searchParams);
+      }
+
       console.log("Closing popup");
       map?.current?.fire("closeAllPopups");
     }
-  }, [popupIsOpen, popupIndex]);
+  }, [popupIsOpen, popupIndex, mapCreated]);
+
+  // rohit wants to merge this with the previous part, which i think might be the way
 
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
-
-  useEffect(() => {
-    const id = searchParams.get("popupId");
-    if (id && mapCreated) {
-      dispatch(openPopup(id));
-    }
-
-  }, [searchParams, mapCreated])
 
   const updateMapData = async () => {
     if (isFilterActive) {

@@ -23,6 +23,7 @@ const POPUP_INITIAL_ZOOM = 15;
 
 let popup: Popup | undefined;
 let popupId: string | undefined;
+let popupIx: string | undefined;
 let tooltip: Popup | undefined;
 
 /**
@@ -69,26 +70,30 @@ const disableRotation = (map: Map) => {
 
 const openPopup = async (
   map: Map,
-  itemId: string,
+  itemIx: string,
   coordinates: LngLatLike,
   popupCreatedCallback: (itemId: string) => void,
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
-  if (popup?.isOpen() && popupId === itemId) {
-    console.log(`Popup for item ${itemId} already open`);
+
+
+  if (popup?.isOpen() && popupId === itemIx) {
+    console.log(`Popup for item ${itemIx} already open`);
     return;
   }
 
-  console.log(`Open popup for item ${itemId} ${coordinates}`);
+  console.log(`Open popup for item ${itemIx} ${coordinates}`);
 
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
     : [0, -20];
 
+  console.log("item ix", itemIx)
+
   popup?.remove();
-  popupId = itemId;
+  popupId = itemIx;
   popup = new Popup({
     closeButton: false,
     maxWidth: "none",
@@ -97,11 +102,11 @@ const openPopup = async (
     .setLngLat(coordinates)
     .setHTML(`<div id=${POPUP_CONTAINER_ID}></div>`)
     .addTo(map)
-    .addClassName(`popup-ix-${itemId}`)
+    .addClassName(`popup-ix-${itemIx}`)
     .setOffset(popupOffset)
     .on("close", popupClosedCallback);
 
-  popupCreatedCallback(itemId);
+  popupCreatedCallback(itemIx);
 };
 
 const onMarkerHover = (
@@ -235,6 +240,8 @@ export const createMap = (
         const coordinates = feature.geometry.coordinates.slice();
         const itemId = feature.properties?.id;
 
+        console.log("item id", itemId)
+
         if (popup?.isOpen() && popupId === itemId) {
           console.log(
             `Popup for item ${itemId} already open so toggle closed`,
@@ -244,6 +251,8 @@ export const createMap = (
           popup = undefined;
           return;
         }
+
+        console.log("item id 254", itemId)
 
         map
           .easeTo({
@@ -349,17 +358,18 @@ export const createMap = (
       if (e.features) {
         const feature = e.features[0] as GeoJSON.Feature<GeoJSON.Point>;
         const coordinates = feature.geometry.coordinates.slice();
-        const itemId = feature.properties ? `@${feature.properties.ix}` : "-1";
+        const itemIx = feature.properties ? `@${feature.properties.ix}` : "-1";
 
-        if (popup?.isOpen() && popupId === itemId) {
+        if (popup?.isOpen() && popupId === itemIx) {
           console.log(
-            `Popup for item @${itemId} already open so toggle closed`,
+            `Popup for item ${itemIx} already open so toggle closed`,
           );
           popup?.remove();
           popupId = undefined;
           popup = undefined;
           return;
         }
+        console.log("item ix 371", itemIx)
 
         // ease to a position so that the popup is fully visible
         map
@@ -372,7 +382,7 @@ export const createMap = (
           .once("moveend", () => {
             openPopup(
               map,
-              itemId,
+              itemIx,
               coordinates as LngLatLike,
               popupCreatedCallback,
               popupClosedCallback,
@@ -381,8 +391,8 @@ export const createMap = (
       }
     });
 
-    map.on("openPopup", async ({ itemId, location }) => {
-      if (popup?.isOpen() && popupId === itemId) return;
+    map.on("openPopup", async ({ itemIx, location }) => {
+      if (popup?.isOpen() && popupIx === itemIx) return;
 
       if (location === null) {
         console.error("This shouldn't happen");
@@ -412,7 +422,7 @@ export const createMap = (
 
       openPopup(
         map,
-        itemId,
+        itemIx,
         location,
         popupCreatedCallback,
         popupClosedCallback,
