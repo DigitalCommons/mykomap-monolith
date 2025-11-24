@@ -5,6 +5,7 @@ import { Config } from "../../services/types";
 import { getDatasetId } from "../../utils/window-utils";
 import { InnerPropSpec, PropSpecs } from "@mykomap/common";
 import { configLoaded } from "../../app/configSlice";
+import { Buffer } from "buffer";
 
 interface PopupSliceState {
   isOpen: boolean;
@@ -43,12 +44,16 @@ export const popupSlice = createAppSlice({
         }
 
         const encodeBase64 = (data: string) => {
-          return Buffer.from(data).toString('base64');
+          return Buffer.from(data, 'utf-8').toString('base64');
         }
+
+        console.log(idOrIndex)
 
         const response = await getDatasetItem({
           params: { datasetId, datasetItemIdOrIx: encodeBase64(idOrIndex) },
         });
+
+        console.log(response.body)
 
         if (response.status === 200) {
           // Just hardcode types for now
@@ -69,7 +74,7 @@ export const popupSlice = createAppSlice({
         fulfilled: (state, action) => {
           console.log("fullfilled", action)
           state.status = "loaded";
-          state.index = action.payload.itemIx || 0;
+          state.index = parseInt(action.payload.index.substring(1)) || 0;
           state.id = action.payload.id;
           state.isOpen = true;
           const { index, ...data } = action.payload;
@@ -79,7 +84,7 @@ export const popupSlice = createAppSlice({
           state.status = "failed";
           // state.allLocations = [];
           console.error(
-            `Error fetching popup content for item @${action.meta.arg}`,
+            `Error fetching popup content for item ${action.meta.arg}`,
             action.payload,
           );
         },

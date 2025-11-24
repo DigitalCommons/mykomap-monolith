@@ -53,15 +53,17 @@ const Results = () => {
   const totalItemsCount = useAppSelector(selectTotalItemsCount);
   const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
   const totalPages = Math.ceil(resultCount / RESULTS_PER_PAGE);
-  const [searchParams, setSearchParams] = useSearchParams(new window.URLSearchParams());
+  const [searchParams, setSearchParams] = useSearchParams(
+    new window.URLSearchParams(),
+  );
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
   const onItemClick = (itemIx: number) => {
     console.log(`Clicked item @${itemIx}`);
     dispatch(openPopup(`@${itemIx}`));
-    searchParams.set("popupId", `@${itemIx}`);
-    setSearchParams(searchParams);
+    // searchParams.set("popupId", `@${itemIx}`);
+    // setSearchParams(searchParams);
     dispatch(closePanel());
     if (!isMedium) {
       dispatch(setSelectedTab(0));
