@@ -48,6 +48,7 @@ export const getDatasetItemByIx = (datasetId: string, datasetItemIx: number) => 
 };
 
 export const getDatasetItemById = (datasetId: string, datasetItemId: string) => {
+  console.log(datasetItemId)
   const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
   return dataset.getItemById(datasetItemId);
 };
