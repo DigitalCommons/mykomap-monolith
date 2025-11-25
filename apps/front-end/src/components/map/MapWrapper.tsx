@@ -102,20 +102,34 @@ const MapWrapper = () => {
     }
   }, [features, sourceLoaded]);
 
+  function tryUpdateSearchParams(popupId: string) {
+    const urlPopupId = searchParams.get("popupId");
+    if (urlPopupId !== popupId) {
+      searchParams.set("popupId", popupId);
+      setSearchParams(searchParams);
+    }
+  }
+
+  function tryDeleteSearchParams() {
+    const urlPopupId = searchParams.get("popupId");
+    if (urlPopupId) {
+      searchParams.delete("popupId");
+      setSearchParams(searchParams);
+    }
+  }
+
   useEffect(() => {
     if (!loaded && mapCreated) {
       const id = searchParams.get("popupId");
-      if (id && mapCreated) {
+      if (id) {
         dispatch(openPopup(id));
       }
       setLoaded(true);
     }
     // Keep the mapLibre popup in sync with the Redux state
     if (popupIsOpen) {
-      searchParams.set("popupId", popupId);
-      setSearchParams(searchParams);
-
       console.log("Opening popup");
+      tryUpdateSearchParams(popupId);
       if (popupLocation) {
         map?.current?.fire("openPopup", {
           itemIx: `@${popupIndex}`,
@@ -128,16 +142,21 @@ const MapWrapper = () => {
       }
     } else {
       if (loaded) {
-        searchParams.delete("popupId");
-        setSearchParams(searchParams);
+        tryDeleteSearchParams();
       }
-
       console.log("Closing popup");
       map?.current?.fire("closeAllPopups");
     }
   }, [popupIsOpen, popupIndex, mapCreated]);
 
-  // rohit wants to merge this with the previous part, which i think might be the way
+  useEffect(() => {
+    const urlPopupId = searchParams.get("popupId");
+    if (urlPopupId) {
+      dispatch(openPopup(urlPopupId));
+    } else {
+      dispatch(closePopup());
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });
