@@ -263,8 +263,8 @@ const encodeBase64 = (data: string) => {
   return Buffer.from(data).toString("base64");
 };
 
-describe("getDatasetItem", () => {
-  describe("dataset exists", () => {
+describe("dataset exists", () => {
+  describe("item ix exists", () => {
     describe("item ix exists", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
@@ -380,4 +380,4 @@ describe("getVersion", () => {
     expect(res.json()).toBeTypeOf("object");
     expect(res.json()).toHaveProperty("version");
   });
-});
+})
