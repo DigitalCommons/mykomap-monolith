@@ -18,6 +18,12 @@ const mockItemWithIndexZero = {
   index: "@0",
 };
 
+const mockItemWithIndexThree = {
+  ...mockItem,
+  itemIx: 3,
+  index: "@3",
+};
+
 interface LocalTestContext {
   store: AppStore;
 }
@@ -66,8 +72,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItemWithIndexZero,
-      meta: { arg: 3, requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexThree,
+      meta: { arg: "@3", requestId: "test", requestStatus: "fulfilled" },
     });
 
     expect(store.getState().popup.status).toBe("loaded");
