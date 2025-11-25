@@ -67,7 +67,6 @@ describe<LocalTestContext>("popup reducer", (it) => {
     store.dispatch({
       type: "popup/openPopup/fulfilled",
       payload: mockItemWithIndexZero,
-      payload: { ...mockItem, itemIx: 3 },
       meta: { arg: 3, requestId: "test", requestStatus: "fulfilled" },
     });
 
