@@ -238,21 +238,17 @@ export const createMap = (
         leafOffset: [number, number],
       ) => {
         const coordinates = feature.geometry.coordinates.slice();
-        const itemId = feature.properties?.id;
+        const itemIx = `@${feature.properties?.ix}`;
 
-        console.log("item id", itemId)
-
-        if (popup?.isOpen() && popupId === itemId) {
+        if (popup?.isOpen() && popupId === itemIx) {
           console.log(
-            `Popup for item ${itemId} already open so toggle closed`,
+            `Popup for item ${itemIx} already open so toggle closed`,
           );
           popup?.remove();
           popupId = undefined;
           popup = undefined;
           return;
         }
-
-        console.log("item id 254", itemId)
 
         map
           .easeTo({
@@ -264,7 +260,7 @@ export const createMap = (
           .once("moveend", () => {
             openPopup(
               map,
-              itemId,
+              itemIx,
               coordinates as LngLatLike,
               popupCreatedCallback,
               popupClosedCallback,
@@ -369,7 +365,6 @@ export const createMap = (
           popup = undefined;
           return;
         }
-        console.log("item ix 371", itemIx)
 
         // ease to a position so that the popup is fully visible
         map
