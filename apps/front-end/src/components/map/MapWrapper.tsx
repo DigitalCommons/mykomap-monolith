@@ -43,9 +43,6 @@ const MapWrapper = ({
   const [loaded, setLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
-  const [searchParams, setSearchParams] = useSearchParams(
-    new window.URLSearchParams(),
-  );
 
   const popupCreatedCallback = (ix: string) => {
     console.log("Popup created", ix);

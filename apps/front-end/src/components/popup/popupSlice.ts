@@ -1,5 +1,4 @@
 import { createSelector } from "@reduxjs/toolkit";
-import { Buffer } from 'buffer';
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetItem } from "../../services";
 import { Config } from "../../services/types";
@@ -48,13 +47,9 @@ export const popupSlice = createAppSlice({
           return Buffer.from(data, 'utf-8').toString('base64');
         }
 
-        console.log(idOrIndex)
-
         const response = await getDatasetItem({
           params: { datasetId, datasetItemIdOrIx: encodeBase64(idOrIndex) },
         });
-
-        console.log(response.body)
 
         if (response.status === 200) {
           // Just hardcode types for now
