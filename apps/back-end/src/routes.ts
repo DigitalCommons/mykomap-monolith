@@ -101,8 +101,6 @@ export function MykomapRouter(
       const itemId = itemIdOrIx;
       const item = getDatasetItemById(datasetId, itemId);
 
-      console.log("ITEM ITEM ITEM", item)
-
       return { status: 200, body: item };
     },
 

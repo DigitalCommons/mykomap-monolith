@@ -117,6 +117,7 @@ const Panel = ({
       console.log(filters, searchText);
       dispatch(openPanel());
       dispatch(setSelectedTab(1));
+      dispatch(openResultsPanel());
     }
   }, []);
 
