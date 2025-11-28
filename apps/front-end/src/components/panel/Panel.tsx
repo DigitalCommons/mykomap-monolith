@@ -204,7 +204,10 @@ const Panel = ({
         </StyledBox>
       )}
 
-      <ResultsPanel />
+      <ResultsPanel
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
     </>
   );
 };

@@ -93,6 +93,10 @@ const SearchPanel = ({
     if (searchText) {
       dispatch(setText(searchText));
       dispatch(performSearch());
+      dispatch(openResultsPanel());
+    } else {
+      setCurrentText("");
+      dispatch(setText(""));
     }
   }, [searchParams]);
 
