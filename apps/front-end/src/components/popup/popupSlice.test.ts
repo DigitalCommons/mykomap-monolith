@@ -18,6 +18,12 @@ const mockItemWithIndexZero = {
   index: "@0",
 };
 
+const mockItemWithIndexThree = {
+  ...mockItem,
+  itemIx: 3,
+  index: "@3",
+};
+
 interface LocalTestContext {
   store: AppStore;
 }
@@ -37,7 +43,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
   });
 
   it("should handle openPopup andclosePopup", async ({ store }) => {
-    await store.dispatch(openPopup(0));
+    await store.dispatch(openPopup('@0'));
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
     expect(selectPopupIndex(store.getState())).toBe(0);
@@ -66,14 +72,14 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItemWithIndexZero,
-      meta: { arg: 3, requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexThree,
+      meta: { arg: "@3", requestId: "test", requestStatus: "fulfilled" },
     });
 
     expect(store.getState().popup.status).toBe("loaded");
     expect(selectPopupIsOpen(store.getState())).toBe(true);
     expect(selectPopupIndex(store.getState())).toBe(3);
-    expect(store.getState().popup.data).toEqual(mockItem);
+    expect(store.getState().popup.data).toEqual({ ...mockItem, itemIx: 3 });
   });
 
   it("should handle openPopup rejected", ({ store }) => {
@@ -102,6 +108,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
       id: "test/cuk/R000003",
       name: "Another Cooperative Organization",
       primary_activity: "aci:ICA220",
+      itemIx: 7
     };
 
     store.dispatch({
@@ -183,6 +190,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
       primary_activity: "Housing",
       typology: "Workers",
       website: ["https://www.brightonhousing.coop"],
+      itemIx: 0
     });
   });
 
@@ -240,6 +248,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
       primary_activity: "Logement",
       typology: "Travailleurs",
       website: ["https://www.brightonhousing.coop"],
+      itemIx: 0
     });
   });
 });

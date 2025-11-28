@@ -78,8 +78,8 @@ export class Dataset {
     } else {
       throw new Error(
         `searchable.json for dataset ${this.id} has a bad format ` +
-          `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
-          `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
+        `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
+        `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
       );
     }
   }
@@ -101,25 +101,20 @@ export class Dataset {
   };
 
   getItemById = (itemId: string) => {
-    console.log("itemid", itemId);
+    console.log("itemid", itemId)
     // Use searchable if it has ids, otherwise loop through items
     if (this.searchablePropIndexMap.id) {
-      const itemIx = this.searchablePropValues.findIndex(
-        (item) => item[this.searchablePropIndexMap.id] == itemId,
-      );
+      const itemIx = this.searchablePropValues.findIndex(item => item[this.searchablePropIndexMap.id] == itemId);
       if (itemIx > -1) {
         const item = this.getItemByIx(itemIx);
-        return { ...item, index: `@${itemIx}` };
+        return { ...item, itemIx, index: `@${itemIx}` }
       }
-    } else {
-      for (
-        let itemIx = 0;
-        itemIx < this.searchablePropValues.length;
-        itemIx++
-      ) {
+    }
+    else {
+      for (let itemIx = 0; itemIx < this.searchablePropValues.length; itemIx++) {
         const item = this.getItemByIx(itemIx);
         if (item.id === itemId) {
-          return { ...item, index: `@${itemIx}` };
+          return { ...item, itemIx, index: `@${itemIx}` };
         }
       }
     }
@@ -127,7 +122,7 @@ export class Dataset {
     throw new HttpError(
       404,
       `Can't retrieve data for dataset ${this.id}, item id ${itemId}`,
-    );
+    )
   };
 
   getConfig = () => this.config;

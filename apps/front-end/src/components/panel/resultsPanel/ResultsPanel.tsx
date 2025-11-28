@@ -1,3 +1,4 @@
+import { type SetURLSearchParams } from "react-router";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -76,7 +77,13 @@ const StyledButtonContainer = styled(Box)(() => ({
   },
 }));
 
-const ResultsPanel = () => {
+const ResultsPanel = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const panelOpen = useAppSelector(selectPanelOpen);
@@ -98,6 +105,9 @@ const ResultsPanel = () => {
   const handleClearSearch = () => {
     dispatch(closeResultsPanel());
     dispatch(clearSearch());
+    searchParams.delete("searchText");
+    searchParams.delete("filters");
+    setSearchParams(searchParams);
   };
 
   return (

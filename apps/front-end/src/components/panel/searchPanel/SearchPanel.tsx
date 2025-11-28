@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { type SetURLSearchParams } from "react-router";
 import type { SelectChangeEvent } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Heading from "../heading/Heading";
@@ -14,13 +15,20 @@ import {
   performSearch,
   selectFilterOptions,
   setFilterValue,
+  clearFilters,
   selectVisibleIndexes,
   selectIsFilterActive,
 } from "./searchSlice";
 import { selectTotalItemsCount } from "../../map/mapSlice";
 import { openResultsPanel } from "../panelSlice";
 
-const SearchPanel = () => {
+const SearchPanel = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const submittedText = useAppSelector(selectText);
@@ -38,18 +46,28 @@ const SearchPanel = () => {
     setCurrentText(e.currentTarget.value);
   };
 
+  const filtersToUrl = (id: string, value: string) => {
+    const filters = JSON.parse(searchParams.get("filters") || "{}");
+    filters[id] = value;
+    searchParams.set("filters", JSON.stringify(filters));
+  };
+
   const onFilterChange = async (
     e: SelectChangeEvent<string>,
     propId: string,
   ) => {
     console.log(`Set filter for ${propId} to ${e.target.value}`);
     dispatch(setFilterValue({ id: propId, value: e.target.value }));
+    filtersToUrl(propId, e.target.value);
+    setSearchParams(searchParams);
     await dispatch(performSearch());
     if (isMedium) dispatch(openResultsPanel());
   };
 
   const onSubmitSearch = async () => {
     dispatch(setText(currentText));
+    searchParams.set("searchText", currentText);
+    setSearchParams(searchParams);
     console.log(`Searching for '${submittedText}'`);
     await dispatch(performSearch());
     if (isMedium) dispatch(openResultsPanel());
@@ -59,6 +77,9 @@ const SearchPanel = () => {
     console.log("Clearing search");
     setCurrentText("");
     dispatch(setText(""));
+    searchParams.delete("searchText");
+    searchParams.delete("filters");
+    setSearchParams(searchParams);
     dispatch(performSearch());
   };
 
@@ -66,6 +87,36 @@ const SearchPanel = () => {
     // This is needed to keep search box in sync with the search text e.g. if the search is cleared
     setCurrentText(submittedText);
   }, [submittedText]);
+
+  useEffect(() => {
+    const searchText = searchParams.get("searchText");
+
+    if (searchText) {
+      dispatch(setText(searchText));
+      dispatch(performSearch());
+      dispatch(openResultsPanel());
+    } else {
+      setCurrentText("");
+      dispatch(setText(""));
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    const filters = JSON.parse(searchParams.get("filters") || "{}");
+
+    if (Object.keys(filters).length > 0) {
+      dispatch(clearFilters());
+      setTimeout(() => {
+        Object.keys(filters).forEach((filterId) => {
+          dispatch(setFilterValue({ id: filterId, value: filters[filterId] }));
+        });
+        dispatch(performSearch());
+      }, 500);
+    } else {
+      dispatch(clearFilters());
+      dispatch(performSearch());
+    }
+  }, [searchParams]);
 
   return (
     <form

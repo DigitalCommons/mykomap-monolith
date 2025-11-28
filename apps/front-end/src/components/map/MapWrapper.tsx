@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { type SetURLSearchParams } from "react-router";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -11,12 +12,19 @@ import {
   closePopup,
   openPopup,
   selectPopupIndex,
+  selectPopupId,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 
-const MapWrapper = () => {
+const MapWrapper = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+}) => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
   // If there is no filter active , visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
@@ -25,17 +33,20 @@ const MapWrapper = () => {
   );
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const popupId = useAppSelector(selectPopupId);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
+  const [mapCreated, setMapCreated] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
 
-  const popupCreatedCallback = (itemIx: number) => {
-    console.log("Popup created");
-    dispatch(openPopup(itemIx));
+  const popupCreatedCallback = (ix: string) => {
+    console.log("Popup created", ix);
+    dispatch(openPopup(ix));
   };
 
   const popupClosedCallback = () => {
@@ -61,6 +72,7 @@ const MapWrapper = () => {
     map.current = createMap(
       popupCreatedCallback,
       popupClosedCallback,
+      () => setMapCreated(true),
       mapConfig,
     );
 
@@ -93,13 +105,37 @@ const MapWrapper = () => {
     }
   }, [features, sourceLoaded]);
 
+  function tryUpdateSearchParams(popupId: string) {
+    const urlPopupId = searchParams.get("popupId");
+    if (urlPopupId !== popupId) {
+      searchParams.set("popupId", popupId);
+      setSearchParams(searchParams);
+    }
+  }
+
+  function tryDeleteSearchParams() {
+    const urlPopupId = searchParams.get("popupId");
+    if (urlPopupId) {
+      searchParams.delete("popupId");
+      setSearchParams(searchParams);
+    }
+  }
+
   useEffect(() => {
+    if (!loaded && mapCreated) {
+      const id = searchParams.get("popupId");
+      if (id) {
+        dispatch(openPopup(id));
+      }
+      setLoaded(true);
+    }
     // Keep the mapLibre popup in sync with the Redux state
     if (popupIsOpen) {
       console.log("Opening popup");
+      tryUpdateSearchParams(popupId);
       if (popupLocation) {
         map?.current?.fire("openPopup", {
-          itemIx: popupIndex,
+          itemIx: `@${popupIndex}`,
           location: popupLocation,
         });
       } else {
@@ -108,14 +144,33 @@ const MapWrapper = () => {
         // This is handled in Popup.tsx
       }
     } else {
+      if (loaded) {
+        tryDeleteSearchParams();
+      }
       console.log("Closing popup");
       map?.current?.fire("closeAllPopups");
     }
-  }, [popupIsOpen, popupIndex]);
+  }, [popupIsOpen, popupIndex, mapCreated]);
+
+  useEffect(() => {
+    const urlPopupId = searchParams.get("popupId");
+    if (urlPopupId) {
+      dispatch(openPopup(urlPopupId));
+    } else {
+      dispatch(closePopup());
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
+
+  useEffect(() => {
+    const id = searchParams.get("popupId");
+    if (id && mapCreated) {
+      dispatch(openPopup(id));
+    }
+  }, [searchParams, mapCreated]);
 
   const updateMapData = async () => {
     if (isFilterActive) {

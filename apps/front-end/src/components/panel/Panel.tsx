@@ -1,3 +1,4 @@
+import { type SetURLSearchParams } from "react-router";
 import Drawer from "@mui/material/Drawer";
 import Box from "@mui/material/Box";
 import NavBar from "./navBar/navBar";
@@ -26,6 +27,7 @@ import {
   selectIsFilterActive,
 } from "../panel/searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 
 const StyledPanel = styled(Drawer)(() => ({
   display: "flex",
@@ -55,7 +57,16 @@ const StyledBox = styled(Box)(() => ({
   backgroundColor: "#fff",
 }));
 
-const Panel = () => {
+const Panel = ({
+  searchParams,
+  setSearchParams,
+}: {
+  searchParams: URLSearchParams;
+  setSearchParams: SetURLSearchParams;
+  onTabChange?: any;
+  onLinkClick?: any;
+  onTogglePanel?: any;
+}) => {
   const dispatch = useAppDispatch();
   const isOpen = useAppSelector(selectPanelOpen);
   const selectedTab = useAppSelector(selectSelectedTab);
@@ -97,6 +108,19 @@ const Panel = () => {
     dispatch(openResultsPanel());
   };
 
+  // open search panel if url contains filters or search text
+  useEffect(() => {
+    const filters = searchParams.get("filters");
+    const searchText = searchParams.get("searchText");
+
+    if (filters || searchText) {
+      console.log(filters, searchText);
+      dispatch(openPanel());
+      dispatch(setSelectedTab(1));
+      dispatch(openResultsPanel());
+    }
+  }, []);
+
   return (
     <>
       {/* Desktop view  */}
@@ -112,7 +136,12 @@ const Panel = () => {
             >
               <NavBar onTabChange={handleTabChange} selectedTab={selectedTab} />
               {selectedTab === 0 && <DirectoryPanel />}
-              {selectedTab === 1 && <SearchPanel />}
+              {selectedTab === 1 && (
+                <SearchPanel
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                />
+              )}
               {selectedTab === 2 && <AboutPanel />}
             </Box>
             {!(isOpen && resultsOpen) && (
@@ -140,7 +169,12 @@ const Panel = () => {
               <>
                 <CloseButton buttonAction={handlePanelClose} />
                 {selectedTab === 1 && <DirectoryPanel />}
-                {selectedTab === 2 && <SearchPanel />}
+                {selectedTab === 2 && (
+                  <SearchPanel
+                    searchParams={searchParams}
+                    setSearchParams={setSearchParams}
+                  />
+                )}
                 {selectedTab === 3 && <AboutPanel />}
               </>
             )}
@@ -170,7 +204,10 @@ const Panel = () => {
         </StyledBox>
       )}
 
-      <ResultsPanel />
+      <ResultsPanel
+        searchParams={searchParams}
+        setSearchParams={setSearchParams}
+      />
     </>
   );
 };

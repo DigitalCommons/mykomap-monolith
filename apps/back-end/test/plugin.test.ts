@@ -258,10 +258,9 @@ describe("searchDataset", () => {
     });
   });
 });
-
 const encodeBase64 = (data: string) => {
-  return Buffer.from(data).toString("base64");
-};
+  return Buffer.from(data).toString('base64');
+}
 
 describe("getDatasetItem", () => {
   describe("dataset exists", () => {
@@ -380,4 +379,4 @@ describe("getVersion", () => {
     expect(res.json()).toBeTypeOf("object");
     expect(res.json()).toHaveProperty("version");
   });
-});
+})

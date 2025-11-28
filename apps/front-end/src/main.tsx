@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
-
+import { BrowserRouter, Routes, Route } from "react-router";
 import App from "./App";
 import { store } from "./app/store";
 import "./index.css";
@@ -50,7 +50,12 @@ if (container) {
         <ThemeProvider theme={theme}>
           <GlobalCSSVariables />
           <CssBaseline />
-          <App />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<App />} />
+              <Route path="/cwm" element={<App />} />
+            </Routes>
+          </BrowserRouter>
         </ThemeProvider>
       </Provider>
     </React.StrictMode>,
