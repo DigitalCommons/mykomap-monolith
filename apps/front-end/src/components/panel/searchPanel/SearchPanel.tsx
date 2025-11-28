@@ -15,6 +15,7 @@ import {
   performSearch,
   selectFilterOptions,
   setFilterValue,
+  clearFilters,
   selectVisibleIndexes,
   selectIsFilterActive,
 } from "./searchSlice";
@@ -103,13 +104,17 @@ const SearchPanel = ({
   useEffect(() => {
     const filters = JSON.parse(searchParams.get("filters") || "{}");
 
-    if (filters) {
+    if (Object.keys(filters).length > 0) {
+      dispatch(clearFilters());
       setTimeout(() => {
         Object.keys(filters).forEach((filterId) => {
           dispatch(setFilterValue({ id: filterId, value: filters[filterId] }));
         });
         dispatch(performSearch());
       }, 500);
+    } else {
+      dispatch(clearFilters());
+      dispatch(performSearch());
     }
   }, [searchParams]);
 

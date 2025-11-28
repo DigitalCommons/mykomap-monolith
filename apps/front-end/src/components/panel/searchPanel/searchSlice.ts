@@ -71,6 +71,12 @@ export const searchSlice = createAppSlice({
         state.searchingStatus = action.payload;
       },
     ),
+    clearFilters: create.reducer(state => {
+      state.filterableVocabProps.forEach(
+        (prop) => (prop.value = PROP_VALUE_ANY),
+      );
+      state.searchQuery = { text: state.text };
+    }),
     clearSearch: create.reducer((state) => {
       state.text = "";
       state.filterableVocabProps.forEach(
@@ -131,6 +137,7 @@ export const {
   setFilterValue,
   updateVisibleIndexes,
   setSearchingStatus,
+  clearFilters,
   clearSearch,
 } = searchSlice.actions;
 
