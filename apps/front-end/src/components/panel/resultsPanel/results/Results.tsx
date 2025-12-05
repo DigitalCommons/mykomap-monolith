@@ -88,7 +88,7 @@ const Results = () => {
               key={index}
               index={item.index}
               name={item.name}
-              data_sources={item.data_sources}
+              data_sources={item.data_sources ?? []}
               buttonAction={() => onItemClick(item.index)}
             />
           ))}

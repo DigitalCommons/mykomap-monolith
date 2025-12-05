@@ -13,7 +13,7 @@ interface PanelSliceState {
   resultsStatus: "idle" | "loading" | "failed";
   resultsPage: number;
   // TODO: maybe cache all results that we have fetched, since user may flick back and forth
-  results: { index: number; name: string, data_sources?: string[] }[];
+  results: { index: number; name: string; data_sources?: string[] }[];
 }
 
 const initialState: PanelSliceState = {
@@ -63,7 +63,8 @@ export const panelSlice = createAppSlice({
           search: SearchSliceState;
         };
 
-        const response = await searchDataset({
+        // Try to fetch with data_sources first
+        let response = await searchDataset({
           params: { datasetId },
           query: {
             ...search.searchQuery,
@@ -72,8 +73,26 @@ export const panelSlice = createAppSlice({
             pageSize: RESULTS_PER_PAGE,
           },
         });
+
+        // If data_sources property doesn't exist (400 error), retry without it
+        if (response.status === 400) {
+          response = await searchDataset({
+            params: { datasetId },
+            query: {
+              ...search.searchQuery,
+              returnProps: ["name"],
+              page: page,
+              pageSize: RESULTS_PER_PAGE,
+            },
+          });
+        }
+
         if (response.status === 200) {
-          const body = response.body as { index: string; name: string, data_sources?: string[] }[];
+          const body = response.body as {
+            index: string;
+            name: string;
+            data_sources?: string[];
+          }[];
           return body.map(({ index, name, data_sources }) => ({
             index: Number(index.substring(1)), // remove leading '@' from index
             name,
