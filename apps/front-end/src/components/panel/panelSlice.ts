@@ -13,7 +13,7 @@ interface PanelSliceState {
   resultsStatus: "idle" | "loading" | "failed";
   resultsPage: number;
   // TODO: maybe cache all results that we have fetched, since user may flick back and forth
-  results: { index: number; name: string }[];
+  results: { index: number; name: string, data_sources?: string[] }[];
 }
 
 const initialState: PanelSliceState = {
@@ -67,16 +67,17 @@ export const panelSlice = createAppSlice({
           params: { datasetId },
           query: {
             ...search.searchQuery,
-            returnProps: ["name"],
+            returnProps: ["name", "data_sources"],
             page: page,
             pageSize: RESULTS_PER_PAGE,
           },
         });
         if (response.status === 200) {
-          const body = response.body as { index: string; name: string }[];
-          return body.map(({ index, name }) => ({
+          const body = response.body as { index: string; name: string, data_sources?: string[] }[];
+          return body.map(({ index, name, data_sources }) => ({
             index: Number(index.substring(1)), // remove leading '@' from index
             name,
+            data_sources,
           }));
         } else {
           return thunkApi.rejectWithValue(

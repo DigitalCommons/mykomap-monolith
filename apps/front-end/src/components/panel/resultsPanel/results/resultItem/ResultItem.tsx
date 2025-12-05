@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 interface ResultItemProps {
   index: number;
   name: string;
+  data_sources?: string[];
   buttonAction?: (e: React.MouseEvent) => void; // for storybook testing
 }
 
@@ -30,11 +31,18 @@ const StyledButton = styled(Button)(() => ({
   },
 }));
 
-const ResultItems = ({ index, name, buttonAction }: ResultItemProps) => {
+const ResultItems = ({
+  index,
+  name,
+  data_sources,
+  buttonAction,
+}: ResultItemProps) => {
+  const hasDCSource = data_sources?.includes("DC");
   return (
     <ListItem>
       <StyledButton role="button" onClick={buttonAction}>
         {name}
+        {hasDCSource && " (DC)"}
       </StyledButton>
     </ListItem>
   );
