@@ -120,6 +120,7 @@ export const searchSlice = createAppSlice({
       );
       return activeFilters.length > 0 || search.text.length > 0;
     },
+    selectSearchQuery: (search) => search.searchQuery,
   },
 });
 
@@ -133,8 +134,12 @@ export const {
   clearSearch,
 } = searchSlice.actions;
 
-export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
-  searchSlice.selectors;
+export const {
+  selectText,
+  selectVisibleIndexes,
+  selectIsFilterActive,
+  selectSearchQuery,
+} = searchSlice.selectors;
 
 type Term = VocabDef["terms"];
 
@@ -167,7 +172,7 @@ export const selectFilterOptions = createSelector(
         const sorters = {
           asc: (a: Term, b: Term) => a.label.localeCompare(b.label),
           desc: (a: Term, b: Term) => b.label.localeCompare(a.label),
-          noSort: (a: Term, b: Term) => 0,
+          noSort: (_a: Term, _b: Term) => 0,
         };
 
         const sorter =

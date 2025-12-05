@@ -11,7 +11,7 @@ import {
   selectVisibleIndexes,
   selectIsFilterActive,
 } from "./searchSlice";
-import mockConfig from "../../../mockData/mockConfig";
+import mockConfig from "../../../mockApiResponses/mockConfig";
 
 interface LocalTestContext {
   store: AppStore;

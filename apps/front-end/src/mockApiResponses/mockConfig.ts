@@ -197,9 +197,13 @@ const mockConfig: Config = {
       {
         itemProp: "name",
         valueStyle: "text",
+        // None of these other properties would normally be included in config, but they are
+        // automatically populated by default values by ts-rest, following the Zod schema defined in
+        // contract.ts
         showBullets: false,
         showLabel: true,
         hyperlinkBaseUri: "",
+        analyticOnClick: false,
       },
       {
         itemProp: "description",
@@ -207,6 +211,7 @@ const mockConfig: Config = {
         showBullets: false,
         showLabel: false,
         hyperlinkBaseUri: "",
+        analyticOnClick: false,
       },
       {
         itemProp: "primary_activity",
@@ -214,6 +219,7 @@ const mockConfig: Config = {
         showBullets: false,
         showLabel: true,
         hyperlinkBaseUri: "",
+        analyticOnClick: false,
       },
     ],
     topRightPane: [
@@ -223,6 +229,16 @@ const mockConfig: Config = {
         showBullets: false,
         showLabel: false,
         hyperlinkBaseUri: "",
+        analyticOnClick: false,
+      },
+      {
+        itemProp: "website",
+        valueStyle: "hyperlink",
+        showBullets: true,
+        showLabel: false,
+        hyperlinkBaseUri: "",
+        displayText: undefined,
+        analyticOnClick: true,
       },
     ],
     bottomRightPane: [],

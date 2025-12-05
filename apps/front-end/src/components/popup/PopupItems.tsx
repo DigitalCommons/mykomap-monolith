@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Link from "@mui/material/Link";
+import { trackDynamicEvent } from "../../services/analytics";
 
 const removeHtmlTags = (text: string) =>
   decode(
@@ -110,26 +111,44 @@ const Hyperlink = ({
 }: {
   itemConfig: PopupItemConfig;
   url: string;
-}) => (
-  <Typography variant="body1">
-    <Link
-      href={`${itemConfig.hyperlinkBaseUri || ""}${url}`}
-      target="_blank"
-      rel="noreferrer"
-      sx={{
-        color: "#ffffffB3",
-        textDecoration: "underline",
-        padding: "0 !important",
-        fontSize: "var(--font-size-xsmall)",
-        overflowX: "hidden",
-        textOverflow: "ellipsis",
-        marginTop: "var(--spacing-small)",
-      }}
-    >
-      {itemConfig.displayText || url}
-    </Link>
-  </Typography>
-);
+}) => {
+  const fullUrl = `${itemConfig.hyperlinkBaseUri || ""}${url}`;
+
+  const handleClick = () => {
+    if (itemConfig.analyticOnClick) {
+      const capitalisedPropName =
+        itemConfig.itemProp.charAt(0).toUpperCase() +
+        itemConfig.itemProp.slice(1);
+
+      trackDynamicEvent(`Item_${capitalisedPropName}Click`, {
+        // item_id: can include this once we have selectPopupId selector
+        url: fullUrl,
+      });
+    }
+  };
+
+  return (
+    <Typography variant="body1">
+      <Link
+        href={fullUrl}
+        target="_blank"
+        rel="noreferrer"
+        onClick={handleClick}
+        sx={{
+          color: "#ffffffB3",
+          textDecoration: "underline",
+          padding: "0 !important",
+          fontSize: "var(--font-size-xsmall)",
+          overflowX: "hidden",
+          textOverflow: "ellipsis",
+          marginTop: "var(--spacing-small)",
+        }}
+      >
+        {itemConfig.displayText || url}
+      </Link>
+    </Typography>
+  );
+};
 
 const HyperlinkMultiple = ({
   itemConfig,
@@ -160,6 +179,19 @@ const HyperlinkMultiple = ({
         ]
       : [urls];
 
+  const handleClick = (url: string) => {
+    if (itemConfig.analyticOnClick) {
+      const capitalisedPropName =
+        itemConfig.itemProp.charAt(0).toUpperCase() +
+        itemConfig.itemProp.slice(1);
+
+      trackDynamicEvent(`Item_${capitalisedPropName}Click`, {
+        // item_id: can include this once we have selectPopupId selector
+        url: `${itemConfig.hyperlinkBaseUri || ""}${url}`,
+      });
+    }
+  };
+
   return (
     <>
       {itemConfig.showLabel && (
@@ -175,6 +207,7 @@ const HyperlinkMultiple = ({
                     href={`${itemConfig.hyperlinkBaseUri || ""}${url}`}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => handleClick(url)}
                     sx={{
                       color: "var(--color-text)",
                       textDecoration: "underline",
@@ -197,34 +230,48 @@ const HyperlinkMultiple = ({
   );
 };
 
-const PopupItemConfigs = ({
+const PopupItems = ({
   data,
   config,
 }: {
   data: { [key: string]: any };
   config: PopupItemConfig[];
 }) => {
-  return config.map((item) => {
-    if (item.valueStyle === "text") {
-      if (item.multiple) {
-        return <TextMultiple itemConfig={item} texts={data[item.itemProp]} />;
-      } else {
-        return <Text itemConfig={item} text={data[item.itemProp]} />;
-      }
-    }
-    if (item.valueStyle === "address") {
-      return <Address itemConfig={item} address={data[item.itemProp]} />;
-    }
-    if (item.valueStyle === "hyperlink") {
-      if (item.multiple) {
+  return config.map((itemConfig) => {
+    if (itemConfig.valueStyle === "text") {
+      if (itemConfig.multiple) {
         return (
-          <HyperlinkMultiple itemConfig={item} urls={data[item.itemProp]} />
+          <TextMultiple
+            itemConfig={itemConfig}
+            texts={data[itemConfig.itemProp]}
+          />
         );
       } else {
-        return <Hyperlink itemConfig={item} url={data[item.itemProp]} />;
+        return (
+          <Text itemConfig={itemConfig} text={data[itemConfig.itemProp]} />
+        );
+      }
+    }
+    if (itemConfig.valueStyle === "address") {
+      return (
+        <Address itemConfig={itemConfig} address={data[itemConfig.itemProp]} />
+      );
+    }
+    if (itemConfig.valueStyle === "hyperlink") {
+      if (itemConfig.multiple) {
+        return (
+          <HyperlinkMultiple
+            itemConfig={itemConfig}
+            urls={data[itemConfig.itemProp]}
+          />
+        );
+      } else {
+        return (
+          <Hyperlink itemConfig={itemConfig} url={data[itemConfig.itemProp]} />
+        );
       }
     }
   });
 };
 
-export default PopupItemConfigs;
+export default PopupItems;

@@ -19,9 +19,11 @@ import { RESULTS_PER_PAGE } from "../../panelSlice";
 import {
   selectIsFilterActive,
   selectVisibleIndexes,
+  selectSearchQuery,
 } from "../../searchPanel/searchSlice";
 import { selectTotalItemsCount } from "../../../map/mapSlice";
 import { useMediaQuery } from "@mui/material";
+import { Event, trackEvent } from "../../../../services/analytics";
 
 const StyledResults = styled(Box)(() => ({
   width: "100%",
@@ -50,13 +52,21 @@ const Results = () => {
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const isFilterActive = useAppSelector(selectIsFilterActive);
   const totalItemsCount = useAppSelector(selectTotalItemsCount);
+  const searchQuery = useAppSelector(selectSearchQuery);
   const resultCount = isFilterActive ? visibleIndexes.length : totalItemsCount;
   const totalPages = Math.ceil(resultCount / RESULTS_PER_PAGE);
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
-  const onItemClick = (itemIx: number) => {
+  const onItemClick = (itemIx: number, itemName: string) => {
     console.log(`Clicked item @${itemIx}`);
+    trackEvent(Event.SEARCH.RESULT_CLICK, {
+      item_name: itemName,
+      search_filter: searchQuery.filter,
+      search_text: searchQuery.text,
+      result_count: resultCount,
+      page: resultsPage,
+    });
     dispatch(openPopup(itemIx));
     dispatch(closePanel());
     if (!isMedium) {
@@ -88,7 +98,7 @@ const Results = () => {
               key={index}
               index={item.index}
               name={item.name}
-              buttonAction={() => onItemClick(item.index)}
+              buttonAction={() => onItemClick(item.index, item.name)}
             />
           ))}
         </List>
@@ -98,7 +108,7 @@ const Results = () => {
           <Pagination
             count={totalPages}
             page={resultsPage + 1}
-            onChange={(event, value) => {
+            onChange={(_event, value) => {
               dispatch(populateSearchResults(value - 1));
             }}
             color="primary"

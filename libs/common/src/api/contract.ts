@@ -117,6 +117,7 @@ const PopupItem = z.object({
   showLabel: z.boolean().default(false),
   hyperlinkBaseUri: z.string().default(""),
   displayText: z.string().optional(),
+  analyticOnClick: z.boolean().default(false),
 });
 
 const TotalsData = z.record(z.string(), z.number());
