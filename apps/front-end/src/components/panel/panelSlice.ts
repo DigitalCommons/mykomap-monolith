@@ -3,6 +3,7 @@ import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetId } from "../../utils/window-utils";
 import { searchDataset } from "../../services";
 import { SearchSliceState } from "./searchPanel/searchSlice";
+import { ConfigSliceState } from "../../app/configSlice";
 
 export const RESULTS_PER_PAGE = 50;
 
@@ -59,33 +60,38 @@ export const panelSlice = createAppSlice({
           );
         }
 
-        const { search } = thunkApi.getState() as {
+        const { search, config } = thunkApi.getState() as {
           search: SearchSliceState;
+          config: ConfigSliceState;
         };
 
-        // Try to fetch with data_sources first
-        let response = await searchDataset({
+        console.log("Config state:", config);
+        console.log("ItemProps:", config?.itemProps);
+        console.log(
+          "ItemProps keys:",
+          Object.keys(config?.itemProps || {}),
+        );
+
+        // Check is config has data_sources property
+        const hasDataSources =
+          "data_sources" in (config?.itemProps || {});
+        console.log("Has data_sources:", hasDataSources);
+
+        // Generate returnProps based on presence of data_sources property
+        const returnProps = hasDataSources
+          ? ["name", "data_sources"]
+          : ["name"];
+        console.log("Using returnProps:", returnProps);
+
+        const response = await searchDataset({
           params: { datasetId },
           query: {
             ...search.searchQuery,
-            returnProps: ["name", "data_sources"],
+            returnProps,
             page: page,
             pageSize: RESULTS_PER_PAGE,
           },
         });
-
-        // If data_sources property doesn't exist (400 error), retry without it
-        if (response.status === 400) {
-          response = await searchDataset({
-            params: { datasetId },
-            query: {
-              ...search.searchQuery,
-              returnProps: ["name"],
-              page: page,
-              pageSize: RESULTS_PER_PAGE,
-            },
-          });
-        }
 
         if (response.status === 200) {
           const body = response.body as {
