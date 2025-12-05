@@ -83,7 +83,13 @@ const StyledContentContainer = styled(Box)(() => ({
   },
 }));
 
-const LeftPane = ({ data, hasLocation, config, width, titleProp }: LeftPaneProps) => {
+const LeftPane = ({
+  data,
+  hasLocation,
+  config,
+  width,
+  titleProp,
+}: LeftPaneProps) => {
   const { t } = useTranslation();
 
   return (

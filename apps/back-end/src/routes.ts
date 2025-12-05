@@ -5,13 +5,13 @@ import fs from "node:fs";
 import {
   getDatasetAbout,
   getDatasetConfig,
-  getDatasetItem,
+  getDatasetItemByIx,
+  getDatasetItemById,
   getDatasetLocations,
   getTotals,
   initDatasets,
   searchDataset,
 } from "./services/datasetService.js";
-import { HttpError } from "./errors.js";
 
 /** Provides the shared configuration options for the Mykomap router implementation. */
 export interface MykomapRouterConfig extends FastifyPluginOptions {
@@ -52,7 +52,7 @@ export function MykomapRouter(
   if (!fs.existsSync(opts.mykomap.dataRoot))
     throw new Error(
       `the dataRoot plugin option is set but refers to a non-existing path: ` +
-        `'${opts.mykomap.dataRoot}'.`,
+      `'${opts.mykomap.dataRoot}'.`,
     );
 
   console.log("Initialising datasets...");
@@ -89,15 +89,17 @@ export function MykomapRouter(
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
-      // datasetItemIdOrIx could be either an ID or an Index. But for the purposes here, just
-      // assume it is an Index.
-      // TODO: extend this method to handle full IDs too
-      if (!datasetItemIdOrIx.startsWith("@")) {
-        throw new HttpError(400, `We can only handle item indexes right now`);
+      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, 'base64').toString('utf8');
+
+      if (itemIdOrIx.startsWith("@")) {
+        const itemIx = Number(itemIdOrIx.substring(1));
+        const item = getDatasetItemByIx(datasetId, itemIx);
+
+        return { status: 200, body: { ...item, index: `@${itemIx}` } };
       }
 
-      const itemIx = Number(datasetItemIdOrIx.substring(1));
-      const item = getDatasetItem(datasetId, itemIx);
+      const itemId = itemIdOrIx;
+      const item = getDatasetItemById(datasetId, itemId);
 
       return { status: 200, body: item };
     },

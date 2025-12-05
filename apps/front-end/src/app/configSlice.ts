@@ -136,7 +136,8 @@ export const configSlice = createAppSlice({
       },
       {
         fulfilled: (state, action) => {
-          // We handle the data in the extraReducers, so that configLoaded can be used in UTs
+          // We handle the data in the extraReducers configLoaded action rather than this fulfilled
+          // block, so that configLoaded can be used in UTs
         },
         rejected: (state, action) => {
           console.error("Error fetching config", action.payload);
@@ -163,9 +164,9 @@ export const configSlice = createAppSlice({
           mapBounds:
             uiMap.mapBounds && uiMap.mapBounds.length === 2
               ? [
-                  [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
-                  [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
-                ]
+                [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
+                [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
+              ]
               : undefined,
         };
       }
