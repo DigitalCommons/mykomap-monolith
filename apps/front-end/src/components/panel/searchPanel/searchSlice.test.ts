@@ -13,7 +13,7 @@ import {
   performSearch,
   performSearchFromQuery,
 } from "./searchSlice";
-import mockConfig from "../../../mockData/mockConfig";
+import mockConfig from "../../../mockApiResponses/mockConfig";
 import * as services from "../../../services";
 import * as windowUtils from "../../../utils/window-utils";
 import * as panelSlice from "../panelSlice";

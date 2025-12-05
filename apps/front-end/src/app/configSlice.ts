@@ -31,6 +31,7 @@ export type PopupItemConfigNoMultiple = {
   showLabel: boolean;
   hyperlinkBaseUri: string;
   displayText?: string;
+  analyticOnClick: boolean;
 };
 
 export type ConfigPopupNoMultiple = {
@@ -135,7 +136,7 @@ export const configSlice = createAppSlice({
         }
       },
       {
-        fulfilled: (state, action) => {
+        fulfilled: (_state, _action) => {
           // We handle the data in the extraReducers configLoaded action rather than this fulfilled
           // block, so that configLoaded can be used in UTs
         },

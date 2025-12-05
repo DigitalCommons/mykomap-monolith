@@ -16,7 +16,7 @@ interface LocalTestContext {
   store: AppStore;
 }
 
-import mockConfig from "../mockData/mockConfig";
+import mockConfig from "../mockApiResponses/mockConfig";
 
 describe<LocalTestContext>("config reducer", (it) => {
   beforeEach<LocalTestContext>((context) => {

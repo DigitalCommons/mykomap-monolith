@@ -2,13 +2,13 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
-import { type PopupItemConfig } from "../../../app/configSlice";
 import PopupItems from "../PopupItems";
+import { ConfigPopupItem } from "../../../services/types";
 
 interface LeftPaneProps {
   data: { [key: string]: any };
   hasLocation: boolean;
-  config: PopupItemConfig[];
+  config: ConfigPopupItem[];
   width: string;
   titleProp: string;
 }

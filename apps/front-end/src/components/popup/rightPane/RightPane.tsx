@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { type PopupItemConfig } from "../../../app/configSlice";
 import PopupItems from "../PopupItems";
+import { ConfigPopupItem } from "../../../services/types";
 
 interface RightPaneProps {
   data: { [key: string]: any };
-  configTop: PopupItemConfig[];
-  configBottom: PopupItemConfig[];
+  configTop: ConfigPopupItem[];
+  configBottom: ConfigPopupItem[];
 }
 
 const StyledRightPane = styled(Box)(() => ({

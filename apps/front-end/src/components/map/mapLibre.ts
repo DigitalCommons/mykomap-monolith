@@ -499,6 +499,7 @@ export const createMap = (
     map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
 
+    console.log("MapLibre map created");
     mapCreated();
   });
 
