@@ -274,6 +274,64 @@ describe("getDatasetItem", () => {
         expect(res.json()).toHaveProperty("name");
         expect(res.json()).toHaveProperty("index", 0);
       });
+
+      test("returnProps not specified returns all properties", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}`,
+        });
+        expect(res.statusCode).toBe(200);
+        const body = res.json();
+        expect(body).toHaveProperty("name", "Apples Co-op");
+        expect(body).toHaveProperty("description", "We sell apples");
+        expect(body).toHaveProperty("country_id", "GB");
+        expect(body).toHaveProperty("index", 0);
+      });
+
+      test("returnProps with single property returns only that property and the id", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}?returnProps[]=name`,
+        });
+        expect(res.statusCode).toBe(200);
+        const body = res.json();
+        expect(body).toStrictEqual({
+          index: 0,
+          id: "test/cuk/R000001",
+          name: "Apples Co-op",
+        });
+      });
+
+      test("returnProps with multiple properties returns only those properties and the id", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}?returnProps[]=name&returnProps[]=description`,
+        });
+        expect(res.statusCode).toBe(200);
+        const body = res.json();
+        expect(body).toStrictEqual({
+          index: 0,
+          id: "test/cuk/R000001",
+          name: "Apples Co-op",
+          description: "We sell apples",
+        });
+      });
+
+      test("returnProps with invalid property returns status code 400", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}?returnProps[]=invalid_property`,
+        });
+        expect(res.statusCode).toBe(400);
+      });
+
+      test("returnProps with mix of valid and invalid properties returns status code 400", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}?returnProps[]=name&returnProps[]=invalid_property`,
+        });
+        expect(res.statusCode).toBe(400);
+      });
     });
 
     describe("item ix doesn't exist", () => {
@@ -296,6 +354,35 @@ describe("getDatasetItem", () => {
         expect(res.json()).toBeTypeOf("object");
         expect(res.json()).toHaveProperty("name");
         expect(res.json()).toHaveProperty("index", 0);
+      });
+
+      test("returnProps with single property returns only that property and the id", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}?returnProps[]=name`,
+        });
+        expect(res.statusCode).toBe(200);
+        const body = res.json();
+        expect(body).toStrictEqual({
+          index: 0,
+          id: "test/cuk/R000001",
+          name: "Apples Co-op",
+        });
+      });
+
+      test("returnProps with multiple properties returns only those properties and the id", async () => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}?returnProps[]=name&returnProps[]=website`,
+        });
+        expect(res.statusCode).toBe(200);
+        const body = res.json();
+        expect(body).toStrictEqual({
+          index: 0,
+          id: "test/cuk/R000001",
+          name: "Apples Co-op",
+          website: ["https://apples.coop", "https://orchards.coop"],
+        });
       });
     });
 
