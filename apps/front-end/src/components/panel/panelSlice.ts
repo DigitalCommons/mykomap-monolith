@@ -66,15 +66,10 @@ export const panelSlice = createAppSlice({
         };
 
         console.log("Config state:", config);
-        console.log("ItemProps:", config?.itemProps);
-        console.log(
-          "ItemProps keys:",
-          Object.keys(config?.itemProps || {}),
-        );
+        console.log("DataSources:", config?.dataSources);
 
-        // Check is config has data_sources property
-        const hasDataSources =
-          "data_sources" in (config?.itemProps || {});
+        // Check if config has dataSources property
+        const hasDataSources = config?.dataSources !== undefined;
         console.log("Has data_sources:", hasDataSources);
 
         // Generate returnProps based on presence of data_sources property

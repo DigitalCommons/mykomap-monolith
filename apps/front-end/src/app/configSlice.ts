@@ -61,7 +61,7 @@ export interface ConfigSliceState {
   logo?: ConfigLogo;
   status: "idle" | "loading" | "loaded" | "failed";
   popup?: ConfigPopup;
-  itemProps?: Config["itemProps"];
+  dataSources?: Config["itemProps"]["data_sources"];
 }
 
 const initialState: ConfigSliceState = {
@@ -87,7 +87,7 @@ const initialState: ConfigSliceState = {
     topRightPane: [],
     bottomRightPane: [],
   },
-  itemProps: undefined,
+  dataSources: undefined,
 };
 
 function deriveMultiples(
@@ -181,7 +181,7 @@ export const configSlice = createAppSlice({
         action.payload.itemProps,
       );
 
-      state.itemProps = action.payload.itemProps;
+      state.dataSources = action.payload.itemProps.data_sources;
 
       state.status = "loaded";
     });
@@ -192,6 +192,7 @@ export const configSlice = createAppSlice({
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
     selectConfigStatus: (state) => state.status,
+    selectDataSources: (state) => state.dataSources,
   },
 });
 
@@ -205,4 +206,5 @@ export const {
   selectPopupConfig,
   selectMapConfig,
   selectConfigStatus,
+  selectDataSources,
 } = configSlice.selectors;
