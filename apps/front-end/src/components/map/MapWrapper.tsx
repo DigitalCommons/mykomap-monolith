@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { createMap, fitBoundsToFeatures } from "./mapLibre";
+import { createMap, fitBoundsToFeatures, setPanelOpenValues } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   selectIsFilterActive,
@@ -117,6 +117,11 @@ const MapWrapper = () => {
   }, [popupIsOpen, popupIndex]);
 
   useEffect(() => {
+    // Keep the mapLibre panel open state in sync with the Redux state
+    setPanelOpenValues(panelOpen, resultsPanelOpen);
+  }, [panelOpen, resultsPanelOpen]);
+
+  useEffect(() => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
 
@@ -137,20 +142,10 @@ const MapWrapper = () => {
 
     // Auto-zoom to fit filtered results
     if (isFilterActive && features.length > 0 && map.current) {
-      // Calculate panel width for desktop
-      const isDesktop = window.innerWidth >= 897;
-      const PANEL_WIDTH = 375; // From CSS variable --panel-width-desktop
-      let leftPanelWidth = 0;
-
-      if (isDesktop) {
-        if (panelOpen) leftPanelWidth += PANEL_WIDTH;
-        if (resultsPanelOpen) leftPanelWidth += PANEL_WIDTH;
-      }
-
       // Wait a brief moment for the map to process the new data before panning
       setTimeout(() => {
         if (map.current) {
-          fitBoundsToFeatures(map.current, { leftPanelWidth });
+          fitBoundsToFeatures(map.current);
         }
       }, 100);
     }
