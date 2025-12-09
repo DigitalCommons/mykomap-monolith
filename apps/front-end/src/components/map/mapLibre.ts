@@ -67,6 +67,100 @@ const disableRotation = (map: Map) => {
   map.touchZoomRotate.disableRotation();
 };
 
+/**
+ * Computes the bounding box of all features in the GeoJSON source and fits the map to those bounds,
+ * with a bit of padding and accounting for the left panel on desktop. This is used to auto-zoom the
+ * map when filters are applied, so that markers are visible and unclustered where possible.
+ *
+ * @param map - The MapLibre map instance
+ * @param options - Optional configuration for padding
+ * @param options.leftPanelWidth - Width of the left panel(s) in pixels to add extra left padding
+ */
+export const fitBoundsToFeatures = (
+  map: Map,
+  options?: { leftPanelWidth?: number },
+) => {
+  const source = map.getSource("items-geojson") as GeoJSONSource;
+  if (!source) {
+    console.warn("GeoJSON source not found, cannot fit bounds");
+    return;
+  }
+
+  const data = source._data as GeoJSON.FeatureCollection<GeoJSON.Point>;
+  if (!data || !data.features || data.features.length === 0) {
+    console.log("No features to fit bounds to");
+    return;
+  }
+
+  // If there's only one point, we can ease to that point without zooming since it's not clustered
+  if (data.features.length === 1) {
+    // Apply offset for left panels if present
+    const offset = options?.leftPanelWidth ? options.leftPanelWidth / 2 : 0;
+    map.easeTo({
+      center: data.features[0].geometry.coordinates as LngLatLike,
+      duration: 1000,
+      offset: [offset, 0],
+    });
+    console.log(
+      `Fitted bounds to single point: ${data.features[0].geometry.coordinates} with offset: ${offset}px`,
+    );
+    return;
+  }
+
+  // Compute the bounding box of all features
+  let minLng = 180;
+  let maxLng = -180;
+  let minLat = 90;
+  let maxLat = -90;
+
+  for (const feature of data.features) {
+    const [lng, lat] = feature.geometry.coordinates;
+    minLng = Math.min(minLng, lng);
+    maxLng = Math.max(maxLng, lng);
+    minLat = Math.min(minLat, lat);
+    maxLat = Math.max(maxLat, lat);
+  }
+
+  // If all points are at the same location, zoom in to that cluster
+  if (minLng === maxLng && minLat === maxLat) {
+    // Apply offset for left panels if present
+    const offset = options?.leftPanelWidth ? options.leftPanelWidth / 2 : 0;
+    map.easeTo({
+      center: [minLng, minLat],
+      zoom: POPUP_INITIAL_ZOOM,
+      duration: 1000,
+      offset: [offset, 0],
+    });
+    console.log(`Fitted bounds to single cluster: [${minLng}, ${minLat}]`);
+    return;
+  }
+
+  // Add padding around the bounds in px so that markers are not at the very edge of the screen
+  const basePadding = 150;
+  const leftPadding = basePadding + (options?.leftPanelWidth ?? 0);
+
+  map.fitBounds(
+    [
+      [minLng, minLat],
+      [maxLng, maxLat],
+    ],
+    {
+      padding: {
+        top: basePadding,
+        bottom: basePadding,
+        left: leftPadding,
+        right: basePadding,
+      },
+      duration: 1000,
+      maxZoom: POPUP_INITIAL_ZOOM,
+    },
+  );
+
+  console.log(
+    `Fitted bounds to ${data.features.length} features: [[${minLng}, ${minLat}], [${maxLng}, ${maxLat}]]`,
+  );
+};
+
 const openPopup = async (
   map: Map,
   itemIx: number,
@@ -137,7 +231,10 @@ export const createMap = (
     mapBounds?: [[number, number], [number, number]];
   },
 ): Map => {
-  const initialBounds = mapConfig?.mapBounds;
+  const initialBounds = mapConfig?.mapBounds ?? [
+    [-169, -49.3],
+    [189, 75.6],
+  ];
 
   console.log("Map bounds", initialBounds);
 

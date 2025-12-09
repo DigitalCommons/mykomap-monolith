@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { createMap } from "./mapLibre";
+import { createMap, fitBoundsToFeatures } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   selectIsFilterActive,
@@ -15,6 +15,7 @@ import {
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
+import { selectPanelOpen, selectResultsPanelOpen } from "../panel/panelSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -29,6 +30,8 @@ const MapWrapper = () => {
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
+  const panelOpen = useAppSelector(selectPanelOpen);
+  const resultsPanelOpen = useAppSelector(selectResultsPanelOpen);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
@@ -131,6 +134,26 @@ const MapWrapper = () => {
       type: "FeatureCollection",
       features,
     });
+
+    // Auto-zoom to fit filtered results
+    if (isFilterActive && features.length > 0 && map.current) {
+      // Calculate panel width for desktop
+      const isDesktop = window.innerWidth >= 897;
+      const PANEL_WIDTH = 375; // From CSS variable --panel-width-desktop
+      let leftPanelWidth = 0;
+
+      if (isDesktop) {
+        if (panelOpen) leftPanelWidth += PANEL_WIDTH;
+        if (resultsPanelOpen) leftPanelWidth += PANEL_WIDTH;
+      }
+
+      // Wait a brief moment for the map to process the new data before panning
+      setTimeout(() => {
+        if (map.current) {
+          fitBoundsToFeatures(map.current, { leftPanelWidth });
+        }
+      }, 100);
+    }
 
     if (!visibleIndexes.includes(popupIndex)) {
       dispatch(closePopup());
