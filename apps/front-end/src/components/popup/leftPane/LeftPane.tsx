@@ -15,6 +15,7 @@ interface LeftPaneProps {
 }
 
 const StyledLeftPane = styled(Box)(({ width }) => ({
+  width: "calc(100% - var(--spacing-xxxlarge))",
   display: "flex",
   flexDirection: "column",
   margin: "var(--spacing-large)",
@@ -31,7 +32,7 @@ const StyledHeaderContainer = styled(Box)(() => ({
   // position: "sticky",
   display: "flex",
   flexDirection: "row",
-  justifyContent: "space-between",
+  // flex: "0 0 auto",
   alignItems: "flex-start",
   columnGap: "var(--spacing-medium)",
   padding: "0 0 var(--spacing-medium) 0",
@@ -102,7 +103,7 @@ const LeftPane = ({
   return (
     <StyledLeftPane width={width}>
       <StyledHeaderContainer>
-        <Typography variant="h1" sx={{ overflowWrap: "break-word" }}>
+        <Typography variant="h1" sx={{ overflowWrap: "break-word", minWidth: 0 }}>
           {data[titleProp]}
         </Typography>
         <DotCoopVerified dataSources={dataSources} />
