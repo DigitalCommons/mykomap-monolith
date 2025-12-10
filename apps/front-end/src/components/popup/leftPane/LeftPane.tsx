@@ -30,8 +30,10 @@ const StyledLeftPane = styled(Box)(({ width }) => ({
 const StyledHeaderContainer = styled(Box)(() => ({
   // position: "sticky",
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   justifyContent: "space-between",
+  alignItems: "flex-start",
+  columnGap: "var(--spacing-medium)",
   padding: "0 0 var(--spacing-medium) 0",
   backgroundColor: "#ffffff",
   top: 0,
@@ -104,13 +106,13 @@ const LeftPane = ({
           {data[titleProp]}
         </Typography>
         <DotCoopVerified dataSources={dataSources} />
+      </StyledHeaderContainer>
+      <StyledContentContainer>
         {!hasLocation && (
           <Typography variant="subtitle2">
             {t("no_location_available")}
           </Typography>
         )}
-      </StyledHeaderContainer>
-      <StyledContentContainer>
         <PopupItems data={data} config={config} />
       </StyledContentContainer>
     </StyledLeftPane>

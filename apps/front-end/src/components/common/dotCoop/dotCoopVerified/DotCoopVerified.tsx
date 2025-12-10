@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import CheckIcon from "@mui/icons-material/Check";
 import theme from "../../../../theme/theme";
 
 interface DotCoopVerifiedProps {
@@ -10,16 +9,15 @@ interface DotCoopVerifiedProps {
 const StyledVerifiedBadge = styled(Box)(({ theme }) => ({
   width: "fit-content",
   display: "flex",
-  flexDirection: "row",
+  flexDirection: "column",
   justifyContent: "center",
-  marginTop: "10px",
+  // marginTop: "10px",
   fontSize: "11px",
   fontWeight: "var(--font-weight-normal)",
   color: "#fff",
   textTransform: "uppercase",
-  border: `2px solid ${theme.palette.secondary.light}`,
   backgroundColor: theme.palette.secondary.light,
-  padding: "8px",
+  padding: "8px 8px 5px",
   letterSpacing: "0.1em",
   // "& div": {
   //   display: "flex",
