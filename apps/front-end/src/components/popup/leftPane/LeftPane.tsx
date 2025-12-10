@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { type PopupItemConfig } from "../../../app/configSlice";
 import PopupItems from "../PopupItems";
+import DotCoopVerified from "../../common/dotCoop/dotCoopVerified/DotCoopVerified";
 
 interface LeftPaneProps {
   data: { [key: string]: any };
@@ -83,8 +84,18 @@ const StyledContentContainer = styled(Box)(() => ({
   },
 }));
 
-const LeftPane = ({ data, hasLocation, config, width, titleProp }: LeftPaneProps) => {
+const LeftPane = ({
+  data,
+  hasLocation,
+  config,
+  width,
+  titleProp,
+}: LeftPaneProps) => {
   const { t } = useTranslation();
+  const dataSources = data["data_sources"] || [];
+
+  console.log("LeftPane data", data);
+  console.log("LeftPane data_sources", dataSources);
 
   return (
     <StyledLeftPane width={width}>
@@ -92,6 +103,7 @@ const LeftPane = ({ data, hasLocation, config, width, titleProp }: LeftPaneProps
         <Typography variant="h1" sx={{ overflowWrap: "break-word" }}>
           {data[titleProp]}
         </Typography>
+        <DotCoopVerified dataSources={dataSources} />
         {!hasLocation && (
           <Typography variant="subtitle2">
             {t("no_location_available")}

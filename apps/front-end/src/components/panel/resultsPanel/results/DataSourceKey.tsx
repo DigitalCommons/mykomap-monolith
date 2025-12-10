@@ -2,12 +2,11 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import CheckIcon from "@mui/icons-material/Check";
 import theme from "../../../../theme/theme";
-
 interface DataSourceKeyProps {
   results: { data_sources?: string[] }[];
 }
 
-const StyledKeyContainer = styled("div")(({ theme }) => ({
+const StyledKeyContainer = styled(Box)(({ theme }) => ({
   width: "fit-content",
   display: "flex",
   alignItems: "center",
@@ -33,8 +32,6 @@ const DataSourceKey = ({ results }: DataSourceKeyProps) => {
   if (!hasDCSource) {
     return null;
   }
-
-  // Add DotCoop logo to the key if DC source is present
 
   return (
     <StyledKeyContainer>
