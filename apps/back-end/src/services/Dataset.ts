@@ -106,14 +106,14 @@ export class Dataset {
       const itemIx = this.searchablePropValues.findIndex(item => item.includes(itemId));
       if (itemIx) {
         const item = this.getItemByIx(itemIx);
-        return { ...item, itemIx, index: `@${itemIx}` }
+        return { ...item, itemIx }
       }
     }
     else {
       for (let itemIx = 0; itemIx < this.searchablePropValues.length; itemIx++) {
         const item = this.getItemByIx(itemIx);
         if (item.id === itemId) {
-          return { ...item, itemIx, index: `@${itemIx}` };
+          return { ...item, itemIx };
         }
       }
     }
