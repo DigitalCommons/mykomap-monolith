@@ -204,8 +204,6 @@ describe("searchDataset", () => {
       },
     );
 
-    // Note: pageSize=0 is prevented by the contract requiring it to be positive
-    // (gets a 400 error)
     test.each([
       "returnProps[]=name",
       "returnProps[]=name&pageSize=2",
@@ -233,7 +231,7 @@ describe("searchDataset", () => {
 
     test.each([
       "page=-1&pageSize=2",
-      "page=1&pageSize=0",
+      "page=1&pageSize=0", // pageSize=0 is prevented by the contract requiring it to be positive
       "page=0.5&pageSize=2",
       "page=1&pageSize=1.5",
     ])(
@@ -382,3 +380,4 @@ describe("getDatasetItem", () => {
       expect(res.json()).toHaveProperty("version");
     });
   });
+});
