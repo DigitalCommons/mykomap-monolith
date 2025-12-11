@@ -7,6 +7,8 @@ import {
   getDatasetConfig,
   getDatasetItemByIx,
   getDatasetItemById,
+  getDatasetItemByIx,
+  getDatasetItemById,
   getDatasetLocations,
   getTotals,
   initDatasets,
