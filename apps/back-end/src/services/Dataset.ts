@@ -48,6 +48,7 @@ export class Dataset {
       );
 
     // Sanity check searchable.json is roughly the correct format (which should be done after generation)
+    const hasIdField = searchable.itemProps.includes("id");
     const hasSearchStringField = searchable.itemProps.includes("searchString");
     const uniqueItemProps =
       new Set(searchable.itemProps).size === searchable.itemProps.length;
@@ -55,7 +56,7 @@ export class Dataset {
       .filter(([prop, def]) => def.filter)
       .map(([prop, def]) => prop);
     const sameItemPropsAsConfig = haveSameElements(
-      [...filterableItemPropsInConfig, "searchString"],
+      [...filterableItemPropsInConfig, "id", "searchString"],
       searchable.itemProps,
     );
     const expectedValuesLengths = searchable.values
@@ -63,6 +64,7 @@ export class Dataset {
       .every((v: number) => v === searchable.itemProps.length);
 
     if (
+      hasIdField &&
       hasSearchStringField &&
       uniqueItemProps &&
       sameItemPropsAsConfig &&
@@ -102,34 +104,13 @@ export class Dataset {
 
   getItemById = (itemId: string) => {
     console.log("itemid", itemId);
-    // Use searchable if it has ids, otherwise loop through items
-    // TODO fix this #236:
-    // We need to have IDs always in searchable JSON so we don't need this check,
-    // by implementing it in the back-end/src/dataset.ts writeDataset() function. See how we
-    // write the 'searchString' field in searchable.json, we want to do the same for ID. Sorry I
-    // didn't explain this very well before. In its current form, I don't think the search
-    // through all the items in searchable.json looking for an ID will work if the ID field
-    // doesn't exist since the searchablePropIndexMap should match exactly to the
-    // searchablePropValues
-    if (this.searchablePropIndexMap.id) {
-      const itemIx = this.searchablePropValues.findIndex(
-        (item) => item[this.searchablePropIndexMap.id] == itemId,
-      );
-      if (itemIx > -1) {
-        const item = this.getItemByIx(itemIx);
-        return { ...item, index: itemIx };
-      }
-    } else {
-      for (
-        let itemIx = 0;
-        itemIx < this.searchablePropValues.length;
-        itemIx++
-      ) {
-        const item = this.getItemByIx(itemIx);
-        if (item.id === itemId) {
-          return { ...item, index: itemIx };
-        }
-      }
+    const itemIx = this.searchablePropValues.findIndex(
+      (item) => item[this.searchablePropIndexMap.id] == itemId,
+    );
+
+    if (itemIx > -1) {
+      const item = this.getItemByIx(itemIx);
+      return { ...item, index: itemIx };
     }
 
     throw new HttpError(

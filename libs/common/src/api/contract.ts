@@ -65,7 +65,7 @@ const VocabDef = z.object({
 const I18nVocabDef = z.record(Iso639Set1Code, VocabDef);
 const VocabIndex = z.record(NCName, I18nVocabDef);
 
-// The following specs shoud match the types in prop-spec.ts
+// The following specs shoud match the types in prop-specs.ts
 const FilterSpec = z.object({ preset: z.literal(true), to: z.unknown() });
 const CommonPropSpec = z.object({
   from: z.string().optional(),
@@ -107,7 +107,15 @@ const PropSpec = z.discriminatedUnion("type", [
   VocabPropSpec,
   MultiPropSpec,
 ]);
-const PropSpecs = z.record(z.string(), PropSpec);
+
+const PropSpecs = z
+  .object({
+    // the 'id' itemProp is required, as a non-filterable ValuePropSpec
+    id: ValuePropSpec.extend({
+      filter: z.literal(false).optional(),
+    }),
+  })
+  .and(z.record(z.string(), PropSpec));
 const PopupItem = z.object({
   itemProp: z.string(),
   valueStyle: z
