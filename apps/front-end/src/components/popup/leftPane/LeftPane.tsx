@@ -100,17 +100,10 @@ const LeftPane = ({
   const { t } = useTranslation();
   const dataSources = data["data_sources"] || [];
 
-  console.log("LeftPane data", data);
-  console.log("LeftPane data_sources", dataSources);
-
   return (
     <StyledLeftPane width={width}>
       <StyledHeaderContainer>
-        <StyledHeaderTitle
-          variant="h1"
-        >
-          {data[titleProp]}
-        </StyledHeaderTitle>
+        <StyledHeaderTitle variant="h1">{data[titleProp]}</StyledHeaderTitle>
         <DotCoopVerified dataSources={dataSources} />
       </StyledHeaderContainer>
       <StyledContentContainer>

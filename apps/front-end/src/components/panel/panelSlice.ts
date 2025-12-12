@@ -65,18 +65,13 @@ export const panelSlice = createAppSlice({
           config: ConfigSliceState;
         };
 
-        console.log("Config state:", config);
-        console.log("DataSources:", config?.dataSources);
-
         // Check if config has dataSources property
         const hasDataSources = config?.dataSources !== undefined;
-        console.log("Has data_sources:", hasDataSources);
 
         // Generate returnProps based on presence of data_sources property
         const returnProps = hasDataSources
           ? ["name", "data_sources"]
           : ["name"];
-        console.log("Using returnProps:", returnProps);
 
         const response = await searchDataset({
           params: { datasetId },
