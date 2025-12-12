@@ -8,6 +8,7 @@ import {
   selectPopupData,
 } from "./popupSlice";
 import { configLoaded, setLanguage } from "../../app/configSlice";
+import { updateVisibleIndexes } from "../panel/searchPanel/searchSlice";
 import mockConfig from "../../mockData/mockConfig";
 import mockItem from "../../mockData/mockItem";
 import * as services from "../../services";
@@ -45,6 +46,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
     store.dispatch(closePopup());
 
     expect(selectPopupIsOpen(store.getState())).toBe(false);
+    expect(selectPopupIndex(store.getState())).toBe(-1);
   });
 
   it("should handle openPopup pending", ({ store }) => {
@@ -241,5 +243,104 @@ describe<LocalTestContext>("popup reducer", (it) => {
       typology: "Travailleurs",
       website: ["https://www.brightonhousing.coop"],
     });
+  });
+
+  it("should allow opening popup when visibleIndexes is empty", async ({
+    store,
+  }) => {
+    // visibleIndexes is empty by default, which means all items are visible
+    expect(store.getState().search.visibleIndexes).toEqual([]);
+
+    await store.dispatch(openPopup("@0"));
+
+    expect(selectPopupIsOpen(store.getState())).toBe(true);
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.status).toBe("idle");
+  });
+
+  it("should allow opening popup when item index is in visibleIndexes", async ({
+    store,
+  }) => {
+    // Set visibleIndexes to include index 0
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { text: "test" },
+        visibleIndexes: [0, 1, 2, 5],
+      }),
+    );
+
+    await store.dispatch(openPopup("@0"));
+
+    expect(selectPopupIsOpen(store.getState())).toBe(true);
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.status).toBe("idle");
+  });
+
+  it("should reject opening popup when item index is not in visibleIndexes", async ({
+    store,
+  }) => {
+    // Mock an item with index 3
+    vi.spyOn(services, "getDatasetItem").mockResolvedValue({
+      status: 200,
+      body: { ...mockItem, index: 3 },
+      headers: new Headers(),
+    });
+
+    // Set visibleIndexes to NOT include index 3
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { text: "test" },
+        visibleIndexes: [0, 1, 2, 5],
+      }),
+    );
+
+    await store.dispatch(openPopup("@3"));
+
+    // Popup should NOT open
+    expect(selectPopupIsOpen(store.getState())).toBe(false);
+    expect(store.getState().popup.status).toBe("failed");
+  });
+
+  it("should allow opening popup with visibleIndexes containing only the requested index", async ({
+    store,
+  }) => {
+    // Set visibleIndexes to contain only index 0
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { filter: ["country_id:GB"] },
+        visibleIndexes: [0],
+      }),
+    );
+
+    await store.dispatch(openPopup("@0"));
+
+    expect(selectPopupIsOpen(store.getState())).toBe(true);
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.status).toBe("idle");
+  });
+
+  it("should reject opening popup when visibleIndexes is non-empty and does not contain the item", async ({
+    store,
+  }) => {
+    // Mock an item with index 10
+    vi.spyOn(services, "getDatasetItem").mockResolvedValue({
+      status: 200,
+      body: { ...mockItem, index: 10 },
+      headers: new Headers(),
+    });
+
+    // Set visibleIndexes to a non-empty array that doesn't include 10
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { filter: ["country_id:GB"] },
+        visibleIndexes: [0, 1, 2],
+      }),
+    );
+
+    await store.dispatch(openPopup("@10"));
+
+    // Popup should NOT open
+    expect(selectPopupIsOpen(store.getState())).toBe(false);
+    expect(store.getState().popup.status).toBe("failed");
   });
 });

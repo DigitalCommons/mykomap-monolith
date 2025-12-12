@@ -9,7 +9,7 @@ Before diving in to the architecture, let's outline some key requirements & desi
 
 For these reasons, serving all the data straight to a front-end is not viable. In order to reduce loading times and computational load on the clients, we need a back-end that has access to all the data and can perform searches on it, then serves the front-end clients with the minimum required data it needs to render the UI.
 
-> **_NOTE:_** In order to minimise the amount of data served to the front-end, we don't include dataset item IDs, only an array of their locations. Therefore the front-end generally refers to items by their array index (sometimes abbreviated in the code as `ix`). An item's index is persistent in the short term, e.g. within a single browser session, but can change when new data is loaded into the back-end. An item's ID is more stable, ideally permanent.
+> **_NOTE:_** In order to minimise the amount of data served to the front-end, we don't include dataset item IDs, only an array of their locations. Therefore the front-end generally refers to items by their integer array index (sometimes abbreviated in the code as `ix`). An item's index is persistent in the short term, e.g. within a single browser session, but can change when new data is loaded into the back-end. An item's string ID is more stable, ideally permanent.
 
 ## System architecture
 
@@ -48,7 +48,7 @@ as seen from the SERVER_DATA_ROOT location:
 │   │   ├── config.json (itemProps, vocabs, UI config, languages, etc.)
 │   │   ├── about.md (markdown file containing info to be displayed in AboutPanel)
 │   │   ├── locations.json (array of lng-lat coordinates for each item)
-│   │   ├── searchable.json (array of the property values and searchable strings for each item)
+│   │   ├── searchable.json (array of the filterable prop values, ID and searchString for each item)
 │   │   ├── items
 │   │   |   ├── 0.json (full info of first item in the above aggregate JSONs)
 │   │   |   ├── 1.json
