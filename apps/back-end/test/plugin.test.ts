@@ -104,7 +104,7 @@ describe("searchDataset", () => {
         url: `/dataset/dataset-A/search?${query}`,
       });
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toStrictEqual(["@0", "@5", "@6"]);
+      expect(res.json()).toStrictEqual([0, 5, 6]);
     });
 
     test.each([
@@ -117,7 +117,7 @@ describe("searchDataset", () => {
         url: `/dataset/dataset-A/search?${query}`,
       });
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toStrictEqual(["@1"]);
+      expect(res.json()).toStrictEqual([1]);
     });
 
     test.each(["filter=typology:BMT20", "text=coop"])(
@@ -128,7 +128,7 @@ describe("searchDataset", () => {
           url: `/dataset/dataset-A/search?${query}`,
         });
         expect(res.statusCode).toBe(200);
-        expect(res.json()).toStrictEqual(["@0", "@1", "@5", "@6"]);
+        expect(res.json()).toStrictEqual([0, 1, 5, 6]);
       },
     );
 
@@ -141,8 +141,8 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@0", name: "Apples Co-op" },
-          { index: "@1", name: "Pears United" },
+          { index: 0, name: "Apples Co-op" },
+          { index: 1, name: "Pears United" },
         ]);
       },
     );
@@ -156,7 +156,7 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@6", name: "North Apples Co-op 2" },
+          { index: 6, name: "North Apples Co-op 2" },
         ]);
       },
     );
@@ -170,8 +170,8 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@2", name: "Invisible Collab" },
-          { index: "@3", name: "Kangaroo Koop" },
+          { index: 2, name: "Invisible Collab" },
+          { index: 3, name: "Kangaroo Koop" },
         ]);
       },
     );
@@ -185,7 +185,7 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@5", name: "North Apples Co-op" },
+          { index: 5, name: "North Apples Co-op" },
         ]);
       },
     );
@@ -199,13 +199,11 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@5", name: "North Apples Co-op" },
+          { index: 5, name: "North Apples Co-op" },
         ]);
       },
     );
 
-    // Note: pageSize=0 is prevented by the contract requiring it to be positive
-    // (gets a 400 error)
     test.each([
       "returnProps[]=name",
       "returnProps[]=name&pageSize=2",
@@ -220,20 +218,20 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@0", name: "Apples Co-op" },
-          { index: "@1", name: "Pears United" },
-          { index: "@2", name: "Invisible Collab" },
-          { index: "@3", name: "Kangaroo Koop" },
-          { index: "@4", name: "Koala Koop" },
-          { index: "@5", name: "North Apples Co-op" },
-          { index: "@6", name: "North Apples Co-op 2" },
+          { index: 0, name: "Apples Co-op" },
+          { index: 1, name: "Pears United" },
+          { index: 2, name: "Invisible Collab" },
+          { index: 3, name: "Kangaroo Koop" },
+          { index: 4, name: "Koala Koop" },
+          { index: 5, name: "North Apples Co-op" },
+          { index: 6, name: "North Apples Co-op 2" },
         ]);
       },
     );
 
     test.each([
       "page=-1&pageSize=2",
-      "page=1&pageSize=0",
+      "page=1&pageSize=0", // pageSize=0 is prevented by the contract requiring it to be positive
       "page=0.5&pageSize=2",
       "page=1&pageSize=1.5",
     ])(
@@ -274,7 +272,7 @@ describe("getDatasetItem", () => {
         expect(res.statusCode).toBe(200);
         expect(res.json()).toBeTypeOf("object");
         expect(res.json()).toHaveProperty("name");
-        expect(res.json()).toHaveProperty("index", "@0");
+        expect(res.json()).toHaveProperty("index", 0);
       });
     });
 
@@ -287,51 +285,28 @@ describe("getDatasetItem", () => {
         expect(res.statusCode).toBe(404);
       });
     });
-  });
 
-  describe("item id exists", () => {
-    test("status code 200 and non-empty response", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}`,
+    describe("item id exists", () => {
+      test("status code 200 and non-empty response", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}`, // the id in 0.json
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toBeTypeOf("object");
+        expect(res.json()).toHaveProperty("name");
+        expect(res.json()).toHaveProperty("index", 0);
       });
-      expect(res.statusCode).toBe(200);
-      expect(res.json()).toBeTypeOf("object");
-      expect(res.json()).toHaveProperty("name");
-      expect(res.json()).toHaveProperty("index", "@0");
     });
-  });
 
-  describe("item id doesn't exist", () => {
-    test("status code 404", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: `/dataset/dataset-A/item/${encodeBase64("bad/test/cuk/R000001")}`,
+    describe("item id doesn't exist", () => {
+      test("status code 404", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("bad/test/cuk/R000001")}`,
+        });
+        expect(res.statusCode).toBe(404);
       });
-      expect(res.statusCode).toBe(404);
-    });
-  });
-});
-
-describe("dataset does not exist", () => {
-  test("status code 404", async (t) => {
-    const res = await fastify.inject({
-      method: "GET",
-      url: `/dataset/dataset-in-your-imagination/item//${encodeBase64("@0")}`,
-    });
-    expect(res.statusCode).toBe(404);
-  });
-});
-
-describe("getAbout", () => {
-  describe("dataset exists", () => {
-    test("status code 200 and non-empty response", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: "/dataset/dataset-A/about",
-      });
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toContain("published by Mr Douglas Quaid");
     });
   });
 
@@ -339,45 +314,68 @@ describe("getAbout", () => {
     test("status code 404", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-in-your-imagination/about",
+        url: `/dataset/dataset-in-your-imagination/item//${encodeBase64("@0")}`,
       });
       expect(res.statusCode).toBe(404);
     });
   });
-});
 
-describe("getConfig", () => {
-  describe("dataset exists", () => {
+  describe("getAbout", () => {
+    describe("dataset exists", () => {
+      test("status code 200 and non-empty response", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-A/about",
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.body).toContain("published by Mr Douglas Quaid");
+      });
+    });
+
+    describe("dataset does not exist", () => {
+      test("status code 404", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-in-your-imagination/about",
+        });
+        expect(res.statusCode).toBe(404);
+      });
+    });
+  });
+
+  describe("getConfig", () => {
+    describe("dataset exists", () => {
+      test("status code 200 and non-empty response", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-A/config",
+        });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toBeTypeOf("object");
+        expect(res.json()).toHaveProperty("vocabs");
+      });
+    });
+
+    describe("dataset does not exist", () => {
+      test("status code 404", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: "/dataset/dataset-in-your-imagination/config",
+        });
+        expect(res.statusCode).toBe(404);
+      });
+    });
+  });
+
+  describe("getVersion", () => {
     test("status code 200 and non-empty response", async (t) => {
       const res = await fastify.inject({
         method: "GET",
-        url: "/dataset/dataset-A/config",
+        url: "/version",
       });
       expect(res.statusCode).toBe(200);
       expect(res.json()).toBeTypeOf("object");
-      expect(res.json()).toHaveProperty("vocabs");
+      expect(res.json()).toHaveProperty("version");
     });
-  });
-
-  describe("dataset does not exist", () => {
-    test("status code 404", async (t) => {
-      const res = await fastify.inject({
-        method: "GET",
-        url: "/dataset/dataset-in-your-imagination/config",
-      });
-      expect(res.statusCode).toBe(404);
-    });
-  });
-});
-
-describe("getVersion", () => {
-  test("status code 200 and non-empty response", async (t) => {
-    const res = await fastify.inject({
-      method: "GET",
-      url: "/version",
-    });
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toBeTypeOf("object");
-    expect(res.json()).toHaveProperty("version");
   });
 });

@@ -226,9 +226,7 @@ export const performSearch = (): AppThunk => {
       dispatch(
         updateVisibleIndexes({
           searchQuery,
-          visibleIndexes: (response.body as string[]).map(
-            (index) => Number(index.substring(1)), // remove leading '@' from index
-          ),
+          visibleIndexes: response.body as number[],
         }),
       );
       dispatch(populateSearchResults(0));

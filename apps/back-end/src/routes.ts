@@ -5,8 +5,8 @@ import fs from "node:fs";
 import {
   getDatasetAbout,
   getDatasetConfig,
-  getDatasetItemByIx,
   getDatasetItemById,
+  getDatasetItemByIx,
   getDatasetLocations,
   getTotals,
   initDatasets,
@@ -97,7 +97,7 @@ export function MykomapRouter(
         const itemIx = Number(itemIdOrIx.substring(1));
         const item = getDatasetItemByIx(datasetId, itemIx);
 
-        return { status: 200, body: { ...item, index: `@${itemIx}` } };
+        return { status: 200, body: { ...item, index: itemIx } };
       }
 
       const itemId = itemIdOrIx;
