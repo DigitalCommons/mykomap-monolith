@@ -81,16 +81,16 @@ const openPopup = async (
     return;
   }
 
-  console.log(`Open popup for item ${itemIx} ${coordinates}`);
+  console.log(`Create marker popup for item @${itemIx}`);
 
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
     : [0, -20];
 
-  console.log("item ix", itemIx);
-
+  popup?.off("close", popupClosedCallback);
   popup?.remove();
+
   popupIx = itemIx;
   popup = new Popup({
     closeButton: false,
@@ -248,6 +248,9 @@ export const createMap = (
           return;
         }
 
+        popup?.off("close", popupClosedCallback);
+
+        // Ease to new marker then open popup
         map
           .easeTo({
             center: [
@@ -362,7 +365,9 @@ export const createMap = (
           return;
         }
 
-        // ease to a position so that the popup is fully visible
+        popup?.off("close", popupClosedCallback);
+
+        // Ease to new marker then open popup
         map
           .easeTo({
             center: [

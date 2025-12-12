@@ -281,10 +281,25 @@
                 "schema": {
                   "allOf": [
                     {
-                      "type": "object",
-                      "additionalProperties": {
-                        "nullable": true
-                      }
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "id"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "additionalProperties": {
+                            "nullable": true
+                          }
+                        }
+                      ]
                     },
                     {
                       "type": "object",

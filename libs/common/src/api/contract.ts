@@ -27,7 +27,11 @@ function ZodRegex(rx: RegExp, message: string) {
 const Location = z.array(z.number()).min(2).max(2);
 const CustomMarkerId = z.number();
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
-const DatasetItem = z.record(z.string(), z.unknown());
+const DatasetItem = z // an arbitrary object with at least an 'id' string property
+  .object({
+    id: z.string(),
+  })
+  .and(z.record(z.string(), z.unknown()));
 const DatasetLocations = z.array(
   Location.nullable(),
   CustomMarkerId.nullable(),
@@ -274,7 +278,11 @@ export const contract = c.router({
       200: z
         .union([
           z.array(DatasetItemIxRaw),
-          z.array(DatasetItem.and(z.object({ index: DatasetItemIxRaw }))),
+          z.array(
+            z
+              .record(z.string(), z.unknown())
+              .and(z.object({ index: DatasetItemIxRaw })),
+          ),
         ])
         .openapi({
           description:
