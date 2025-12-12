@@ -34,8 +34,12 @@ const DataSourceKey = ({ results }: DataSourceKeyProps) => {
   }
 
   return (
-    <StyledKeyContainer>
+    <StyledKeyContainer
+      role="note"
+      aria-label="Legend: Check mark indicates DotCoop verified data sources"
+    >
       <CheckIcon
+        aria-hidden="true"
         style={{
           display: "flex",
           color: "var(--color-dc-source)",
@@ -46,10 +50,11 @@ const DataSourceKey = ({ results }: DataSourceKeyProps) => {
       <div>
         <img
           src="/assets/logos/dotcoop-logo-small.png"
-          alt="DotCoop Logo"
+          alt=""
+          aria-hidden="true"
           style={{
             margin: "3px 5px 0 0",
-            
+
             height: "17px",
             width: "auto",
           }}

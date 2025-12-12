@@ -29,10 +29,9 @@ const StyledLeftPane = styled(Box)(({ width }) => ({
 }));
 
 const StyledHeaderContainer = styled(Box)(() => ({
-  // position: "sticky",
   display: "flex",
   flexDirection: "row",
-  // flex: "0 0 auto",
+  justifyContent: "space-between",
   alignItems: "flex-start",
   columnGap: "var(--spacing-medium)",
   padding: "0 0 var(--spacing-medium) 0",
@@ -52,10 +51,14 @@ const StyledHeaderContainer = styled(Box)(() => ({
   },
 }));
 
+const StyledHeaderTitle = styled(Typography)(() => ({
+  overflowWrap: "break-word",
+  minWidth: 0,
+}));
+
 const StyledContentContainer = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  // overflowY: "auto",
   whiteSpace: "pre-line",
   paddingRight: 0,
   marginRight: 0,
@@ -103,9 +106,11 @@ const LeftPane = ({
   return (
     <StyledLeftPane width={width}>
       <StyledHeaderContainer>
-        <Typography variant="h1" sx={{ overflowWrap: "break-word", minWidth: 0 }}>
+        <StyledHeaderTitle
+          variant="h1"
+        >
           {data[titleProp]}
-        </Typography>
+        </StyledHeaderTitle>
         <DotCoopVerified dataSources={dataSources} />
       </StyledHeaderContainer>
       <StyledContentContainer>

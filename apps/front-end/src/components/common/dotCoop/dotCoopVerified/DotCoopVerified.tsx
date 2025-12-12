@@ -11,7 +11,6 @@ const StyledVerifiedBadge = styled(Box)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
-  // marginTop: "10px",
   fontSize: "11px",
   fontWeight: "var(--font-weight-normal)",
   color: "#fff",
@@ -19,12 +18,6 @@ const StyledVerifiedBadge = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.secondary.light,
   padding: "8px 8px 5px",
   letterSpacing: "0.1em",
-  // "& div": {
-  //   display: "flex",
-  //   alignItems: "center",
-  //   marginLeft: "5px",
-  //   padding: "3px 6px 3px 2px",
-  // },
 }));
 
 const DotCoopVerified = ({ dataSources }: DotCoopVerifiedProps) => {
@@ -35,15 +28,14 @@ const DotCoopVerified = ({ dataSources }: DotCoopVerifiedProps) => {
   }
 
   return (
-    <StyledVerifiedBadge>
+    <StyledVerifiedBadge role="status" aria-label="DotCoop Verified">
       <div>
         <img
           src="/assets/logos/dotcoop-logo-small.png"
-          alt="DotCoop Logo"
+          alt=""
+          aria-hidden="true"
         />
-        <div>
-          Verified
-        </div>
+        <div>Verified</div>
       </div>
     </StyledVerifiedBadge>
   );
