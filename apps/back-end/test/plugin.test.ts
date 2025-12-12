@@ -104,7 +104,7 @@ describe("searchDataset", () => {
         url: `/dataset/dataset-A/search?${query}`,
       });
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toStrictEqual(["@0", "@5", "@6"]);
+      expect(res.json()).toStrictEqual([0, 5, 6]);
     });
 
     test.each([
@@ -117,7 +117,7 @@ describe("searchDataset", () => {
         url: `/dataset/dataset-A/search?${query}`,
       });
       expect(res.statusCode).toBe(200);
-      expect(res.json()).toStrictEqual(["@1"]);
+      expect(res.json()).toStrictEqual([1]);
     });
 
     test.each(["filter=typology:BMT20", "text=coop"])(
@@ -128,7 +128,7 @@ describe("searchDataset", () => {
           url: `/dataset/dataset-A/search?${query}`,
         });
         expect(res.statusCode).toBe(200);
-        expect(res.json()).toStrictEqual(["@0", "@1", "@5", "@6"]);
+        expect(res.json()).toStrictEqual([0, 1, 5, 6]);
       },
     );
 
@@ -141,8 +141,8 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@0", name: "Apples Co-op" },
-          { index: "@1", name: "Pears United" },
+          { index: 0, name: "Apples Co-op" },
+          { index: 1, name: "Pears United" },
         ]);
       },
     );
@@ -156,7 +156,7 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@6", name: "North Apples Co-op 2" },
+          { index: 6, name: "North Apples Co-op 2" },
         ]);
       },
     );
@@ -170,8 +170,8 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@2", name: "Invisible Collab" },
-          { index: "@3", name: "Kangaroo Koop" },
+          { index: 2, name: "Invisible Collab" },
+          { index: 3, name: "Kangaroo Koop" },
         ]);
       },
     );
@@ -185,7 +185,7 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@5", name: "North Apples Co-op" },
+          { index: 5, name: "North Apples Co-op" },
         ]);
       },
     );
@@ -199,7 +199,7 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@5", name: "North Apples Co-op" },
+          { index: 5, name: "North Apples Co-op" },
         ]);
       },
     );
@@ -218,13 +218,13 @@ describe("searchDataset", () => {
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toStrictEqual([
-          { index: "@0", name: "Apples Co-op" },
-          { index: "@1", name: "Pears United" },
-          { index: "@2", name: "Invisible Collab" },
-          { index: "@3", name: "Kangaroo Koop" },
-          { index: "@4", name: "Koala Koop" },
-          { index: "@5", name: "North Apples Co-op" },
-          { index: "@6", name: "North Apples Co-op 2" },
+          { index: 0, name: "Apples Co-op" },
+          { index: 1, name: "Pears United" },
+          { index: 2, name: "Invisible Collab" },
+          { index: 3, name: "Kangaroo Koop" },
+          { index: 4, name: "Koala Koop" },
+          { index: 5, name: "North Apples Co-op" },
+          { index: 6, name: "North Apples Co-op 2" },
         ]);
       },
     );
@@ -264,27 +264,25 @@ const encodeBase64 = (data: string) => {
 describe("getDatasetItem", () => {
   describe("dataset exists", () => {
     describe("item ix exists", () => {
-      describe("item ix exists", () => {
-        test("status code 200 and non-empty response", async (t) => {
-          const res = await fastify.inject({
-            method: "GET",
-            url: `/dataset/dataset-A/item/${encodeBase64("@0")}`,
-          });
-          expect(res.statusCode).toBe(200);
-          expect(res.json()).toBeTypeOf("object");
-          expect(res.json()).toHaveProperty("name");
-          expect(res.json()).toHaveProperty("index", "@0");
+      test("status code 200 and non-empty response", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@0")}`,
         });
+        expect(res.statusCode).toBe(200);
+        expect(res.json()).toBeTypeOf("object");
+        expect(res.json()).toHaveProperty("name");
+        expect(res.json()).toHaveProperty("index", 0);
       });
+    });
 
-      describe("item ix doesn't exist", () => {
-        test("status code 404", async (t) => {
-          const res = await fastify.inject({
-            method: "GET",
-            url: `/dataset/dataset-A/item/${encodeBase64("@999")}`,
-          });
-          expect(res.statusCode).toBe(404);
+    describe("item ix doesn't exist", () => {
+      test("status code 404", async (t) => {
+        const res = await fastify.inject({
+          method: "GET",
+          url: `/dataset/dataset-A/item/${encodeBase64("@999")}`,
         });
+        expect(res.statusCode).toBe(404);
       });
     });
 
@@ -292,12 +290,12 @@ describe("getDatasetItem", () => {
       test("status code 200 and non-empty response", async (t) => {
         const res = await fastify.inject({
           method: "GET",
-          url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}`,
+          url: `/dataset/dataset-A/item/${encodeBase64("test/cuk/R000001")}`, // the id in 0.json
         });
         expect(res.statusCode).toBe(200);
         expect(res.json()).toBeTypeOf("object");
         expect(res.json()).toHaveProperty("name");
-        expect(res.json()).toHaveProperty("index", "@0");
+        expect(res.json()).toHaveProperty("index", 0);
       });
     });
 

@@ -103,13 +103,21 @@ export class Dataset {
   getItemById = (itemId: string) => {
     console.log("itemid", itemId);
     // Use searchable if it has ids, otherwise loop through items
+    // TODO fix this #236:
+    // We need to have IDs always in searchable JSON so we don't need this check,
+    // by implementing it in the back-end/src/dataset.ts writeDataset() function. See how we
+    // write the 'searchString' field in searchable.json, we want to do the same for ID. Sorry I
+    // didn't explain this very well before. In its current form, I don't think the search
+    // through all the items in searchable.json looking for an ID will work if the ID field
+    // doesn't exist since the searchablePropIndexMap should match exactly to the
+    // searchablePropValues
     if (this.searchablePropIndexMap.id) {
       const itemIx = this.searchablePropValues.findIndex(
         (item) => item[this.searchablePropIndexMap.id] == itemId,
       );
       if (itemIx > -1) {
         const item = this.getItemByIx(itemIx);
-        return { ...item, itemIx };
+        return { ...item, index: itemIx };
       }
     } else {
       for (
@@ -119,7 +127,7 @@ export class Dataset {
       ) {
         const item = this.getItemByIx(itemIx);
         if (item.id === itemId) {
-          return { ...item, itemIx };
+          return { ...item, index: itemIx };
         }
       }
     }
@@ -171,7 +179,7 @@ export class Dataset {
     returnProps?: string[],
     page?: number,
     pageSize?: number,
-  ): (string | { [prop: string]: unknown })[] => {
+  ): (number | { [prop: string]: unknown })[] => {
     const propMatchers: {
       propIndex: number;
       propMatcher: (value: string | string[]) => boolean;
@@ -272,11 +280,11 @@ export class Dataset {
         }
 
         return {
-          index: `@${itemIx}`,
+          index: itemIx,
           ...strippedItem,
         };
       } else {
-        return `@${itemIx}`;
+        return itemIx;
       }
     });
   };

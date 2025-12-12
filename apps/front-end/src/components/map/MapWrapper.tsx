@@ -34,20 +34,19 @@ const MapWrapper = () => {
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const [mapCreated, setMapCreated] = useState(false);
-  const [loaded, setLoaded] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
   const [searchParams, setSearchParams] = useSearchParams(
     new window.URLSearchParams(),
   );
 
-  const popupCreatedCallback = (ix: string) => {
-    console.log("Popup created", ix);
-    dispatch(openPopup(ix));
+  const popupCreatedCallback = (itemIx: number) => {
+    console.log("Popup created in MapLibre", itemIx);
+    dispatch(openPopup(`@${itemIx}`));
   };
 
   const popupClosedCallback = () => {
-    console.log("Popup closed");
+    console.log("Popup closed in MapLibre");
     dispatch(closePopup());
   };
 
@@ -102,37 +101,40 @@ const MapWrapper = () => {
     }
   }, [features, sourceLoaded]);
 
-  function tryUpdateSearchParams(popupId: string) {
-    const urlPopupId = searchParams.get("popupId");
-    if (urlPopupId !== popupId) {
+  const updateUrlPopupId = (popupId: string) => {
+    setSearchParams((searchParams) => {
       searchParams.set("popupId", popupId);
-      setSearchParams(searchParams);
-    }
-  }
+      return searchParams;
+    });
+  };
 
-  function tryDeleteSearchParams() {
-    const urlPopupId = searchParams.get("popupId");
-    if (urlPopupId) {
+  const deleteUrlPopupId = () => {
+    setSearchParams((searchParams) => {
       searchParams.delete("popupId");
-      setSearchParams(searchParams);
-    }
-  }
+      return searchParams;
+    });
+  };
 
+  // After the map has been created, check if there is a popupId in the URL. If so, and our Redux
+  // state doesn't have this popup open, we must have clicked on a URL with a popupId, so open it.
   useEffect(() => {
-    if (!loaded && mapCreated) {
-      const id = searchParams.get("popupId");
-      if (id) {
-        dispatch(openPopup(id));
-      }
-      setLoaded(true);
+    const urlPopupId = searchParams.get("popupId");
+    if (mapCreated && urlPopupId && popupId !== urlPopupId) {
+      console.log(
+        `Map created and found popupId ${urlPopupId} in URL, opening popup`,
+      );
+      dispatch(openPopup(urlPopupId));
     }
-    // Keep the mapLibre popup in sync with the Redux state
+  }, [mapCreated]);
+
+  // Keep the mapLibre popup in sync with the Redux state (the latter being the source of truth)
+  useEffect(() => {
     if (popupIsOpen) {
-      console.log("Opening popup");
-      tryUpdateSearchParams(popupId);
+      console.log("Popup opened in Redux");
+      updateUrlPopupId(popupId);
       if (popupLocation) {
         map?.current?.fire("openPopup", {
-          itemIx: `@${popupIndex}`,
+          itemIx: popupIndex,
           location: popupLocation,
         });
       } else {
@@ -141,22 +143,13 @@ const MapWrapper = () => {
         // This is handled in Popup.tsx
       }
     } else {
-      if (loaded) {
-        tryDeleteSearchParams();
+      if (mapCreated) {
+        deleteUrlPopupId();
       }
-      console.log("Closing popup");
+      console.log("Popup closed in Redux");
       map?.current?.fire("closeAllPopups");
     }
-  }, [popupIsOpen, popupIndex, mapCreated]);
-
-  useEffect(() => {
-    const urlPopupId = searchParams.get("popupId");
-    if (urlPopupId) {
-      dispatch(openPopup(urlPopupId));
-    } else {
-      dispatch(closePopup());
-    }
-  }, [searchParams]);
+  }, [popupIsOpen, popupIndex]);
 
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });

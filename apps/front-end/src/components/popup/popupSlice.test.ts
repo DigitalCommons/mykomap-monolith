@@ -15,13 +15,7 @@ import * as windowUtils from "../../utils/window-utils";
 
 const mockItemWithIndexZero = {
   ...mockItem,
-  index: "@0",
-};
-
-const mockItemWithIndexThree = {
-  ...mockItem,
-  itemIx: 3,
-  index: "@3",
+  index: 0,
 };
 
 interface LocalTestContext {
@@ -42,8 +36,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
     context.store = store;
   });
 
-  it("should handle openPopup andclosePopup", async ({ store }) => {
-    await store.dispatch(openPopup('@0'));
+  it("should handle openPopup and closePopup", async ({ store }) => {
+    await store.dispatch(openPopup("@0"));
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
     expect(selectPopupIndex(store.getState())).toBe(0);
@@ -54,11 +48,11 @@ describe<LocalTestContext>("popup reducer", (it) => {
   });
 
   it("should handle openPopup pending", ({ store }) => {
-    expect(store.getState().popup.status).toBe("loading");
+    expect(store.getState().popup.status).toBe("idle");
 
     store.dispatch({
       type: "popup/openPopup/pending",
-      meta: { arg: 5, requestId: "test", requestStatus: "pending" },
+      meta: { arg: "@0", requestId: "test", requestStatus: "pending" },
     });
 
     expect(store.getState().popup.status).toBe("loading");
@@ -67,28 +61,28 @@ describe<LocalTestContext>("popup reducer", (it) => {
   });
 
   it("should handle openPopup fulfilled", ({ store }) => {
-    expect(store.getState().popup.status).toBe("loading");
+    expect(store.getState().popup.status).toBe("idle");
     expect(selectPopupIsOpen(store.getState())).toBe(false);
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItemWithIndexThree,
-      meta: { arg: "@3", requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexZero,
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
-    expect(store.getState().popup.status).toBe("loaded");
+    expect(store.getState().popup.status).toBe("idle");
     expect(selectPopupIsOpen(store.getState())).toBe(true);
-    expect(selectPopupIndex(store.getState())).toBe(3);
-    expect(store.getState().popup.data).toEqual({ ...mockItem, itemIx: 3 });
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.data).toEqual(mockItem);
   });
 
   it("should handle openPopup rejected", ({ store }) => {
-    expect(store.getState().popup.status).toBe("loading");
+    expect(store.getState().popup.status).toBe("idle");
 
     store.dispatch({
       type: "popup/openPopup/rejected",
       payload: "Failed to fetch popup data",
-      meta: { arg: 2, requestId: "test", requestStatus: "rejected" },
+      meta: { arg: "@2", requestId: "test", requestStatus: "rejected" },
     });
 
     expect(store.getState().popup.status).toBe("failed");
@@ -108,13 +102,12 @@ describe<LocalTestContext>("popup reducer", (it) => {
       id: "test/cuk/R000003",
       name: "Another Cooperative Organization",
       primary_activity: "aci:ICA220",
-      itemIx: 7
     };
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: { ...differentData, index: "@7" },
-      meta: { arg: 7, requestId: "test", requestStatus: "fulfilled" },
+      payload: { ...differentData, index: 7 },
+      meta: { arg: "@7", requestId: "test", requestStatus: "fulfilled" },
     });
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
@@ -127,8 +120,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: { ...emptyData, index: "@0" },
-      meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
+      payload: { ...emptyData, index: 0 },
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
@@ -145,7 +138,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
     store.dispatch({
       type: "popup/openPopup/fulfilled",
       payload: mockItemWithIndexZero,
-      meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
     // Select popup data - should return translated/processed data
@@ -190,7 +183,6 @@ describe<LocalTestContext>("popup reducer", (it) => {
       primary_activity: "Housing",
       typology: "Workers",
       website: ["https://www.brightonhousing.coop"],
-      itemIx: 0
     });
   });
 
@@ -203,7 +195,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
     store.dispatch({
       type: "popup/openPopup/fulfilled",
       payload: mockItemWithIndexZero,
-      meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
     // Select popup data - should return French translations
@@ -248,7 +240,6 @@ describe<LocalTestContext>("popup reducer", (it) => {
       primary_activity: "Logement",
       typology: "Travailleurs",
       website: ["https://www.brightonhousing.coop"],
-      itemIx: 0
     });
   });
 });

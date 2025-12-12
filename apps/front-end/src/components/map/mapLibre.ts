@@ -21,9 +21,9 @@ export const POPUP_CONTAINER_ID = "popup-container";
 /** The level to which we zoom when jumping to a popup, on clicking a search result */
 const POPUP_INITIAL_ZOOM = 15;
 
+/** Note: We ONLY USE INDEXES in this file. MapLibre doesn't know about IDs. Read architecture.md */
+let popupIx: number | undefined;
 let popup: Popup | undefined;
-let popupId: string | undefined;
-let popupIx: string | undefined;
 let tooltip: Popup | undefined;
 
 /**
@@ -70,15 +70,13 @@ const disableRotation = (map: Map) => {
 
 const openPopup = async (
   map: Map,
-  itemIx: string,
+  itemIx: number,
   coordinates: LngLatLike,
-  popupCreatedCallback: (itemId: string) => void,
+  popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
   offset?: [number, number],
 ) => {
-
-
-  if (popup?.isOpen() && popupId === itemIx) {
+  if (popup?.isOpen() && popupIx === itemIx) {
     console.log(`Popup for item ${itemIx} already open`);
     return;
   }
@@ -90,10 +88,10 @@ const openPopup = async (
     ? [offset[0], offset[1] - 20]
     : [0, -20];
 
-  console.log("item ix", itemIx)
+  console.log("item ix", itemIx);
 
   popup?.remove();
-  popupId = itemIx;
+  popupIx = itemIx;
   popup = new Popup({
     closeButton: false,
     maxWidth: "none",
@@ -136,12 +134,12 @@ const onMarkerHover = (
  * Set up the sources and layers of the MapLibreGL map instance.
  */
 export const createMap = (
-  popupCreatedCallback: (id: string) => void,
+  popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
   mapCreated: () => void,
   mapConfig?: {
     mapBounds?: [[number, number], [number, number]];
-  }
+  },
 ): Map => {
   const initialBounds = mapConfig?.mapBounds;
 
@@ -238,14 +236,14 @@ export const createMap = (
         leafOffset: [number, number],
       ) => {
         const coordinates = feature.geometry.coordinates.slice();
-        const itemIx = `@${feature.properties?.ix}`;
+        const itemIx = feature.properties?.ix;
 
-        if (popup?.isOpen() && popupId === itemIx) {
+        if (popup?.isOpen() && popupIx === itemIx) {
           console.log(
-            `Popup for item ${itemIx} already open so toggle closed`,
+            `Popup for item @${itemIx} already open so toggle closed`,
           );
           popup?.remove();
-          popupId = undefined;
+          popupIx = undefined;
           popup = undefined;
           return;
         }
@@ -354,14 +352,12 @@ export const createMap = (
       if (e.features) {
         const feature = e.features[0] as GeoJSON.Feature<GeoJSON.Point>;
         const coordinates = feature.geometry.coordinates.slice();
-        const itemIx = feature.properties ? `@${feature.properties.ix}` : "-1";
+        const itemIx = feature.properties?.ix;
 
-        if (popup?.isOpen() && popupId === itemIx) {
-          console.log(
-            `Popup for item ${itemIx} already open so toggle closed`,
-          );
+        if (popup?.isOpen() && popupIx === itemIx) {
+          console.log(`Popup for item ${itemIx} already open so toggle closed`);
           popup?.remove();
-          popupId = undefined;
+          popupIx = undefined;
           popup = undefined;
           return;
         }
@@ -397,7 +393,7 @@ export const createMap = (
       // Remove previous popup - remove listener to prevent looping back and confusing React code
       popup?.off("close", popupClosedCallback);
       popup?.remove();
-      popupId = undefined;
+      popupIx = undefined;
       popup = undefined;
 
       if (isLocationNear(location, map)) {
@@ -428,7 +424,7 @@ export const createMap = (
       // The React code knows we're closing this popup - remove listener to prevent loop
       popup?.off("close", popupClosedCallback);
       popup?.remove();
-      popupId = undefined;
+      popupIx = undefined;
       popup = undefined;
     });
 

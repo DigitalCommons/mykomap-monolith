@@ -73,11 +73,7 @@ export const panelSlice = createAppSlice({
           },
         });
         if (response.status === 200) {
-          const body = response.body as { index: string; name: string }[];
-          return body.map(({ index, name }) => ({
-            index: Number(index.substring(1)), // remove leading '@' from index
-            name,
-          }));
+          return response.body as { index: number; name: string }[];
         } else {
           return thunkApi.rejectWithValue(
             `Failed search, status code ${response.status}`,

@@ -5,10 +5,8 @@ import fs from "node:fs";
 import {
   getDatasetAbout,
   getDatasetConfig,
-  getDatasetItemByIx,
   getDatasetItemById,
   getDatasetItemByIx,
-  getDatasetItemById,
   getDatasetLocations,
   getTotals,
   initDatasets,
@@ -54,7 +52,7 @@ export function MykomapRouter(
   if (!fs.existsSync(opts.mykomap.dataRoot))
     throw new Error(
       `the dataRoot plugin option is set but refers to a non-existing path: ` +
-      `'${opts.mykomap.dataRoot}'.`,
+        `'${opts.mykomap.dataRoot}'.`,
     );
 
   console.log("Initialising datasets...");
@@ -91,19 +89,19 @@ export function MykomapRouter(
     },
 
     getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
-      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, 'base64').toString('utf8');
+      const itemIdOrIx = Buffer.from(datasetItemIdOrIx, "base64").toString(
+        "utf8",
+      );
 
       if (itemIdOrIx.startsWith("@")) {
         const itemIx = Number(itemIdOrIx.substring(1));
         const item = getDatasetItemByIx(datasetId, itemIx);
 
-        return { status: 200, body: { ...item, index: `@${itemIx}` } };
+        return { status: 200, body: { ...item, index: itemIx } };
       }
 
       const itemId = itemIdOrIx;
       const item = getDatasetItemById(datasetId, itemId);
-
-      console.log("ITEM ITEM ITEM", item)
 
       return { status: 200, body: item };
     },

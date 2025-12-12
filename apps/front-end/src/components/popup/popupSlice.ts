@@ -11,7 +11,7 @@ interface PopupSliceState {
   isOpen: boolean;
   index: number;
   id: string;
-  status: string;
+  status: "idle" | "loading" | "failed";
   itemProps: PropSpecs;
   data: {
     [key: string]: any;
@@ -22,7 +22,7 @@ const initialState: PopupSliceState = {
   isOpen: false,
   index: -1,
   id: "",
-  status: "loading",
+  status: "idle",
   itemProps: {},
   data: {},
 };
@@ -47,19 +47,17 @@ export const popupSlice = createAppSlice({
           return Buffer.from(data, "utf-8").toString("base64");
         };
 
-        console.log(idOrIndex);
+        console.log("Opening popup with idOrIndex", idOrIndex);
 
         const response = await getDatasetItem({
           params: { datasetId, datasetItemIdOrIx: encodeBase64(idOrIndex) },
         });
 
-        console.log(response.body);
-
         if (response.status === 200) {
-          // Just hardcode types for now
-          return response.body as PopupSliceState["data"] & {
+          // Type assertion for arbitrary dataset item properties
+          // The index field is now properly typed by the contract
+          return response.body as typeof response.body & {
             id: string;
-            index: string;
           };
         } else {
           return thunkApi.rejectWithValue(
@@ -73,8 +71,8 @@ export const popupSlice = createAppSlice({
         },
         fulfilled: (state, action) => {
           console.log("fullfilled", action);
-          state.status = "loaded";
-          state.index = parseInt(action.payload.index.substring(1)) || 0;
+          state.status = "idle";
+          state.index = action.payload.index;
           state.id = action.payload.id;
           state.isOpen = true;
           const { index, ...data } = action.payload;
