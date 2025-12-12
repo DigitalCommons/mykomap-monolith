@@ -168,22 +168,33 @@
                     {
                       "type": "array",
                       "items": {
-                        "type": "string"
+                        "type": "integer",
+                        "minimum": 0
                       }
                     },
                     {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "index": {
-                            "type": "string"
+                        "allOf": [
+                          {
+                            "type": "object",
+                            "additionalProperties": {
+                              "nullable": true
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "index": {
+                                "type": "integer",
+                                "minimum": 0
+                              }
+                            },
+                            "required": [
+                              "index"
+                            ]
                           }
-                        },
-                        "required": [
-                          "index"
-                        ],
-                        "additionalProperties": true
+                        ]
                       }
                     }
                   ],
@@ -268,16 +279,26 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "index": {
-                      "type": "string"
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "additionalProperties": {
+                        "nullable": true
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "index": {
+                          "type": "integer",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "index"
+                      ]
                     }
-                  },
-                  "required": [
-                    "index"
                   ],
-                  "additionalProperties": true,
                   "description": "the dataset item matching the supplied ID or index"
                 }
               }

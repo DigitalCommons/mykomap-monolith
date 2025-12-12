@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { map, z } from "zod";
+import { z } from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
 import * as Rx from "../rxdefs.js";
 import RxUtils from "../rxutils.js";
@@ -27,7 +27,7 @@ function ZodRegex(rx: RegExp, message: string) {
 const Location = z.array(z.number()).min(2).max(2);
 const CustomMarkerId = z.number();
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
-const DatasetItem = z.object({}).passthrough();
+const DatasetItem = z.record(z.string(), z.unknown());
 const DatasetLocations = z.array(
   Location.nullable(),
   CustomMarkerId.nullable(),
@@ -42,6 +42,7 @@ const DatasetItemIx = ZodRegex(
   Rx.DatasetItemIx,
   "Invalid DatasetItemIx format",
 );
+const DatasetItemIxRaw = z.number().int().nonnegative(); // index without '@' prefix
 const DatasetItemIdOrIx = ZodRegex(
   Rx.DatasetItemIdOrIx,
   "Invalid DatasetItemIdOrIx format",
@@ -178,6 +179,7 @@ export const schemas = {
   DatasetItemId,
   DatasetItemIdOrIx,
   DatasetItemIx,
+  DatasetItemIxRaw,
   DatasetItem,
   DatasetLocations,
   FilterSpec,
@@ -263,8 +265,8 @@ export const contract = c.router({
     responses: {
       200: z
         .union([
-          z.array(DatasetItemIx),
-          z.array(DatasetItem.partial().extend({ index: DatasetItemIx })),
+          z.array(DatasetItemIxRaw),
+          z.array(DatasetItem.and(z.object({ index: DatasetItemIxRaw }))),
         ])
         .openapi({
           description:
@@ -294,7 +296,7 @@ export const contract = c.router({
       }),
     }),
     responses: {
-      200: DatasetItem.extend({ index: DatasetItemIx }).openapi({
+      200: DatasetItem.and(z.object({ index: DatasetItemIxRaw })).openapi({
         description: "the dataset item matching the supplied ID or index",
       }),
       400: ErrorInfo.openapi({

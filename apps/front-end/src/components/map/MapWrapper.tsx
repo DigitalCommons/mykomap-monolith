@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -11,6 +12,7 @@ import {
   closePopup,
   openPopup,
   selectPopupIndex,
+  selectPopupId,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
@@ -25,21 +27,26 @@ const MapWrapper = () => {
   );
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const popupId = useAppSelector(selectPopupId);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
+  const [mapCreated, setMapCreated] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
+  const [searchParams, setSearchParams] = useSearchParams(
+    new window.URLSearchParams(),
+  );
 
   const popupCreatedCallback = (itemIx: number) => {
-    console.log("Popup created");
-    dispatch(openPopup(itemIx));
+    console.log("Popup created in MapLibre", itemIx);
+    dispatch(openPopup(`@${itemIx}`));
   };
 
   const popupClosedCallback = () => {
-    console.log("Popup closed");
+    console.log("Popup closed in MapLibre");
     dispatch(closePopup());
   };
 
@@ -61,6 +68,7 @@ const MapWrapper = () => {
     map.current = createMap(
       popupCreatedCallback,
       popupClosedCallback,
+      () => setMapCreated(true),
       mapConfig,
     );
 
@@ -93,10 +101,37 @@ const MapWrapper = () => {
     }
   }, [features, sourceLoaded]);
 
+  const updateUrlPopupId = (popupId: string) => {
+    setSearchParams((searchParams) => {
+      searchParams.set("popupId", popupId);
+      return searchParams;
+    });
+  };
+
+  const deleteUrlPopupId = () => {
+    setSearchParams((searchParams) => {
+      searchParams.delete("popupId");
+      return searchParams;
+    });
+  };
+
+  // After the map has been created, check if there is a popupId in the URL. If so, and our Redux
+  // state doesn't have this popup open, we must have clicked on a URL with a popupId, so open it.
   useEffect(() => {
-    // Keep the mapLibre popup in sync with the Redux state
+    const urlPopupId = searchParams.get("popupId");
+    if (mapCreated && urlPopupId && popupId !== urlPopupId) {
+      console.log(
+        `Map created and found popupId ${urlPopupId} in URL, opening popup`,
+      );
+      dispatch(openPopup(urlPopupId));
+    }
+  }, [mapCreated]);
+
+  // Keep the mapLibre popup in sync with the Redux state (the latter being the source of truth)
+  useEffect(() => {
     if (popupIsOpen) {
-      console.log("Opening popup");
+      console.log("Popup opened in Redux");
+      updateUrlPopupId(popupId);
       if (popupLocation) {
         map?.current?.fire("openPopup", {
           itemIx: popupIndex,
@@ -108,7 +143,10 @@ const MapWrapper = () => {
         // This is handled in Popup.tsx
       }
     } else {
-      console.log("Closing popup");
+      if (mapCreated) {
+        deleteUrlPopupId();
+      }
+      console.log("Popup closed in Redux");
       map?.current?.fire("closeAllPopups");
     }
   }, [popupIsOpen, popupIndex]);

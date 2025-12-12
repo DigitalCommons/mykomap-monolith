@@ -5,12 +5,13 @@ import { Config } from "../../services/types";
 import { getDatasetId } from "../../utils/window-utils";
 import { InnerPropSpec, PropSpecs } from "@mykomap/common";
 import { configLoaded } from "../../app/configSlice";
+import { Buffer } from "buffer";
 
 interface PopupSliceState {
   isOpen: boolean;
   index: number;
   id: string;
-  status: string;
+  status: "idle" | "loading" | "failed";
   itemProps: PropSpecs;
   data: {
     [key: string]: any;
@@ -21,7 +22,7 @@ const initialState: PopupSliceState = {
   isOpen: false,
   index: -1,
   id: "",
-  status: "loading",
+  status: "idle",
   itemProps: {},
   data: {},
 };
@@ -34,7 +35,7 @@ export const popupSlice = createAppSlice({
       state.isOpen = false;
     }),
     openPopup: create.asyncThunk(
-      async (index: number, thunkApi) => {
+      async (idOrIndex: string, thunkApi) => {
         const datasetId = getDatasetId();
         if (datasetId === null) {
           return thunkApi.rejectWithValue(
@@ -42,15 +43,21 @@ export const popupSlice = createAppSlice({
           );
         }
 
+        const encodeBase64 = (data: string) => {
+          return Buffer.from(data, "utf-8").toString("base64");
+        };
+
+        console.log("Opening popup with idOrIndex", idOrIndex);
+
         const response = await getDatasetItem({
-          params: { datasetId, datasetItemIdOrIx: `@${index}` },
+          params: { datasetId, datasetItemIdOrIx: encodeBase64(idOrIndex) },
         });
 
         if (response.status === 200) {
-          // Just hardcode types for now
-          return response.body as PopupSliceState["data"] & {
+          // Type assertion for arbitrary dataset item properties
+          // The index field is now properly typed by the contract
+          return response.body as typeof response.body & {
             id: string;
-            index: string;
           };
         } else {
           return thunkApi.rejectWithValue(
@@ -63,8 +70,10 @@ export const popupSlice = createAppSlice({
           state.status = "loading";
         },
         fulfilled: (state, action) => {
-          state.status = "loaded";
-          state.index = action.meta.arg;
+          console.log("fullfilled", action);
+          state.status = "idle";
+          state.index = action.payload.index;
+          state.id = action.payload.id;
           state.isOpen = true;
           const { index, ...data } = action.payload;
           state.data = data;
@@ -73,7 +82,7 @@ export const popupSlice = createAppSlice({
           state.status = "failed";
           // state.allLocations = [];
           console.error(
-            `Error fetching popup content for item @${action.meta.arg}`,
+            `Error fetching popup content for item ${action.meta.arg}`,
             action.payload,
           );
         },
@@ -89,11 +98,13 @@ export const popupSlice = createAppSlice({
   selectors: {
     selectPopupIsOpen: (popup) => popup.isOpen,
     selectPopupIndex: (popup) => popup.index,
+    selectPopupId: (popup) => popup.id,
   },
 });
 
 export const { openPopup, closePopup } = popupSlice.actions;
-export const { selectPopupIsOpen, selectPopupIndex } = popupSlice.selectors;
+export const { selectPopupIsOpen, selectPopupIndex, selectPopupId } =
+  popupSlice.selectors;
 
 export const selectPopupData = createSelector(
   [
