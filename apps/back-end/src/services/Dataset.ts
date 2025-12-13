@@ -80,8 +80,9 @@ export class Dataset {
     } else {
       throw new Error(
         `searchable.json for dataset ${this.id} has a bad format ` +
-          `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
-          `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
+          `(hasIdField: ${hasIdField}, hasSearchStringField: ${hasSearchStringField}, ` +
+          `uniqueItemProps: ${uniqueItemProps}, sameItemPropsAsConfig: ${sameItemPropsAsConfig}, ` +
+          `expectedValuesLengths: ${expectedValuesLengths})`,
       );
     }
   }
