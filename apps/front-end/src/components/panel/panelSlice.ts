@@ -84,7 +84,7 @@ export const panelSlice = createAppSlice({
         });
 
         if (response.status === 200) {
-          const body = response.body as {
+          const body = response.body as unknown as {
             index: string;
             name: string;
             data_sources?: string[];
