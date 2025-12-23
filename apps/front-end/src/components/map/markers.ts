@@ -3,6 +3,7 @@ import communityGrowingMarker from "./markers/community-growing-marker.png";
 import emergencyFoodMarker from "./markers/emergency-food-marker.png";
 import eventsMarker from "./markers/events-marker.png";
 import localFoodMarker from "./markers/local-food-marker.png";
+import dotCoopMarker from "./markers/dotcoop-marker.png";
 
 // When adding new markers, ensure default is still the last entry. FIXME These labels
 // are hardwired and this is just a temporary situation, to be rectified later.
@@ -31,6 +32,7 @@ const markers = [
   eventsMarker, // "ev": "Events",
   eventsMarker, // "ev-ff": " - Food festival",
   eventsMarker, // "ev-cc": " - Cooking classes"
+  dotCoopMarker, // DotCoop verification marker,
   defaultMarker, // No multi-category case anticipated
 ];
 
