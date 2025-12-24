@@ -215,7 +215,7 @@ export class ImportCmd extends Command {
           case 0:
             return undefined; // No values
           case 1:
-            return terms.indexOf(String(values[1])); // Single valued array
+            return terms.indexOf(String(values[0])); // Single valued array - fixed: use values[0] not values[1]
           default:
             return terms.length; // Multiple value array
         }
