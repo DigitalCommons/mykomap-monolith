@@ -62,7 +62,7 @@ const Results = () => {
     console.log(`Clicked item @${itemIx}`);
 
     trackEvent(Event.SEARCH.RESULT_CLICK, {
-      // item_id: TODO
+      // item_id: TODO (see tracking plan for details)
       item_name: itemName,
       search_filter: searchQuery.filter,
       search_text: searchQuery.text,

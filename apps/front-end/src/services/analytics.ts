@@ -3,6 +3,8 @@ import { getDatasetId } from "../utils/window-utils";
 
 let initialized = false;
 
+export let DEVICE_ID: string;
+
 // Initialize Mixpanel
 const datasetId = getDatasetId();
 if (datasetId) {
@@ -15,6 +17,9 @@ if (datasetId) {
         import.meta.env.VITE_MIXPANEL_SESSION_RECORDING_PERCENT ?? 0,
     });
 
+    DEVICE_ID = mixpanel.get_distinct_id();
+
+    // Include dataset ID in all analytics
     mixpanel.register({
       dataset_id: datasetId,
     });
@@ -33,6 +38,10 @@ export const Event = {
     //// config. The event name is of the form "Item_<PropName>Click"
     // User opens app using a shared link that points to a specific item
     SHARE: "Item_Share",
+  },
+  MAP: {
+    // User opens app using a shared link that isn't pointing to any specific item or search result
+    SHARE: "Map_Share",
   },
   SEARCH: {
     // User clicks on a search result
