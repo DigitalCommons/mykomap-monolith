@@ -1011,17 +1011,7 @@
                         "map": {
                           "type": "object",
                           "properties": {
-                            "mapBounds": {
-                              "type": "array",
-                              "items": {
-                                "type": "array",
-                                "items": {
-                                  "type": "number"
-                                }
-                              },
-                              "minItems": 2,
-                              "maxItems": 2
-                            }
+                            "mapBounds": {}
                           }
                         },
                         "logo": {

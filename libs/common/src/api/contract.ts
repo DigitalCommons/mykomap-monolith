@@ -144,7 +144,12 @@ const ConfigData = z.object({
     marker_property_name: z.string().optional(),
     map: z
       .object({
-        mapBounds: z.array(z.array(z.number())).length(2).optional(),
+        mapBounds: z
+          .tuple([
+            z.tuple([z.number(), z.number()]),
+            z.tuple([z.number(), z.number()]),
+          ])
+          .optional(),
       })
       .optional(),
     logo: z

@@ -1,68 +1,42 @@
 import { createAction, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
 import { getConfig } from "../services";
-import { Config } from "../services/types";
+import { Config, ConfigPopup, ConfigPopupItemRaw } from "../services/types";
 import { getDatasetId } from "../utils/window-utils";
 import i18n from "../i18n";
-
-export type ConfigMap = {
-  mapBounds?: [[number, number], [number, number]];
-};
-
-export type ConfigLogo = {
-  largeLogo?: string;
-  smallLogo?: string;
-  altText?: string;
-  smallScreenPosition?: {
-    top?: string;
-    left?: string;
-  };
-  largeScreenPosition?: {
-    bottom?: string;
-    right?: string;
-  };
-};
-
-export type PopupItemConfigNoMultiple = {
-  itemProp: string;
-  valueStyle: "text" | "address" | "hyperlink";
-  showBullets: boolean;
-  singleColumnLimit?: number;
-  showLabel: boolean;
-  hyperlinkBaseUri: string;
-  displayText?: string;
-  analyticOnClick: boolean;
-};
-
-export type ConfigPopupNoMultiple = {
-  titleProp: string;
-  leftPaneWidth: string;
-  leftPane: PopupItemConfigNoMultiple[];
-  topRightPane: PopupItemConfigNoMultiple[];
-  bottomRightPane: PopupItemConfigNoMultiple[];
-};
-
-export type PopupItemConfig = PopupItemConfigNoMultiple & {
-  multiple: boolean;
-};
-
-export type ConfigPopup = {
-  titleProp: string;
-  leftPaneWidth: string;
-  leftPane: PopupItemConfig[];
-  topRightPane: PopupItemConfig[];
-  bottomRightPane: PopupItemConfig[];
-};
 
 export interface ConfigSliceState {
   vocabs: Config["vocabs"];
   languages: string[];
   currentLanguage: string;
-  map?: ConfigMap;
-  logo?: ConfigLogo;
+  map?: Config["ui"]["map"];
+  logo?: Config["ui"]["logo"];
   status: "idle" | "loading" | "loaded" | "failed";
   popup?: ConfigPopup;
 }
+
+/**
+ * When building the popup UI, we need to know whether each itemProp is of type "multi" or not.
+ * This function derives that information from the itemProps config and adds a "multiple" boolean
+ * to the config for each popup item, so it's ready for the PopupItems component to use.
+ */
+const deriveMultiples = (
+  popupConfigRaw: Config["popup"],
+  itemProps: Config["itemProps"],
+): ConfigPopup => {
+  const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
+  const processMulti = (itemConfig: ConfigPopupItemRaw) => ({
+    ...itemConfig,
+    multiple: itemProps[itemConfig.itemProp].type === "multi",
+  });
+  return {
+    titleProp: popupConfigRaw.titleProp,
+    leftPaneWidth: popupConfigRaw.leftPaneWidth,
+    leftPane: leftPane.map(processMulti),
+    topRightPane: topRightPane.map(processMulti),
+    bottomRightPane: bottomRightPane.map(processMulti),
+  };
+};
 
 const initialState: ConfigSliceState = {
   vocabs: {},
@@ -88,26 +62,6 @@ const initialState: ConfigSliceState = {
     bottomRightPane: [],
   },
 };
-
-function deriveMultiples(
-  popupConfigRaw: ConfigPopupNoMultiple,
-  itemProps: any,
-) {
-  const { leftPane, topRightPane, bottomRightPane } = popupConfigRaw;
-  const processMulti = (itemConfig: PopupItemConfigNoMultiple) => ({
-    ...itemConfig,
-    multiple: itemProps[itemConfig.itemProp].type === "multi",
-  });
-  const popupConfig: ConfigPopup = {
-    titleProp: popupConfigRaw.titleProp,
-    leftPaneWidth: popupConfigRaw.leftPaneWidth,
-    leftPane: leftPane.map(processMulti),
-    topRightPane: topRightPane.map(processMulti),
-    bottomRightPane: bottomRightPane.map(processMulti),
-  };
-
-  return popupConfig;
-}
 
 export const configSlice = createAppSlice({
   name: "config",
@@ -159,22 +113,9 @@ export const configSlice = createAppSlice({
       state.currentLanguage = action.payload.languages[0];
       i18n.loadLanguages(action.payload.languages);
 
-      if (action.payload.ui && action.payload.ui.map) {
-        const uiMap = action.payload.ui.map;
-        state.map = {
-          mapBounds:
-            uiMap.mapBounds && uiMap.mapBounds.length === 2
-              ? [
-                [uiMap.mapBounds[0][0], uiMap.mapBounds[0][1]],
-                [uiMap.mapBounds[1][0], uiMap.mapBounds[1][1]],
-              ]
-              : undefined,
-        };
-      }
+      state.map = action.payload.ui.map;
 
-      if (action.payload.ui && action.payload.ui.logo) {
-        state.logo = action.payload.ui.logo;
-      }
+      state.logo = action.payload.ui.logo;
 
       state.popup = deriveMultiples(
         action.payload.popup,

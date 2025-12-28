@@ -142,10 +142,6 @@ describe<LocalTestContext>("config reducer", (it) => {
     store.dispatch(configLoaded(configWithoutLogo));
 
     const logo = selectLogo(store.getState());
-    expect(logo).toEqual({
-      largeLogo: undefined,
-      smallLogo: undefined,
-      altText: undefined,
-    });
+    expect(logo).toEqual(undefined);
   });
 });
