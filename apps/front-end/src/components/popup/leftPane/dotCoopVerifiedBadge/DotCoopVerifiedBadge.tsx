@@ -2,10 +2,6 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import theme from "../../../../theme/theme";
 
-interface DotCoopVerifiedProps {
-  dataSources?: string[];
-}
-
 const StyledVerifiedBadge = styled(Box)(({ theme }) => ({
   width: "fit-content",
   display: "flex",
@@ -20,13 +16,7 @@ const StyledVerifiedBadge = styled(Box)(({ theme }) => ({
   letterSpacing: "0.1em",
 }));
 
-const DotCoopVerified = ({ dataSources }: DotCoopVerifiedProps) => {
-  const hasDotCooperation = dataSources?.includes("DotCooperation");
-
-  if (!hasDotCooperation) {
-    return null;
-  }
-
+const DotCoopVerifiedBadge = () => {
   return (
     <StyledVerifiedBadge role="status" aria-label="DotCoop Verified">
       <div>
@@ -41,4 +31,4 @@ const DotCoopVerified = ({ dataSources }: DotCoopVerifiedProps) => {
   );
 };
 
-export default DotCoopVerified;
+export default DotCoopVerifiedBadge;

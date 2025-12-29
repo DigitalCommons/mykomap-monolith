@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import CheckIcon from "@mui/icons-material/Check";
-import theme from "../../../../theme/theme";
+import theme from "../../../../../theme/theme";
 interface DataSourceKeyProps {
   results: { data_sources?: string[] }[];
 }
@@ -26,7 +26,7 @@ const StyledKeyContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const DataSourceKey = ({ results }: DataSourceKeyProps) => {
+const DotCoopKey = ({ results }: DataSourceKeyProps) => {
   const hasDCSource = results.some((item) => item.data_sources?.includes("DC"));
 
   if (!hasDCSource) {
@@ -65,4 +65,4 @@ const DataSourceKey = ({ results }: DataSourceKeyProps) => {
   );
 };
 
-export default DataSourceKey;
+export default DotCoopKey;

@@ -4,7 +4,7 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { type PopupItemConfig } from "../../../app/configSlice";
 import PopupItems from "../PopupItems";
-import DotCoopVerified from "../../common/dotCoop/dotCoopVerified/DotCoopVerified";
+import DotCoopVerifiedBadge from "./dotCoopVerifiedBadge/DotCoopVerifiedBadge";
 
 interface LeftPaneProps {
   data: { [key: string]: any };
@@ -104,7 +104,7 @@ const LeftPane = ({
     <StyledLeftPane width={width}>
       <StyledHeaderContainer>
         <StyledHeaderTitle variant="h1">{data[titleProp]}</StyledHeaderTitle>
-        <DotCoopVerified dataSources={dataSources} />
+        {dataSources?.includes("DotCooperation") && <DotCoopVerifiedBadge />}
       </StyledHeaderContainer>
       <StyledContentContainer>
         {!hasLocation && (
