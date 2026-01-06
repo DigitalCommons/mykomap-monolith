@@ -22,6 +22,7 @@
     "node-utils:": "npm run --workspace=@mykomap/node-utils",
     "prettier:check": "prettier -cu --no-color .",
     "prettier:format": "prettier -wu --no-color .",
+    "prepare": "npm run build",
     "release": "bin/do-release",
     "test": "npm run test --workspaces"
   },
