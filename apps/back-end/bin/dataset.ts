@@ -1,5 +1,3 @@
-#!/usr/bin/env tsx
-
 import { Builtins, Cli } from "clipanion";
 import { ImportCmd } from "@mykomap/back-end/src/cli/dataset.js";
 import { relative } from "node:path";
