@@ -8,7 +8,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "dataset": "bin/dataset"
+    "dataset": "dist/dataset"
   },
   "scripts": {
     "clean": "rimraf node_modules dist node-dist",
