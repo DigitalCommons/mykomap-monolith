@@ -10,8 +10,13 @@ import {
   selectText,
   selectVisibleIndexes,
   selectIsFilterActive,
+  performSearch,
+  performSearchFromQuery,
 } from "./searchSlice";
 import mockConfig from "../../../mockData/mockConfig";
+import * as services from "../../../services";
+import * as windowUtils from "../../../utils/window-utils";
+import * as panelSlice from "../panelSlice";
 
 interface LocalTestContext {
   store: AppStore;
@@ -260,5 +265,220 @@ describe<LocalTestContext>("selectFilterOptions", (it) => {
         value: "any",
       },
     ]);
+  });
+});
+
+describe<LocalTestContext>("performSearch", (it) => {
+  beforeEach<LocalTestContext>((context) => {
+    const store = makeStore();
+    context.store = store;
+    store.dispatch(configLoaded(mockConfig));
+
+    // Mock getDatasetId to return a test dataset
+    vi.spyOn(windowUtils, "getDatasetId").mockReturnValue("test-dataset");
+
+    // Mock populateSearchResults action
+    vi.spyOn(panelSlice, "populateSearchResults").mockReturnValue({
+      type: "panel/populateSearchResults",
+    } as any);
+  });
+
+  it("should show all items when search is empty", async ({ store }) => {
+    await store.dispatch(performSearch());
+
+    expect(selectVisibleIndexes(store.getState())).toEqual([]);
+    expect(store.getState().search.searchQuery).toEqual({});
+    expect(store.getState().search.searchingStatus).toBe("idle");
+  });
+
+  it("should perform search with text only", async ({ store }) => {
+    vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [1, 2, 3],
+      headers: new Headers(),
+    });
+
+    store.dispatch(setText("test query"));
+    await store.dispatch(performSearch());
+
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2, 3]);
+    expect(store.getState().search.searchQuery).toEqual({
+      filter: [],
+      text: "test query",
+    });
+    expect(store.getState().search.searchingStatus).toBe("idle");
+  });
+
+  it("should perform search with filters only", async ({ store }) => {
+    vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [4, 5],
+      headers: new Headers(),
+    });
+
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+    await store.dispatch(performSearch());
+
+    expect(selectVisibleIndexes(store.getState())).toEqual([4, 5]);
+    expect(store.getState().search.searchQuery).toEqual({
+      filter: ["country_id:FR"],
+      text: undefined,
+    });
+    expect(store.getState().search.searchingStatus).toBe("idle");
+  });
+
+  it("should perform search with both text and filters", async ({ store }) => {
+    vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [6, 7, 8],
+      headers: new Headers(),
+    });
+
+    store.dispatch(setText("coop"));
+    store.dispatch(setFilterValue({ id: "country_id", value: "GB" }));
+    store.dispatch(setFilterValue({ id: "typology", value: "BMT10" }));
+    await store.dispatch(performSearch());
+
+    expect(selectVisibleIndexes(store.getState())).toEqual([6, 7, 8]);
+    expect(store.getState().search.searchQuery).toEqual({
+      filter: ["country_id:GB", "typology:BMT10"],
+      text: "coop",
+    });
+    expect(store.getState().search.searchingStatus).toBe("idle");
+  });
+
+  it("should trim and lowercase search text", async ({ store }) => {
+    vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [1],
+      headers: new Headers(),
+    });
+
+    store.dispatch(setText("  TEST  "));
+    await store.dispatch(performSearch());
+
+    expect(store.getState().search.searchQuery.text).toBe("test");
+  });
+
+  it("should set loading status during search", async ({ store }) => {
+    let statusDuringSearch = "";
+
+    vi.spyOn(services, "searchDataset").mockImplementation(async () => {
+      statusDuringSearch = store.getState().search.searchingStatus;
+      return {
+        status: 200,
+        body: [1, 2],
+        headers: new Headers(),
+      };
+    });
+
+    store.dispatch(setText("test"));
+    await store.dispatch(performSearch());
+
+    expect(statusDuringSearch).toBe("loading");
+    expect(store.getState().search.searchingStatus).toBe("idle");
+  });
+
+  it("should handle failed search", async ({ store }) => {
+    vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 500,
+      body: undefined,
+      headers: new Headers(),
+    } as any);
+
+    store.dispatch(setText("test"));
+    await store.dispatch(performSearch());
+
+    expect(store.getState().search.searchingStatus).toBe("failed");
+    expect(selectVisibleIndexes(store.getState())).toEqual([]);
+    expect(store.getState().search.searchQuery).toEqual({});
+  });
+});
+
+describe<LocalTestContext>("performSearchFromQuery", (it) => {
+  beforeEach<LocalTestContext>((context) => {
+    const store = makeStore();
+    context.store = store;
+    store.dispatch(configLoaded(mockConfig));
+
+    vi.spyOn(windowUtils, "getDatasetId").mockReturnValue("test-dataset");
+
+    vi.spyOn(panelSlice, "populateSearchResults").mockReturnValue({
+      type: "panel/populateSearchResults",
+    } as any);
+
+    // Mock successful search response by default
+    vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [1, 2, 3],
+      headers: new Headers(),
+    });
+  });
+
+  it("should apply search query with text and filters", async ({ store }) => {
+    const searchQuery = {
+      filter: ["country_id:FR", "typology:BMT20"],
+      text: "housing",
+    };
+
+    await store.dispatch(performSearchFromQuery(searchQuery));
+
+    expect(selectText(store.getState())).toBe("housing");
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("FR");
+    expect(store.getState().search.filterableVocabProps[2].value).toBe("BMT20");
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2, 3]);
+  });
+
+  it("should apply search query with filters only", async ({ store }) => {
+    const searchQuery = {
+      filter: ["country_id:GB"],
+    };
+
+    await store.dispatch(performSearchFromQuery(searchQuery));
+
+    expect(selectText(store.getState())).toBe("");
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("GB");
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2, 3]);
+  });
+
+  it("should apply search query with text only", async ({ store }) => {
+    const searchQuery = {
+      text: "cooperative",
+    };
+
+    await store.dispatch(performSearchFromQuery(searchQuery));
+
+    expect(selectText(store.getState())).toBe("cooperative");
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("any");
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2, 3]);
+  });
+
+  it("should reset filters not in the query", async ({ store }) => {
+    // First set some filters
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+    store.dispatch(setFilterValue({ id: "typology", value: "BMT10" }));
+
+    // Now apply a query that only has one filter
+    const searchQuery = {
+      filter: ["country_id:GB"],
+    };
+
+    await store.dispatch(performSearchFromQuery(searchQuery));
+
+    expect(store.getState().search.filterableVocabProps[0].value).toBe("GB");
+    expect(store.getState().search.filterableVocabProps[2].value).toBe("any"); // typology reset
+  });
+
+  it("should handle empty search query", async ({ store }) => {
+    const searchQuery = {};
+
+    await store.dispatch(performSearchFromQuery(searchQuery));
+
+    expect(selectText(store.getState())).toBe("");
+    store.getState().search.filterableVocabProps.forEach((prop) => {
+      expect(prop.value).toBe("any");
+    });
+    // Empty search shows all items (empty array of visible indexes)
+    expect(selectVisibleIndexes(store.getState())).toEqual([]);
   });
 });

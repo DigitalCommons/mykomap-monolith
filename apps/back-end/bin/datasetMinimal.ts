@@ -27,9 +27,9 @@ await fs.mkdir("./tmp/out/datasets/powys-eng/items");
 const locations: [number, number, number][] = [];
 const searchable: {
   itemProps: string[];
-  values: [(string | undefined)[], string | undefined, string | undefined][];
+  values: [(string | undefined)[], string | undefined, string, string | undefined][];
 } = {
-  itemProps: ["food_system_categories", "locality", "searchString"],
+  itemProps: ["food_system_categories", "locality", "id", "searchString"],
   values: [],
 };
 
@@ -98,6 +98,7 @@ for (let item of items) {
   searchable.values.push([
     itemOutput.food_system_categories,
     itemOutput.locality,
+    itemOutput.id,
     `${itemOutput.name} ${itemOutput.address}`.toLowerCase(),
   ]);
 

@@ -1,8 +1,11 @@
 import { useRef, useEffect, useState } from "react";
+import { useSearchParams } from "react-router";
 import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+  performSearchFromQuery,
   selectIsFilterActive,
+  selectSearchQuery,
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
 import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
@@ -11,10 +14,19 @@ import {
   closePopup,
   openPopup,
   selectPopupIndex,
+  selectPopupId,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
 import { selectCurrentLanguage } from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
+import { useMediaQuery } from "@mui/material";
+import {
+  closePanel,
+  closeResultsPanel,
+  openPanel,
+  openResultsPanel,
+  setSelectedTab,
+} from "../panel/panelSlice";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -23,23 +35,33 @@ const MapWrapper = () => {
   const features = useAppSelector((state) =>
     selectFeatures(state, isFilterActive ? visibleIndexes : undefined),
   );
+  const searchQuery = JSON.stringify(useAppSelector(selectSearchQuery));
   const popupIsOpen = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
+  const popupId = useAppSelector(selectPopupId);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
   const [sourceLoaded, setSourceLoaded] = useState(false);
+  const [mapCreated, setMapCreated] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
   const dispatch = useAppDispatch();
+  const isMedium = useMediaQuery("(min-width: 897px)");
+
+  // use this to manage popup and search state in the URL
+  const [searchParams, setSearchParams] = useSearchParams(
+    new window.URLSearchParams(),
+  );
+  const POPUP_ID_PARAM = "popupId";
+  const SEARCH_QUERY_PARAM = "q";
 
   const popupCreatedCallback = (itemIx: number) => {
-    console.log("Popup created");
-    dispatch(openPopup(itemIx));
+    dispatch(openPopup(`@${itemIx}`));
   };
 
   const popupClosedCallback = () => {
-    console.log("Popup closed");
+    console.log("Popup closed in MapLibre");
     dispatch(closePopup());
   };
 
@@ -61,6 +83,7 @@ const MapWrapper = () => {
     map.current = createMap(
       popupCreatedCallback,
       popupClosedCallback,
+      () => setMapCreated(true),
       mapConfig,
     );
 
@@ -93,10 +116,41 @@ const MapWrapper = () => {
     }
   }, [features, sourceLoaded]);
 
+  // Keep the mapLibre popup and URL in sync with the Redux state (the latter being the source of truth)
   useEffect(() => {
-    // Keep the mapLibre popup in sync with the Redux state
+    const urlPopupId = searchParams.get(POPUP_ID_PARAM) ?? "";
+    const urlSearchQuery = searchParams.get(SEARCH_QUERY_PARAM) || "{}";
+
+    // First let's update URL parameters if needed, in a single call to avoid conflicts
+    if (
+      mapCreated &&
+      (urlSearchQuery !== searchQuery || urlPopupId !== popupId)
+    ) {
+      setSearchParams(
+        (params) => {
+          if (searchQuery !== "{}") {
+            params.set(SEARCH_QUERY_PARAM, searchQuery);
+          } else {
+            params.delete(SEARCH_QUERY_PARAM);
+          }
+
+          if (popupIsOpen) {
+            params.set(POPUP_ID_PARAM, popupId);
+          } else {
+            params.delete(POPUP_ID_PARAM);
+          }
+
+          return params;
+        },
+        {
+          // Set replace to false to enable browser history for back/forward navigation
+          replace: false,
+        },
+      );
+    }
+
     if (popupIsOpen) {
-      console.log("Opening popup");
+      console.log("Redux popup state is open");
       if (popupLocation) {
         map?.current?.fire("openPopup", {
           itemIx: popupIndex,
@@ -105,13 +159,66 @@ const MapWrapper = () => {
       } else {
         console.log("Open popup for item with no location");
         map?.current?.fire("closeAllPopups");
-        // This is handled in Popup.tsx
+        // The rest is handled in Popup.tsx
       }
     } else {
-      console.log("Closing popup");
+      console.log("Redux popup state is closed");
       map?.current?.fire("closeAllPopups");
     }
-  }, [popupIsOpen, popupIndex]);
+  }, [popupIsOpen, popupIndex, searchQuery]);
+
+  // On every change of URL params, check if the filter or popup state in the URL matches the Redux
+  // state. If not. we must have clicked on a URL with this state or used the browser history
+  // buttons, so update Redux accordingly, which will trigger MapLibre to update too.
+  useEffect(() => {
+    const urlPopupId = searchParams.get(POPUP_ID_PARAM) ?? "";
+    const urlSearchQuery = searchParams.get(SEARCH_QUERY_PARAM) || "{}";
+    const popupStateMismatch = urlPopupId !== popupId;
+    const searchStateMismatch = urlSearchQuery !== searchQuery;
+
+    if (mapCreated) {
+      const maybePerformSearch = async () => {
+        if (searchStateMismatch) {
+          console.log(
+            `Found search query ${
+              urlSearchQuery
+            } in URL, ${searchQuery} in Redux`,
+          );
+          await dispatch(performSearchFromQuery(JSON.parse(urlSearchQuery)));
+        }
+      };
+
+      // Perform search first, then open popup (which is possible depending on search results)
+      maybePerformSearch().then(() => {
+        if (popupStateMismatch) {
+          console.log(
+            `Found popupId ${urlPopupId} in URL, ${popupId} in Redux`,
+          );
+          if (urlPopupId === "") {
+            dispatch(closePopup());
+          } else {
+            dispatch(openPopup(urlPopupId));
+          }
+        }
+
+        // Open left panel with results if we're on desktop and there's a search query in the URL,
+        // but not an active popup
+        if (isMedium && (popupStateMismatch || searchStateMismatch)) {
+          dispatch(setSelectedTab(1));
+          if (urlSearchQuery === "{}") {
+            dispatch(closeResultsPanel());
+          } else {
+            dispatch(openResultsPanel());
+          }
+          if (urlPopupId === "") {
+            dispatch(openPanel());
+          } else {
+            dispatch(closePanel());
+          }
+        }
+      });
+    }
+  }, [mapCreated, searchParams]);
 
   useEffect(() => {
     map.current?.fire("changeLanguage", { language });

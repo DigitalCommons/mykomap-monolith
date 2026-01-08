@@ -2,8 +2,25 @@
   "id": "test/cuk/R000001",
   "name": "Apples Co-op",
   "description": "We sell apples",
-  "website": ["https://apples.coop", "https://orchards.coop"],
-  "dc_domains": ["apples.coop", "orchards.coop","https://3.coop","https://4.coop","https://5.coop","https://6reallylongdomainnamethatiwillneedanellipses.coop","https://7.coop","https://8.coop","https://9.coop","https://10.coop","https://11.coop","https://12.coop","https://13canalsobeareallylongdomain.coop"],
+  "website": [
+    "https://apples.coop",
+    "https://orchards.coop"
+  ],
+  "dc_domains": [
+    "apples.coop",
+    "orchards.coop",
+    "https://3.coop",
+    "https://4.coop",
+    "https://5.coop",
+    "https://6reallylongdomainnamethatiwillneedanellipses.coop",
+    "https://7.coop",
+    "https://8.coop",
+    "https://9.coop",
+    "https://10.coop",
+    "https://11.coop",
+    "https://12.coop",
+    "https://13canalsobeareallylongdomain.coop"
+  ],
   "country_id": "GB",
   "primary_activity": "ICA210",
   "organisational_structure": "OS60",
@@ -13,5 +30,9 @@
   "geocontainer_lat": 51.50747643,
   "geocontainer_lon": -0.12782464,
   "address": "1 West Street, Sheffield, S1 2AB, UK",
-  "data_sources": ["DC", "CUK"]
+  "data_sources": [
+    "DC",
+    "CUK"
+  ]
 }
+

@@ -8,10 +8,16 @@ import {
   selectPopupData,
 } from "./popupSlice";
 import { configLoaded, setLanguage } from "../../app/configSlice";
+import { updateVisibleIndexes } from "../panel/searchPanel/searchSlice";
 import mockConfig from "../../mockData/mockConfig";
 import mockItem from "../../mockData/mockItem";
 import * as services from "../../services";
 import * as windowUtils from "../../utils/window-utils";
+
+const mockItemWithIndexZero = {
+  ...mockItem,
+  index: 0,
+};
 
 interface LocalTestContext {
   store: AppStore;
@@ -22,7 +28,7 @@ describe<LocalTestContext>("popup reducer", (it) => {
     // Set up mocks
     vi.spyOn(services, "getDatasetItem").mockResolvedValue({
       status: 200,
-      body: mockItem,
+      body: mockItemWithIndexZero,
       headers: new Headers(),
     });
     vi.spyOn(windowUtils, "getDatasetId").mockReturnValue("test-dataset");
@@ -31,8 +37,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
     context.store = store;
   });
 
-  it("should handle openPopup andclosePopup", async ({ store }) => {
-    await store.dispatch(openPopup(0));
+  it("should handle openPopup and closePopup", async ({ store }) => {
+    await store.dispatch(openPopup("@0"));
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
     expect(selectPopupIndex(store.getState())).toBe(0);
@@ -40,14 +46,15 @@ describe<LocalTestContext>("popup reducer", (it) => {
     store.dispatch(closePopup());
 
     expect(selectPopupIsOpen(store.getState())).toBe(false);
+    expect(selectPopupIndex(store.getState())).toBe(-1);
   });
 
   it("should handle openPopup pending", ({ store }) => {
-    expect(store.getState().popup.status).toBe("loading");
+    expect(store.getState().popup.status).toBe("idle");
 
     store.dispatch({
       type: "popup/openPopup/pending",
-      meta: { arg: 5, requestId: "test", requestStatus: "pending" },
+      meta: { arg: "@0", requestId: "test", requestStatus: "pending" },
     });
 
     expect(store.getState().popup.status).toBe("loading");
@@ -56,28 +63,28 @@ describe<LocalTestContext>("popup reducer", (it) => {
   });
 
   it("should handle openPopup fulfilled", ({ store }) => {
-    expect(store.getState().popup.status).toBe("loading");
+    expect(store.getState().popup.status).toBe("idle");
     expect(selectPopupIsOpen(store.getState())).toBe(false);
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItem,
-      meta: { arg: 3, requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexZero,
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
-    expect(store.getState().popup.status).toBe("loaded");
+    expect(store.getState().popup.status).toBe("idle");
     expect(selectPopupIsOpen(store.getState())).toBe(true);
-    expect(selectPopupIndex(store.getState())).toBe(3);
+    expect(selectPopupIndex(store.getState())).toBe(0);
     expect(store.getState().popup.data).toEqual(mockItem);
   });
 
   it("should handle openPopup rejected", ({ store }) => {
-    expect(store.getState().popup.status).toBe("loading");
+    expect(store.getState().popup.status).toBe("idle");
 
     store.dispatch({
       type: "popup/openPopup/rejected",
       payload: "Failed to fetch popup data",
-      meta: { arg: 2, requestId: "test", requestStatus: "rejected" },
+      meta: { arg: "@2", requestId: "test", requestStatus: "rejected" },
     });
 
     expect(store.getState().popup.status).toBe("failed");
@@ -101,8 +108,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: differentData,
-      meta: { arg: 7, requestId: "test", requestStatus: "fulfilled" },
+      payload: { ...differentData, index: 7 },
+      meta: { arg: "@7", requestId: "test", requestStatus: "fulfilled" },
     });
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
@@ -115,8 +122,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
 
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: emptyData,
-      meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
+      payload: { ...emptyData, index: 0 },
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
     expect(selectPopupIsOpen(store.getState())).toBe(true);
@@ -132,8 +139,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
     // Open popup with mockItem data
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItem,
-      meta: { arg: 0, requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexZero,
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
     // Select popup data - should return translated/processed data
@@ -189,8 +196,8 @@ describe<LocalTestContext>("popup reducer", (it) => {
     // Open popup with mockItem data
     store.dispatch({
       type: "popup/openPopup/fulfilled",
-      payload: mockItem,
-      meta: { arg: 1, requestId: "test", requestStatus: "fulfilled" },
+      payload: mockItemWithIndexZero,
+      meta: { arg: "@0", requestId: "test", requestStatus: "fulfilled" },
     });
 
     // Select popup data - should return French translations
@@ -236,5 +243,104 @@ describe<LocalTestContext>("popup reducer", (it) => {
       typology: "Travailleurs",
       website: ["https://www.brightonhousing.coop"],
     });
+  });
+
+  it("should allow opening popup when visibleIndexes is empty", async ({
+    store,
+  }) => {
+    // visibleIndexes is empty by default, which means all items are visible
+    expect(store.getState().search.visibleIndexes).toEqual([]);
+
+    await store.dispatch(openPopup("@0"));
+
+    expect(selectPopupIsOpen(store.getState())).toBe(true);
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.status).toBe("idle");
+  });
+
+  it("should allow opening popup when item index is in visibleIndexes", async ({
+    store,
+  }) => {
+    // Set visibleIndexes to include index 0
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { text: "test" },
+        visibleIndexes: [0, 1, 2, 5],
+      }),
+    );
+
+    await store.dispatch(openPopup("@0"));
+
+    expect(selectPopupIsOpen(store.getState())).toBe(true);
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.status).toBe("idle");
+  });
+
+  it("should reject opening popup when item index is not in visibleIndexes", async ({
+    store,
+  }) => {
+    // Mock an item with index 3
+    vi.spyOn(services, "getDatasetItem").mockResolvedValue({
+      status: 200,
+      body: { ...mockItem, index: 3 },
+      headers: new Headers(),
+    });
+
+    // Set visibleIndexes to NOT include index 3
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { text: "test" },
+        visibleIndexes: [0, 1, 2, 5],
+      }),
+    );
+
+    await store.dispatch(openPopup("@3"));
+
+    // Popup should NOT open
+    expect(selectPopupIsOpen(store.getState())).toBe(false);
+    expect(store.getState().popup.status).toBe("failed");
+  });
+
+  it("should allow opening popup with visibleIndexes containing only the requested index", async ({
+    store,
+  }) => {
+    // Set visibleIndexes to contain only index 0
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { filter: ["country_id:GB"] },
+        visibleIndexes: [0],
+      }),
+    );
+
+    await store.dispatch(openPopup("@0"));
+
+    expect(selectPopupIsOpen(store.getState())).toBe(true);
+    expect(selectPopupIndex(store.getState())).toBe(0);
+    expect(store.getState().popup.status).toBe("idle");
+  });
+
+  it("should reject opening popup when visibleIndexes is non-empty and does not contain the item", async ({
+    store,
+  }) => {
+    // Mock an item with index 10
+    vi.spyOn(services, "getDatasetItem").mockResolvedValue({
+      status: 200,
+      body: { ...mockItem, index: 10 },
+      headers: new Headers(),
+    });
+
+    // Set visibleIndexes to a non-empty array that doesn't include 10
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { filter: ["country_id:GB"] },
+        visibleIndexes: [0, 1, 2],
+      }),
+    );
+
+    await store.dispatch(openPopup("@10"));
+
+    // Popup should NOT open
+    expect(selectPopupIsOpen(store.getState())).toBe(false);
+    expect(store.getState().popup.status).toBe("failed");
   });
 });

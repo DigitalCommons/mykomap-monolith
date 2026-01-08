@@ -149,10 +149,11 @@ export class DatasetWriter {
     const ids = new Set(); // track duplicates with this
 
     // Get the list of filterable property names
-    const filterablePropNames = Object.entries(this.props)
+    const searchablePropNames = Object.entries(this.props)
       .map(([name, prop]) => (prop.filter ? name : undefined))
       .filter(notNullish);
-    filterablePropNames.push(this.searchProp); // This synthetic prop needs to be included
+    searchablePropNames.push("id"); // Also include id for efficient lookups of items by id
+    searchablePropNames.push(this.searchProp); // This synthetic prop needs to be included
 
     try {
       locationFile = await open(join(dirPath, "locations.json"), "w");
@@ -164,7 +165,7 @@ export class DatasetWriter {
       // they stand out as different. The result is intentionally somewhat CSV-like.
       searchableFile.write(
         `{   "itemProps":\n` +
-          JSON.stringify(filterablePropNames) +
+          JSON.stringify(searchablePropNames) +
           `,\n    "values":[\n`,
       );
 
@@ -204,6 +205,7 @@ export class DatasetWriter {
 
         // Write the searchable. No indentation.
         const searchableItem = this.extractFilterable(item);
+        searchableItem["id"] = item.id; // Always include id for efficient lookups
         searchableItem[this.searchProp] = this.textIndex(item);
 
         const searchableItemString = JSON.stringify(

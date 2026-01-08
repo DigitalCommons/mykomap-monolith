@@ -157,13 +157,14 @@ The `map` field has 1 subfield
 
 ## Pluralisation
 
-Pluralisation rules can differ per language, requiring the use of extra suffixes. `zero`, `one` and `other` are sufficient for English, Spanish, French and Hindi, and fine for our current instance of CWM. However, Welsh and Arabic have six categories according to **[CLDR ](https://cldr.unicode.org/index/cldr-spec/plural-rules)** and **[i18next](https://www.i18next.com/translation-function/plurals)** follows this: 
-   - `zero` (when n = 0)
-   - `one` (when n = 10)
-   - `two` (when n = 2)
-   - `few` (when n= 3)
-   - `many` (when n = 6)
-   - `other` (everything else)
+Pluralisation rules can differ per language, requiring the use of extra suffixes. `zero`, `one` and `other` are sufficient for English, Spanish, French and Hindi, and fine for our current instance of CWM. However, Welsh and Arabic have six categories according to **[CLDR ](https://cldr.unicode.org/index/cldr-spec/plural-rules)** and **[i18next](https://www.i18next.com/translation-function/plurals)** follows this:
+
+- `zero` (when n = 0)
+- `one` (when n = 10)
+- `two` (when n = 2)
+- `few` (when n= 3)
+- `many` (when n = 6)
+- `other` (everything else)
 
 Omission of the required plural forms will cause the translation to fallback to the default language. [This tool](https://jsfiddle.net/6bpxsgd4) can be used to determine the necessary plural suffixes, and list of the two letter ISO language codes can be found [here](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes).
 <br>
