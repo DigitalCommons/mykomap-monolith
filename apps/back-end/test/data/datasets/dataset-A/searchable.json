@@ -4,6 +4,7 @@
     "primary_activity",
     "typology",
     "data_sources",
+    "id",
     "searchString"
   ],
   "values": [
@@ -12,6 +13,7 @@
       "ICA210",
       "BMT20",
       ["DC", "CUK"],
+      "test/cuk/R000001",
       "apples coop 1 west street sheffield s1 2ab uk test coop"
     ],
     [
@@ -19,14 +21,16 @@
       "ICA230",
       "BMT20",
       ["DC"],
+      "test/dc/R000002",
       "pears united 79 rue de la mare aux carats 34090 montpellier france pears coop"
     ],
-    ["GB", "ICA220", "BMT10", ["CUK"], "invisible collab"],
+    ["GB", "ICA220", "BMT10", ["CUK"], "test/cuk/R000003", "invisible collab"],
     [
       "AU",
       "ICA250",
       "BMT50",
       ["DC"],
+      "test/dc/R000004",
       "kangaroos kangaroo valley new south wales 2577 Australia"
     ],
     [
@@ -34,6 +38,7 @@
       "ICA250",
       "BMT50",
       ["DC"],
+      "test/dc/R000005",
       "koalas north east kangaroo valley new south wales 2577 Australia"
     ],
     [
@@ -41,6 +46,7 @@
       "ICA210",
       "BMT20",
       ["DC", "CUK"],
+      "test/cuk/R000006",
       "north apples coop 3 west street sheffield s1 2ab uk test coop"
     ],
     [
@@ -48,6 +54,7 @@
       "ICA210",
       "BMT20",
       ["DC", "CUK"],
+      "test/cuk/R000007",
       "north apples 2 coop 5 west street sheffield s1 2ab uk test coop"
     ]
   ]

@@ -1,6 +1,9 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { BrowserRouter, Routes, Route } from "react-router";
 import App from "./App";
 import { renderWithProviders } from "./utils/test-utils";
+
+// TODO: we can maybe get rid of this UT once we have better playwright visual regression tests
 
 // TODO: enable this once we work out how to mock viewport width
 // test("App should have correct initial render on desktop", () => {
@@ -13,21 +16,15 @@ import { renderWithProviders } from "./utils/test-utils";
 // });
 
 test("App should have correct initial render on mobile", () => {
-  renderWithProviders(<App />);
+  renderWithProviders(
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<App />} />
+      </Routes>
+    </BrowserRouter>,
+  );
 
   waitFor(() => {
     expect(screen.getByText("search")).toBeInTheDocument();
   });
 });
-
-// test("Increment value and Decrement value should work as expected", async () => {
-//   const { user } = renderWithProviders(<App />)
-
-//   // Click on "+" => Count should be 1
-//   await user.click(screen.getByLabelText("Increment value"))
-//   expect(screen.getByLabelText("Count")).toHaveTextContent("1")
-
-//   // Click on "-" => Count should be 0
-//   await user.click(screen.getByLabelText("Decrement value"))
-//   expect(screen.getByLabelText("Count")).toHaveTextContent("0")
-// })

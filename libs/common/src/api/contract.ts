@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { map, z } from "zod";
+import { z } from "zod";
 import { extendZodWithOpenApi } from "@anatine/zod-openapi";
 import * as Rx from "../rxdefs.js";
 import RxUtils from "../rxutils.js";
@@ -27,7 +27,11 @@ function ZodRegex(rx: RegExp, message: string) {
 const Location = z.array(z.number()).min(2).max(2);
 const CustomMarkerId = z.number();
 const DatasetId = z.string().regex(Rx.UrlSafeBase64);
-const DatasetItem = z.object({}).passthrough();
+const DatasetItem = z // an arbitrary object with at least an 'id' string property
+  .object({
+    id: z.string(),
+  })
+  .and(z.record(z.string(), z.unknown()));
 const DatasetLocations = z.array(
   Location.nullable(),
   CustomMarkerId.nullable(),
@@ -42,6 +46,7 @@ const DatasetItemIx = ZodRegex(
   Rx.DatasetItemIx,
   "Invalid DatasetItemIx format",
 );
+const DatasetItemIxRaw = z.number().int().nonnegative(); // index without '@' prefix
 const DatasetItemIdOrIx = ZodRegex(
   Rx.DatasetItemIdOrIx,
   "Invalid DatasetItemIdOrIx format",
@@ -64,7 +69,7 @@ const VocabDef = z.object({
 const I18nVocabDef = z.record(Iso639Set1Code, VocabDef);
 const VocabIndex = z.record(NCName, I18nVocabDef);
 
-// The following specs shoud match the types in prop-spec.ts
+// The following specs shoud match the types in prop-specs.ts
 const FilterSpec = z.object({ preset: z.literal(true), to: z.unknown() });
 const CommonPropSpec = z.object({
   from: z.string().optional(),
@@ -106,7 +111,15 @@ const PropSpec = z.discriminatedUnion("type", [
   VocabPropSpec,
   MultiPropSpec,
 ]);
-const PropSpecs = z.record(z.string(), PropSpec);
+
+const PropSpecs = z
+  .object({
+    // the 'id' itemProp is required, as a non-filterable ValuePropSpec
+    id: ValuePropSpec.extend({
+      filter: z.literal(false).optional(),
+    }),
+  })
+  .and(z.record(z.string(), PropSpec));
 const PopupItem = z.object({
   itemProp: z.string(),
   valueStyle: z
@@ -116,7 +129,7 @@ const PopupItem = z.object({
   singleColumnLimit: z.number().optional(),
   showLabel: z.boolean().default(false),
   hyperlinkBaseUri: z.string().default(""),
-  displayText: z.string().optional()
+  displayText: z.string().optional(),
 });
 
 const TotalsData = z.record(z.string(), z.number());
@@ -158,8 +171,8 @@ const ConfigData = z.object({
     leftPaneWidth: z.string().default("70%"),
     leftPane: z.array(PopupItem),
     topRightPane: z.array(PopupItem),
-    bottomRightPane: z.array(PopupItem)
-  })
+    bottomRightPane: z.array(PopupItem),
+  }),
 });
 const BuildInfo = z.object({
   name: z.string(),
@@ -178,6 +191,7 @@ export const schemas = {
   DatasetItemId,
   DatasetItemIdOrIx,
   DatasetItemIx,
+  DatasetItemIxRaw,
   DatasetItem,
   DatasetLocations,
   FilterSpec,
@@ -263,8 +277,12 @@ export const contract = c.router({
     responses: {
       200: z
         .union([
-          z.array(DatasetItemIx),
-          z.array(DatasetItem.partial().extend({ index: DatasetItemIx })),
+          z.array(DatasetItemIxRaw),
+          z.array(
+            z
+              .record(z.string(), z.unknown())
+              .and(z.object({ index: DatasetItemIxRaw })),
+          ),
         ])
         .openapi({
           description:
@@ -290,11 +308,11 @@ export const contract = c.router({
       }),
       datasetItemIdOrIx: DatasetItemIdOrIx.openapi({
         description:
-          "uniquely specifies the dataset item wanted within the dataset",
+          "Uniquely specifies the dataset item wanted within the dataset. This param must be base64 encoded. The decoded param should start with an @ to indicate an index, otherwise it is assumed to be an id",
       }),
     }),
     responses: {
-      200: DatasetItem.openapi({
+      200: DatasetItem.and(z.object({ index: DatasetItemIxRaw })).openapi({
         description: "the dataset item matching the supplied ID or index",
       }),
       400: ErrorInfo.openapi({

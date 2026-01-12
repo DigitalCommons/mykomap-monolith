@@ -202,6 +202,7 @@ Then perform the update:
 
     cd $GIT_WORKING  # change to the deployed directory
     . $DEPLOY_ENV    # set the configuration
+    cd mykomap-monolith
     git pull         # typically you will need to update the source files in some way
     ./deploy.sh      # run the deploy script
 

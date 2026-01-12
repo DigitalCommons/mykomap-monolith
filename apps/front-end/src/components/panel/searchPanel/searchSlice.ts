@@ -1,6 +1,6 @@
 import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
-import type { Config } from "../../../services";
+import type { Config } from "../../../services/types";
 import { searchDataset } from "../../../services";
 import { configLoaded } from "../../../app/configSlice";
 import { getDatasetId } from "../../../utils/window-utils";
@@ -18,13 +18,13 @@ type FilterableVocabProp = {
 };
 
 type SearchQuery = {
-  filter?: string | string[];
+  filter?: string[];
   text?: string;
 };
 
 export interface SearchSliceState {
   text: string;
-  visibleIndexes: number[];
+  visibleIndexes: number[]; // if empty, show all items
   searchingStatus: "idle" | "loading" | "failed";
   filterableVocabProps: FilterableVocabProp[];
   searchQuery: SearchQuery;
@@ -120,10 +120,10 @@ export const searchSlice = createAppSlice({
       );
       return activeFilters.length > 0 || search.text.length > 0;
     },
+    selectSearchQuery: (search) => search.searchQuery,
   },
 });
 
-// TODO: add this to ui vocabs so it is translatable
 const PROP_VALUE_ANY = "any";
 
 export const {
@@ -134,8 +134,12 @@ export const {
   clearSearch,
 } = searchSlice.actions;
 
-export const { selectText, selectVisibleIndexes, selectIsFilterActive } =
-  searchSlice.selectors;
+export const {
+  selectText,
+  selectVisibleIndexes,
+  selectIsFilterActive,
+  selectSearchQuery,
+} = searchSlice.selectors;
 
 type Term = VocabDef["terms"];
 
@@ -207,6 +211,7 @@ export const performSearch = (): AppThunk => {
       (prop) => prop.value !== PROP_VALUE_ANY,
     );
     if (activeFilters.length === 0 && search.text === "") {
+      // empty search query so show all items
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
       dispatch(populateSearchResults(0));
       return;
@@ -227,9 +232,7 @@ export const performSearch = (): AppThunk => {
       dispatch(
         updateVisibleIndexes({
           searchQuery,
-          visibleIndexes: (response.body as string[]).map(
-            (index) => Number(index.substring(1)), // remove leading '@' from index
-          ),
+          visibleIndexes: response.body as number[],
         }),
       );
       dispatch(populateSearchResults(0));
@@ -239,5 +242,28 @@ export const performSearch = (): AppThunk => {
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
       dispatch(setSearchingStatus("failed"));
     }
+  };
+};
+
+export const performSearchFromQuery = (searchQuery: SearchQuery): AppThunk => {
+  return async (dispatch, getState) => {
+    const { search } = getState();
+
+    // Set filter values and text to match the given search query
+    search.filterableVocabProps.forEach((prop) => {
+      const filterStr = searchQuery.filter?.find((f) =>
+        f.startsWith(`${prop.id}:`),
+      );
+      if (filterStr) {
+        const [, value] = filterStr.split(":");
+        dispatch(setFilterValue({ id: prop.id, value }));
+      } else {
+        dispatch(setFilterValue({ id: prop.id, value: PROP_VALUE_ANY }));
+      }
+    });
+    dispatch(setText(searchQuery.text ?? ""));
+
+    // Now perform the search
+    await dispatch(performSearch());
   };
 };

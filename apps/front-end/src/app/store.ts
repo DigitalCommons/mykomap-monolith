@@ -1,7 +1,7 @@
 import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { counterSlice } from "../features/counter/counterSlice";
+
 import { searchSlice } from "../components/panel/searchPanel/searchSlice";
 import { panelSlice } from "../components/panel/panelSlice";
 import { mapSlice } from "../components/map/mapSlice";
@@ -12,7 +12,6 @@ import { directorySlice } from "../components/panel/directoryPanel/directorySlic
 // `combineSlices` automatically combines the reducers using
 // their `reducerPath`s, therefore we no longer need to call `combineReducers`.
 const rootReducer = combineSlices(
-  counterSlice,
   searchSlice,
   mapSlice,
   panelSlice,

@@ -24,6 +24,7 @@ import {
 import {
   performSearch,
   selectIsFilterActive,
+  selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
 
@@ -61,9 +62,11 @@ const Panel = () => {
   const selectedTab = useAppSelector(selectSelectedTab);
   const resultsOpen = useAppSelector(selectResultsPanelOpen);
   const isFilterActive = useAppSelector(selectIsFilterActive);
+  const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const { t } = useTranslation();
 
   const isMedium = useMediaQuery("(min-width: 897px)");
+
 
   const handleToggle = () => {
     dispatch(togglePanel());
@@ -76,6 +79,11 @@ const Panel = () => {
     } else {
       dispatch(openPanel()); // Show the panel if any other tab is selected
     }
+
+    if (!isMedium && tab === 2 && isFilterActive && visibleIndexes.length > 0) {
+      dispatch(openResultsPanel()); // Open results panel on mobile if there are results
+    }
+
     dispatch(setSelectedTab(tab));
     console.log("tab", tab);
   };

@@ -3,21 +3,21 @@ import { parse } from "csv-parse/sync";
 
 const { GEOCODE_TOKEN } = process.env;
 
-const rawConfig = await fs.readFile(`./tmp/config.json`);
+const rawConfig = await fs.readFile(`./tmp/config.en.json`);
 const config = JSON.parse(rawConfig.toString());
 
-const rawCSV = await fs.readFile(`./tmp/powys-eng.csv`);
+const rawCSV = await fs.readFile(`./tmp/2025.10.11.powys_food_systems.csv`);
 const input = rawCSV.toString();
 
-const rawAbout = await fs.readFile(`./tmp/about.md`);
+const rawAbout = await fs.readFile(`./tmp/about.en.md`);
 const about = rawAbout.toString();
 
 const items = parse(input, {
   columns: true,
   skip_empty_lines: true,
 })
-  .filter((item) => item.ID)
-  .sort((a, b) => (a.Title_Eng < b.Title_Eng ? -1 : 1));
+  .filter((item: any) => item.ID)
+  .sort((a: any, b: any) => (a.Title_Eng < b.Title_Eng ? -1 : 1));
 
 await fs.mkdir("./tmp/out");
 await fs.mkdir("./tmp/out/datasets");
@@ -27,9 +27,9 @@ await fs.mkdir("./tmp/out/datasets/powys-eng/items");
 const locations: [number, number, number][] = [];
 const searchable: {
   itemProps: string[];
-  values: [(string | undefined)[], string | undefined, string | undefined][];
+  values: [(string | undefined)[], string | undefined, string, string | undefined][];
 } = {
-  itemProps: ["food_system_categories", "locality", "searchString"],
+  itemProps: ["food_system_categories", "locality", "id", "searchString"],
   values: [],
 };
 
@@ -98,6 +98,7 @@ for (let item of items) {
   searchable.values.push([
     itemOutput.food_system_categories,
     itemOutput.locality,
+    itemOutput.id,
     `${itemOutput.name} ${itemOutput.address}`.toLowerCase(),
   ]);
 

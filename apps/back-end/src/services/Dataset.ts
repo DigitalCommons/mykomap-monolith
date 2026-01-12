@@ -48,6 +48,7 @@ export class Dataset {
       );
 
     // Sanity check searchable.json is roughly the correct format (which should be done after generation)
+    const hasIdField = searchable.itemProps.includes("id");
     const hasSearchStringField = searchable.itemProps.includes("searchString");
     const uniqueItemProps =
       new Set(searchable.itemProps).size === searchable.itemProps.length;
@@ -55,7 +56,7 @@ export class Dataset {
       .filter(([prop, def]) => def.filter)
       .map(([prop, def]) => prop);
     const sameItemPropsAsConfig = haveSameElements(
-      [...filterableItemPropsInConfig, "searchString"],
+      [...filterableItemPropsInConfig, "id", "searchString"],
       searchable.itemProps,
     );
     const expectedValuesLengths = searchable.values
@@ -63,6 +64,7 @@ export class Dataset {
       .every((v: number) => v === searchable.itemProps.length);
 
     if (
+      hasIdField &&
       hasSearchStringField &&
       uniqueItemProps &&
       sameItemPropsAsConfig &&
@@ -78,13 +80,14 @@ export class Dataset {
     } else {
       throw new Error(
         `searchable.json for dataset ${this.id} has a bad format ` +
-          `(hasSearchStringField: ${hasSearchStringField}, uniqueItemProps: ${uniqueItemProps}, ` +
-          `sameItemPropsAsConfig: ${sameItemPropsAsConfig}, expectedValuesLengths: ${expectedValuesLengths})`,
+          `(hasIdField: ${hasIdField}, hasSearchStringField: ${hasSearchStringField}, ` +
+          `uniqueItemProps: ${uniqueItemProps}, sameItemPropsAsConfig: ${sameItemPropsAsConfig}, ` +
+          `expectedValuesLengths: ${expectedValuesLengths})`,
       );
     }
   }
 
-  getItem = (itemIx: number) => {
+  getItemByIx = (itemIx: number) => {
     if (!fs.existsSync(path.join(this.folderPath, "items", `${itemIx}.json`))) {
       throw new HttpError(
         404,
@@ -97,6 +100,23 @@ export class Dataset {
         path.join(this.folderPath, "items", `${itemIx}.json`),
         "utf8",
       ),
+    );
+  };
+
+  getItemById = (itemId: string) => {
+    console.log("itemid", itemId);
+    const itemIx = this.searchablePropValues.findIndex(
+      (item) => item[this.searchablePropIndexMap.id] == itemId,
+    );
+
+    if (itemIx > -1) {
+      const item = this.getItemByIx(itemIx);
+      return { ...item, index: itemIx };
+    }
+
+    throw new HttpError(
+      404,
+      `Can't retrieve data for dataset ${this.id}, item id ${itemId}`,
     );
   };
 
@@ -141,7 +161,7 @@ export class Dataset {
     returnProps?: string[],
     page?: number,
     pageSize?: number,
-  ): (string | { [prop: string]: unknown })[] => {
+  ): (number | { [prop: string]: unknown })[] => {
     const propMatchers: {
       propIndex: number;
       propMatcher: (value: string | string[]) => boolean;
@@ -230,7 +250,7 @@ export class Dataset {
 
     return visibleIndexes.slice(startIx, endIx).map((itemIx) => {
       if (returnProps) {
-        const item = this.getItem(itemIx);
+        const item = this.getItemByIx(itemIx);
         // Return only the requested properties
         const strippedItem: { [prop: string]: unknown } = {};
 
@@ -242,11 +262,11 @@ export class Dataset {
         }
 
         return {
-          index: `@${itemIx}`,
+          index: itemIx,
           ...strippedItem,
         };
       } else {
-        return `@${itemIx}`;
+        return itemIx;
       }
     });
   };

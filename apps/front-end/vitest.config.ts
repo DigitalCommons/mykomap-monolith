@@ -34,6 +34,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "jsdom",
+    mockReset: true,
     setupFiles: "src/setupTests",
     env: {
       VITE_API_URL: "/api",

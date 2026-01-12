@@ -14,17 +14,20 @@ vi.mock("maplibre-gl", () => ({
 
 // Mock i18next hook so it just uses the key as the translation
 vi.mock("react-i18next", () => ({
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-      i18n: {
-        changeLanguage: () => new Promise(() => {}),
-      },
-    };
-  },
+  useTranslation: () => ({
+    t: (str: string) => str,
+    i18n: {
+      changeLanguage: () => new Promise(() => {}),
+    },
+  }),
   initReactI18next: {
     type: "3rdParty",
     init: () => {},
+  },
+}));
+vi.mock("../i18n", () => ({
+  default: {
+    t: (str: string) => str,
   },
 }));
 
