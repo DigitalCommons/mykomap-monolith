@@ -32,5 +32,6 @@ site
 
 # MS local test files
 ResultsPanel copy 2.tsx
+apps/back-end/test/data/datasets/
 
 bin/do-release.mjs
