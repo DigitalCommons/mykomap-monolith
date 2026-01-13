@@ -12,7 +12,7 @@
     "start": "cross-env NODE_ENV=development VITE_API_URL=/api tsx watch --tsconfig tsconfig.node.json --include '../back-end/' --exclude '**/.#*' --exclude '**/vite.config.ts.timestamp*' server.ts",
     "dev": "cross-env VITE_API_URL=http://localhost:3000 vite",
     "prebuild": "npm -w ../../libs/common run build",
-    "build": "vite build --ssr src/main.tsx --outDir dist",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run --config vitest.config.ts",
     "format": "prettier --write .",
