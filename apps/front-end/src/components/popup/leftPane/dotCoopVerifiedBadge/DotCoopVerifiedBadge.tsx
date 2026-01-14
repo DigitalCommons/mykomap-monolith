@@ -21,7 +21,7 @@ const DotCoopVerifiedBadge = () => {
     <StyledVerifiedBadge role="status" aria-label="DotCoop Verified">
       <div>
         <img
-          src="/assets/logos/dotcoop-logo-small.png"
+          src="./assets/logos/dotcoop-logo-small.png"
           alt=""
           aria-hidden="true"
         />

@@ -49,7 +49,7 @@ const DotCoopKey = ({ results }: DataSourceKeyProps) => {
       />{" "}
       <div>
         <img
-          src="/assets/logos/dotcoop-logo-small.png"
+          src="./assets/logos/dotcoop-logo-small.png"
           alt=""
           aria-hidden="true"
           style={{
