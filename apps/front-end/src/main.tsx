@@ -10,7 +10,7 @@ import { store } from "./app/store";
 import "./index.css";
 import "./i18n";
 import GlobalCSSVariables from "./theme/GlobalCSSVariables";
-import { sentryRelease, sentryDist } from "@mykomap/common";
+import { sentryRelease } from "@mykomap/common";
 
 import theme from "./theme/theme";
 
@@ -50,7 +50,7 @@ if (container) {
         <ThemeProvider theme={theme}>
           <GlobalCSSVariables />
           <CssBaseline />
-          <BrowserRouter>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
             <Routes>
               <Route path="/" element={<App />} />
             </Routes>
