@@ -317,6 +317,12 @@ export const contract = c.router({
           "Uniquely specifies the dataset item wanted within the dataset. This param must be base64 encoded. The decoded param should start with an @ to indicate an index, otherwise it is assumed to be an id",
       }),
     }),
+    query: z.object({
+      returnProps: z.array(z.string()).optional().openapi({
+        description:
+          "The props to return. If not specified, all props are returned. Note that the item's ID and index are always returned.",
+      }),
+    }),
     responses: {
       200: DatasetItem.and(z.object({ index: DatasetItemIxRaw })).openapi({
         description: "the dataset item matching the supplied ID or index",

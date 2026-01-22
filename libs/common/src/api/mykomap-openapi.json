@@ -270,6 +270,17 @@
               "type": "string"
             },
             "description": "Uniquely specifies the dataset item wanted within the dataset. This param must be base64 encoded. The decoded param should start with an @ to indicate an index, otherwise it is assumed to be an id"
+          },
+          {
+            "name": "returnProps",
+            "in": "query",
+            "description": "The props to return. If not specified, all props are returned. Note that the item's ID and index are always returned.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         ],
         "operationId": "getDatasetItem",

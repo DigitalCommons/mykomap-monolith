@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
+import { createMap, fitBoundsToFeatures, setPanelOpenValues } from "./mapLibre";
 import { useSearchParams } from "react-router";
-import { createMap } from "./mapLibre";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   performSearchFromQuery,
@@ -26,6 +26,8 @@ import {
   openPanel,
   openResultsPanel,
   setSelectedTab,
+  selectPanelOpen, 
+  selectResultsPanelOpen
 } from "../panel/panelSlice";
 import { DEVICE_ID, Event, trackEvent } from "../../services/analytics";
 
@@ -44,6 +46,8 @@ const MapWrapper = () => {
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const configStatus = useAppSelector(selectConfigStatus);
+  const panelOpen = useAppSelector(selectPanelOpen);
+  const resultsPanelOpen = useAppSelector(selectResultsPanelOpen);
   const [sourceLoaded, setSourceLoaded] = useState(false);
   const [mapCreated, setMapCreated] = useState(false);
   const map = useRef<MapLibreMap | null>(null);
@@ -255,6 +259,11 @@ const MapWrapper = () => {
   }, [mapCreated, searchParams]);
 
   useEffect(() => {
+    // Keep the mapLibre panel open state in sync with the Redux state
+    setPanelOpenValues(panelOpen, resultsPanelOpen);
+  }, [panelOpen, resultsPanelOpen]);
+
+  useEffect(() => {
     map.current?.fire("changeLanguage", { language });
   }, [language]);
 
@@ -272,6 +281,16 @@ const MapWrapper = () => {
       type: "FeatureCollection",
       features,
     });
+
+    // Auto-zoom to fit filtered results
+    if (isFilterActive && features.length > 0 && map.current) {
+      // Wait a brief moment for the map to process the new data before panning
+      setTimeout(() => {
+        if (map.current) {
+          fitBoundsToFeatures(map.current);
+        }
+      }, 100);
+    }
 
     if (!visibleIndexes.includes(popupIndex)) {
       dispatch(closePopup());

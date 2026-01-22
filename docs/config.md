@@ -135,8 +135,8 @@ The `map` field has 1 subfield
     ]
   },
   "logo": {
-    "largeLogo": "/assets/logos/cwm-logo.png",
-    "smallLogo": "/assets/logos/cwm-logo-small.png",
+    "largeLogo": "./assets/logos/cwm-logo.png",
+    "smallLogo": "./assets/logos/cwm-logo-small.png",
     "altText": "Cooperative World Map",
     "smallScreenPosition": {
       "top": "0",

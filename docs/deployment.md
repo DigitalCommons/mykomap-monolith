@@ -85,6 +85,7 @@ application user, but with secret values redacted:
     export VHOST_CONF=/var/www/vhosts/maps.coop/custom.conf
     export PROXY_PORT=1$UID
     export PROXY_PATH=/api
+    export BASE_URL_PATH=/cwm/
     export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UID/bus
     export FE_GLITCHTIP_KEY=*REDACTED*
     export BE_GLITCHTIP_KEY=*REDACTED*

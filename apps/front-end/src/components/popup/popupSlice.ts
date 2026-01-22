@@ -2,10 +2,9 @@ import { createSelector } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetItem } from "../../services";
 import { Config } from "../../services/types";
-import { getDatasetId } from "../../utils/window-utils";
+import { encodeBase64, getDatasetId } from "../../utils/window-utils";
 import { InnerPropSpec, PropSpecs } from "@mykomap/common";
 import { configLoaded } from "../../app/configSlice";
-import { Buffer } from "buffer";
 import { SearchSliceState } from "../panel/searchPanel/searchSlice";
 
 interface PopupSliceState {
@@ -60,10 +59,6 @@ export const popupSlice = createAppSlice({
             `No datasetId parameter given, so popup cannot be fetched`,
           );
         }
-
-        const encodeBase64 = (data: string) => {
-          return Buffer.from(data, "utf-8").toString("base64");
-        };
 
         console.log("Fetching popup with idOrIndex", idOrIndex);
 

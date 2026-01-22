@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { Iso639Set1Codes } from "@mykomap/common";
 
 const getUrlSearchParam = (param: string): string | null =>
@@ -9,4 +10,8 @@ export const getDatasetId = () => getUrlSearchParam("datasetId");
 export const getLanguageFromUrl = (): string => {
   const lang = getUrlSearchParam("lang")?.toLowerCase();
   return lang && Iso639Set1Codes.hasOwnProperty(lang) ? lang : "en";
+};
+
+export const encodeBase64 = (data: string) => {
+  return Buffer.from(data, "utf-8").toString("base64");
 };

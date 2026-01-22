@@ -5,6 +5,7 @@ import Pagination from "@mui/material/Pagination";
 import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import ResultItem from "./resultItem/ResultItem";
+import DotCoopKey from "./dotCoopKey/DotCoopKey";
 import { useAppDispatch, useAppSelector } from "../../../../app/hooks";
 import {
   closePanel,
@@ -93,6 +94,7 @@ const Results = () => {
         }}
       >
         {t("matching_results", { count: resultCount })}
+        <DotCoopKey results={results} />
       </Typography>
       <StyledResults>
         <List>
@@ -102,6 +104,7 @@ const Results = () => {
               index={item.index}
               name={item.name}
               buttonAction={() => onItemClick(item.index, item.name)}
+              data_sources={item.data_sources ?? []}
             />
           ))}
         </List>

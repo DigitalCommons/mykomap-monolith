@@ -13,7 +13,12 @@ import type {
   MapLayerMouseEvent,
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
-import { getLanguageFromUrl } from "../../utils/window-utils";
+import {
+  getLanguageFromUrl,
+  getDatasetId,
+  encodeBase64,
+} from "../../utils/window-utils";
+import { getDatasetItem } from "../../services";
 import markers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
@@ -25,6 +30,31 @@ const POPUP_INITIAL_ZOOM = 15;
 let popupIx: number | undefined;
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
+
+let panelOpen: boolean = false;
+let resultsPanelOpen: boolean = false;
+let mapCenterOffsetPixels: [number, number] = [0, 0];
+
+/**
+ * We keep these values in this non-React file updated by our React MapWrapper component, since they
+ * are used to calculate the offset when panning the map, so that markers are not hidden behind
+ * panels.
+ */
+export const setPanelOpenValues = (panel: boolean, resultsPanel: boolean) => {
+  panelOpen = panel;
+  resultsPanelOpen = resultsPanel;
+
+  // Re-calculate panel width for desktop and thus the map center offset
+  const isDesktop = window.innerWidth >= 897;
+  const PANEL_WIDTH = 375; // From CSS variable --panel-width-desktop
+  let leftPanelWidth =
+    isDesktop && panelOpen
+      ? resultsPanelOpen
+        ? PANEL_WIDTH * 2
+        : PANEL_WIDTH
+      : 0;
+  mapCenterOffsetPixels = [leftPanelWidth / 2, 0];
+};
 
 /**
  * We need to offset latitude of the map centre slightly above a marker's location when opening a
@@ -68,6 +98,90 @@ const disableRotation = (map: Map) => {
   map.touchZoomRotate.disableRotation();
 };
 
+/**
+ * Computes the bounding box of all features in the GeoJSON source and fits the map to those bounds,
+ * with a bit of padding and accounting for the left panel on desktop. This is used to auto-zoom the
+ * map when filters are applied, so that markers are visible and unclustered where possible.
+ */
+export const fitBoundsToFeatures = (map: Map) => {
+  const source = map.getSource("items-geojson") as GeoJSONSource;
+  if (!source) {
+    console.warn("GeoJSON source not found, cannot fit bounds");
+    return;
+  }
+
+  const data = source._data as GeoJSON.FeatureCollection<GeoJSON.Point>;
+  if (!data || !data.features || data.features.length === 0) {
+    console.log("No features to fit bounds to");
+    return;
+  }
+
+  // If there's only one point, we can ease to that point without zooming since it's not clustered
+  if (data.features.length === 1) {
+    map.easeTo({
+      center: data.features[0].geometry.coordinates as LngLatLike,
+      duration: 1000,
+      offset: mapCenterOffsetPixels,
+    });
+    console.log(
+      `Fitted bounds to single point: ${data.features[0].geometry.coordinates}`,
+    );
+    return;
+  }
+
+  // Compute the bounding box of all features
+  let minLng = 180;
+  let maxLng = -180;
+  let minLat = 90;
+  let maxLat = -90;
+
+  for (const feature of data.features) {
+    const [lng, lat] = feature.geometry.coordinates;
+    minLng = Math.min(minLng, lng);
+    maxLng = Math.max(maxLng, lng);
+    minLat = Math.min(minLat, lat);
+    maxLat = Math.max(maxLat, lat);
+  }
+
+  // If all points are at the same location, zoom in to that cluster
+  if (minLng === maxLng && minLat === maxLat) {
+    // Apply offset for left panels if present
+    map.easeTo({
+      center: [minLng, minLat],
+      zoom: POPUP_INITIAL_ZOOM,
+      duration: 1000,
+      offset: mapCenterOffsetPixels,
+    });
+    console.log(`Fitted bounds to single cluster: [${minLng}, ${minLat}]`);
+    return;
+  }
+
+  // Add padding around the bounds in px so that markers are not at the very edge of the screen
+  const basePadding = 150;
+  const leftPadding = basePadding + mapCenterOffsetPixels[0] * 2;
+
+  map.fitBounds(
+    [
+      [minLng, minLat],
+      [maxLng, maxLat],
+    ],
+    {
+      padding: {
+        top: basePadding,
+        bottom: basePadding,
+        left: leftPadding,
+        right: basePadding,
+      },
+      duration: 1000,
+      maxZoom: POPUP_INITIAL_ZOOM,
+    },
+  );
+
+  console.log(
+    `Fitted bounds to ${data.features.length} features: [[${minLng}, ${minLat}], [${maxLng}, ${maxLat}]]`,
+  );
+};
+
 const openPopup = async (
   map: Map,
   itemIx: number,
@@ -82,6 +196,9 @@ const openPopup = async (
   }
 
   console.log(`Create marker popup for item @${itemIx}`);
+
+  // Hide any visible tooltips when opening popup
+  tooltip?.remove();
 
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
@@ -107,27 +224,59 @@ const openPopup = async (
   popupCreatedCallback(itemIx);
 };
 
-const onMarkerHover = (
+const onMarkerHover = async (
   map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
-  // TODO: add support for tooltips
-  // const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-  // const name = feature.properties?.Name;
-  // // Shift the tooltip up a bit so it doesn't cover the marker
-  // const popupOffset: [number, number] = offset
-  //   ? [offset[0], offset[1] - 20]
-  //   : [0, -20];
-  // tooltip?.remove();
-  // tooltip = new Popup({
-  //   closeButton: false,
-  //   maxWidth: "none",
-  // })
-  //   .setLngLat(coordinates)
-  //   .setHTML(getTooltip(name))
-  //   .addTo(map)
-  //   .setOffset(popupOffset);
+  const datasetId = getDatasetId();
+  if (!datasetId) {
+    console.warn("No dataset ID available");
+    return;
+  }
+
+  const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+  const itemIx = feature.properties?.ix;
+
+  if (itemIx === undefined) {
+    console.warn("No item index found in feature properties");
+    return;
+  }
+
+  // Only show tooltip when popup is not open
+  if (popup?.isOpen() && popupIx === itemIx) {
+    return;
+  }
+
+  try {
+    const response = await getDatasetItem({
+      params: { datasetId, datasetItemIdOrIx: encodeBase64(`@${itemIx}`) },
+      query: { returnProps: ["name"] },
+    });
+
+    if (response.status === 200 && response.body.name) {
+      const name = response.body.name as string;
+
+      // Shift the tooltip up a bit so it doesn't cover the marker
+      const popupOffset: [number, number] = offset
+        ? [offset[0], offset[1] - 30]
+        : [0, -30];
+
+      tooltip?.remove();
+      tooltip = new Popup({
+        closeButton: false,
+        maxWidth: "none",
+        className: "marker-tooltip",
+        anchor: "bottom",
+      })
+        .setLngLat(coordinates)
+        .setHTML(getTooltip(name))
+        .addTo(map)
+        .setOffset(popupOffset);
+    }
+  } catch (error) {
+    console.error("Error fetching item name for tooltip:", error);
+  }
 };
 
 /**
@@ -141,7 +290,10 @@ export const createMap = (
     mapBounds?: [[number, number], [number, number]];
   },
 ): Map => {
-  const initialBounds = mapConfig?.mapBounds;
+  const initialBounds = mapConfig?.mapBounds ?? [
+    [-169, -49.3],
+    [189, 75.6],
+  ];
 
   console.log("Map bounds", initialBounds);
 
@@ -232,7 +384,7 @@ export const createMap = (
     const spiderfy = new Spiderfy(map, {
       onLeafClick: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
-        e: MapLayerMouseEvent,
+        _e: MapLayerMouseEvent,
         leafOffset: [number, number],
       ) => {
         const coordinates = feature.geometry.coordinates.slice();
@@ -257,6 +409,7 @@ export const createMap = (
               coordinates[0],
               getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
             ],
+            offset: mapCenterOffsetPixels,
           })
           .once("moveend", () => {
             openPopup(
@@ -271,7 +424,7 @@ export const createMap = (
       },
       onLeafHover: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
-        e: MapLayerMouseEvent,
+        _e: MapLayerMouseEvent,
         leafOffset: [number, number] | undefined,
       ) => {
         if (feature) {
@@ -313,9 +466,11 @@ export const createMap = (
       );
 
       if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
-        map.jumpTo({
+        map.flyTo({
           center: features[0].geometry.coordinates as LngLatLike,
+          offset: mapCenterOffsetPixels,
           zoom: clusterExpansionZoom ?? undefined,
+          duration: 500,
         });
       }
 
@@ -334,8 +489,8 @@ export const createMap = (
 
         const legLength =
           totalPoints <= 10 ? 50 : 50 + (index * (Math.PI * 2 * 2.2)) / angle;
-        const x = legLength * Math.cos(angle);
-        const y = legLength * Math.sin(angle);
+        const _x = legLength * Math.cos(angle);
+        const _y = legLength * Math.sin(angle);
 
         /*
         openPopup(
@@ -374,6 +529,7 @@ export const createMap = (
               coordinates[0],
               getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
             ],
+            offset: mapCenterOffsetPixels,
           })
           .once("moveend", () => {
             openPopup(
@@ -402,16 +558,18 @@ export const createMap = (
       popup = undefined;
 
       if (isLocationNear(location, map)) {
-        map.panTo([
-          location[0],
-          getMapCentreLatOffsetted(location[1], map.getZoom()),
-        ]);
+        map.panTo(
+          [location[0], getMapCentreLatOffsetted(location[1], map.getZoom())],
+          { offset: mapCenterOffsetPixels },
+        );
       } else {
-        map.jumpTo({
+        map.flyTo({
           center: [
             location[0],
             getMapCentreLatOffsetted(location[1], POPUP_INITIAL_ZOOM),
           ],
+          offset: mapCenterOffsetPixels,
+          duration: 0,
           zoom: POPUP_INITIAL_ZOOM,
         });
       }
@@ -469,8 +627,8 @@ export const createMap = (
     });
     map.on("mouseenter", "unclustered-point", (e: any) => {
       map.getCanvas().style.cursor = "pointer";
-      // const feature = e.features[0];
-      // onMarkerHover(map, feature);
+      const feature = e.features[0];
+      onMarkerHover(map, feature);
     });
     map.on("mouseleave", "unclustered-point", () => {
       tooltip?.remove();
@@ -483,7 +641,7 @@ export const createMap = (
 
     map.on("changeLanguage", ({ language }) => {
       const oldStyle = map.getStyle();
-      const newStyle = JSON.stringify(oldStyle, (key, val) => {
+      const newStyle = JSON.stringify(oldStyle, (_key, val) => {
         if (typeof val === "string") {
           return val.replaceAll("name:en", `name:${language.toLowerCase()}`);
         }

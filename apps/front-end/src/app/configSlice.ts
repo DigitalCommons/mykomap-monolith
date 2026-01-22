@@ -13,6 +13,7 @@ export interface ConfigSliceState {
   logo?: Config["ui"]["logo"];
   status: "idle" | "loading" | "loaded" | "failed";
   popup?: ConfigPopup;
+  dataSources?: Config["itemProps"]["data_sources"];
 }
 
 /**
@@ -61,6 +62,7 @@ const initialState: ConfigSliceState = {
     topRightPane: [],
     bottomRightPane: [],
   },
+  dataSources: undefined,
 };
 
 export const configSlice = createAppSlice({
@@ -122,6 +124,8 @@ export const configSlice = createAppSlice({
         action.payload.itemProps,
       );
 
+      state.dataSources = action.payload.itemProps.data_sources;
+
       state.status = "loaded";
     });
   },
@@ -131,6 +135,7 @@ export const configSlice = createAppSlice({
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
     selectConfigStatus: (state) => state.status,
+    selectDataSources: (state) => state.dataSources,
   },
 });
 
@@ -144,4 +149,5 @@ export const {
   selectPopupConfig,
   selectMapConfig,
   selectConfigStatus,
+  selectDataSources,
 } = configSlice.selectors;
