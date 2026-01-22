@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig, loadEnv } from "vite";
 import { ReadonlyBuildInfo } from "@mykomap/common";
 import react from "@vitejs/plugin-react";
 import { spawnSync } from "node:child_process";
@@ -23,15 +23,19 @@ const __BUILD_INFO__ = new ReadonlyBuildInfo({
 __BUILD_INFO__.updatePackageJson();
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  define: {
-    __BUILD_INFO__,
-  },
-  plugins: [react()],
-  build: {
-    sourcemap: true,
-  },
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd());
 
-  base: "./",
-  root,
+  return {
+    define: {
+      __BUILD_INFO__,
+    },
+    plugins: [react()],
+    build: {
+      sourcemap: true,
+    },
+
+    base: env.VITE_BASE_URL,
+    root,
+  };
 });

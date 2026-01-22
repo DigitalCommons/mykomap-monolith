@@ -3,6 +3,7 @@ import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetId } from "../../utils/window-utils";
 import { searchDataset } from "../../services";
 import { SearchSliceState } from "./searchPanel/searchSlice";
+import { ConfigSliceState } from "../../app/configSlice";
 
 export const RESULTS_PER_PAGE = 50;
 
@@ -13,7 +14,7 @@ interface PanelSliceState {
   resultsStatus: "idle" | "loading" | "failed";
   resultsPage: number;
   // TODO: maybe cache all results that we have fetched, since user may flick back and forth
-  results: { index: number; name: string }[];
+  results: { index: number; name: string; data_sources?: string[] }[];
 }
 
 const initialState: PanelSliceState = {
@@ -59,21 +60,35 @@ export const panelSlice = createAppSlice({
           );
         }
 
-        const { search } = thunkApi.getState() as {
+        const { search, config } = thunkApi.getState() as {
           search: SearchSliceState;
+          config: ConfigSliceState;
         };
+
+        // Check if config has dataSources property
+        const hasDataSources = config?.dataSources !== undefined;
+
+        // Generate returnProps based on presence of data_sources property
+        const returnProps = hasDataSources
+          ? ["name", "data_sources"]
+          : ["name"];
 
         const response = await searchDataset({
           params: { datasetId },
           query: {
             ...search.searchQuery,
-            returnProps: ["name"],
+            returnProps,
             page: page,
             pageSize: RESULTS_PER_PAGE,
           },
         });
+
         if (response.status === 200) {
-          return response.body as { index: number; name: string }[];
+          return response.body as {
+            index: number;
+            name: string;
+            data_sources?: string[];
+          }[];
         } else {
           return thunkApi.rejectWithValue(
             `Failed search, status code ${response.status}`,
