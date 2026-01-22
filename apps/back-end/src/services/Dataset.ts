@@ -87,7 +87,26 @@ export class Dataset {
     }
   }
 
-  getItemByIx = (itemIx: number) => {
+  /**
+   * Filters an item to return only the specified props (always including 'id' prop)
+   */
+  private filterItemProps = (
+    item: { [prop: string]: unknown },
+    returnProps: string[],
+  ): { [prop: string]: unknown } => {
+    const strippedItem: { [prop: string]: unknown } = { id: item.id };
+
+    for (const prop of returnProps) {
+      if (item[prop] === undefined) {
+        throw new HttpError(400, `Unknown property name '${prop}'`);
+      }
+      strippedItem[prop] = item[prop];
+    }
+
+    return strippedItem;
+  };
+
+  getItemByIx = (itemIx: number, returnProps?: string[]) => {
     if (!fs.existsSync(path.join(this.folderPath, "items", `${itemIx}.json`))) {
       throw new HttpError(
         404,
@@ -95,22 +114,28 @@ export class Dataset {
       );
     }
 
-    return JSON.parse(
+    const item = JSON.parse(
       fs.readFileSync(
         path.join(this.folderPath, "items", `${itemIx}.json`),
         "utf8",
       ),
     );
+
+    if (returnProps) {
+      return this.filterItemProps(item, returnProps);
+    }
+
+    return item;
   };
 
-  getItemById = (itemId: string) => {
+  getItemById = (itemId: string, returnProps?: string[]) => {
     console.log("itemid", itemId);
     const itemIx = this.searchablePropValues.findIndex(
       (item) => item[this.searchablePropIndexMap.id] == itemId,
     );
 
     if (itemIx > -1) {
-      const item = this.getItemByIx(itemIx);
+      const item = this.getItemByIx(itemIx, returnProps);
       return { ...item, index: itemIx };
     }
 

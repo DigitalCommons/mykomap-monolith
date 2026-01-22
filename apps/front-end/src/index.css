@@ -2,7 +2,6 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 
 @import "tailwindcss/components";
-/* @import "./custom-components.css"; */
 
 @import "tailwindcss/utilities";
 
@@ -13,4 +12,24 @@
   box-shadow:
     0 10px 15px -3px rgb(0 0 0 / 0.1),
     0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.marker-tooltip,
+.marker-tooltip * {
+  pointer-events: none;
+}
+
+.marker-tooltip .maplibregl-popup-content {
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 0;
+  font-size: var(--font-size-small);
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.marker-tooltip .maplibregl-popup-tip {
+  border-top-color: rgba(0, 0, 0, 0.85);
 }

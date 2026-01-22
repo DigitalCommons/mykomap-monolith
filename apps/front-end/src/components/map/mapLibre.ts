@@ -13,7 +13,12 @@ import type {
   MapLayerMouseEvent,
 } from "maplibre-gl";
 import Spiderfy from "@nazka/map-gl-js-spiderfy";
-import { getLanguageFromUrl } from "../../utils/window-utils";
+import {
+  getLanguageFromUrl,
+  getDatasetId,
+  encodeBase64,
+} from "../../utils/window-utils";
+import { getDatasetItem } from "../../services";
 import markers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
@@ -192,6 +197,9 @@ const openPopup = async (
 
   console.log(`Create marker popup for item @${itemIx}`);
 
+  // Hide any visible tooltips when opening popup
+  tooltip?.remove();
+
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
@@ -216,27 +224,59 @@ const openPopup = async (
   popupCreatedCallback(itemIx);
 };
 
-const onMarkerHover = (
+const onMarkerHover = async (
   map: Map,
   feature: GeoJSON.Feature<GeoJSON.Point>,
   offset?: [number, number],
 ) => {
-  // TODO: add support for tooltips
-  // const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
-  // const name = feature.properties?.Name;
-  // // Shift the tooltip up a bit so it doesn't cover the marker
-  // const popupOffset: [number, number] = offset
-  //   ? [offset[0], offset[1] - 20]
-  //   : [0, -20];
-  // tooltip?.remove();
-  // tooltip = new Popup({
-  //   closeButton: false,
-  //   maxWidth: "none",
-  // })
-  //   .setLngLat(coordinates)
-  //   .setHTML(getTooltip(name))
-  //   .addTo(map)
-  //   .setOffset(popupOffset);
+  const datasetId = getDatasetId();
+  if (!datasetId) {
+    console.warn("No dataset ID available");
+    return;
+  }
+
+  const coordinates = feature.geometry.coordinates.slice() as LngLatLike;
+  const itemIx = feature.properties?.ix;
+
+  if (itemIx === undefined) {
+    console.warn("No item index found in feature properties");
+    return;
+  }
+
+  // Only show tooltip when popup is not open
+  if (popup?.isOpen() && popupIx === itemIx) {
+    return;
+  }
+
+  try {
+    const response = await getDatasetItem({
+      params: { datasetId, datasetItemIdOrIx: encodeBase64(`@${itemIx}`) },
+      query: { returnProps: ["name"] },
+    });
+
+    if (response.status === 200 && response.body.name) {
+      const name = response.body.name as string;
+
+      // Shift the tooltip up a bit so it doesn't cover the marker
+      const popupOffset: [number, number] = offset
+        ? [offset[0], offset[1] - 30]
+        : [0, -30];
+
+      tooltip?.remove();
+      tooltip = new Popup({
+        closeButton: false,
+        maxWidth: "none",
+        className: "marker-tooltip",
+        anchor: "bottom",
+      })
+        .setLngLat(coordinates)
+        .setHTML(getTooltip(name))
+        .addTo(map)
+        .setOffset(popupOffset);
+    }
+  } catch (error) {
+    console.error("Error fetching item name for tooltip:", error);
+  }
 };
 
 /**
@@ -344,7 +384,7 @@ export const createMap = (
     const spiderfy = new Spiderfy(map, {
       onLeafClick: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
-        e: MapLayerMouseEvent,
+        _e: MapLayerMouseEvent,
         leafOffset: [number, number],
       ) => {
         const coordinates = feature.geometry.coordinates.slice();
@@ -384,7 +424,7 @@ export const createMap = (
       },
       onLeafHover: (
         feature: GeoJSON.Feature<GeoJSON.Point>,
-        e: MapLayerMouseEvent,
+        _e: MapLayerMouseEvent,
         leafOffset: [number, number] | undefined,
       ) => {
         if (feature) {
@@ -449,8 +489,8 @@ export const createMap = (
 
         const legLength =
           totalPoints <= 10 ? 50 : 50 + (index * (Math.PI * 2 * 2.2)) / angle;
-        const x = legLength * Math.cos(angle);
-        const y = legLength * Math.sin(angle);
+        const _x = legLength * Math.cos(angle);
+        const _y = legLength * Math.sin(angle);
 
         /*
         openPopup(
@@ -587,8 +627,8 @@ export const createMap = (
     });
     map.on("mouseenter", "unclustered-point", (e: any) => {
       map.getCanvas().style.cursor = "pointer";
-      // const feature = e.features[0];
-      // onMarkerHover(map, feature);
+      const feature = e.features[0];
+      onMarkerHover(map, feature);
     });
     map.on("mouseleave", "unclustered-point", () => {
       tooltip?.remove();
@@ -601,7 +641,7 @@ export const createMap = (
 
     map.on("changeLanguage", ({ language }) => {
       const oldStyle = map.getStyle();
-      const newStyle = JSON.stringify(oldStyle, (key, val) => {
+      const newStyle = JSON.stringify(oldStyle, (_key, val) => {
         if (typeof val === "string") {
           return val.replaceAll("name:en", `name:${language.toLowerCase()}`);
         }

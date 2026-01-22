@@ -88,20 +88,23 @@ export function MykomapRouter(
       return { status: 200, body };
     },
 
-    getDatasetItem: async ({ params: { datasetId, datasetItemIdOrIx } }) => {
+    getDatasetItem: async ({
+      params: { datasetId, datasetItemIdOrIx },
+      query: { returnProps },
+    }) => {
       const itemIdOrIx = Buffer.from(datasetItemIdOrIx, "base64").toString(
         "utf8",
       );
 
       if (itemIdOrIx.startsWith("@")) {
         const itemIx = Number(itemIdOrIx.substring(1));
-        const item = getDatasetItemByIx(datasetId, itemIx);
+        const item = getDatasetItemByIx(datasetId, itemIx, returnProps);
 
         return { status: 200, body: { ...item, index: itemIx } };
       }
 
       const itemId = itemIdOrIx;
-      const item = getDatasetItemById(datasetId, itemId);
+      const item = getDatasetItemById(datasetId, itemId, returnProps);
 
       return { status: 200, body: item };
     },
