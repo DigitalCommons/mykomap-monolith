@@ -4,13 +4,13 @@ import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
-
+import { BrowserRouter, Routes, Route } from "react-router";
 import App from "./App";
 import { store } from "./app/store";
 import "./index.css";
 import "./i18n";
 import GlobalCSSVariables from "./theme/GlobalCSSVariables";
-import { sentryRelease, sentryDist } from "@mykomap/common";
+import { sentryRelease } from "@mykomap/common";
 
 import theme from "./theme/theme";
 
@@ -50,7 +50,11 @@ if (container) {
         <ThemeProvider theme={theme}>
           <GlobalCSSVariables />
           <CssBaseline />
-          <App />
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
+            <Routes>
+              <Route path="/" element={<App />} />
+            </Routes>
+          </BrowserRouter>
         </ThemeProvider>
       </Provider>
     </React.StrictMode>,

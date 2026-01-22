@@ -26,9 +26,21 @@ export const initDatasets = (dataRoot: string) => {
 
   console.log("Found datasets:", datasetIds);
 
+  const loadedDatasetIds: string[] = [];
   for (const datasetId of datasetIds) {
-    datasets[datasetId] = new Dataset(datasetId, dataRoot);
+    try {
+      datasets[datasetId] = new Dataset(datasetId, dataRoot);
+      loadedDatasetIds.push(datasetId);
+    } catch (e) {
+      // Report the short form error at error level
+      console.error(`Dataset '${datasetId}' failed to load, skipping it: ${e}`);
+      // Report the long-form error cause at debug level
+      if (e instanceof Error && e.cause)
+        console.debug(`Dataset '${datasetId}' failed because: ${e.cause}`);
+    }
   }
+
+  console.log("Loaded datasets:", loadedDatasetIds);
 };
 
 const getDatasetOrThrow404 = (
@@ -42,9 +54,20 @@ const getDatasetOrThrow404 = (
   return dataset;
 };
 
-export const getDatasetItem = (datasetId: string, datasetItemIx: number) => {
+export const getDatasetItemByIx = (
+  datasetId: string,
+  datasetItemIx: number,
+) => {
   const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
-  return dataset.getItem(datasetItemIx);
+  return dataset.getItemByIx(datasetItemIx);
+};
+
+export const getDatasetItemById = (
+  datasetId: string,
+  datasetItemId: string,
+) => {
+  const dataset = getDatasetOrThrow404(contract.getDatasetItem, datasetId);
+  return dataset.getItemById(datasetItemId);
 };
 
 export const getDatasetConfig = (datasetId: string): GetConfigBody => {

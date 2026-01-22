@@ -520,12 +520,12 @@ $ find /tmp/out -type f
 
 ```
 {   "itemProps":
-["name","address","searchString"],
+["name","address","id","searchString"],
     "values":[
-["Apple Co-op","1 Apple Way, Appleton","apple co op"],
-["Banana Co","1 Banana Boulevard, Skinningdale","banana co"],
-["The Cabbage Collective","2 Cabbage Close, Caulfield","the cabbage collective"],
-["The Chateau","","the chateau"]
+["Apple Co-op","1 Apple Way, Appleton","aaa","apple co op"],
+["Banana Co","1 Banana Boulevard, Skinningdale","bbb","banana co"],
+["The Cabbage Collective","2 Cabbage Close, Caulfield","ccc","the cabbage collective"],
+["The Chateau","","ddd","the chateau"]
 ]}
 ```
 
@@ -787,7 +787,7 @@ Like this:
 > inserted on the first line, and subsequent lines define items in the
 > values array, one per line in the predefined order.
 
-### `itemProps`
+#### `itemProps`
 
 `itemProps` defines how to interpret the value arrays. For example:
 
@@ -796,20 +796,25 @@ Like this:
       "primary_activity",
       "typology",
       "data_sources",
+      "id",
       "searchString"
     ],
     ...
 
 The elements refer to the property IDs defined in `config.json`.
 
-In this case, this indicates that there are four properties which can
+In this case, this indicates that there are four filterable properties which can
 be searched by drop-down filter.
 
-The fifth element `searchString` is special: it's not a real property
-of the dataset item, but synthesised from them; and is always present
-(if only as an empty string). It represents the text-searchable
-content of the dataset item, normalised to punctuation-free lower case
-words.
+The fifth and sixth elements `id` and `searchString` are special:
+
+- `id` is a mandatory property for all datasets, since it's a reliable and persistent identifier for
+  a dataset item and is used in shareable Mykomap URLs. We always include IDs in `searchable.json`
+  so that there's a fast way for the back-end to convert an ID to an index and then fetch the item's
+  data from the filesystem.
+- `searchString` is not a real property of the dataset item, but synthesised from them; and is
+  always present (if only as an empty string). It represents the text-searchable content of the
+  dataset item, normalised to punctuation-free lower case words.
 
 #### `values`
 
@@ -829,6 +834,7 @@ as the `itemProps` array. For instance:
         "ICA210",
         "BMT20",
         ["DC", "CUK"],
+        "test/cuk/R000001",
         "housing 1 west street sheffield s1 2ab uk apples coop"
       ],
       ...

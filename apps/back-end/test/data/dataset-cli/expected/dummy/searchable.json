@@ -1,8 +1,8 @@
 {   "itemProps":
-["name","address","searchString"],
+["name","address","id","searchString"],
     "values":[
-["Apple Co-op","1 Apple Way, Appleton","apple co op"],
-["Banana Co","1 Banana Boulevard, Skinningdale","banana co"],
-["The Cabbage Collective","2 Cabbage Close, Caulfield","the cabbage collective"],
-["The Chateau","","the chateau"]
+["Apple Co-op","1 Apple Way, Appleton","aaa","apple co op"],
+["Banana Co","1 Banana Boulevard, Skinningdale","bbb","banana co"],
+["The Cabbage Collective","2 Cabbage Close, Caulfield","ccc","the cabbage collective"],
+["The Chateau","","ddd","the chateau"]
 ]}

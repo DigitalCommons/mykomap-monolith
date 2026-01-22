@@ -21,8 +21,9 @@ export const POPUP_CONTAINER_ID = "popup-container";
 /** The level to which we zoom when jumping to a popup, on clicking a search result */
 const POPUP_INITIAL_ZOOM = 15;
 
-let popup: Popup | undefined;
+/** Note: We ONLY USE INDEXES in this file. MapLibre doesn't know about IDs. Read architecture.md */
 let popupIx: number | undefined;
+let popup: Popup | undefined;
 let tooltip: Popup | undefined;
 
 let panelOpen: boolean = false;
@@ -185,18 +186,20 @@ const openPopup = async (
   offset?: [number, number],
 ) => {
   if (popup?.isOpen() && popupIx === itemIx) {
-    console.log(`Popup for item @${itemIx} already open`);
+    console.log(`Popup for item ${itemIx} already open`);
     return;
   }
 
-  console.log(`Open popup for item @${itemIx} ${coordinates}`);
+  console.log(`Create marker popup for item @${itemIx}`);
 
   // Shift the popup up a bit so it doesn't cover the marker
   const popupOffset: [number, number] = offset
     ? [offset[0], offset[1] - 20]
     : [0, -20];
 
+  popup?.off("close", popupClosedCallback);
   popup?.remove();
+
   popupIx = itemIx;
   popup = new Popup({
     closeButton: false,
@@ -242,6 +245,7 @@ const onMarkerHover = (
 export const createMap = (
   popupCreatedCallback: (itemIx: number) => void,
   popupClosedCallback: () => void,
+  mapCreated: () => void,
   mapConfig?: {
     mapBounds?: [[number, number], [number, number]];
   },
@@ -356,6 +360,9 @@ export const createMap = (
           return;
         }
 
+        popup?.off("close", popupClosedCallback);
+
+        // Ease to new marker then open popup
         map
           .easeTo({
             center: [
@@ -466,16 +473,16 @@ export const createMap = (
         const itemIx = feature.properties?.ix;
 
         if (popup?.isOpen() && popupIx === itemIx) {
-          console.log(
-            `Popup for item @${itemIx} already open so toggle closed`,
-          );
+          console.log(`Popup for item ${itemIx} already open so toggle closed`);
           popup?.remove();
           popupIx = undefined;
           popup = undefined;
           return;
         }
 
-        // ease to a position so that the popup is fully visible
+        popup?.off("close", popupClosedCallback);
+
+        // Ease to new marker then open popup
         map
           .easeTo({
             center: [
@@ -609,6 +616,8 @@ export const createMap = (
     map.addControl(new AttributionControl({ compact: true }), "top-right");
     map.addControl(new NavigationControl(), "top-right");
     disableRotation(map);
+
+    mapCreated();
   });
 
   return map;

@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { type PopupItemConfig } from "../../../app/configSlice";
 import PopupItems from "../PopupItems";
+import DotCoopVerifiedBadge from "./dotCoopVerifiedBadge/DotCoopVerifiedBadge";
 
 interface LeftPaneProps {
   data: { [key: string]: any };
@@ -14,6 +15,7 @@ interface LeftPaneProps {
 }
 
 const StyledLeftPane = styled(Box)(({ width }) => ({
+  width: "calc(100% - var(--spacing-xxxlarge))",
   display: "flex",
   flexDirection: "column",
   margin: "var(--spacing-large)",
@@ -27,10 +29,11 @@ const StyledLeftPane = styled(Box)(({ width }) => ({
 }));
 
 const StyledHeaderContainer = styled(Box)(() => ({
-  // position: "sticky",
   display: "flex",
-  flexDirection: "column",
+  flexDirection: "row",
   justifyContent: "space-between",
+  alignItems: "flex-start",
+  columnGap: "var(--spacing-medium)",
   padding: "0 0 var(--spacing-medium) 0",
   backgroundColor: "#ffffff",
   top: 0,
@@ -48,10 +51,14 @@ const StyledHeaderContainer = styled(Box)(() => ({
   },
 }));
 
+const StyledHeaderTitle = styled(Typography)(() => ({
+  overflowWrap: "break-word",
+  minWidth: 0,
+}));
+
 const StyledContentContainer = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  // overflowY: "auto",
   whiteSpace: "pre-line",
   paddingRight: 0,
   marginRight: 0,
@@ -83,22 +90,28 @@ const StyledContentContainer = styled(Box)(() => ({
   },
 }));
 
-const LeftPane = ({ data, hasLocation, config, width, titleProp }: LeftPaneProps) => {
+const LeftPane = ({
+  data,
+  hasLocation,
+  config,
+  width,
+  titleProp,
+}: LeftPaneProps) => {
   const { t } = useTranslation();
+  const dataSources = data["data_sources"] || [];
 
   return (
     <StyledLeftPane width={width}>
       <StyledHeaderContainer>
-        <Typography variant="h1" sx={{ overflowWrap: "break-word" }}>
-          {data[titleProp]}
-        </Typography>
+        <StyledHeaderTitle variant="h1">{data[titleProp]}</StyledHeaderTitle>
+        {dataSources?.includes("DotCooperation") && <DotCoopVerifiedBadge />}
+      </StyledHeaderContainer>
+      <StyledContentContainer>
         {!hasLocation && (
           <Typography variant="subtitle2">
             {t("no_location_available")}
           </Typography>
         )}
-      </StyledHeaderContainer>
-      <StyledContentContainer>
         <PopupItems data={data} config={config} />
       </StyledContentContainer>
     </StyledLeftPane>

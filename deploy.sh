@@ -20,7 +20,7 @@ set -vx
 #   - USERDIR: the current user's home directory
 #   - PROXY_PORT: the port number being proxied (e.g. '4000')
 #   - PROXY_PATH: the path being proxied (e.g. '/api')
-#   - BASE_URL_PATH # not actually used but might be in future?
+#   - BASE_URL_PATH: the path that the front-end is served from (e.g. '/cwm/')
 #   - FE_GLITCHTIP_KEY - a key obtained from our account
 #   - BE_GLITCHTIP_KEY - a key obtained from our account
 #   - FE_SENTRY_AUTH_TOKEN - a token generated for the front end to use
@@ -91,6 +91,7 @@ cp .tool-versions "$DEPLOY_DEST"
 VITE_API_URL=/api
 VITE_GLITCHTIP_KEY=${FE_GLITCHTIP_KEY:?}
 VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
+VITE_BASE_URL=${BASE_URL_PATH:?}
 
 # npm run upload-sourcemaps, called during deployment, needs these variables
 # They should correlate to the tags used in the Glitchtip dashboard.

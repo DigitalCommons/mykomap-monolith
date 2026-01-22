@@ -2,11 +2,7 @@ import ListItem from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { useAppDispatch } from "../../../../app/hooks";
-import {
-  clearSearch,
-  performSearch,
-  setFilterValue,
-} from "../../searchPanel/searchSlice";
+import { performSearchFromQuery } from "../../searchPanel/searchSlice";
 import { openResultsPanel } from "../../panelSlice";
 
 interface DirectoryItemProps {
@@ -50,11 +46,11 @@ const DirectoryItem = ({
 }: DirectoryItemProps) => {
   const dispatch = useAppDispatch();
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     console.log(`Clicked ${value}`);
-    dispatch(clearSearch());
-    dispatch(setFilterValue({ id: propId, value }));
-    dispatch(performSearch());
+    await dispatch(
+      performSearchFromQuery({ filter: [`${propId}:${value}`], text: "" }),
+    );
     dispatch(openResultsPanel());
   };
 
