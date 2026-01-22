@@ -25,11 +25,12 @@ And these are the different options to define the style of an itemProp:
   - `text`: The value(s) of the itemProp are displayed as plain text.
   - `address`: Used in the case of the itemProp value being an address with comma separators (it must be formatted like this upstream). Each address section is displayed on a new line.
   - `hyperlink`: The value(s) of the itemProp are displayed as clickable hyperlinks.
-- `showBullets` (defaults to `false`): If an itemProp has multiple values, they are always displayed on multiple lines. If this is set option to true, bullet points will be shown before each value.
+- `showBullets` (defaults to `false`): If an itemProp has multiple values, they are always displayed on multiple lines. If this option is set to true, bullet points will be shown before each value.
 - `singleColumnLimit` (number): If specified, a list will split into 2 columns if the number of values is more than this.
 - `showLabel` (defaults to `false`): If this is set to true, the label of the itemProp (taken from `titleUri` in the itemProp definition) is displayed as a heading above the value(s).
 - `hyperlinkBaseUri` (defaults to None): If `valueStyle` is `hyperlink`, this base URI is prepended to the itemProp value, to form the href.
-- `displayText` (defaults to None): If `valueStyle` is `hyperlink`, this sets the display text of the hyperlink.
+- `displayText` (defaults to None): If `valueStyle` is `hyperlink`, this sets the display text of the hyperlink, which will be the same for all popups.
+- `analyticOnClick` (defaults to `false`): If `valueStyle` is `hyperlink` and this option is set to true, an analytic event will be sent when a user clicks the link. The event name will be of the form `Item_<PropName>Click`. The event data will include the dataset item ID and the URL clicked.
 
 ```
 "popup": {
@@ -37,7 +38,7 @@ And these are the different options to define the style of an itemProp:
     "leftPane": [
       {"itemProp": "category", "valueStyle": "text", "showLabel": true },
       {"itemProp": "description", "valueStyle": "text" },
-      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website",  }
+      {"itemProp": "website", "valueStyle": "hyperlink", "displayText": "Website", "analyticOnClick": true }
     ],
     "topRightPane": [
       {"itemProp": "address", "valueStyle": "address" },

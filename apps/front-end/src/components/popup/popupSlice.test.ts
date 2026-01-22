@@ -9,8 +9,8 @@ import {
 } from "./popupSlice";
 import { configLoaded, setLanguage } from "../../app/configSlice";
 import { updateVisibleIndexes } from "../panel/searchPanel/searchSlice";
-import mockConfig from "../../mockData/mockConfig";
-import mockItem from "../../mockData/mockItem";
+import mockConfig from "../../mockApiResponses/mockConfig";
+import mockItem from "../../mockApiResponses/mockItem";
 import * as services from "../../services";
 import * as windowUtils from "../../utils/window-utils";
 

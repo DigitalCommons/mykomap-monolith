@@ -29,6 +29,7 @@ import {
   selectPanelOpen, 
   selectResultsPanelOpen
 } from "../panel/panelSlice";
+import { DEVICE_ID, Event, trackEvent } from "../../services/analytics";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -59,6 +60,7 @@ const MapWrapper = () => {
   );
   const POPUP_ID_PARAM = "popupId";
   const SEARCH_QUERY_PARAM = "q";
+  const DEVICE_ID_PARAM = "ref";
 
   const popupCreatedCallback = (itemIx: number) => {
     dispatch(openPopup(`@${itemIx}`));
@@ -172,7 +174,7 @@ const MapWrapper = () => {
   }, [popupIsOpen, popupIndex, searchQuery]);
 
   // On every change of URL params, check if the filter or popup state in the URL matches the Redux
-  // state. If not. we must have clicked on a URL with this state or used the browser history
+  // state. If not, we must have clicked on a shared URL with this state or used the browser history
   // buttons, so update Redux accordingly, which will trigger MapLibre to update too.
   useEffect(() => {
     const urlPopupId = searchParams.get(POPUP_ID_PARAM) ?? "";
@@ -221,6 +223,38 @@ const MapWrapper = () => {
           }
         }
       });
+    } else {
+      // The map is not created yet, check whether the URL was created by a different client. If so,
+      // it means the app must have been launched by clicking a shared URL. Send an analytic.
+      const urlDeviceId = searchParams.get(DEVICE_ID_PARAM);
+
+      if (urlDeviceId && urlDeviceId !== DEVICE_ID) {
+        if (urlPopupId !== "") {
+          trackEvent(Event.ITEM.SHARE, {
+            item_id: urlPopupId,
+            sharer_id: urlDeviceId,
+          });
+        } else if (urlSearchQuery !== "{}") {
+          trackEvent(Event.SEARCH.SHARE, {
+            search_filter: JSON.parse(urlSearchQuery).filter,
+            search_text: JSON.parse(urlSearchQuery).text,
+            sharer_id: urlDeviceId,
+          });
+        } else {
+          trackEvent(Event.MAP.SHARE, { sharer_id: urlDeviceId });
+        }
+      }
+
+      // Now, set our own device ID in the URL
+      if (DEVICE_ID) {
+        setSearchParams(
+          (params) => {
+            params.set(DEVICE_ID_PARAM, DEVICE_ID);
+            return params;
+          },
+          { replace: true },
+        );
+      }
     }
   }, [mapCreated, searchParams]);
 

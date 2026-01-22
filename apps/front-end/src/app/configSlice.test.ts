@@ -16,7 +16,7 @@ interface LocalTestContext {
   store: AppStore;
 }
 
-import mockConfig from "../mockData/mockConfig";
+import mockConfig from "../mockApiResponses/mockConfig";
 
 describe<LocalTestContext>("config reducer", (it) => {
   beforeEach<LocalTestContext>((context) => {
@@ -142,10 +142,6 @@ describe<LocalTestContext>("config reducer", (it) => {
     store.dispatch(configLoaded(configWithoutLogo));
 
     const logo = selectLogo(store.getState());
-    expect(logo).toEqual({
-      largeLogo: undefined,
-      smallLogo: undefined,
-      altText: undefined,
-    });
+    expect(logo).toEqual(undefined);
   });
 });

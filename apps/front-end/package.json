@@ -41,6 +41,7 @@
     "i18next-http-backend": "^2.6.2",
     "maplibre-gl": "^4.5.2",
     "maplibregl-spiderfier": "github:ohrie/maplibre-spiderfier",
+    "mixpanel-browser": "^2.72.0",
     "mui-markdown": "^1.2.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

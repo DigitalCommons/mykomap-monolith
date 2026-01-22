@@ -172,7 +172,7 @@ export const selectFilterOptions = createSelector(
         const sorters = {
           asc: (a: Term, b: Term) => a.label.localeCompare(b.label),
           desc: (a: Term, b: Term) => b.label.localeCompare(a.label),
-          noSort: (a: Term, b: Term) => 0,
+          noSort: (_a: Term, _b: Term) => 0,
         };
 
         const sorter =

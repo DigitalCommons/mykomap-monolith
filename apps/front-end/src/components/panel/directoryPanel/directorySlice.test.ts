@@ -1,8 +1,8 @@
 import type { AppStore } from "../../../app/store";
 import { makeStore } from "../../../app/store";
-import { directorySlice, selectDirectoryOptions } from "./directorySlice";
+import { selectDirectoryOptions } from "./directorySlice";
 import { configLoaded, setLanguage } from "../../../app/configSlice";
-import mockConfig from "../../../mockData/mockConfig";
+import mockConfig from "../../../mockApiResponses/mockConfig";
 
 interface LocalTestContext {
   store: AppStore;
