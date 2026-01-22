@@ -26,6 +26,31 @@ let popupIx: number | undefined;
 let popup: Popup | undefined;
 let tooltip: Popup | undefined;
 
+let panelOpen: boolean = false;
+let resultsPanelOpen: boolean = false;
+let mapCenterOffsetPixels: [number, number] = [0, 0];
+
+/**
+ * We keep these values in this non-React file updated by our React MapWrapper component, since they
+ * are used to calculate the offset when panning the map, so that markers are not hidden behind
+ * panels.
+ */
+export const setPanelOpenValues = (panel: boolean, resultsPanel: boolean) => {
+  panelOpen = panel;
+  resultsPanelOpen = resultsPanel;
+
+  // Re-calculate panel width for desktop and thus the map center offset
+  const isDesktop = window.innerWidth >= 897;
+  const PANEL_WIDTH = 375; // From CSS variable --panel-width-desktop
+  let leftPanelWidth =
+    isDesktop && panelOpen
+      ? resultsPanelOpen
+        ? PANEL_WIDTH * 2
+        : PANEL_WIDTH
+      : 0;
+  mapCenterOffsetPixels = [leftPanelWidth / 2, 0];
+};
+
 /**
  * We need to offset latitude of the map centre slightly above a marker's location when opening a
  * popup so that it can be fully seen. I've calcluated that this exponential function gives a good
@@ -66,6 +91,90 @@ const disableRotation = (map: Map) => {
   map.dragRotate.disable();
   map.keyboard.disable();
   map.touchZoomRotate.disableRotation();
+};
+
+/**
+ * Computes the bounding box of all features in the GeoJSON source and fits the map to those bounds,
+ * with a bit of padding and accounting for the left panel on desktop. This is used to auto-zoom the
+ * map when filters are applied, so that markers are visible and unclustered where possible.
+ */
+export const fitBoundsToFeatures = (map: Map) => {
+  const source = map.getSource("items-geojson") as GeoJSONSource;
+  if (!source) {
+    console.warn("GeoJSON source not found, cannot fit bounds");
+    return;
+  }
+
+  const data = source._data as GeoJSON.FeatureCollection<GeoJSON.Point>;
+  if (!data || !data.features || data.features.length === 0) {
+    console.log("No features to fit bounds to");
+    return;
+  }
+
+  // If there's only one point, we can ease to that point without zooming since it's not clustered
+  if (data.features.length === 1) {
+    map.easeTo({
+      center: data.features[0].geometry.coordinates as LngLatLike,
+      duration: 1000,
+      offset: mapCenterOffsetPixels,
+    });
+    console.log(
+      `Fitted bounds to single point: ${data.features[0].geometry.coordinates}`,
+    );
+    return;
+  }
+
+  // Compute the bounding box of all features
+  let minLng = 180;
+  let maxLng = -180;
+  let minLat = 90;
+  let maxLat = -90;
+
+  for (const feature of data.features) {
+    const [lng, lat] = feature.geometry.coordinates;
+    minLng = Math.min(minLng, lng);
+    maxLng = Math.max(maxLng, lng);
+    minLat = Math.min(minLat, lat);
+    maxLat = Math.max(maxLat, lat);
+  }
+
+  // If all points are at the same location, zoom in to that cluster
+  if (minLng === maxLng && minLat === maxLat) {
+    // Apply offset for left panels if present
+    map.easeTo({
+      center: [minLng, minLat],
+      zoom: POPUP_INITIAL_ZOOM,
+      duration: 1000,
+      offset: mapCenterOffsetPixels,
+    });
+    console.log(`Fitted bounds to single cluster: [${minLng}, ${minLat}]`);
+    return;
+  }
+
+  // Add padding around the bounds in px so that markers are not at the very edge of the screen
+  const basePadding = 150;
+  const leftPadding = basePadding + mapCenterOffsetPixels[0] * 2;
+
+  map.fitBounds(
+    [
+      [minLng, minLat],
+      [maxLng, maxLat],
+    ],
+    {
+      padding: {
+        top: basePadding,
+        bottom: basePadding,
+        left: leftPadding,
+        right: basePadding,
+      },
+      duration: 1000,
+      maxZoom: POPUP_INITIAL_ZOOM,
+    },
+  );
+
+  console.log(
+    `Fitted bounds to ${data.features.length} features: [[${minLng}, ${minLat}], [${maxLng}, ${maxLat}]]`,
+  );
 };
 
 const openPopup = async (
@@ -141,7 +250,10 @@ export const createMap = (
     mapBounds?: [[number, number], [number, number]];
   },
 ): Map => {
-  const initialBounds = mapConfig?.mapBounds;
+  const initialBounds = mapConfig?.mapBounds ?? [
+    [-169, -49.3],
+    [189, 75.6],
+  ];
 
   console.log("Map bounds", initialBounds);
 
@@ -257,6 +369,7 @@ export const createMap = (
               coordinates[0],
               getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
             ],
+            offset: mapCenterOffsetPixels,
           })
           .once("moveend", () => {
             openPopup(
@@ -313,9 +426,11 @@ export const createMap = (
       );
 
       if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
-        map.jumpTo({
+        map.flyTo({
           center: features[0].geometry.coordinates as LngLatLike,
+          offset: mapCenterOffsetPixels,
           zoom: clusterExpansionZoom ?? undefined,
+          duration: 500,
         });
       }
 
@@ -374,6 +489,7 @@ export const createMap = (
               coordinates[0],
               getMapCentreLatOffsetted(coordinates[1], map.getZoom()),
             ],
+            offset: mapCenterOffsetPixels,
           })
           .once("moveend", () => {
             openPopup(
@@ -402,16 +518,18 @@ export const createMap = (
       popup = undefined;
 
       if (isLocationNear(location, map)) {
-        map.panTo([
-          location[0],
-          getMapCentreLatOffsetted(location[1], map.getZoom()),
-        ]);
+        map.panTo(
+          [location[0], getMapCentreLatOffsetted(location[1], map.getZoom())],
+          { offset: mapCenterOffsetPixels },
+        );
       } else {
-        map.jumpTo({
+        map.flyTo({
           center: [
             location[0],
             getMapCentreLatOffsetted(location[1], POPUP_INITIAL_ZOOM),
           ],
+          offset: mapCenterOffsetPixels,
+          duration: 0,
           zoom: POPUP_INITIAL_ZOOM,
         });
       }

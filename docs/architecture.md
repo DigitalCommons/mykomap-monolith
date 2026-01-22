@@ -30,7 +30,7 @@ For these reasons, serving all the data straight to a front-end is not viable. I
   would integrate more nicely with React and Redux hooks, it adds overhead and we can't guarantee that the binding library will always be
   maintained. Instead, we simply pass marker data and MapLibre click events through a MapWrapper React component, as follows:
   - MapWrapper holds a reference to a MapLibre object. It can interact with this object to directly set the
-    GeoJSON data that it renders. It sends custom events, including data, to the MapLibre object by calling `fire("eventName")` on the object.
+    GeoJSON data that it renders. It sends custom events, including data, to the MapLibre object by calling `fire("eventName")` on the object, or simply calling functions that are exported from `mapLibre.ts`.
   - The `mapLibre.ts` file holds the code internal to the MapLibre object. It can react to events fired by MapWrapper with the `map.on("eventName", callback)` listener. And it can fire events back to MapWrapper by calling the callbacks that were passed into the `createMap` function.
 
 ## Back-end architecture
