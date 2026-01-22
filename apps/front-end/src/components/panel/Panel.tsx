@@ -67,10 +67,8 @@ const Panel = () => {
 
   const isMedium = useMediaQuery("(min-width: 897px)");
 
-
   const handleToggle = () => {
     dispatch(togglePanel());
-    console.log("isOpen", isOpen);
   };
 
   const handleTabChange = (tab: number) => {
@@ -91,7 +89,6 @@ const Panel = () => {
   const handlePanelClose = () => {
     dispatch(closePanel());
     if (!isMedium) dispatch(setSelectedTab(0));
-    console.log("isOpen", isOpen);
   };
 
   const handleMapTapClick = () => {

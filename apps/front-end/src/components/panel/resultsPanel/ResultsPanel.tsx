@@ -36,8 +36,10 @@ const slideOut = keyframes`
 `;
 
 const StyledResultsPanel = styled(Drawer)<{
+  open: boolean;
   onClosePanel?: boolean;
-}>(({ onClosePanel }) => ({
+}>(({ open, onClosePanel }) => ({
+  display: `${open ? "block" : "none"}`,
   width: "100%",
   height: "100vh",
   position: "relative",
@@ -101,35 +103,31 @@ const ResultsPanel = () => {
   };
 
   return (
-    <>
-      {panelOpen && resultsPanelOpen && (
-        <StyledResultsPanel
-          open={panelOpen && resultsPanelOpen}
-          onClosePanel={!(panelOpen && resultsPanelOpen)}
-          variant="persistent"
-          anchor="left"
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              height: "100%",
-            }}
-          >
-            <StyledButtonContainer>
-              <StandardButton buttonAction={handleClearSearch}>
-                {t("clear_search")}
-              </StandardButton>
-              {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
-            </StyledButtonContainer>
-            <Results />
-          </Box>
-          {isMedium && (
-            <PanelToggleButton buttonAction={handleToggle} isOpen={panelOpen} />
-          )}
-        </StyledResultsPanel>
+    <StyledResultsPanel
+      open={panelOpen && resultsPanelOpen}
+      onClosePanel={!(panelOpen && resultsPanelOpen)}
+      variant="persistent"
+      anchor="left"
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        <StyledButtonContainer>
+          <StandardButton buttonAction={handleClearSearch}>
+            {t("clear_search")}
+          </StandardButton>
+          {!isMedium && <CloseButton buttonAction={handlePanelClose} />}
+        </StyledButtonContainer>
+        <Results />
+      </Box>
+      {isMedium && (
+        <PanelToggleButton buttonAction={handleToggle} isOpen={panelOpen} />
       )}
-    </>
+    </StyledResultsPanel>
   );
 };
 
