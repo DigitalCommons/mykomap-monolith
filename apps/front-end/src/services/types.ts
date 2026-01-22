@@ -3,7 +3,7 @@ import { contract } from "@mykomap/common";
 
 export type Config = ClientInferResponseBody<typeof contract.getConfig, 200>;
 
-// This is the config of a popup item as definted in a dataset config.json
+// This is the config of a popup item as defined in a dataset config.json
 export type ConfigPopupItemRaw = Config["popup"]["leftPane"][number];
 
 // This is the config of a popup item with the 'multiple' field derived from the itemProps config
