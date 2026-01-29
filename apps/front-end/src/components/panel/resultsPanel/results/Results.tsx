@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
@@ -48,6 +49,7 @@ const StyledPageNav = styled(Box)(() => ({
 const Results = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const resultsRef = useRef<HTMLDivElement>(null);
   const results = useAppSelector(selectResults);
   const resultsPage = useAppSelector(selectResultsPage);
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
@@ -96,7 +98,7 @@ const Results = () => {
         {t("matching_results", { count: resultCount })}
         <DotCoopKey results={results} />
       </Typography>
-      <StyledResults>
+      <StyledResults ref={resultsRef}>
         <List>
           {results.map((item, index) => (
             <ResultItem
@@ -116,6 +118,7 @@ const Results = () => {
             page={resultsPage + 1}
             onChange={(_event, value) => {
               dispatch(populateSearchResults(value - 1));
+              resultsRef.current?.scrollTo({ top: 0, behavior: "instant" });
             }}
             color="primary"
           />
