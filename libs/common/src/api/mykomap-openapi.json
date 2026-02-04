@@ -1059,6 +1059,9 @@
                             "termsToIconIndex"
                           ]
                         },
+                        "directory_icon_property_name": {
+                          "type": "string"
+                        },
                         "map": {
                           "type": "object",
                           "properties": {
