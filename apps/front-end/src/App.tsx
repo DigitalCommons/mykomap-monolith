@@ -6,6 +6,7 @@ import { useAppDispatch } from "./app/hooks";
 import { getLanguageFromUrl } from "./utils/window-utils";
 import Popup from "./components/popup/Popup";
 import Logo from "./components/common/Logo/Logo";
+import MapKey from "./components/map/mapKey/MapKey";
 
 const App = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +38,7 @@ const App = () => {
       <Logo />
       <Panel />
       <Popup />
+      <MapKey />
     </div>
   );
 };
