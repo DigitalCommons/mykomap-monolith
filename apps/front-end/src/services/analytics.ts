@@ -11,6 +11,7 @@ if (datasetId) {
   if (import.meta.env.VITE_MIXPANEL_TOKEN) {
     mixpanel.init(import.meta.env.VITE_MIXPANEL_TOKEN, {
       debug: import.meta.env.DEV,
+      api_host: "https://api-eu.mixpanel.com",
       track_pageview: false, // We'll manually track page views
       persistence: "localStorage",
       record_sessions_percent:
