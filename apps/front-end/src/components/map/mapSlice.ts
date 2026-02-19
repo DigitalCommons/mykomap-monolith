@@ -1,6 +1,5 @@
 import { createSelector } from "@reduxjs/toolkit";
 import { z } from "zod";
-
 import { notNullish, schemas, DatasetLocations } from "@mykomap/common";
 import { createAppSlice } from "../../app/createAppSlice";
 import { getDatasetLocations } from "../../services";
@@ -8,13 +7,15 @@ import { getDatasetId } from "../../utils/window-utils";
 import { RootState } from "../../app/store";
 
 export interface MapSliceState {
-  allLocations: DatasetLocations;
+  allLocations: DatasetLocations; 
   status: string;
+  mapKeyOpen: boolean;
 }
 
 const initialState: MapSliceState = {
   allLocations: [],
   status: "loading",
+  mapKeyOpen: false,
 };
 
 export const mapSlice = createAppSlice({
@@ -56,15 +57,26 @@ export const mapSlice = createAppSlice({
         },
       },
     ),
+    openMapKey: create.reducer((state) => {
+      state.mapKeyOpen = true;
+    }),
+    closeMapKey: create.reducer((state) => {
+      state.mapKeyOpen = false;
+    }),
+    toggleMapKey: create.reducer((state) => {
+      state.mapKeyOpen = !state.mapKeyOpen;
+    }),
   }),
   selectors: {
     selectTotalItemsCount: (state) => state.allLocations.length,
+    selectIsMapKeyOpen: (state) => state.mapKeyOpen,
   },
 });
 
-export const { fetchLocations } = mapSlice.actions;
+export const { fetchLocations, openMapKey, closeMapKey, toggleMapKey } = mapSlice.actions;
 
-export const { selectTotalItemsCount } = mapSlice.selectors;
+export const { selectTotalItemsCount, selectIsMapKeyOpen } = mapSlice.selectors;
+
 
 export const selectLocation = (ix: number) => (state: RootState) =>
   state.map.allLocations[ix];

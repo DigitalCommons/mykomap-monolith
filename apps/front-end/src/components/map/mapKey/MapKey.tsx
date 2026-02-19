@@ -1,11 +1,14 @@
-import React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import { Button } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import theme from "../../../theme/theme";
+import KeyItem from "./keyItem/KeyItem";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { selectIsMapKeyOpen, toggleMapKey } from "../mapSlice";
 
 const StyledMapKeyContainer = styled(Box)(() => ({
   width: "fit-content",
@@ -55,24 +58,43 @@ const StyledMapKey = styled(Paper)(() => ({
   },
 }));
 
+const MapKeyButton = ({ onClick }: { onClick: () => void }) => {
+  const isMedium = useMediaQuery("(min-width: 768px)");
+  return (
+    <StyledMapKeyButton onClick={onClick}>
+      <FormatListBulletedIcon /> {isMedium && ("Map")} Key
+    </StyledMapKeyButton>
+  );
+}
+
 const MapKey = () => {
+  
+  const mapKeyOpen = useAppSelector(selectIsMapKeyOpen);
+  const dispatch = useAppDispatch();
+  const handleToggleMapKey = () => {
+    dispatch(toggleMapKey());
+  }
+
+
   return (
     <StyledMapKeyContainer>
-      <StyledMapKeyButton>
-        <FormatListBulletedIcon /> Map Key
-      </StyledMapKeyButton>
-      <StyledMapKey elevation={4}>
-        <Stack spacing={2} padding={2}>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Box width={16} height={16} bgcolor={theme.palette.primary.main} />
-            <Box>Category 1</Box>
-          </Box>
-          <Box display="flex" alignItems="center" gap={1}>
-            <Box width={16} height={16} bgcolor={theme.palette.primary.light} />
-            <Box>Category 2</Box>
-          </Box>
-        </Stack>
-      </StyledMapKey>
+      <MapKeyButton onClick={handleToggleMapKey} />
+      
+      {mapKeyOpen && (
+        <StyledMapKey elevation={4}>
+          <Stack spacing={2} padding={2}>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Box width={16} height={16} bgcolor={theme.palette.primary.main} />
+              <Box>Category 1</Box>
+            </Box>
+            <Box display="flex" alignItems="center" gap={1}>
+              <Box width={16} height={16} bgcolor={theme.palette.primary.light} />
+              <Box>Category 2</Box>
+            </Box>
+          </Stack>
+          <KeyItem icon="icon" label="Label" colour="colour" />
+        </StyledMapKey>
+      )}
     </StyledMapKeyContainer>
   );
 };
