@@ -3,10 +3,6 @@ import communityGrowingMarker from "./markers/community-growing-marker.png";
 import emergencyFoodMarker from "./markers/emergency-food-marker.png";
 import eventsMarker from "./markers/events-marker.png";
 import localFoodMarker from "./markers/local-food-marker.png";
-import communityGrowingIcon from ".icons/powys/icon-community-growing.png";
-import emergencyFoodIcon from ".icons/powys/icon-emergency-food.png";
-import eventsIcon from ".icons/powys/icon-events.png";
-import localFoodIcon from ".icons/powys/icon-local-food.png";
 
 // When adding new markers, ensure default is still the last entry. FIXME These labels
 // are hardwired and this is just a temporary situation, to be rectified later.
@@ -37,12 +33,5 @@ const markers = [
   eventsMarker, // "ev-cc": " - Cooking classes"
   defaultMarker, // No multi-category case anticipated
 ];
-
-export const icons = {
-  emergencyFood: emergencyFoodIcon,
-  communityGrowing: communityGrowingIcon,
-  localFood: localFoodIcon,
-  events: eventsIcon,
-}
 
 export default markers;

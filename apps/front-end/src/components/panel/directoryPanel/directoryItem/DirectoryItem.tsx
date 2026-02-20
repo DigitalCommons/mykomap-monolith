@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import { useAppDispatch } from "../../../../app/hooks";
 import { performSearchFromQuery } from "../../searchPanel/searchSlice";
 import { openResultsPanel } from "../../panelSlice";
-import icons from "../../../map/markers";
 
 interface DirectoryItemProps {
   propId: string;
@@ -13,7 +12,6 @@ interface DirectoryItemProps {
   active: boolean;
   resultsTotal: number;
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
-  iconIndex?: number;
 }
 
 /** Passing active as a boolean gives a React error so just pass as a number 0 or 1. */
@@ -38,11 +36,6 @@ const StyledButton = styled(Button)(({ active }: { active: number }) => ({
   },
 }));
 
-const IconImage = styled("img")(() => ({
-  height: 16,
-  flexshrink: 0,
-}));
-
 const DirectoryItem = ({
   propId,
   value,
@@ -61,18 +54,6 @@ const DirectoryItem = ({
     dispatch(openResultsPanel());
   };
 
-  // Get icon based on index
-  const icon = useMemo(() => {
-    if (
-      iconIndex !== undefined &&
-      iconIndex >= 0 &&
-      iconIndex < markers.length
-    ) {
-      return markers[iconIndex];
-    }
-    return null;
-  }, []);
-
   return (
     <ListItem>
       <StyledButton
@@ -81,9 +62,6 @@ const DirectoryItem = ({
         disabled={!resultsTotal}
         onClick={handleClick}
       >
-        {icon && (
-          <IconImage src={icon} alt={`${label} icon`} aria-hidden="true" />
-        )}
         {label} ({resultsTotal ? resultsTotal : 0})
       </StyledButton>
     </ListItem>
