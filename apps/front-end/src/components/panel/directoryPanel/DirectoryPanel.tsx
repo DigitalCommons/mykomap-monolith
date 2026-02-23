@@ -9,6 +9,9 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectDirectoryOptions } from "./directorySlice";
 import { getTotals } from "../../../services";
 import { getDatasetId } from "../../../utils/window-utils";
+// Temporary import to get icons for directory items, will be removed
+// when config driven mapping is implemented
+import { PRIMARY_CATEGORY_ICONS } from "./primaryCategoryIcons";
 
 const StyledDirectoryPanel = styled(Box)(() => ({
   width: "100%",
@@ -44,6 +47,10 @@ const fetchResults = async () => {
   }
 };
 
+// Determine if a directory option is a primary category,
+const isPrimaryCategory = (value: string) =>
+  value !== "any" && !value.includes("-");
+
 const DirectoryPanel = () => {
   const { t } = useTranslation();
 
@@ -60,20 +67,29 @@ const DirectoryPanel = () => {
     });
   }, []);
 
+  console.log("#265 log 1", directoryOptions.options.slice(0, 6));
+
   return (
     <>
       <Heading title={t("directory")} />
       <StyledDirectoryPanel>
         <List>
-          {directoryOptions.options.map((option, i) => (
-            <DirectoryItem
-              key={`${i}-${option.value}`}
-              propId={directoryOptions.id}
-              {...option}
-              active={option.value === activeValue}
-              resultsTotal={resultsTotals[option.value]}
-            />
-          ))}
+          {directoryOptions.options.map((option, i) => {
+            const iconSrc = isPrimaryCategory(option.value)
+              ? PRIMARY_CATEGORY_ICONS[option.value]
+              : undefined;
+
+            return (
+              <DirectoryItem
+                key={`${i}-${option.value}`}
+                propId={directoryOptions.id}
+                {...option}
+                active={option.value === activeValue}
+                resultsTotal={resultsTotals[option.value]}
+                iconSrc={iconSrc}
+              />
+            );
+          })}
         </List>
       </StyledDirectoryPanel>
     </>
