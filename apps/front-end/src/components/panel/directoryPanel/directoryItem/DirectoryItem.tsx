@@ -13,10 +13,11 @@ interface DirectoryItemProps {
   resultsTotal: number;
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
   iconSrc?: string;
+  categoryColor?: string;
 }
 
 /** Passing active as a boolean gives a React error so just pass as a number 0 or 1. */
-const StyledButton = styled(Button)(({ active }: { active: number }) => ({
+const StyledButton = styled(Button)(({ active, categoryColor }: { active: number; categoryColor?: string }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
@@ -29,7 +30,7 @@ const StyledButton = styled(Button)(({ active }: { active: number }) => ({
   textDecoration: "none",
   textAlign: "left",
   whiteSpace: "pre-wrap",
-  color: active ? "var(--color-primary)" : "var(--color-text)",
+  color: active ? "var(--color-primary)" : categoryColor || "var(--color-text)",
   backgroundColor: "transparent",
   borderRadius: 0,
   boxShadow: "none",
@@ -55,6 +56,7 @@ const DirectoryItem = ({
   resultsTotal,
   onClick,
   iconSrc,
+  categoryColor,
 }: DirectoryItemProps) => {
   const dispatch = useAppDispatch();
 
@@ -73,6 +75,7 @@ const DirectoryItem = ({
         active={+active}
         disabled={!resultsTotal}
         onClick={handleClick}
+        categoryColor={categoryColor}
       >
         {iconSrc && <StyledIconImage src={iconSrc} alt={label} />}
         {label} ({resultsTotal ? resultsTotal : 0})

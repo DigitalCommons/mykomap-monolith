@@ -86,7 +86,8 @@ const DirectoryPanel = () => {
                 {...option}
                 active={option.value === activeValue}
                 resultsTotal={resultsTotals[option.value]}
-                iconSrc={iconSrc}
+                iconSrc={iconSrc?.icon}
+                categoryColor={iconSrc?.color}
               />
             );
           })}
