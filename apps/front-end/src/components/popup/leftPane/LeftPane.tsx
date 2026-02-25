@@ -4,7 +4,10 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import PopupItems from "../PopupItems";
 import { ConfigPopupItem } from "../../../services/types";
-import DotCoopVerifiedBadge from "./dotCoopVerifiedBadge/DotCoopVerifiedBadge";
+import { useAppSelector } from "../../../app/hooks";
+import { selectLogo } from "../../../app/configSlice";
+import DotCoopVerifiedBadge from "./dotCoop/dotCoopVerifiedBadge/DotCoopVerifiedBadge";
+import DotCoopAd from "./dotCoop/dotCoopAd/DotCoopAd";
 
 interface LeftPaneProps {
   data: { [key: string]: any };
@@ -24,7 +27,7 @@ const StyledLeftPane = styled(Box)(({ width }) => ({
     flexDirection: "column",
     margin:
       "var(--spacing-large) 0 var(--spacing-xlarge) var(--spacing-xlarge)",
-    overflowY: "hidden",
+    // overflowY: "hidden",
   },
 }));
 
@@ -99,6 +102,10 @@ const LeftPane = ({
 }: LeftPaneProps) => {
   const { t } = useTranslation();
   const dataSources = data["data_sources"] || [];
+  const logo = useAppSelector(selectLogo);
+  const showDotCoopAd = logo?.altText?.includes("Cooperative World Map");
+
+  console.log("LeftPane data:", data); // Debugging log to check the structure of data
 
   return (
     <StyledLeftPane width={width}>
@@ -106,7 +113,7 @@ const LeftPane = ({
         <StyledHeaderTitle variant="h1">{data[titleProp]}</StyledHeaderTitle>
         {dataSources?.includes("DotCooperation") && <DotCoopVerifiedBadge />}
       </StyledHeaderContainer>
-      <StyledContentContainer>
+      <StyledContentContainer sx={{ paddingBottom: "var(--spacing-medium)" }}>
         {!hasLocation && (
           <Typography variant="subtitle2">
             {t("no_location_available")}
@@ -114,6 +121,7 @@ const LeftPane = ({
         )}
         <PopupItems data={data} config={config} />
       </StyledContentContainer>
+      {showDotCoopAd && <DotCoopAd />}
     </StyledLeftPane>
   );
 };
