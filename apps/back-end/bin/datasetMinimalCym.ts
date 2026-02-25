@@ -38,6 +38,7 @@ const searchable: {
 
 const foodCategories = config.vocabs.fsc.en.terms;
 const localities = config.vocabs.loc.en.terms;
+const termsToIconIndex = config.ui.termsToIconIndex;
 
 let i = 0;
 let fails = [];
@@ -101,9 +102,7 @@ for (let item of items) {
     }
   }
 
-  const markerIndex = Object.keys(foodCategories).findIndex(
-    (category) => category === primary_food_system_category,
-  );
+  const markerIndex = termsToIconIndex[primary_food_system_category as string];
 
   locations.push([itemOutput.lng, itemOutput.lat, markerIndex]);
   searchable.values.push([
