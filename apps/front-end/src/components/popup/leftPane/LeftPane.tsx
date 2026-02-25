@@ -105,8 +105,6 @@ const LeftPane = ({
   const logo = useAppSelector(selectLogo);
   const showDotCoopAd = logo?.altText?.includes("Cooperative World Map");
 
-  console.log("LeftPane data:", data); // Debugging log to check the structure of data
-
   return (
     <StyledLeftPane width={width}>
       <StyledHeaderContainer>
