@@ -142,6 +142,7 @@ const ConfigData = z.object({
   ui: z.object({
     directory_panel_field: z.string(),
     marker_property_name: z.string().optional(),
+    markerIcons: z.array(z.string()).optional(),
     map: z
       .object({
         mapBounds: z

@@ -19,7 +19,7 @@ import {
   encodeBase64,
 } from "../../utils/window-utils";
 import { getDatasetItem } from "../../services";
-import markers from "./markers";
+import allMarkers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -289,6 +289,7 @@ export const createMap = (
   mapConfig?: {
     mapBounds?: [[number, number], [number, number]];
   },
+  markerIcons: string[] = ["defaultMarker"]
 ): Map => {
   const initialBounds = mapConfig?.mapBounds ?? [
     [-169, -49.3],
@@ -350,6 +351,11 @@ export const createMap = (
         "text-size": 12,
       },
     });
+
+    const markers = markerIcons.map(iconName => allMarkers[iconName]);
+
+    console.log("markers", markers)
+    console.log("markerIcons", markerIcons)
 
     const markerList = [];
     let index = 0;

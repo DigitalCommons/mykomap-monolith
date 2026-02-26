@@ -1019,6 +1019,12 @@
                         "marker_property_name": {
                           "type": "string"
                         },
+                        "markerIcons": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
                         "map": {
                           "type": "object",
                           "properties": {
