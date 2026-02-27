@@ -143,7 +143,7 @@ const themeOptions: ThemeOptions = {
           props: { variant: "contained", intent: "cta" },
           style: {
             backgroundImage:
-              "linear-gradient(175deg, #639C7A, #4D8C63, #30583e)",
+              "linear-gradient(175deg, #639C7A 0%,  #639C7A 4%, #4D8C63 55%, #30583e 100%)",
             backgroundColor: "var(--color-primary)",
             color: "#fff",
             transition: "filter 0.25s ease-out, box-shadow 0.25s ease-out",
@@ -154,7 +154,7 @@ const themeOptions: ThemeOptions = {
             "&:hover": {
               filter: "brightness(0.93)",
               boxShadow:
-                "0 0 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255, 0.18)",
+                "0 0 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255, 0.15)",
             },
 
             "&.Mui-focusVisible": {
