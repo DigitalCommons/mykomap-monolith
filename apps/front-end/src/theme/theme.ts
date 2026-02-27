@@ -143,7 +143,7 @@ const themeOptions: ThemeOptions = {
           props: { variant: "contained", intent: "cta" },
           style: {
             backgroundImage:
-              "linear-gradient(175deg, #639C7A, #4D8C63, #386648)",
+              "linear-gradient(175deg, #639C7A, #4D8C63, #30583e)",
             backgroundColor: "var(--color-primary)",
             color: "#fff",
             transition: "filter 0.25s ease-out, box-shadow 0.25s ease-out",
@@ -152,9 +152,9 @@ const themeOptions: ThemeOptions = {
               "0 0 8px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.18)",
 
             "&:hover": {
-              filter: "brightness(0.92)",
+              filter: "brightness(0.93)",
               boxShadow:
-                "0 0 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.18)",
+                "0 0 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255, 0.18)",
             },
 
             "&.Mui-focusVisible": {
@@ -164,8 +164,8 @@ const themeOptions: ThemeOptions = {
 
             "&.Mui-disabled": {
               backgroundImage: "none",
-              backgroundColor: "rgba(77, 140, 99, 0.35)",
-              border: "1px solid rgba(77, 140, 99, 0.20)",
+              backgroundColor: "rgba(var(--color-primary-rgb), 0.35)",
+              border: "1px solid rgba(var(--color-primary-rgb), 0.20)",
               color: "rgba(255, 255, 255, 0.7)",
               boxShadow: "none",
             },
