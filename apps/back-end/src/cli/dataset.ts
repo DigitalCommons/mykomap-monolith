@@ -66,7 +66,7 @@ export class ImportCmd extends Command {
     // looks a bit too hairy to cut and paste
     // https://gist.github.com/jaens/7e15ae1984bb338c86eb5e452dee3010).
     //
-    // Reason: we don't want anything silently stripped, and probabaly nor do we
+    // Reason: we don't want anything silently stripped, and probably nor do we
     // want to silently pass through extras.
     const config: ConfigData = schemas.ConfigData.parse(
       await slurpJson(this.configPath),
@@ -95,11 +95,11 @@ export class ImportCmd extends Command {
         markerName === undefined
           ? new DatasetWriter(propDefs)
           : this._mkDatasetWriterWithMarkerIcons(
-              propSpecs,
-              propDefs,
-              config,
-              markerName,
-            );
+            propSpecs,
+            propDefs,
+            config,
+            markerName,
+          );
 
       // Write out the dataset
       const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader);
@@ -146,15 +146,15 @@ export class ImportCmd extends Command {
     if (markerPropDef.uri == undefined)
       throw new Error(
         `The item property '${markerName}' is not a vocab property:\n` +
-          JSON.stringify(propSpecs[markerName]),
+        JSON.stringify(propSpecs[markerName]),
       );
 
     // Now validated, report the situation on the console.
     this.context.stdout.write(
       `Using the item property '${markerName}' to infer marker type to use,\n` +
-        `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
-        JSON.stringify(propSpecs[markerName]) +
-        "\n\n",
+      `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
+      JSON.stringify(propSpecs[markerName]) +
+      "\n\n",
     );
 
     // Validate that markerPropDef.uri is one we know from the config
@@ -162,14 +162,14 @@ export class ImportCmd extends Command {
     if (ncname == null)
       throw new Error(
         `The marker property '${markerName}' does not have a valid ` +
-          `URI abbreviation: ` +
-          markerPropDef.uri,
+        `URI abbreviation: ` +
+        markerPropDef.uri,
       );
     if (!(ncname in config.vocabs))
       throw new Error(
         `The marker property '${markerName}' does not reference a known ` +
-          `vocab URI: ` +
-          markerPropDef.uri,
+        `vocab URI: ` +
+        markerPropDef.uri,
       );
 
     // Now get the list of terms associated to that vocab
@@ -181,10 +181,10 @@ export class ImportCmd extends Command {
     // Report the list of terms in use.
     this.context.stdout.write(
       "Vocab terms are mapped to icon indexes as follows:\n" +
-        terms
-          .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
-          .join("\n") +
-        "\n\n",
+      terms
+        .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
+        .join("\n") +
+      "\n\n",
     );
 
     // Extend DatasetWriter with an appropriate markerIndex method which
