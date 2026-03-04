@@ -1025,6 +1025,12 @@
                             "type": "string"
                           }
                         },
+                        "termsToIconIndex": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "number"
+                          }
+                        },
                         "map": {
                           "type": "object",
                           "properties": {

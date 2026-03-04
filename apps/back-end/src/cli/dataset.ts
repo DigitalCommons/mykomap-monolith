@@ -211,6 +211,20 @@ export class ImportCmd extends Command {
 
         // Must be a list of values
         const values = value as Array<string>;
+        const termsToIconIndex = config.ui.termsToIconIndex;
+
+        if (!termsToIconIndex)
+          return undefined;
+
+        for (let value of values) {
+          if (termsToIconIndex[value] !== undefined) {
+            return termsToIconIndex[value];
+          }
+        }
+
+        return termsToIconIndex["default"];
+
+        /*
         switch (values.length) {
           case 0:
             return undefined; // No values
@@ -218,7 +232,7 @@ export class ImportCmd extends Command {
             return terms.indexOf(String(values[1])); // Single valued array
           default:
             return terms.length; // Multiple value array
-        }
+        }*/
       }
     })(propDefs);
   }
