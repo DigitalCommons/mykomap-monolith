@@ -289,7 +289,7 @@ export const createMap = (
   mapConfig?: {
     mapBounds?: [[number, number], [number, number]];
   },
-  markerIcons: string[] = ["defaultMarker"]
+  markerIcons: string[] = ["defaultMarker"],
 ): Map => {
   const initialBounds = mapConfig?.mapBounds ?? [
     [-169, -49.3],
@@ -352,10 +352,10 @@ export const createMap = (
       },
     });
 
-    const markers = markerIcons.map(iconName => allMarkers[iconName]);
+    const markers = markerIcons.map((iconName) => allMarkers[iconName]);
 
-    console.log("markers", markers)
-    console.log("markerIcons", markerIcons)
+    console.log("markers", markers);
+    console.log("markerIcons", markerIcons);
 
     const markerList = [];
     let index = 0;

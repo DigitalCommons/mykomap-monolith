@@ -65,7 +65,7 @@ const initialState: ConfigSliceState = {
     topRightPane: [],
     bottomRightPane: [],
   },
-  dataSources: undefined
+  dataSources: undefined,
 };
 
 export const configSlice = createAppSlice({

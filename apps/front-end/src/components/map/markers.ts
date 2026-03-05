@@ -6,12 +6,12 @@ import localFoodMarker from "./markers/local-food-marker.png";
 import dotcoopMarker from "./markers/dotcoop-marker.png";
 
 const allMarkers: { [key: string]: string } = {
-  "emergencyFoodMarker": emergencyFoodMarker,
-  "communityGrowingMarker": communityGrowingMarker,
-  "localFoodMarker": localFoodMarker,
-  "eventsMarker": eventsMarker,
-  "dotcoopMarker": dotcoopMarker,
-  "defaultMarker": defaultMarker
-}
+  emergencyFoodMarker: emergencyFoodMarker,
+  communityGrowingMarker: communityGrowingMarker,
+  localFoodMarker: localFoodMarker,
+  eventsMarker: eventsMarker,
+  dotcoopMarker: dotcoopMarker,
+  defaultMarker: defaultMarker,
+};
 
 export default allMarkers;
