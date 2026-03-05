@@ -4,7 +4,7 @@
     "editorconfig.editorconfig",
     "yoavbls.pretty-ts-errors",
     "deinsoftware.vitest-snippets",
-    "vitest.explorer"
+    "vitest.explorer",
     "hediet.vscode-drawio"
   ]
 }

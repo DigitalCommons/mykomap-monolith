@@ -26,8 +26,8 @@ import {
   openPanel,
   openResultsPanel,
   setSelectedTab,
-  selectPanelOpen, 
-  selectResultsPanelOpen
+  selectPanelOpen,
+  selectResultsPanelOpen,
 } from "../panel/panelSlice";
 import { DEVICE_ID, Event, trackEvent } from "../../services/analytics";
 

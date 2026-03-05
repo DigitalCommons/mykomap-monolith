@@ -3,5 +3,6 @@
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
   "vitest.maximumConfigs": 5,
+  "files.insertFinalNewline": true,
   "files.eol": "\n"
 }

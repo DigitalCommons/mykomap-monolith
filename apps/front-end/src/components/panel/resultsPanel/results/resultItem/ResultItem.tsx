@@ -1,7 +1,7 @@
 import ListItem from "@mui/material/ListItem";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from "@mui/icons-material/Check";
 
 interface ResultItemProps {
   index: number;
@@ -43,7 +43,15 @@ const ResultItems = ({
     <ListItem>
       <StyledButton role="button" onClick={buttonAction}>
         {name}
-        {hasDCSource && <CheckIcon style={{ display: "inline-block", marginLeft: "5px", color: "var(--color-dc-source)" }} />}
+        {hasDCSource && (
+          <CheckIcon
+            style={{
+              display: "inline-block",
+              marginLeft: "5px",
+              color: "var(--color-dc-source)",
+            }}
+          />
+        )}
       </StyledButton>
     </ListItem>
   );

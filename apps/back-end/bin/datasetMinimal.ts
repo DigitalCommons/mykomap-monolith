@@ -29,7 +29,12 @@ await fs.mkdir("./tmp/out/datasets/powys-eng/items");
 const locations: [number, number, number][] = [];
 const searchable: {
   itemProps: string[];
-  values: [(string | undefined)[], string | undefined, string, string | undefined][];
+  values: [
+    (string | undefined)[],
+    string | undefined,
+    string,
+    string | undefined,
+  ][];
 } = {
   itemProps: ["food_system_categories", "locality", "id", "searchString"],
   values: [],
@@ -92,11 +97,10 @@ for (let item of items) {
       itemOutput.lng = location.geometry.coordinates[0];
       itemOutput.lat = location.geometry.coordinates[1];
       itemOutput.geocoded_address = location.properties.full_address;
-    }
-    else {
-      console.log(geocodeResult)
-      fails.push(item.Title_Eng)
-      console.log("fails", fails)
+    } else {
+      console.log(geocodeResult);
+      fails.push(item.Title_Eng);
+      console.log("fails", fails);
     }
   }
 
