@@ -95,11 +95,11 @@ export class ImportCmd extends Command {
         markerName === undefined
           ? new DatasetWriter(propDefs)
           : this._mkDatasetWriterWithMarkerIcons(
-            propSpecs,
-            propDefs,
-            config,
-            markerName,
-          );
+              propSpecs,
+              propDefs,
+              config,
+              markerName,
+            );
 
       // Write out the dataset
       const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader);
@@ -146,15 +146,15 @@ export class ImportCmd extends Command {
     if (markerPropDef.uri == undefined)
       throw new Error(
         `The item property '${markerName}' is not a vocab property:\n` +
-        JSON.stringify(propSpecs[markerName]),
+          JSON.stringify(propSpecs[markerName]),
       );
 
     // Now validated, report the situation on the console.
     this.context.stdout.write(
       `Using the item property '${markerName}' to infer marker type to use,\n` +
-      `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
-      JSON.stringify(propSpecs[markerName]) +
-      "\n\n",
+        `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
+        JSON.stringify(propSpecs[markerName]) +
+        "\n\n",
     );
 
     // Validate that markerPropDef.uri is one we know from the config
@@ -162,14 +162,14 @@ export class ImportCmd extends Command {
     if (ncname == null)
       throw new Error(
         `The marker property '${markerName}' does not have a valid ` +
-        `URI abbreviation: ` +
-        markerPropDef.uri,
+          `URI abbreviation: ` +
+          markerPropDef.uri,
       );
     if (!(ncname in config.vocabs))
       throw new Error(
         `The marker property '${markerName}' does not reference a known ` +
-        `vocab URI: ` +
-        markerPropDef.uri,
+          `vocab URI: ` +
+          markerPropDef.uri,
       );
 
     // Now get the list of terms associated to that vocab
@@ -181,10 +181,10 @@ export class ImportCmd extends Command {
     // Report the list of terms in use.
     this.context.stdout.write(
       "Vocab terms are mapped to icon indexes as follows:\n" +
-      terms
-        .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
-        .join("\n") +
-      "\n\n",
+        terms
+          .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
+          .join("\n") +
+        "\n\n",
     );
 
     // Extend DatasetWriter with an appropriate markerIndex method which
@@ -213,8 +213,7 @@ export class ImportCmd extends Command {
         const values = value as Array<string>;
         const termsToIconIndex = config.ui.termsToIconIndex;
 
-        if (!termsToIconIndex)
-          return undefined;
+        if (!termsToIconIndex) return undefined;
 
         for (let value of values) {
           if (termsToIconIndex[value] !== undefined) {
