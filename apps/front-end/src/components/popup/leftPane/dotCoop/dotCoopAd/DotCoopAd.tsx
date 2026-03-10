@@ -1,6 +1,7 @@
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { trackEvent, Event } from "../../../../../services/analytics";
 
 const StyledAdContainer = styled("a")(() => ({
   width: "calc(100% + (2 * var(--spacing-large)))",
@@ -40,10 +41,11 @@ const StyledAdContainer = styled("a")(() => ({
 const DotCoopAd = () => {
   return (
     <StyledAdContainer
-      href="https://identity.coop/register/"
+      href="https://identity.coop/the_dotcoop_domain/"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Become verified. Register a .coop domain (opens in new tab)"
+      onClick={() => trackEvent(Event.DOTCOOP.AD_CLICK)}
     >
       <OpenInNewIcon
         sx={{

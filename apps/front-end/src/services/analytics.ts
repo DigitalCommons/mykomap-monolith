@@ -50,6 +50,10 @@ export const Event = {
     // User opens app using a shared link for a specific search query
     SHARE: "Search_Share",
   },
+  DOTCOOP: {
+    // User clicks on the DotCoop ad in the popup
+    AD_CLICK: "DotCoop_AdClick",
+  },
 } as const;
 
 // Recursively extract the union of values of the leaves of an object into a type
