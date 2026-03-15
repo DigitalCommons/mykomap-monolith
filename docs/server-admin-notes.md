@@ -33,7 +33,34 @@ Alternatively someone with access can add your SSH public key, if you have one, 
 
 However, when the server is in real trouble, perhaps because it can't cope with the load, typically logging into the console is fraught with problems. In which case using the Hetzner console is better.
 
+## Typical causes of server trouble
+
+- An app (or several, collectively) using up all the memory and the kernel defensively invoking the Out-Of-Memory (OOM) killer
+- Similar, but using all the CPU, starving all processes of cycles
+- Similar, but heavy memory usage causes disk-thrashing (when memory is paged in and out of disk swap space continually), which puts the kernel into heavy IO-mode, which then locks everything up. (Kernel IO is uninterruptible, so processes can become unkillable when in that state.)
+- The disk fills up, which then makes processes stop or crash, as they get blocked trying to write data to disk.
+
+### Mitigation strategies
+
+Setting a process' "nice" parameter can mitigate heavy CPU usage.
+
+Reserving memory or disk space should be possible by defining `ulimit`
+settings (see `man bash`), or using control groups - see the
+`cgroup-tools` package.
+
+These may not be foolproof. Setting per-process limits might make
+things even *more* likely to crash, if one of the apps ends up with
+less headroom than it needs?
+
+So it'd need to be done based on knowledge of what actually
+happens. And accordingly, not overloading your servers' capacity with
+more than it can handle.
+
+An argument for monitoring resource usage. See the followng sections.
+
 ### What's the CPU / Memory load?
+
+#### top
 
 On the console this can be done by running the command `top`, which will show an updating table of processes like this:
 
@@ -64,6 +91,57 @@ MiB Swap:      0.0 total,      0.0 free,      0.0 used.   6476.3 avail Mem
 The processes are sorted by load. You can switch it to sort by memory use by pressing the `m` key. The `?` key will show brief overview of the keys you can press.
 
 To exit, use `q`.
+
+#### sysstat
+
+The servers dev-2 and prod-2 have had the `sysstat` package installed
+(`apt install sysstat`). `sysstat` then needs to be enabled by setting
+`ENABLED="true"` in `/etc/default/sysstat` and restarting the daemon,
+`systemctl restart sysstat`. 
+
+See also the docs in `/usr/share/doc/sysstat/` for the definitive
+information on doing this.
+
+Once enabled, this will monitor the system load and write logs in
+`/var/log/sysstat/`.  What is actually monitored can be adjusted with
+the config file `/etc/sysstat/sysstat`.
+
+#### sar
+
+The CLI command `sar` can then be used to get a dump of the load. The
+`sar` manpage gives full usage, of which here are some examples:
+
+   sar -u 2 5
+              Report CPU utilization for each 2 seconds. 5 lines are displayed.
+
+   sar -I 14 -o int14.file 2 10
+              Report statistics on IRQ 14 for each 2 seconds. 10 lines are displayed.
+              Data are stored in a file called int14.file.
+
+   sar -r -n DEV -f /var/log/sysstat/sa16
+              Display memory and network statistics saved in daily data file sa16.
+
+   sar -A     Display all the statistics saved in current daily data file.
+
+#### sarchart
+
+There is a 3rd party project which can translate the sysstat logfiles
+into charts.
+
+https://sarchart.dotsuresh.com/
+
+The instructions on this project don't quite work for our sever as the
+logfiles are in a different place. What worked for me was running this
+on my local machine (with `~/.ssh/config` set such that `ssh dev-2` is
+an alias for `ssh root@dev-2.digitalcommons.coop`):
+
+    ssh -C dev-2 'ls /var/log/sysstat/sa?? | xargs -i sar -A -f {} ' > sar.txt
+
+The file `sar.txt` can then be uploaded to the sarchart website, by
+visiting it in your browser and clicking on the "Browse and Upload"
+button there. The charts are then rendered in your browser.
+
+
 
 ### Disk full?
 
