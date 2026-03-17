@@ -16,6 +16,15 @@ If it's something which has run amok on the server, it _may_ be resolved by a re
 
 Some clues might be available from the server console, which you can open using the link in the "Actions" dropdown for the server on the graph page above. This is like taking a peep at the physical monitor of the server, if it had one. If things are looking normal you'll just see a log-in prompt. But you might find some system log messages there which give you a clue.
 
+## SAR tool
+
+We have also set up `sar` on the servers to monitor, collect, and report on system performance, including CPU, memory, I/O, and network utilization. We keep `sar` logs for 7 days. To download the logs to your local machine from one of our servers (e.g. dev-2), you can run the following command:
+```
+ssh -C dev-2 'ls /var/log/sysstat/sa?? | xargs -i sar -A -f {} ' > sar.txt
+```
+
+Then upload the sar.txt to https://sarchart.dotsuresh.com/ in order to visualise the logs.
+
 ## Root console things
 
 At the time of writing, there is no password access to the root (or in fact any) user accounts on the server, so you can't actually log in via the server console. But you can reset the root password on the "Rescue" tab of the Hetzner console, although this will probably trigger a reboot. However, then you can use that to log into the server console.
