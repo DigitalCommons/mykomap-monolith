@@ -59,6 +59,7 @@
     "@biomejs/biome": "^1.8.3",
     "@storybook/addon-a11y": "^8.3.0",
     "@tsconfig/node22": "^22.0.0",
+    "@types/lodash": "^4.17.24",
     "@types/node": "^22.5.4",
     "@types/qs": "^6.9.18",
     "c8": "^10.1.2",
