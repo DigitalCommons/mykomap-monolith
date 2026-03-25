@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import theme from "../../../../theme/theme";
+import theme from "../../../../../theme/theme";
 
 const StyledVerifiedBadge = styled(Box)(({ theme }) => ({
   width: "fit-content",
