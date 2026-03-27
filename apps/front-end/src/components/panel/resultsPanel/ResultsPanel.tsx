@@ -117,7 +117,10 @@ const ResultsPanel = () => {
         }}
       >
         <StyledButtonContainer>
-          <StandardButton buttonAction={handleClearSearch}>
+          <StandardButton
+            intent="cta"
+            buttonAction={handleClearSearch}
+          >
             {t("clear_search")}
           </StandardButton>
           {!isMedium && <CloseButton buttonAction={handlePanelClose} />}

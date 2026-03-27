@@ -115,6 +115,7 @@ const themeOptions: ThemeOptions = {
       defaultProps: {
         disableRipple: true,
       },
+
       styleOverrides: {
         root: {
           borderRadius: "var(--border-radius-small)",
@@ -137,6 +138,40 @@ const themeOptions: ThemeOptions = {
           },
         },
       },
+      variants: [
+        {
+          props: { variant: "contained", intent: "cta" },
+          style: {
+            backgroundImage:
+              "linear-gradient(175deg, #639C7A 0%,  #639C7A 4%, #4D8C63 55%, #30583e 100%)",
+            backgroundColor: "var(--color-primary)",
+            color: "#fff",
+            transition: "filter 0.25s ease-out, box-shadow 0.25s ease-out",
+            filter: "brightness(1)",
+            boxShadow:
+              "0 0 8px rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.18)",
+
+            "&:hover": {
+              filter: "brightness(0.93)",
+              boxShadow:
+                "0 0 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255, 0.15)",
+            },
+
+            "&.Mui-focusVisible": {
+              outline: "2px solid rgba(255, 255, 255, 0.35)",
+              outlineOffset: "2px",
+            },
+
+            "&.Mui-disabled": {
+              backgroundImage: "none",
+              backgroundColor: "rgba(var(--color-primary-rgb), 0.35)",
+              border: "1px solid rgba(var(--color-primary-rgb), 0.20)",
+              color: "rgba(255, 255, 255, 0.7)",
+              boxShadow: "none",
+            },
+          },
+        },
+      ],
     },
     MuiIconButton: {
       styleOverrides: {

@@ -87,6 +87,7 @@ const Results = () => {
         variant="h4"
         component="h4"
         sx={{
+          marginTop: "var(--spacing-medium)",
           color: "var(--color-neutral-tint)",
           padding: "0 var(--spacing-medium)",
           "@media (min-width: 768px)": {

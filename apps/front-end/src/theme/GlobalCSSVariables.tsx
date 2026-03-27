@@ -4,6 +4,7 @@ import type { FC } from "react";
 // Resuable CSS variables
 const rootVariables = {
   "--color-primary": "#4D8C63",
+  "--color-primary-rgb": "77, 140, 99",
   "--color-primary-light": "#639C7A",
   "--color-secondary": "#3E4854",
   "--color-secondary-light": "#535F6D",

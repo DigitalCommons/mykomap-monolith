@@ -52,7 +52,7 @@ const ApplyFilters = ({
         </StandardButton>
       </div>
       <div>
-        <StandardButton buttonAction={buttonAction} disabled={disabled}>
+        <StandardButton intent="cta" buttonAction={buttonAction} disabled={disabled}>
           {buttonText}
         </StandardButton>
       </div>
