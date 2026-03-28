@@ -1,11 +1,18 @@
 {
+  "name": "mykomap-monolith",
+  "version": "4.1.0",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "libs/*"
   ],
   "bin": {
-    "do-release": "bin/do-release"
+    "do-release": "bin/do-release",
+    "dataset": "apps/back-end/dist/dataset.js"
   },
+  "files": [
+    "apps/back-end/dist/dataset.js"
+  ],
   "scripts": {
     "build": "npm run -w @mykomap/common build; npm run -w @mykomap/node-utils build; npm run --ignore-scripts -w @mykomap/back-end build; npm run --ignore-scripts -w @mykomap/front-end build",
     "clean": "npm run clean --workspaces && rimraf node_modules",
@@ -15,6 +22,7 @@
     "node-utils:": "npm run --workspace=@mykomap/node-utils",
     "prettier:check": "prettier -cu --no-color .",
     "prettier:format": "prettier -wu --no-color .",
+    "prepare": "npm run build",
     "release": "bin/do-release",
     "test": "npm run test --workspaces"
   },
