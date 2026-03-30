@@ -1026,10 +1026,25 @@
                           }
                         },
                         "termsToIconIndex": {
-                          "type": "object",
-                          "additionalProperties": {
-                            "type": "number"
-                          }
+                          "allOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "default": {
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "default"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "number"
+                              }
+                            }
+                          ]
                         },
                         "map": {
                           "type": "object",
