@@ -19,7 +19,6 @@ import {
   encodeBase64,
 } from "../../utils/window-utils";
 import { getDatasetItem } from "../../services";
-import allMarkers from "./markers";
 
 export const POPUP_CONTAINER_ID = "popup-container";
 
@@ -289,7 +288,7 @@ export const createMap = (
   mapConfig?: {
     mapBounds?: [[number, number], [number, number]];
   },
-  markerIcons: string[] = ["defaultMarker"],
+  markerIcons: string[] = ["default"],
 ): Map => {
   const initialBounds = mapConfig?.mapBounds ?? [
     [-169, -49.3],
@@ -352,16 +351,11 @@ export const createMap = (
       },
     });
 
-    const markers = markerIcons.map((iconName) => allMarkers[iconName]);
-
-    console.log("markers", markers);
-    console.log("markerIcons", markerIcons);
-
     const markerList = [];
     let index = 0;
 
-    for (let markerImage of markers) {
-      const image = await map.loadImage(markerImage);
+    for (let marker of markerIcons) {
+      const image = await map.loadImage(`./assets/markers/${marker}.png`);
       const markerName = "marker-" + index;
       map.addImage(markerName, image.data);
       markerList.push(index++);
@@ -373,7 +367,7 @@ export const createMap = (
         "match",
         ["get", "custom_marker_id"],
         ...markerList,
-        `marker-${markers.length - 1}`, // assumes the final marker in the marker list is the default marker
+        `marker-${markerIcons.length - 1}`, // assumes the final marker in the marker list is the default marker
       ],
       "icon-anchor": "bottom",
     };
