@@ -30,12 +30,12 @@ export default defineConfig({
   },
   plugins: [dts()],
   build: {
+    ssr: true,
+    outDir: "dist",
     lib: {
-      // Could also be a dictionary or array of multiple entry points
-      entry: fileURLToPath(import.meta.resolve("./src/index.ts")),
+      entry: { server: fileURLToPath(import.meta.resolve("./start.ts")) },
       name,
       formats: ["es"],
-      fileName: "back-end",
     },
   },
   server: {
