@@ -66,7 +66,7 @@ export class ImportCmd extends Command {
     // looks a bit too hairy to cut and paste
     // https://gist.github.com/jaens/7e15ae1984bb338c86eb5e452dee3010).
     //
-    // Reason: we don't want anything silently stripped, and probabaly nor do we
+    // Reason: we don't want anything silently stripped, and probably nor do we
     // want to silently pass through extras.
     const config: ConfigData = schemas.ConfigData.parse(
       await slurpJson(this.configPath),
@@ -87,19 +87,29 @@ export class ImportCmd extends Command {
     const mkTransformer = mkCsvParserGenerator(propDefs);
     const csvReader = fromCsvFile(this.csvPath, mkTransformer);
 
+    if (config.ui.customMarkers) {
+      // check that termsToIconIndex doesn't reference outside list of markerIcons
+      const { termsToIconIndex, markerIcons } = config.ui.customMarkers;
+
+      const highestIndex = Object.values(termsToIconIndex).sort().reverse()[0];
+
+      if (markerIcons.length - 1 < highestIndex)
+        throw new UsageError("config.ui.customerMarkers.markerIcons doesn't have enough icons.");
+    }
+
     try {
-      const markerName = config.ui.marker_property_name;
+      const markerName = config.ui.customMarkers?.marker_property_name;
 
       // Construct an appropriate DatasetWriter for our case
       let dsWriter: DatasetWriter =
         markerName === undefined
           ? new DatasetWriter(propDefs)
           : this._mkDatasetWriterWithMarkerIcons(
-              propSpecs,
-              propDefs,
-              config,
-              markerName,
-            );
+            propSpecs,
+            propDefs,
+            config,
+            markerName,
+          );
 
       // Write out the dataset
       const stats = await dsWriter.writeDataset(this.dataPath, "id", csvReader);
@@ -146,15 +156,15 @@ export class ImportCmd extends Command {
     if (markerPropDef.uri == undefined)
       throw new Error(
         `The item property '${markerName}' is not a vocab property:\n` +
-          JSON.stringify(propSpecs[markerName]),
+        JSON.stringify(propSpecs[markerName]),
       );
 
     // Now validated, report the situation on the console.
     this.context.stdout.write(
       `Using the item property '${markerName}' to infer marker type to use,\n` +
-        `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
-        JSON.stringify(propSpecs[markerName]) +
-        "\n\n",
+      `which has the vocab '${markerPropDef.uri}'.\nFull specification:\n` +
+      JSON.stringify(propSpecs[markerName]) +
+      "\n\n",
     );
 
     // Validate that markerPropDef.uri is one we know from the config
@@ -162,14 +172,14 @@ export class ImportCmd extends Command {
     if (ncname == null)
       throw new Error(
         `The marker property '${markerName}' does not have a valid ` +
-          `URI abbreviation: ` +
-          markerPropDef.uri,
+        `URI abbreviation: ` +
+        markerPropDef.uri,
       );
     if (!(ncname in config.vocabs))
       throw new Error(
         `The marker property '${markerName}' does not reference a known ` +
-          `vocab URI: ` +
-          markerPropDef.uri,
+        `vocab URI: ` +
+        markerPropDef.uri,
       );
 
     // Now get the list of terms associated to that vocab
@@ -181,10 +191,10 @@ export class ImportCmd extends Command {
     // Report the list of terms in use.
     this.context.stdout.write(
       "Vocab terms are mapped to icon indexes as follows:\n" +
-        terms
-          .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
-          .join("\n") +
-        "\n\n",
+      terms
+        .map((term, ix) => ` - #${ix}: ${term}\t"${termIndex[term]}"`)
+        .join("\n") +
+      "\n\n",
     );
 
     // Extend DatasetWriter with an appropriate markerIndex method which
@@ -204,21 +214,26 @@ export class ImportCmd extends Command {
         // matches null or undefined.
         if (value == undefined) return undefined;
 
+        if (!config.ui.customMarkers) return undefined;
+
+        const { termsToIconIndex } = config.ui.customMarkers;
+
         if (markerPropDef.type !== "multi") {
-          // A singlar value
-          return terms.indexOf(String(value));
+          // A singular value
+          return termsToIconIndex[value as string] || termsToIconIndex["default"];
         }
 
         // Must be a list of values
         const values = value as Array<string>;
-        switch (values.length) {
-          case 0:
-            return undefined; // No values
-          case 1:
-            return terms.indexOf(String(values[1])); // Single valued array
-          default:
-            return terms.length; // Multiple value array
+
+        for (let value of values) {
+          if (termsToIconIndex[value] !== undefined) {
+            return termsToIconIndex[value];
+          }
         }
+
+        return termsToIconIndex["default"];
+
       }
     })(propDefs);
   }

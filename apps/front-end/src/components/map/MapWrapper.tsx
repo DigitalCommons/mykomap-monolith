@@ -17,7 +17,10 @@ import {
   selectPopupId,
   selectPopupIsOpen,
 } from "../popup/popupSlice";
-import { selectCurrentLanguage } from "../../app/configSlice";
+import {
+  selectCurrentLanguage,
+  selectMarkerIcons,
+} from "../../app/configSlice";
 import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
 import { useMediaQuery } from "@mui/material";
 import {
@@ -45,6 +48,7 @@ const MapWrapper = () => {
   const popupLocation = useAppSelector(selectLocation(popupIndex));
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
+  const markerIcons = useAppSelector(selectMarkerIcons);
   const configStatus = useAppSelector(selectConfigStatus);
   const panelOpen = useAppSelector(selectPanelOpen);
   const resultsPanelOpen = useAppSelector(selectResultsPanelOpen);
@@ -91,6 +95,7 @@ const MapWrapper = () => {
       popupClosedCallback,
       () => setMapCreated(true),
       mapConfig,
+      markerIcons,
     );
 
     map.current.on("sourcedata", (e) => {

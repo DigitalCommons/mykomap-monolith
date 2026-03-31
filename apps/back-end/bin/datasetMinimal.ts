@@ -6,7 +6,7 @@ const { GEOCODE_TOKEN } = process.env;
 const rawConfig = await fs.readFile(`./tmp/config.en.json`);
 const config = JSON.parse(rawConfig.toString());
 
-const rawCSV = await fs.readFile(`./tmp/2026.02.19.powys_food_systems.csv`);
+const rawCSV = await fs.readFile(`./tmp/2026.03.31.powys_food_systems.csv`);
 const input = rawCSV.toString();
 
 const rawAbout = await fs.readFile(`./tmp/about.en.md`);
@@ -42,6 +42,7 @@ const searchable: {
 
 const foodCategories = config.vocabs.fsc.en.terms;
 const localities = config.vocabs.loc.en.terms;
+const termsToIconIndex = config.ui.customMarkers.termsToIconIndex;
 
 let i = 0;
 let fails = [];
@@ -104,9 +105,7 @@ for (let item of items) {
     }
   }
 
-  const markerIndex = Object.keys(foodCategories).findIndex(
-    (category) => category === primary_food_system_category,
-  );
+  const markerIndex = termsToIconIndex[primary_food_system_category as string];
 
   locations.push([itemOutput.lng, itemOutput.lat, markerIndex]);
   searchable.values.push([

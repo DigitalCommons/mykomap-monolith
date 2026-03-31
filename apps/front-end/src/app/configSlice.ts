@@ -14,6 +14,8 @@ export interface ConfigSliceState {
   status: "idle" | "loading" | "loaded" | "failed";
   popup?: ConfigPopup;
   dataSources?: Config["itemProps"]["data_sources"];
+  markerIcons?: NonNullable<Config["ui"]["customMarkers"]>["markerIcons"];
+  markerPropertyName?: NonNullable<Config["ui"]["customMarkers"]>["marker_property_name"];
 }
 
 /**
@@ -49,6 +51,7 @@ const initialState: ConfigSliceState = {
       [189, 75.6],
     ],
   },
+  markerIcons: [],
   logo: {
     largeLogo: undefined,
     smallLogo: undefined,
@@ -116,6 +119,7 @@ export const configSlice = createAppSlice({
       i18n.loadLanguages(action.payload.languages);
 
       state.map = action.payload.ui.map;
+      state.markerIcons = action.payload.ui.customMarkers?.markerIcons;
 
       state.logo = action.payload.ui.logo;
 
@@ -134,6 +138,7 @@ export const configSlice = createAppSlice({
     selectCurrentLanguage: (state) => state.currentLanguage,
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
+    selectMarkerIcons: (state) => state.markerIcons,
     selectConfigStatus: (state) => state.status,
     selectDataSources: (state) => state.dataSources,
   },
@@ -148,6 +153,7 @@ export const {
   selectLogo,
   selectPopupConfig,
   selectMapConfig,
+  selectMarkerIcons,
   selectConfigStatus,
   selectDataSources,
 } = configSlice.selectors;
