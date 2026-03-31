@@ -87,6 +87,16 @@ export class ImportCmd extends Command {
     const mkTransformer = mkCsvParserGenerator(propDefs);
     const csvReader = fromCsvFile(this.csvPath, mkTransformer);
 
+    if (config.ui.customMarkers) {
+      // check that termsToIconIndex doesn't reference outside list of markerIcons
+      const { termsToIconIndex, markerIcons } = config.ui.customMarkers;
+
+      const highestIndex = Object.values(termsToIconIndex).sort().reverse()[0];
+
+      if (markerIcons.length - 1 < highestIndex)
+        throw new UsageError("config.ui.customerMarkers.markerIcons doesn't have enough icons.");
+    }
+
     try {
       const markerName = config.ui.customMarkers?.marker_property_name;
 
