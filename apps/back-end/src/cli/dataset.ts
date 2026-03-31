@@ -204,16 +204,17 @@ export class ImportCmd extends Command {
         // matches null or undefined.
         if (value == undefined) return undefined;
 
+        const termsToIconIndex = config.ui.customMarkers?.termsToIconIndex;
+
+        if (!termsToIconIndex) return undefined;
+
         if (markerPropDef.type !== "multi") {
           // A singular value
-          return terms.indexOf(String(value));
+          return termsToIconIndex[value as string];
         }
 
         // Must be a list of values
         const values = value as Array<string>;
-        const termsToIconIndex = config.ui.customMarkers?.termsToIconIndex;
-
-        if (!termsToIconIndex) return undefined;
 
         for (let value of values) {
           if (termsToIconIndex[value] !== undefined) {
