@@ -38,6 +38,9 @@ export default defineConfig({
       formats: ["es"],
     },
   },
+  ssr: {
+    noExternal: process.env.NODE_ENV === "production" || undefined,
+  },
   server: {
     open: true,
   },
