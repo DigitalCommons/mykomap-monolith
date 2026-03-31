@@ -62,7 +62,7 @@ export class Launcher {
   // @fastify/cors will add an onRequest hook and a wildcard options route for this.
   corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 
-  // The TCP port to the webserver should listen on
+  // The TCP port the webserver should listen on
   listenPort = Number(process.env.FASTIFY_PORT) || 3000;
 
   // The API path prefix to set.
