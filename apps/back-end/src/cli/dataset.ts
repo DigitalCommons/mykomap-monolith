@@ -204,9 +204,9 @@ export class ImportCmd extends Command {
         // matches null or undefined.
         if (value == undefined) return undefined;
 
-        const termsToIconIndex = config.ui.customMarkers?.termsToIconIndex;
+        if (!config.ui.customMarkers) return undefined;
 
-        if (!termsToIconIndex) return undefined;
+        const { termsToIconIndex } = config.ui.customMarkers;
 
         if (markerPropDef.type !== "multi") {
           // A singular value
