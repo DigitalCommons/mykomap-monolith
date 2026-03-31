@@ -205,7 +205,7 @@ export class ImportCmd extends Command {
         if (value == undefined) return undefined;
 
         if (markerPropDef.type !== "multi") {
-          // A singlar value
+          // A singular value
           return terms.indexOf(String(value));
         }
 

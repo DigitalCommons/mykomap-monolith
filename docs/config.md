@@ -54,6 +54,31 @@ And these are the different options to define the style of an itemProp:
 
 <br />
 
+## Custom Markers
+
+Custom markers requires that an optional field called `customMarkers` has 3 things. The name of the property that will determine the marker, the list of marker icon images (which are loaded into the front-end by appending `.png` to the image name) and a list of which terms map to which icon (which must include a default value).
+
+In this example, the dataset items are assigned their property based on the `food` value. Having `strawberry` results in a red icon, `blackberry` in a purple icon, and anything else, via `default`, gets a red icon. They are referencing the position in the list of markerIcons.
+
+```
+"ui": {
+    ...
+    "customMarkers": {
+      "marker_property_name": "food",
+      "markerIcons": [
+        "red",
+        "purple"
+      ],
+      "termsToIconIndex": {
+        "strawberry": 0,
+        "blackberry": 1,
+        "default": 0
+      }
+    },
+    ...
+}
+```
+
 ## Logo
 
 The `logo` config field is a child of the `ui` field and is used to define logo display and position on the map. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
