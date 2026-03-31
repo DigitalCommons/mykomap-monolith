@@ -210,7 +210,7 @@ export class ImportCmd extends Command {
 
         if (markerPropDef.type !== "multi") {
           // A singular value
-          return termsToIconIndex[value as string];
+          return termsToIconIndex[value as string] || termsToIconIndex["default"];
         }
 
         // Must be a list of values
