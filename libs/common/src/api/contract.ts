@@ -141,12 +141,14 @@ const ConfigData = z.object({
   languages: z.array(Iso639Set1Code).nonempty(),
   ui: z.object({
     directory_panel_field: z.string(),
-    marker_property_name: z.string().optional(),
-    markerIcons: z.array(z.string()).optional(),
-    termsToIconIndex: z.intersection(
-      z.object({ "default": z.number() }),
-      z.record(z.number())
-    ).optional(),
+    customMarkers: z.object({
+      marker_property_name: z.string(),
+      markerIcons: z.array(z.string()),
+      termsToIconIndex: z.intersection(
+        z.object({ "default": z.number() }),
+        z.record(z.number())
+      )
+    }).optional(),
     map: z
       .object({
         mapBounds: z

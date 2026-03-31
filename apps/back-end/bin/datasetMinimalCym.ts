@@ -43,7 +43,7 @@ const searchable: {
 
 const foodCategories = config.vocabs.fsc.en.terms;
 const localities = config.vocabs.loc.en.terms;
-const termsToIconIndex = config.ui.termsToIconIndex;
+const termsToIconIndex = config.ui.customMarkers.termsToIconIndex;
 
 let i = 0;
 let fails = [];

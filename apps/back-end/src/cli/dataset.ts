@@ -88,7 +88,7 @@ export class ImportCmd extends Command {
     const csvReader = fromCsvFile(this.csvPath, mkTransformer);
 
     try {
-      const markerName = config.ui.marker_property_name;
+      const markerName = config.ui.customMarkers?.marker_property_name;
 
       // Construct an appropriate DatasetWriter for our case
       let dsWriter: DatasetWriter =
@@ -211,7 +211,7 @@ export class ImportCmd extends Command {
 
         // Must be a list of values
         const values = value as Array<string>;
-        const termsToIconIndex = config.ui.termsToIconIndex;
+        const termsToIconIndex = config.ui.customMarkers?.termsToIconIndex;
 
         if (!termsToIconIndex) return undefined;
 

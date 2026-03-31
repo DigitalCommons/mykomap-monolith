@@ -1016,34 +1016,44 @@
                         "directory_panel_field": {
                           "type": "string"
                         },
-                        "marker_property_name": {
-                          "type": "string"
-                        },
-                        "markerIcons": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "termsToIconIndex": {
-                          "allOf": [
-                            {
-                              "type": "object",
-                              "properties": {
-                                "default": {
-                                  "type": "number"
-                                }
-                              },
-                              "required": [
-                                "default"
-                              ]
+                        "customMarkers": {
+                          "type": "object",
+                          "properties": {
+                            "marker_property_name": {
+                              "type": "string"
                             },
-                            {
-                              "type": "object",
-                              "additionalProperties": {
-                                "type": "number"
+                            "markerIcons": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
                               }
+                            },
+                            "termsToIconIndex": {
+                              "allOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "default": {
+                                      "type": "number"
+                                    }
+                                  },
+                                  "required": [
+                                    "default"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "additionalProperties": {
+                                    "type": "number"
+                                  }
+                                }
+                              ]
                             }
+                          },
+                          "required": [
+                            "marker_property_name",
+                            "markerIcons",
+                            "termsToIconIndex"
                           ]
                         },
                         "map": {
