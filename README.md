@@ -35,6 +35,8 @@ See [deployment docs](https://digitalcommons.github.io/mykomap-monolith/deployme
 
 There are 4 codebases and 1 data source to setup. Follow the order as written here.
 
+Note: users on windows will need to use WSL as some of the build steps are unix-like.
+
 ### Data
 
 1. Download data by cloning this repository: https://github.com/DigitalCommons/cwm-test-data 
