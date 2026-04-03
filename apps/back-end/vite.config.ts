@@ -33,7 +33,10 @@ export default defineConfig({
     ssr: true,
     outDir: "dist",
     lib: {
-      entry: { server: fileURLToPath(import.meta.resolve("./start.ts")) },
+      entry: {
+        server: fileURLToPath(import.meta.resolve("./start.ts")),
+        dataset: fileURLToPath(import.meta.resolve("./bin/dataset.ts")),
+      },
       name,
       formats: ["es"],
     },
