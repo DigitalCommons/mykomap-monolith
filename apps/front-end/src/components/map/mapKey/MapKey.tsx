@@ -7,7 +7,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectIsMapKeyOpen, toggleMapKey } from "../mapSlice";
-
+import { selectMarkerIcons } from "../../../app/configSlice";
 
 type MapKeyEntry = {
   id: string;
@@ -15,13 +15,6 @@ type MapKeyEntry = {
   iconSrc?: string;
   colour?: string;
 };
-
-// TODO: Placeholder entries until we have data from the config
-const placeholderEntries: MapKeyEntry[] = [
-  { id: "p1", label: "Category 1", colour: "primary.main" },
-  { id: "p2", label: "Category 2", colour: "primary.light" },
-  { id: "p3", label: "Category 3", colour: "secondary.main" },
-];
 
 const StyledMapKeyContainer = styled(Box)(() => ({
   width: "fit-content",
@@ -138,8 +131,14 @@ const MapKey = () => {
   const handleToggleMapKey = () => {
     dispatch(toggleMapKey());
   }
-
-  const entries: MapKeyEntry[] = placeholderEntries; // Replace with actual data from config
+  const markerIcons = useAppSelector(selectMarkerIcons);
+  const entries: MapKeyEntry[] = (markerIcons ?? [])
+    .filter((iconName) => iconName !== "default")
+    .map((iconName, index) => ({
+    id: `m${index}`,
+    label: iconName,
+    iconSrc: `./assets/markers/${iconName}.png`,
+    }));
 
 
   return (
