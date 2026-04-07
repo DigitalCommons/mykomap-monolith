@@ -110,8 +110,8 @@ const MapKeyItem = ({
     >
       <Box
         sx={{
-          width: 16,
-          height: 16,
+          // width: 30,
+          height: 30,
           bgcolor: iconSrc ? "transparent" : colour || "primary.main",
           overflow: "hidden",
           display: "grid",
@@ -120,12 +120,7 @@ const MapKeyItem = ({
         }}
       >
         {iconSrc ? (
-          <Box
-            component="img"
-            src={iconSrc}
-            alt=""
-            sx={{ width: 16, height: 16 }}
-          />
+          <Box component="img" src={iconSrc} alt="" sx={{ height: 30 }} />
         ) : null}
       </Box>
 
@@ -165,18 +160,20 @@ const MapKey = () => {
     currentLanguage,
   });
 
-const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
-  (iconName, iconIndex) =>
-    iconName === "default"
-      ? []
-      : [
-          {
-            id: `m${iconIndex}`,
-            label: markerLabelsByIconIndex[iconIndex] ?? iconName,
-            iconSrc: `./assets/markers/${iconName}.png`,
-          },
-        ],
-);
+  // Keep the original icon index so it stays aligned with termsToIconIndex derived labels.
+  // Also exclude the default marker from the key.
+  const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
+    (iconName, iconIndex) =>
+      iconName === "default"
+        ? []
+        : [
+            {
+              id: `m${iconIndex}`,
+              label: markerLabelsByIconIndex[iconIndex] ?? iconName,
+              iconSrc: `./assets/markers/${iconName}.png`,
+            },
+          ],
+  );
 
   return (
     <StyledMapKeyContainer>

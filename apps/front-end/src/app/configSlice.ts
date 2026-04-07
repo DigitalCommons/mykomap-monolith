@@ -18,7 +18,7 @@ export interface ConfigSliceState {
   markerPropertyName?: NonNullable<
     Config["ui"]["customMarkers"]
   >["marker_property_name"];
-
+  // Used by MapKey to derive labels locally, rather than storing extra marker state here.
   customMarkers?: Config["ui"]["customMarkers"];
   itemProps?: Config["itemProps"];
 }
