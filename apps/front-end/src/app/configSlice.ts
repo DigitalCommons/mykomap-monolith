@@ -18,10 +18,9 @@ export interface ConfigSliceState {
   markerPropertyName?: NonNullable<
     Config["ui"]["customMarkers"]
   >["marker_property_name"];
-  markerVocabId?: string;
-  markerTermsToIconIndex?: NonNullable<
-    Config["ui"]["customMarkers"]
-  >["termsToIconIndex"];
+
+  customMarkers?: Config["ui"]["customMarkers"];
+  itemProps?: Config["itemProps"];
 }
 
 /**
@@ -45,56 +44,6 @@ const deriveMultiples = (
     topRightPane: topRightPane.map(processMulti),
     bottomRightPane: bottomRightPane.map(processMulti),
   };
-};
-
-/**
- * Derives the marker vocabulary ID from the config.
- * @param config The configuration object.
- * @returns The marker vocabulary ID or undefined if not found.
- */
-
-const deriveMarkerVocabId = (config: Config): string | undefined => {
-  const markerPropertyName = config.ui.customMarkers?.marker_property_name;
-  if (!markerPropertyName) return undefined;
-
-  return (
-    (config.itemProps[markerPropertyName] as { uri?: string } | undefined)?.uri?.replace(
-      ":",
-      "",
-    )
-  );
-};
-
-/**
- * Derives a mapping of primary marker labels by their icon index. It looks up the terms
- * associated with markers in the config, finds the corresponding labels for those terms
- * in the current language, and returns an object mapping icon indices to labels. This is
- * used to display the correct labels in the map key.
- * @param state The config slice state.
- * @returns An object mapping marker icon indices to their primary labels.
- */
-
-const derivePrimaryMarkerLabelsByIconIndex = (
-  state: ConfigSliceState,
-): Record<number, string> => {
-  const vocab = state.markerVocabId ? state.vocabs?.[state.markerVocabId] : undefined;
-  const termsInCurrentLanguage =
-    vocab?.[state.currentLanguage]?.terms ?? Object.values(vocab ?? {})[0]?.terms;
-
-  const primaryTerms = Object.entries(state.markerTermsToIconIndex ?? {}).filter(
-    ([term]) => term !== "default" && !term.includes("-"),
-  );
-
-  return primaryTerms.reduce(
-    (acc, [term, iconIndex]) => {
-      const label = termsInCurrentLanguage?.[term];
-      if (label && acc[iconIndex] === undefined) {
-        acc[iconIndex] = label;
-      }
-      return acc;
-    },
-    {} as Record<number, string>,
-  );
 };
 
 const initialState: ConfigSliceState = {
@@ -178,9 +127,9 @@ export const configSlice = createAppSlice({
       state.markerIcons = action.payload.ui.customMarkers?.markerIcons;
       state.markerPropertyName =
         action.payload.ui.customMarkers?.marker_property_name;
-      state.markerVocabId = deriveMarkerVocabId(action.payload);
-      state.markerTermsToIconIndex =
-        action.payload.ui.customMarkers?.termsToIconIndex;
+
+      state.customMarkers = action.payload.ui.customMarkers;
+      state.itemProps = action.payload.itemProps;
 
       state.logo = action.payload.ui.logo;
 
@@ -200,10 +149,12 @@ export const configSlice = createAppSlice({
     selectLogo: (state) => state.logo,
     selectMapConfig: (state) => state.map,
     selectMarkerIcons: (state) => state.markerIcons,
-    selectPrimaryMarkerLabelsByIconIndex: (state) =>
-      derivePrimaryMarkerLabelsByIconIndex(state),
     selectConfigStatus: (state) => state.status,
     selectDataSources: (state) => state.dataSources,
+
+    selectCustomMarkers: (state) => state.customMarkers,
+    selectItemProps: (state) => state.itemProps,
+    selectVocabs: (state) => state.vocabs,
   },
 });
 
@@ -217,7 +168,10 @@ export const {
   selectPopupConfig,
   selectMapConfig,
   selectMarkerIcons,
-  selectPrimaryMarkerLabelsByIconIndex,
   selectConfigStatus,
   selectDataSources,
+
+  selectCustomMarkers,
+  selectItemProps,
+  selectVocabs,
 } = configSlice.selectors;

@@ -8,9 +8,13 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectIsMapKeyOpen, toggleMapKey } from "../mapSlice";
 import {
+  selectCurrentLanguage,
+  selectCustomMarkers,
+  selectItemProps,
   selectMarkerIcons,
-  selectPrimaryMarkerLabelsByIconIndex,
+  selectVocabs,
 } from "../../../app/configSlice";
+import { getMarkerLabelsByIconIndex } from "./getMarkerLabelsByIconIndex";
 
 type MapKeyEntry = {
   id: string;
@@ -67,8 +71,15 @@ const StyledMapKey = styled(Paper)(() => ({
   },
 }));
 
-const MapKeyButton = ({ onClick, isOpen }: { onClick: () => void; isOpen: boolean }) => {
+const MapKeyButton = ({
+  onClick,
+  isOpen,
+}: {
+  onClick: () => void;
+  isOpen: boolean;
+}) => {
   const isMedium = useMediaQuery("(min-width: 768px)");
+
   return (
     <StyledMapKeyButton
       onClick={onClick}
@@ -78,7 +89,7 @@ const MapKeyButton = ({ onClick, isOpen }: { onClick: () => void; isOpen: boolea
       <FormatListBulletedIcon /> {isMedium && "Map"} Key
     </StyledMapKeyButton>
   );
-}
+};
 
 const MapKeyItem = ({
   iconSrc,
@@ -90,7 +101,13 @@ const MapKeyItem = ({
   colour?: string;
 }) => {
   return (
-    <Box component="li" display="flex" alignItems="center" gap={1} sx={{ listStyle: "none" }}>
+    <Box
+      component="li"
+      display="flex"
+      alignItems="center"
+      gap={1}
+      sx={{ listStyle: "none" }}
+    >
       <Box
         sx={{
           width: 16,
@@ -128,30 +145,38 @@ const MapKeyItem = ({
 };
 
 const MapKey = () => {
-
   const mapKeyOpen = useAppSelector(selectIsMapKeyOpen);
   const dispatch = useAppDispatch();
+
+  const markerIcons = useAppSelector(selectMarkerIcons);
+  const customMarkers = useAppSelector(selectCustomMarkers);
+  const itemProps = useAppSelector(selectItemProps);
+  const vocabs = useAppSelector(selectVocabs);
+  const currentLanguage = useAppSelector(selectCurrentLanguage);
+
   const handleToggleMapKey = () => {
     dispatch(toggleMapKey());
-  }
-  const markerIcons = useAppSelector(selectMarkerIcons);
-  const primaryLabelsByIconIndex = useAppSelector(
-    selectPrimaryMarkerLabelsByIconIndex,
-  );
+  };
 
-  const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
-    (iconName, iconIndex) =>
-      iconName === "default"
-        ? []
-        : [
-            {
-              id: `m${iconIndex}`,
-              label: primaryLabelsByIconIndex[iconIndex] ?? iconName,
-              iconSrc: `./assets/markers/${iconName}.png`,
-            },
-          ],
-  );
+  const markerLabelsByIconIndex = getMarkerLabelsByIconIndex({
+    customMarkers,
+    itemProps,
+    vocabs,
+    currentLanguage,
+  });
 
+const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
+  (iconName, iconIndex) =>
+    iconName === "default"
+      ? []
+      : [
+          {
+            id: `m${iconIndex}`,
+            label: markerLabelsByIconIndex[iconIndex] ?? iconName,
+            iconSrc: `./assets/markers/${iconName}.png`,
+          },
+        ],
+);
 
   return (
     <StyledMapKeyContainer>
@@ -164,7 +189,12 @@ const MapKey = () => {
           aria-label="Map Key"
           role="region"
         >
-          <Stack component="ul" spacing={2} padding={2} sx={{ m: 0, listStyle: "none"}}>
+          <Stack
+            component="ul"
+            spacing={2}
+            padding={2}
+            sx={{ m: 0, listStyle: "none" }}
+          >
             {entries.map((entry) => (
               <MapKeyItem
                 key={entry.id}
