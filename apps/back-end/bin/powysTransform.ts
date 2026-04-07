@@ -58,14 +58,12 @@ for(let item of categorisedItems){
 
     const itemOutput = {...item};
 
-    item.Geocode = "50, 50";
-
     if (item.Geocode) {
       const [lat, lng] = item.Geocode.split(", ");
       itemOutput.lat = parseFloat(lat);
       itemOutput.lng = parseFloat(lng);
   } else {
-    const cleanAddress = `${itemOutput.address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
+    const cleanAddress = `${itemOutput.Address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
 
     const geocodeResponse = await fetch(
       `https://api.mapbox.com/search/geocode/v6/forward?q=${cleanAddress}&access_token=${GEOCODE_TOKEN}&bbox=-5.4,51.35,-2.6,53.53`,
@@ -133,8 +131,6 @@ await fs.mkdir("./tmp/out/predataset");
 await fs.mkdir("./tmp/out/predataset/powys-eng");
 await fs.mkdir("./tmp/out/predataset/powys-cym");
 
-//output the csv and the config.json and the about.md in its own folder
-
 const engOutputCsv = await json2csv(engItems);
 const cymOutputCsv = await json2csv(cymItems);
 
@@ -148,7 +144,7 @@ await fs.writeFile(
 );
 
 await fs.writeFile(
-  `./tmp/out/predataset/powys-cym/${csvFileName}.csv`,
+  `./tmp/out/predataset/powys-cym/${csvFileName}`,
   cymOutputCsv,
 );
 
