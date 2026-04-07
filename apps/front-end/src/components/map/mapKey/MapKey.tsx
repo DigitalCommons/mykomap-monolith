@@ -7,7 +7,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { selectIsMapKeyOpen, toggleMapKey } from "../mapSlice";
-import { selectMarkerIcons } from "../../../app/configSlice";
+import {
+  selectMarkerIcons,
+  selectPrimaryMarkerLabelsByIconIndex,
+} from "../../../app/configSlice";
 
 type MapKeyEntry = {
   id: string;
@@ -132,13 +135,22 @@ const MapKey = () => {
     dispatch(toggleMapKey());
   }
   const markerIcons = useAppSelector(selectMarkerIcons);
-  const entries: MapKeyEntry[] = (markerIcons ?? [])
-    .filter((iconName) => iconName !== "default")
-    .map((iconName, index) => ({
-    id: `m${index}`,
-    label: iconName,
-    iconSrc: `./assets/markers/${iconName}.png`,
-    }));
+  const primaryLabelsByIconIndex = useAppSelector(
+    selectPrimaryMarkerLabelsByIconIndex,
+  );
+
+  const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
+    (iconName, iconIndex) =>
+      iconName === "default"
+        ? []
+        : [
+            {
+              id: `m${iconIndex}`,
+              label: primaryLabelsByIconIndex[iconIndex] ?? iconName,
+              iconSrc: `./assets/markers/${iconName}.png`,
+            },
+          ],
+  );
 
 
   return (
