@@ -12,6 +12,9 @@ const rawCymConfig = await fs.readFile(`./tmp/config.cym.json`);
 const engConfig = JSON.parse(rawEngConfig.toString());
 const cymConfig = JSON.parse(rawCymConfig.toString());
 
+// download this data as csv from the google sheet here: 
+// https://docs.google.com/spreadsheets/d/1C8SgDAv0axnivbBoXTPEmqJvoudp4L8F2y5Jaoj7wkw/edit?gid=0#gid=0
+// and name after the date of download
 const rawCSV = (await fs.readFile(`./tmp/2026.04.07_raw_powys.csv`)).toString();
 
 const firstLineEnd = rawCSV.indexOf("\r\n")
