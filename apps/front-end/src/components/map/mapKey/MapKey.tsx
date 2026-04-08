@@ -12,6 +12,7 @@ import {
   selectCustomMarkers,
   selectItemProps,
   selectMarkerIcons,
+  selectShowMapKey,
   selectVocabs,
 } from "../../../app/configSlice";
 import { getMarkerLabelsByIconIndex } from "./getMarkerLabelsByIconIndex";
@@ -148,6 +149,11 @@ const MapKey = () => {
   const itemProps = useAppSelector(selectItemProps);
   const vocabs = useAppSelector(selectVocabs);
   const currentLanguage = useAppSelector(selectCurrentLanguage);
+  const showMapKey = useAppSelector(selectShowMapKey);
+
+  if (!showMapKey || !customMarkers || !markerIcons?.length) {
+    return null;
+  }
 
   const handleToggleMapKey = () => {
     dispatch(toggleMapKey());
