@@ -24,6 +24,11 @@ type MapKeyEntry = {
   colour?: string;
 };
 
+// Client-specific display label overrides for map key entries. 
+const mapKeyLabelOverrides: Record<string, string> = {
+  DotCooperation: ".coop verified",
+};
+
 const StyledMapKeyContainer = styled(Box)(() => ({
   width: "fit-content",
   position: "absolute",
@@ -168,16 +173,21 @@ const MapKey = () => {
   // Keep the original icon index so it stays aligned with termsToIconIndex derived labels.
   // Also exclude the default marker from the key.
   const entries: MapKeyEntry[] = markerIcons.flatMap(
-    (iconName: string, iconIndex: number) =>
-      iconName === "default"
-        ? []
-        : [
-            {
-              id: `m${iconIndex}`,
-              label: markerLabelsByIconIndex[iconIndex] ?? iconName,
-              iconSrc: `./assets/markers/${iconName}.png`,
-            },
-          ],
+    (iconName: string, iconIndex: number) => {
+      if (iconName === "default") {
+        return [];
+      }
+
+      const label = markerLabelsByIconIndex[iconIndex] ?? iconName;
+
+      return [
+        {
+          id: `m${iconIndex}`,
+          label: mapKeyLabelOverrides[label] ?? label,
+          iconSrc: `./assets/markers/${iconName}.png`,
+        },
+      ];
+    },
   );
 
   if (!entries.length) {
