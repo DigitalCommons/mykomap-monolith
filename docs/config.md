@@ -79,6 +79,18 @@ In this example, the dataset items are assigned their property based on the `foo
 }
 ```
 
+## Map Key
+
+The `show_map_key` field is an optional boolean used to control whether the map key is displayed for a dataset. It is defined within `ui` and defaults to `false` when omitted.
+
+ ```
+"ui": {
+    ...
+    "show_map_key": true,
+    ...
+}
+```
+
 ## Logo
 
 The `logo` config field is a child of the `ui` field and is used to define logo display and position on the map. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
