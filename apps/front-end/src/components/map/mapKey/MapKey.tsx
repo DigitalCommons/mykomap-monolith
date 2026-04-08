@@ -169,7 +169,7 @@ const MapKey = () => {
   // Keep the original icon index so it stays aligned with termsToIconIndex derived labels.
   // Also exclude the default marker from the key.
   const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
-    (iconName, iconIndex) =>
+    (iconName: string, iconIndex: number) =>
       iconName === "default"
         ? []
         : [

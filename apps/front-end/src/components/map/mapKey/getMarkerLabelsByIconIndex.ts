@@ -4,11 +4,16 @@ type CustomMarkers = Config["ui"]["customMarkers"];
 type ItemProps = Config["itemProps"];
 type Vocabs = Config["vocabs"];
 
-type GetMarkerLabelsByIconIndexArgs = {
+type MarkerLabelArgs = {
   customMarkers?: CustomMarkers;
   itemProps?: ItemProps;
   vocabs: Vocabs;
   currentLanguage: string;
+};
+
+type LocalisedVocab = {
+  title: string;
+  terms: Record<string, string>;
 };
 
 export const getMarkerLabelsByIconIndex = ({
@@ -16,7 +21,7 @@ export const getMarkerLabelsByIconIndex = ({
   itemProps,
   vocabs,
   currentLanguage,
-}: GetMarkerLabelsByIconIndexArgs): Record<number, string> => {
+}: MarkerLabelArgs): Record<number, string> => {
   const markerPropertyName = customMarkers?.marker_property_name;
   const termsToIconIndex = customMarkers?.termsToIconIndex;
 
@@ -43,11 +48,17 @@ export const getMarkerLabelsByIconIndex = ({
   // Prefer labels in the current language, but fall back to the first available vocab language
   // so the key still renders if a translation is missing.
   const vocab = vocabs[vocabId];
-  const termsInCurrentLanguage =
-    vocab?.[currentLanguage]?.terms ?? Object.values(vocab ?? {})[0]?.terms;
 
-  return Object.entries(termsToIconIndex).reduce(
-    (acc, [term, iconIndex]) => {
+  const fallbackVocab = vocab
+    ? (Object.values(vocab)[0] as LocalisedVocab | undefined)
+    : undefined;
+
+  const termsInCurrentLanguage =
+    vocab?.[currentLanguage]?.terms ?? fallbackVocab?.terms;
+
+  return Object.entries(termsToIconIndex).reduce<Record<number, string>>(
+    (acc, [term, rawIconIndex]) => {
+      const iconIndex = Number(rawIconIndex);
       // Only use top-level terms for the key.
       // In Powys, child terms are hyphenated (e.g. "ep-fb", "cg-ie"), so we exclude them here.
       // This assumes hyphenated terms represent children rather than primary categories.
