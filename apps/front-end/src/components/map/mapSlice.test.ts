@@ -30,6 +30,7 @@ describe<LocalTestContext>("map reducer", (it) => {
     expect(mapSlice.reducer(undefined, { type: "unknown" })).toStrictEqual({
       allLocations: [],
       status: "loading",
+      mapKeyOpen: false,
     });
   });
 
