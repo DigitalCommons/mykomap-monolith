@@ -111,7 +111,6 @@ const MapKeyItem = ({
     >
       <Box
         sx={{
-          // width: 30,
           height: 30,
           bgcolor: iconSrc ? "transparent" : colour || "primary.main",
           overflow: "hidden",
@@ -168,7 +167,7 @@ const MapKey = () => {
 
   // Keep the original icon index so it stays aligned with termsToIconIndex derived labels.
   // Also exclude the default marker from the key.
-  const entries: MapKeyEntry[] = (markerIcons ?? []).flatMap(
+  const entries: MapKeyEntry[] = markerIcons.flatMap(
     (iconName: string, iconIndex: number) =>
       iconName === "default"
         ? []
@@ -180,6 +179,10 @@ const MapKey = () => {
             },
           ],
   );
+
+  if (!entries.length) {
+    return null;
+  }
 
   return (
     <StyledMapKeyContainer>
