@@ -32,6 +32,7 @@ import {
   selectPanelOpen,
   selectResultsPanelOpen,
 } from "../panel/panelSlice";
+import { closeMapKey } from "./mapSlice";
 import { DEVICE_ID, Event, trackEvent } from "../../services/analytics";
 
 const MapWrapper = () => {
@@ -67,6 +68,7 @@ const MapWrapper = () => {
   const DEVICE_ID_PARAM = "ref";
 
   const popupCreatedCallback = (itemIx: number) => {
+     if (!isMedium) dispatch(closeMapKey());
     dispatch(openPopup(`@${itemIx}`));
   };
 

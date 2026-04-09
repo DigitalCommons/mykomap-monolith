@@ -45,5 +45,14 @@ Although we have endeavoured to make the code in this project client agnostic, r
 
 <br>
 
+### 4. DotCoop Map Key Label Override
+
+`apps/front-end/src/components/map/mapKey/MapKey.tsx`
+
+- Includes a client-specific map key label override for CWM
+- Where the derived marker label is DotCooperation, the displayed text is **.coop verified**
+
+<br>
+
 > ### Note
 > Powys specific code has not been documented here, as this will soon be deprecated and the specific options handle by the map's `config.json` file.

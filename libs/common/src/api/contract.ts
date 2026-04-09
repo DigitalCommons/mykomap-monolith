@@ -141,6 +141,7 @@ const ConfigData = z.object({
   languages: z.array(Iso639Set1Code).nonempty(),
   ui: z.object({
     directory_panel_field: z.string(),
+    show_map_key: z.boolean().optional(),
     customMarkers: z.object({
       marker_property_name: z.string(),
       markerIcons: z.array(z.string()),
