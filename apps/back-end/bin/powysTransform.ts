@@ -5,7 +5,7 @@ import { json2csv } from 'json-2-csv';
 const { GEOCODE_TOKEN } = process.env;
 
 const engAbout = (await fs.readFile(`./tmp/about.en.md`)).toString();
-const cymAbout = (await fs.readFile(`./tmp/about.en.md`)).toString();
+const cymAbout = (await fs.readFile(`./tmp/about.cym.md`)).toString();
 
 const rawEngConfig = await fs.readFile(`./tmp/config.en.json`);
 const rawCymConfig = await fs.readFile(`./tmp/config.cym.json`);
@@ -15,7 +15,15 @@ const cymConfig = JSON.parse(rawCymConfig.toString());
 // download this data as csv from the google sheet here: 
 // https://docs.google.com/spreadsheets/d/1C8SgDAv0axnivbBoXTPEmqJvoudp4L8F2y5Jaoj7wkw/edit?gid=0#gid=0
 // and name after the date of download
-const rawCSV = (await fs.readFile(`./tmp/2026.04.07_raw_powys.csv`)).toString();
+
+const csvLocation = process.argv[2];
+
+if (!csvLocation) {
+  console.error('Usage: npm run data-powys-transform -- <csvLocation>');
+  process.exit(1);
+}
+
+const rawCSV = (await fs.readFile(csvLocation)).toString();
 
 const firstLineEnd = rawCSV.indexOf("\r\n")
 const input = rawCSV.slice(firstLineEnd);
@@ -26,10 +34,14 @@ const items = parse(input, {
 })
   .filter((item: any) => item.ID);
 
-const categorisedItems = items.map(item => {
-    const foodCategories = engConfig.vocabs.fsc.en.terms; //the spreadsheet has these in English so we use the English categories
+type CsvRow = {
+  [key: string]: string;
+}
 
-    const primary_food_system_category = Object.keys(foodCategories).find(
+const categorisedItems = items.map((item: CsvRow) => {
+  const foodCategories = engConfig.vocabs.fsc.en.terms; //the spreadsheet has these in English so we use the English categories
+
+  const primary_food_system_category = Object.keys(foodCategories).find(
     (key) => foodCategories[key] === item.Category,
   );
 
@@ -41,39 +53,57 @@ const categorisedItems = items.map(item => {
   ].join(";");
 
   const localities = engConfig.vocabs.loc.en.terms;
-      
-      const locality =  Object.keys(localities).find(
+
+  const locality = Object.keys(localities).find(
     (key) => localities[key] === item.Town);
 
-    return {
-        ...item,
-        primary_food_system_category,
-        food_system_categories,
-        locality
-    }
+  return {
+    ...item,
+    primary_food_system_category,
+    food_system_categories,
+    locality
+  }
 })
+
+type GeocodeResult = {
+  features: {
+    geometry: {
+      coordinates: [number, number];
+    },
+    properties: {
+      full_address: string;
+    }
+  }[]
+};
 
 let i = 0;
 let fails = [];
 const geocodedItems = [];
-for(let item of categorisedItems){
-    console.log("item ", i++);
+for (let item of categorisedItems) {
+  console.log("item ", i++);
 
-    const itemOutput = {...item};
+  const itemOutput = { ...item };
 
-    if (item.Geocode) {
-      const [lat, lng] = item.Geocode.split(", ");
-      itemOutput.lat = parseFloat(lat);
-      itemOutput.lng = parseFloat(lng);
+  if (item.Geocode) {
+    const [lat, lng] = item.Geocode.split(", ");
+    itemOutput.lat = parseFloat(lat);
+    itemOutput.lng = parseFloat(lng);
   } else {
     const cleanAddress = `${itemOutput.Address.replaceAll("\n", ", ")}, ${item.Postcode}, GB`;
 
-    const geocodeResponse = await fetch(
-      `https://api.mapbox.com/search/geocode/v6/forward?q=${cleanAddress}&access_token=${GEOCODE_TOKEN}&bbox=-5.4,51.35,-2.6,53.53`,
-    );
-    const geocodeResult = await geocodeResponse.json();
+    let location, geocodeResult;
 
-    const location = geocodeResult.features[0];
+    try {
+      const geocodeResponse = await fetch(
+        `https://api.mapbox.com/search/geocode/v6/forward?q=${cleanAddress}&access_token=${GEOCODE_TOKEN}&bbox=-5.4,51.35,-2.6,53.53`,
+      );
+
+      geocodeResult = (await geocodeResponse.json()) as GeocodeResult;
+      location = geocodeResult.features[0];
+    }
+    catch (err) {
+      console.log(err);
+    }
 
     if (location) {
       itemOutput.lng = location.geometry.coordinates[0];
@@ -83,15 +113,15 @@ for(let item of categorisedItems){
       console.log(geocodeResult);
       fails.push(item.Title_Eng);
       console.log("fails", fails);
-    }    
+    }
   }
 
   geocodedItems.push(itemOutput);
 }
 
 const engItems = geocodedItems.map(
-    item => ({
-        id: item.ID,
+  item => ({
+    id: item.ID,
     name: item.Title_Eng.replaceAll("\r", "").replaceAll("\n", ""),
     description: item["Text for popup"].replaceAll("\r", ""),
     address: item.Address.replaceAll("\r", ""),
@@ -106,12 +136,12 @@ const engItems = geocodedItems.map(
     contact_name: item["Contact name"],
     email: item["Email address"],
     phone: item["Phone number"],
-    })
+  })
 ).sort((a: any, b: any) => (a.name < b.name ? -1 : 1));
 
 const cymItems = geocodedItems.map(
-    item => ({
-        id: item.ID,
+  item => ({
+    id: item.ID,
     name: item.Title_Cym.replaceAll("\r", "").replaceAll("\n", ""),
     description: item["Text for popup_Cym"].replaceAll("\r", ""),
     address: item.Address.replaceAll("\r", ""),
@@ -126,7 +156,7 @@ const cymItems = geocodedItems.map(
     contact_name: item["Contact name"],
     email: item["Email address"],
     phone: item["Phone number"],
-    })
+  })
 ).sort((a: any, b: any) => (a.name < b.name ? -1 : 1));
 
 await fs.mkdir("./tmp/out");
@@ -138,7 +168,7 @@ const engOutputCsv = await json2csv(engItems);
 const cymOutputCsv = await json2csv(cymItems);
 
 const now = new Date();
-const date = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()}`;
+const date = `${now.getFullYear()}.${now.getMonth() + 1}.${now.getDate()}`;
 const csvFileName = `${date}.powys_food_systems.csv`;
 
 await fs.writeFile(
