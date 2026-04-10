@@ -16,6 +16,7 @@ import {
   selectVocabs,
 } from "../../../app/configSlice";
 import { getMarkerLabelsByIconIndex } from "./getMarkerLabelsByIconIndex";
+import { useTranslation } from "react-i18next";
 
 type MapKeyEntry = {
   id: string;
@@ -85,6 +86,7 @@ const MapKeyButton = ({
   isOpen: boolean;
 }) => {
   const isMedium = useMediaQuery("(min-width: 768px)");
+  const { t } = useTranslation();
 
   return (
     <StyledMapKeyButton
@@ -92,7 +94,7 @@ const MapKeyButton = ({
       aria-controls="map-key"
       aria-expanded={isOpen}
     >
-      <FormatListBulletedIcon /> {isMedium && "Map"} Key
+      <FormatListBulletedIcon /> {isMedium ? t("mapKey") : t("key")}
     </StyledMapKeyButton>
   );
 };
