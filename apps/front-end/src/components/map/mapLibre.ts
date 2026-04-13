@@ -25,6 +25,9 @@ export const POPUP_CONTAINER_ID = "popup-container";
 /** The level to which we zoom when jumping to a popup, on clicking a search result */
 const POPUP_INITIAL_ZOOM = 15;
 
+/** The zoom level at which colocated clusters can be spiderfied */
+const SPIDERFY_ZOOM = 18;
+
 /** Note: We ONLY USE INDEXES in this file. MapLibre doesn't know about IDs. Read architecture.md */
 let popupIx: number | undefined;
 let popup: Popup | undefined;
@@ -435,7 +438,7 @@ export const createMap = (
           map.getCanvas().style.cursor = "";
         }
       },
-      minZoomLevel: 18,
+      minZoomLevel: SPIDERFY_ZOOM,
       zoomIncrement: 0,
       closeOnLeafClick: false,
       spiderLeavesLayout:
@@ -455,19 +458,65 @@ export const createMap = (
         })[0] as GeoJSON.Feature<GeoJSON.Point>;
 
       const source = map.getSource("items-geojson") as GeoJSONSource;
-      const features: GeoJSON.Feature<GeoJSON.Point>[] =
+      const clusterId = clusterFeature.properties?.cluster_id;
+      const pointCount = clusterFeature.properties?.point_count ?? 1;
+
+      if (clusterId === undefined) {
+        return;
+      }
+
+      // Get all the leaves in a cluster
+      const allLeaves: GeoJSON.Feature<GeoJSON.Point>[] =
         (await source.getClusterLeaves(
-          clusterFeature.properties?.cluster_id,
-          1,
+          clusterId,
+          pointCount,
           0,
         )) as GeoJSON.Feature<GeoJSON.Point>[];
-      const clusterExpansionZoom = await source.getClusterExpansionZoom(
-        clusterFeature.properties?.cluster_id,
+
+      // Coordinates of the first leaf in the cluster to check for colocation
+      const firstLeaf = allLeaves[0];
+      const firstLeafCoordinates = firstLeaf?.geometry.coordinates;
+
+      if (!firstLeafCoordinates) {
+        return;
+      }
+
+      // Check whether markers in cluster share the same coordinates
+      const isColocated = allLeaves.every(
+        (leaf) =>
+          leaf.geometry.coordinates[0] === firstLeafCoordinates[0] &&
+          leaf.geometry.coordinates[1] === firstLeafCoordinates[1],
       );
 
-      if (map.getZoom() < 18 && clusterExpansionZoom <= 18) {
+      const clusterExpansionZoom =
+        await source.getClusterExpansionZoom(clusterId);
+
+      // Colocated clusters zoom directly to spiderfy level
+      if (isColocated && map.getZoom() < SPIDERFY_ZOOM) {
+        const targetCoordinates = firstLeaf.geometry.coordinates as LngLatLike;
+
+        map
+          .easeTo({
+            center: targetCoordinates,
+            offset: mapCenterOffsetPixels,
+            zoom: SPIDERFY_ZOOM,
+            duration: 1000,
+          })
+          .once("moveend", () => {
+            const point = map.project(targetCoordinates);
+
+            // Synthetic click at zoom level to expand the spiderfy cluster
+            map.fire("click", {
+              lngLat: MapLibreGL.LngLat.convert(targetCoordinates),
+              point,
+            } as MapLibreGL.MapMouseEvent);
+          });
+        return;
+      }
+
+      if (map.getZoom() < SPIDERFY_ZOOM && clusterExpansionZoom <= SPIDERFY_ZOOM) {
         map.flyTo({
-          center: features[0].geometry.coordinates as LngLatLike,
+          center: firstLeaf.geometry.coordinates as LngLatLike,
           offset: mapCenterOffsetPixels,
           zoom: clusterExpansionZoom ?? undefined,
           duration: 500,
