@@ -9,9 +9,8 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectDirectoryOptions } from "./directorySlice";
 import { getTotals } from "../../../services";
 import { getDatasetId } from "../../../utils/window-utils";
-// Temporary import to get icons for directory items, will be removed
-// when config driven mapping is implemented
-import { PRIMARY_CATEGORY_ICONS } from "./primaryCategoryIcons";
+import { selectCustomMarkers } from "../../../app/configSlice";
+import { getDirectoryIconSrc } from "./getDirectoryIconSrc";
 
 const StyledDirectoryPanel = styled(Box)(() => ({
   width: "100%",
@@ -47,15 +46,13 @@ const fetchResults = async () => {
   }
 };
 
-// Determine if a directory option is a primary category,
-const isPrimaryCategory = (value: string) =>
-  value !== "any" && !value.includes("-");
-
 const DirectoryPanel = () => {
   const { t } = useTranslation();
 
   const directoryOptions = useAppSelector(selectDirectoryOptions);
+  const customMarkers = useAppSelector(selectCustomMarkers);
   const activeValue = directoryOptions.value;
+
   const [resultsTotals, setResultsTotals] = useState<Record<string, number>>(
     {},
   );
@@ -67,17 +64,16 @@ const DirectoryPanel = () => {
     });
   }, []);
 
-  console.log("#265 log 1", directoryOptions.options.slice(0, 6));
-
   return (
     <>
       <Heading title={t("directory")} />
       <StyledDirectoryPanel>
         <List>
           {directoryOptions.options.map((option, i) => {
-            const iconSrc = isPrimaryCategory(option.value)
-              ? PRIMARY_CATEGORY_ICONS[option.value]
-              : undefined;
+            const iconSrc = getDirectoryIconSrc({
+              optionValue: option.value,
+              customMarkers,
+            });
 
             return (
               <DirectoryItem
@@ -86,8 +82,7 @@ const DirectoryPanel = () => {
                 {...option}
                 active={option.value === activeValue}
                 resultsTotal={resultsTotals[option.value]}
-                iconSrc={iconSrc?.icon}
-                categoryColor={iconSrc?.color}
+                iconSrc={iconSrc}
               />
             );
           })}
