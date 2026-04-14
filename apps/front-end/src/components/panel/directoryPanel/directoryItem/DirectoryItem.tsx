@@ -13,24 +13,26 @@ interface DirectoryItemProps {
   resultsTotal: number;
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
   iconSrc?: string;
-  categoryColor?: string;
+  isPrimaryCategory?: boolean;
 }
 
 /** Passing active as a boolean gives a React error so just pass as a number 0 or 1. */
-const StyledButton = styled(Button)(({ active, categoryColor }: { active: number; categoryColor?: string }) => ({
+const StyledButton = styled(Button)(({ active, isPrimaryCategory }: { active: number, isPrimaryCategory?: boolean }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
   gap: "var(--spacing-small)",
   width: "100%",
-  padding: "var(--spacing-small) var(--spacing-medium)",
+  padding: isPrimaryCategory
+    ? "var(--spacing-small) var(--spacing-medium)"
+    : "var(--spacing-small) calc(var(--spacing-medium) + 20px)",
   // display: "block",
   fontSize: "var(--font-size-medium)",
   fontWeight: "var(--font-weight-medium)",
   textDecoration: "none",
   textAlign: "left",
   whiteSpace: "pre-wrap",
-  color: active ? "var(--color-primary)" : categoryColor || "var(--color-text)",
+  color: active ? "var(--color-primary)" : "var(--color-text)",
   backgroundColor: "transparent",
   borderRadius: 0,
   boxShadow: "none",
@@ -38,7 +40,9 @@ const StyledButton = styled(Button)(({ active, categoryColor }: { active: number
     backgroundColor: "var(--color-neutral-light)",
   },
   "@media (min-width: 768px)": {
-    padding: "var(--spacing-small) var(--spacing-large)",
+    padding: isPrimaryCategory
+      ? "var(--spacing-small) var(--spacing-large)"
+      : "var(--spacing-small) calc(var(--spacing-large) + 20px)",
   },
 }));
 
@@ -56,12 +60,17 @@ const DirectoryItem = ({
   resultsTotal,
   onClick,
   iconSrc,
-  categoryColor,
+  isPrimaryCategory,
 }: DirectoryItemProps) => {
   const dispatch = useAppDispatch();
 
   const handleClick = async (e: React.MouseEvent) => {
+    if (onClick) {
+      onClick(e);
+      return;
+    }
     console.log(`Clicked ${value}`);
+
     await dispatch(
       performSearchFromQuery({ filter: [`${propId}:${value}`], text: "" }),
     );
@@ -73,9 +82,9 @@ const DirectoryItem = ({
       <StyledButton
         role="button"
         active={+active}
+        isPrimaryCategory={isPrimaryCategory}
         disabled={!resultsTotal}
         onClick={handleClick}
-        categoryColor={categoryColor}
       >
         {iconSrc && <StyledIconImage src={iconSrc} alt={label} />}
         {label} ({resultsTotal ? resultsTotal : 0})

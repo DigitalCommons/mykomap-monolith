@@ -7,6 +7,8 @@ type DirectoryIconArgs = {
   customMarkers?: CustomMarkers;
 };
 
+// Derives directory icons from the dataset's custom marker config.
+// Keeps directory icons aligned with bespoke marker naming without adding a separate mapping.
 export const getDirectoryIconSrc = ({
   optionValue,
   customMarkers,

@@ -53,6 +53,9 @@ const DirectoryPanel = () => {
   const customMarkers = useAppSelector(selectCustomMarkers);
   const activeValue = directoryOptions.value;
 
+  const isPrimaryCategory = (value: string) => 
+    value !== "any" && !value.includes("-");
+
   const [resultsTotals, setResultsTotals] = useState<Record<string, number>>(
     {},
   );
@@ -75,6 +78,8 @@ const DirectoryPanel = () => {
               customMarkers,
             });
 
+            const isPrimary = isPrimaryCategory(option.value);
+
             return (
               <DirectoryItem
                 key={`${i}-${option.value}`}
@@ -83,6 +88,7 @@ const DirectoryPanel = () => {
                 active={option.value === activeValue}
                 resultsTotal={resultsTotals[option.value]}
                 iconSrc={iconSrc}
+                isPrimaryCategory={isPrimary}
               />
             );
           })}
