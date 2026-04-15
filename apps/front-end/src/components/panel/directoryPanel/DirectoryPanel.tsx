@@ -46,15 +46,20 @@ const fetchResults = async () => {
   }
 };
 
+const isAnyOption = (value: string) => value === "any";
+
+const isSubCategory = (value: string) =>
+  !isAnyOption(value) && value.includes("-");
+
+const getDirectoryLabel = (label: string, isSubCategory: boolean) =>
+  isSubCategory ? label.replace(/^\s*-\s*/, "") : label;
+
 const DirectoryPanel = () => {
   const { t } = useTranslation();
 
   const directoryOptions = useAppSelector(selectDirectoryOptions);
   const customMarkers = useAppSelector(selectCustomMarkers);
   const activeValue = directoryOptions.value;
-
-  const isPrimaryCategory = (value: string) => 
-    value !== "any" && !value.includes("-");
 
   const [resultsTotals, setResultsTotals] = useState<Record<string, number>>(
     {},
@@ -73,22 +78,22 @@ const DirectoryPanel = () => {
       <StyledDirectoryPanel>
         <List>
           {directoryOptions.options.map((option, i) => {
+            const subCategory = isSubCategory(option.value);
             const iconSrc = getDirectoryIconSrc({
               optionValue: option.value,
               customMarkers,
             });
 
-            const isPrimary = isPrimaryCategory(option.value);
-
             return (
               <DirectoryItem
                 key={`${i}-${option.value}`}
                 propId={directoryOptions.id}
-                {...option}
+                value={option.value}
+                label={getDirectoryLabel(option.label, subCategory)}
                 active={option.value === activeValue}
                 resultsTotal={resultsTotals[option.value]}
                 iconSrc={iconSrc}
-                isPrimaryCategory={isPrimary}
+                isSubCategory={subCategory}
               />
             );
           })}

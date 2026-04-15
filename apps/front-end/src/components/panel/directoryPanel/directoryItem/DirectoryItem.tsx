@@ -13,20 +13,25 @@ interface DirectoryItemProps {
   resultsTotal: number;
   onClick?: (e: React.MouseEvent) => void; // for storybook testing
   iconSrc?: string;
-  isPrimaryCategory?: boolean;
+  isSubCategory: boolean;
 }
 
 /** Passing active as a boolean gives a React error so just pass as a number 0 or 1. */
-const StyledButton = styled(Button)(({ active, isPrimaryCategory }: { active: number, isPrimaryCategory?: boolean }) => ({
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== "isSubCategory" && prop !== "active",
+})<{
+  active: number;
+  isSubCategory: boolean;
+}>(({ active, isSubCategory }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "flex-start",
   gap: "var(--spacing-small)",
   width: "100%",
-  padding: isPrimaryCategory
-    ? "var(--spacing-small) var(--spacing-medium)"
-    : "var(--spacing-small) calc(var(--spacing-medium) + 20px)",
-  // display: "block",
+  padding: isSubCategory
+    ? "var(--spacing-small) calc(var(--spacing-medium) + 20px)"
+    : "var(--spacing-small) var(--spacing-medium)",
+  columnGap: isSubCategory ? "var(--spacing-small)" : "12px",
   fontSize: "var(--font-size-medium)",
   fontWeight: "var(--font-weight-medium)",
   textDecoration: "none",
@@ -40,9 +45,9 @@ const StyledButton = styled(Button)(({ active, isPrimaryCategory }: { active: nu
     backgroundColor: "var(--color-neutral-light)",
   },
   "@media (min-width: 768px)": {
-    padding: isPrimaryCategory
-      ? "var(--spacing-small) var(--spacing-large)"
-      : "var(--spacing-small) calc(var(--spacing-large) + 20px)",
+    padding: isSubCategory
+      ? "var(--spacing-small) calc(var(--spacing-large) + 20px)"
+      : "var(--spacing-small) var(--spacing-large)",
   },
 }));
 
@@ -50,6 +55,20 @@ const StyledIconImage = styled("img")(() => ({
   height: 16,
   width: 16,
   flexShrink: 0,
+}));
+
+const StyledSubCategoryBullet = styled("span")(() => ({
+  width: 16,
+  height: 16,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexShrink: 0,
+  position: "relative",
+  "&::before": {
+    content: '"\\2022"',
+    display: "block",
+  },
 }));
 
 const DirectoryItem = ({
@@ -60,7 +79,7 @@ const DirectoryItem = ({
   resultsTotal,
   onClick,
   iconSrc,
-  isPrimaryCategory,
+  isSubCategory,
 }: DirectoryItemProps) => {
   const dispatch = useAppDispatch();
 
@@ -82,11 +101,15 @@ const DirectoryItem = ({
       <StyledButton
         role="button"
         active={+active}
-        isPrimaryCategory={isPrimaryCategory}
+        isSubCategory={isSubCategory}
         disabled={!resultsTotal}
         onClick={handleClick}
       >
-        {iconSrc && <StyledIconImage src={iconSrc} alt={label} />}
+        {isSubCategory ? (
+          <StyledSubCategoryBullet aria-hidden="true" />
+        ) : iconSrc ? (
+          <StyledIconImage src={iconSrc} alt={label} />
+        ) : null}
         {label} ({resultsTotal ? resultsTotal : 0})
       </StyledButton>
     </ListItem>
