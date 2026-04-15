@@ -58,6 +58,7 @@ const SearchBox = ({
     <Box sx={{ position: "relative", marginTop: "var(--spacing-medium)" }}>
       <StyledSearchBox
         id="search-input"
+        autoFocus={true}
         value={value}
         onChange={onChange}
         onKeyUp={(event) => {
