@@ -79,6 +79,26 @@ In this example, the dataset items are assigned their property based on the `foo
 }
 ```
 
+### Directory Panel Icons
+
+If a dataset uses `customMarkers`, top-level directory categories can use the same naming convention to display icons. No additional config is required. Directory icons are derived from the equivalent marker icon name and loaded from the front end using the format:
+
+`./assets/icons/icon-[markerIconName].png`
+
+For example, if a custom marker icon is named `community-growing`, the matching directory icon should be:
+
+`icon-community-growing.png`
+
+This provides alignment between directory panel icons and map markers, without introducing a separate icon mapping in the config.
+
+Only top-level categories support directory icons. Sub-categories and the `Any` option do not.
+
+<br />
+
+---
+
+<br />
+
 ## Map Key
 
 The `show_map_key` field is an optional boolean used to control whether the map key is displayed for a dataset. It is defined within `ui` and defaults to `false` when omitted.
