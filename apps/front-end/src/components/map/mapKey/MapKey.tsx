@@ -25,7 +25,7 @@ type MapKeyEntry = {
   colour?: string;
 };
 
-// Client-specific display label overrides for map key entries. 
+// Client-specific display label overrides for map key entries.
 const mapKeyLabelOverrides: Record<string, string> = {
   DotCooperation: ".coop verified",
 };
@@ -94,7 +94,7 @@ const MapKeyButton = ({
       aria-controls="map-key"
       aria-expanded={isOpen}
     >
-      <FormatListBulletedIcon /> {isMedium ? t("mapKey") : t("key")}
+      <FormatListBulletedIcon /> {isMedium ? t("Map Key") : t("Key")}
     </StyledMapKeyButton>
   );
 };
