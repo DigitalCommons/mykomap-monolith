@@ -15,7 +15,7 @@ const AboutPanel = () => {
   // This is a little messy to edit but means everything goes in config.json.
   // In future we might want to break this out into localised md files.
   const hasAboutContentInConfig = i18n.exists("about_content");
-  
+
   useEffect(() => {
     if (!hasAboutContentInConfig) {
       fetch(`${import.meta.env.VITE_API_URL}/dataset/${getDatasetId()}/about`)
@@ -27,7 +27,9 @@ const AboutPanel = () => {
     }
   });
 
-  const content = hasAboutContentInConfig ? t("about_content") : aboutMarkdownContent;
+  const content = hasAboutContentInConfig
+    ? t("about_content")
+    : aboutMarkdownContent;
   return (
     <>
       <Heading title={t("about")} />
