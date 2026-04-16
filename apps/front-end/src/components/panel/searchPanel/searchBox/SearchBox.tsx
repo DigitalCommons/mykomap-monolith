@@ -5,6 +5,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
 import CancelIcon from "@mui/icons-material/Cancel";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTranslation } from "react-i18next";
 
 const StyledSearchBox = styled(OutlinedInput)(() => ({
@@ -53,11 +54,13 @@ const SearchBox = ({
   clearSearch,
 }: SearchBoxProps) => {
   const { t } = useTranslation();
+  const isMedium = useMediaQuery("(min-width: 897px)");
 
   return (
     <Box sx={{ position: "relative", marginTop: "var(--spacing-medium)" }}>
       <StyledSearchBox
         id="search-input"
+        autoFocus={isMedium}
         value={value}
         onChange={onChange}
         onKeyUp={(event) => {
