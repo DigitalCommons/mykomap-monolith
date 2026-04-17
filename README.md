@@ -16,7 +16,7 @@ This is a Digital Commons Cooperative project, please follow the [contribution g
 ## Libraries
 
 - [Common](./libs/common/), which contains the OpenAPI spec and ts-rest contract.
-- [Node Utils](./libs/node-utils), which contains useful functions.
+- [Node Utils](./libs/node-utils), which contains file manipulation functions.
 
 ## How to install a dependency
 
