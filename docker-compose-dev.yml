@@ -1,0 +1,20 @@
+# This file can be used as a means to override the front-end's exposed
+# port when running locally.
+#
+# The easiest means is to set these environment variables in your `.env`
+# file:
+#
+#     COMPOSE_FILE=docker-compose.yml:docker-compose-dev.yml
+#     CADDY_HOSTNAME=localhost
+#     EXPOSE_PORT=8000
+#
+# ...before building and running `docker compose up -d --build` as
+# normal. Then the service should be accessible on http://localhost:8000/.
+#
+# Credit: https://frankwiles.com/til/easy-compose-overrides/
+
+services:
+
+  front-end:
+    ports:
+      - "${CADDY_HOSTNAME:-localhost}:${EXPOSE_PORT:-8000}:80"
