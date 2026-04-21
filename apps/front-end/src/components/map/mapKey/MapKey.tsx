@@ -94,7 +94,7 @@ const MapKeyButton = ({
       aria-controls="map-key"
       aria-expanded={isOpen}
     >
-      <FormatListBulletedIcon /> {isMedium ? t("Map Key") : t("Key")}
+      <FormatListBulletedIcon /> {isMedium ? t("mapKey") : t("key")}
     </StyledMapKeyButton>
   );
 };
