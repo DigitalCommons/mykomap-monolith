@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 set -o errexit
 set -o pipefail
@@ -82,8 +82,8 @@ cp .tool-versions "$DEPLOY_DEST"
 ( # Front end
   cd apps/front-end
   npm ci
-  rm -rf dist/
 
+  # 2026-04-27 MJS - Write .env before rm -rf dist/ so missing required vars don't take production offline
   echo >.env
   chmod 0600 .env # ensure secrets are secret-ish
   # FIXME these shouldn't be hardwired!
@@ -92,6 +92,10 @@ VITE_API_URL=/api
 VITE_GLITCHTIP_KEY=${FE_GLITCHTIP_KEY:?}
 VITE_MAPTILER_API_KEY=${MAPTILER_API_KEY:?}
 VITE_BASE_URL=${BASE_URL_PATH:?}
+VITE_UMAMI_URL=${VITE_UMAMI_URL:?}
+VITE_UMAMI_ID=${VITE_UMAMI_ID:?}
+VITE_MIXPANEL_TOKEN=${VITE_MIXPANEL_TOKEN:-}
+VITE_MIXPANEL_SESSION_RECORDING_PERCENT=${VITE_MIXPANEL_SESSION_RECORDING_PERCENT:-0}
 
 # npm run upload-sourcemaps, called during deployment, needs these variables
 # They should correlate to the tags used in the Glitchtip dashboard.
@@ -101,32 +105,35 @@ SENTRY_URL=${SENTRY_URL:?}
 SENTRY_ORG=${SENTRY_ORG:?}
 SENTRY_PROJECT=${FE_SENTRY_PROJECT:?}
 EOF
-  
+
+  # 2026-04-27 MJS Moved rm-rf dist/ here after the .env creation
+  rm -rf dist/
   npm run build
 
   # This requires the above sentry parameters in our .env
   npm run upload-sourcemaps
-  
+
   #npm deploy "$FE_DEST"
   #cp -a --copy-contents dist/. "$FE_DEST" # the . is significant
 )
 ( # back end
   cd apps/back-end
   npm ci
-  rm -rf dist/
-  npm run build 
-  # npm deploy "$BE_DEST"
-  # cp -a --copy-contents dist/. "$BE_DEST" # the . is significant
 
-  echo >"$BE_DEST/.env"
-  chmod 0600 "$BE_DEST/.env" # ensure secrets are secret-ish  
+
+    echo >"$BE_DEST/.env"
+  chmod 0600 "$BE_DEST/.env" # ensure secrets are secret-ish
   cat >>"$BE_DEST/.env" <<EOF
 SERVER_DATA_ROOT=$DATA_DEST
 FASTIFY_PORT=$PROXY_PORT
 GLITCHTIP_KEY=${BE_GLITCHTIP_KEY:?}
 #   root address?
 EOF
-  
+
+  rm -rf dist/
+  npm run build
+  # npm deploy "$BE_DEST"
+  # cp -a --copy-contents dist/. "$BE_DEST" # the . is significant
 )
 
 # FIXME this needs perms! And root user ownership. Delegate to caller for now.
