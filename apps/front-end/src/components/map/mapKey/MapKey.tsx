@@ -25,11 +25,6 @@ type MapKeyEntry = {
   colour?: string;
 };
 
-// Client-specific display label overrides for map key entries.
-const mapKeyLabelOverrides: Record<string, string> = {
-  DotCooperation: ".coop verified",
-};
-
 const StyledMapKeyContainer = styled(Box)(() => ({
   width: "fit-content",
   position: "absolute",
@@ -149,6 +144,7 @@ const MapKeyItem = ({
 const MapKey = () => {
   const mapKeyOpen = useAppSelector(selectIsMapKeyOpen);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const markerIcons = useAppSelector(selectMarkerIcons);
   const customMarkers = useAppSelector(selectCustomMarkers);
@@ -173,19 +169,30 @@ const MapKey = () => {
   });
 
   // Keep the original icon index so it stays aligned with termsToIconIndex derived labels.
-  // Also exclude the default marker from the key.
+  // The default marker can have a key - CWM provides one, Powys doesn't
+  // Names come from ui vocan with <iconName>MarkerLabel
   const entries: MapKeyEntry[] = markerIcons.flatMap(
     (iconName: string, iconIndex: number) => {
+      const overrideLabel = t(`${iconName}MarkerLabel`, { defaultValue: "" });
+
       if (iconName === "default") {
-        return [];
+        if (!overrideLabel) return [];
+        return [
+          {
+            id: `m${iconIndex}`,
+            label: overrideLabel,
+            iconSrc: `./assets/markers/${iconName}.png`,
+          },
+        ];
       }
 
-      const label = markerLabelsByIconIndex[iconIndex] ?? iconName;
+      const label =
+        overrideLabel || markerLabelsByIconIndex[iconIndex] || iconName;
 
       return [
         {
           id: `m${iconIndex}`,
-          label: mapKeyLabelOverrides[label] ?? label,
+          label,
           iconSrc: `./assets/markers/${iconName}.png`,
         },
       ];
