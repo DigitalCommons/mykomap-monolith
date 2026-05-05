@@ -117,7 +117,7 @@ the build environment, and are manually configured in the Coolify
 dashboard panel for the application - they cannot be supplied in an
 `.env` file, although you may be able to paste the `.env` file
 contents using the "developer view". Opt to use Docker secrets if
-possible. (FIXME this has not been tested yet at the time of writing.)
+possible.
 
 But when it is being run locally for development, the simplest way is
 to supply an `.env` file containing all the values needed for the
@@ -192,7 +192,7 @@ UMAMI_URL=https://umami.digitalcommons.coop/script.js
 > I've noticed the back-end tracing values (`BE_...`) have not been
 > added to the Dockerfile at the time of writing. This is not
 > important for development but may be for production deployments.
-> FIXME insert an issue for this.
+> See TODOs / sub issues on [#141]
 
 > [!WARNING]
 > 
@@ -201,7 +201,8 @@ UMAMI_URL=https://umami.digitalcommons.coop/script.js
 > have been nevertheless: sometimes circumstances makes this hard to
 > avoid.  We should be using secure alternatives like Docker compose
 > secrets whenever possible.
-> FIXME insert an issue for this.
+> See TODOs / sub issues on
+> [#141]
 
 #### Mykomap Datasets
 
@@ -353,7 +354,6 @@ all inevitably evolve over time.
 
 
 ### Building
-FIXME continue here.
 
 The application is built within the relevant docker containers defined
 by the relevant `Dockerfile` files, because that is necessary in the
@@ -400,9 +400,258 @@ something which runs inside the container.
 
 # First-time setup of Coolify
 
-FIXME These will be added later.
+Coolify can be self-hosted, or rented from the
+[Coolfy cloud SAAS](https://coolify.io/cloud).
+
+We chose to self-host, using the Hetzner 
+["Apps" image](https://docs.hetzner.com/cloud/apps/list/coolify/) 
+(see that link for more details).
+
+The process for doing this is fairly straightforward, so I won't go
+into huge detail.
+
+But just to know what to expect, the steps are:
+
+- Create a new Hetzner Cloud VPS as usual, by going to the list of
+  servers, and selecting the "Add server" button. It doesn't need to
+  have a high-powered specification, in fact I selected the bottom of
+  the range. There's the option of rescaling it later.
+- At the bottom of that initial page, before submitting and triggering
+  Hetner to provision the host, where you typically choose the OS to
+  be installed, select the Coolify app instead.
+- On provisioning, the host will come up as normal, except that it
+  will be primed to run a deployment script when you first log in.
+- This script will ask a few questions, then launch the app and direct
+  you to a URL on a non-standard port on the raw IP address of the
+  host (which typically won't have a hostname assigned yet).
+
+If you follow this process, you should end up with a running Coolify
+server, and admin access, via a temporary URL.  You can use that to
+continue to set up the Cooify server.
+
+Prequisites for setting up Coolify futher:
+- An API for the DCC Hezner account we deploy to, on
+  https://console.hetzner.cloud
+- Access to the DCC GitHub organisation account, with "Owner"
+  privileges, so that a GH app can be deployed on it. This is at
+  https://github.com/DigitalCommons
+- Access to the DCC DNS dashboard, on on https://domains.coop
+
+Log-ins are recorded in the DCC Bitwarden account.
+
+Once a server is running, you'll be able to get its IP address from
+the dashboard.  You'll need to use this to create some DNS A records
+for it (in the steps below.) To start with I created them all with a
+short TTL of one minute (60 seconds), to allow for rapid mistake
+correction. Later they should all be set to something relatively long
+(typically 86400 seconds, i.e. a day).
+
+What I did at that point was:
+- Set the hostname to `coolify.digitalcommons.coop`
+  - This requires creating the `coolify` A record on the DNS
+    dashboard, pointing to to the server's IP address.
+  - You may want to update the reverse-IP (PTR) record so that the IP maps
+    back to this subdomain - because this is sometimes used as metric
+    of DNS good practice. Do that on the Hetzner dashboard for the
+    server.
+- Created a deployment server called `dev-3.digitalcommons.coop` -
+  Coolify needs the Hetzner API to do that, but then it can provision
+  it and install Docker Compose, and create a remote control
+  connection to it without manual help.
+  - This requires creating the `dev-3` A record on the DNS dashboard,
+    as above, although with the appropiate IP.
+  - To facilitate preview deployments, also create a wildcard A record
+    for the subdomain `*.dev-3`, pointing at the same IP address.
+  - As above you should probably set the reverse-IP record correctly
+    too. 
+- Note: later should add another Coolify deployment server which for
+  production applications (with the hostnames
+  `prod-3.digitalcommons.coop` and `*.prod-3.digitalcommons.coop`)
+- Leave the pre-created "localhost" target server as is (we typically won't use it)
+- Leave the pre-created "Root Team" team as is.
+- Created a project: "Testing" (for experimentation, nothing here of import, can be deleted later)
+- Created a project: "DevTeam" (for general DCC use), withing which:
+  - Created a resource "production" (for production apps, nothing here yet)
+  - Created a resource "development" (for development apps), within which:
+    - Created an app
+      `mykomap-monolith:containerisation-ai41g710i22dh8vj07qoqel5`,
+      using a GitHub app as the source.
+      - This required adding a connection to the DCC GitHub account,
+        via a GitHub app which Coolify can deploy for the purpose. You
+        will need to authorise this, and then make sure it's under the
+        remit of the organisation, not your personal account
+      - In my experience, this was plain sailing the first time, and
+        frustratingly difficult thereafter, for no reason I can
+        explain.
+      - The app source could then be selected from the
+        `containerisation` branch of `mykomap-monolith`
+      - Note: It should in future be updated to track the `dev`
+        branch, when this work is merged. See TODOs / sub issues on
+        [#141]
+      - The app name name was generated by Coolify, and although a better
+        one might be chosen, it will do for now.
+      - The environment variables are set as per instructions
+        elsewhere in this document.
+      - I also enabled Preview builds (more or less with default
+        parameters, and inheriting the same environment as the main
+        build).
+- Ensured that automatic upgrades were enabled (both of Coolify, and
+  the OS underlying it)
+
+Note that the back-up location needs access to S3 storage, which we
+don't have at the time of writing. But we should add that and enable
+back-ups. See TODOs / sub issues on
+[#141]
+
+- Coolify: https://coolify.io/
+- What is Coolify: https://coolify.io/docs/get-started/introduction
+- SystemD: https://en.wikipedia.org/wiki/Systemd
+- Writing a Dockerfile: https://docs.docker.com/get-started/docker-concepts/building-images/writing-a-dockerfile/
+- What is Docker Compose: https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-docker-compose/
+- Preview Deployments: https://coolify.io/docs/applications/ci-cd/github/preview-deploy
+- Build args from env_files: https://github.com/docker/compose/issues/4618
+- Setting build args using env_file: https://stackoverflow.com/a/50593180
+- #141: https://github.com/DigitalCommons/technology-and-infrastructure/issues/141 
+
+# TODO
+
+Most of these points have been moved to TODOs / sub issues on [#141],
+but the following are notes on what will require more thought and
+research.
+
+- facilitate better dataset deployment
+  - dataset publication (standard.csv files or equivalent)
+  - MM config pulication (config.json+about.md or config.yaml files)
+  - retire cwm-test-data (instead I suggest publishing the upstream
+    input files listed above and consuming those in a deployment
+    script to generate the correct format dataset for the deployed
+    application)
+- taskfile vs Nx? https://taskfile.dev/
+  - data-pipelines uses Nx, but perhaps taskfiles are simpler?
+  - either way, perhaps we would benefit from more granular
+    dependencies on the standard.csv files: currently only one needs
+    to change to trigger downloading them all.
+
 
 # Hints and Suggestions
 
-FIXME These will be added later. I have a list which I will add in a separate issue.
+This is a brain-dump of my (Nick's) thoughts following my post-install
+reflections. They could be used as a prompt for questions at handover,
+but might otherwise be deleted or integrated elsewhere.
 
+- Dockerfiles need to be reachable in the scope of docker-compose.yml
+  (which means docker-compose.yml needs to go in the root directory, not in a subfolder)
+- Dockerfiles should do their best to ensure required values are
+  supplied (and ideally also valid)
+  - prefer `${FOO?}` over `${FOO}`
+- Dockerfiles have their own scoping rules which can sabotage you by rendering variables undefined
+  - Specifically,
+    - `FROM` creates a scope for `ARG`
+    - `ENV` has a different scope to `ARG`
+    - Nested script blocks have a scope, but the external scope takes precedence
+- Dockerfiles should aim to create one process
+  - Or if not, must manage their own processes WRT unix signals
+  - This would be relevant if we ever decide to host the API server
+    and an HTTP server in the same container.
+- Coolify is a bit fragile/capricious!
+  - Variables can be duplicated, and thence become hard to delete in
+    the UI
+    - Therefore, avoid that!
+  - Preview build variables are common to *all* previews
+    - Therefore, seems you can't put PR deployments on sub-paths, as
+      that requres environment parameters being set to indicate the
+      path to use
+  - Coolify's application/project URLs are "quirky", see https://coolify.io/docs/knowledge-base/domains
+    - They're not a literal URL
+    - For instance, the port component is *not* literal
+  - The github app deployment went fine the first time (deployed as wu-lee), utter nightmare subsequently (deployed as digitalcommons-coolify).
+    - Coolify needs owner perms to deploy it, apparently
+    - Perhaps these can be turned off afterwards?
+    - The app needs to be deployed in the organisation, not in the users' "space" (FWOABW)
+  - Avoid localhost for deployment for non-evaluation usage
+- Test your docker-compose locally for faster turnaround
+  - e.g. You can use this to check that variables are being set correctly
+- But your docker config needs to work within Coolify's build system
+  - Some Coolify magic variables can help
+  - But they don't behave consistently with normal variables (the
+    assignment is a hint to Coolify, not set literally)
+  - Check the docs for more information.
+    - https://coolify.io/docs/knowledge-base/environment-variables#magic-environment-variables
+    - I tend to agree with criticism here https://news.ycombinator.com/item?id=43594613
+- Don't load any local bind mount volumes.
+  - You can't bind-mount your source code, except for the build-time execution.
+- With Dockerfiles, you can use multiple `FROM` directives to create a
+  labelled build image which has more tools and extra data access
+  (i.e. the sourcecode)
+  - And then create a deploy image which omits these
+  - This is how you can get node and the source code into a front-end image that needs them for
+    building the deployed JS/HTML files, but ultiately omit them
+  - See https://stackoverflow.com/questions/49754286/multiple-images-one-dockerfile
+- We need to install `git` during the build
+  - This allows the build to inspect tags and and set the version info
+- Make sure you use the right version of Node and the right Typescript config (etc.) in the container!
+  - Failing to may mean `export.meta` is not available
+  - And/or import does not work
+  - The code may build but the app will fail at runtime
+- When building ESM nodejs bundles using Vite, you may need to work
+  around a bug which results in calls to `require`
+  - I've added a workaround to avoid 'Error: Dynamic require of "os"
+    is not supported'.
+  - (Find the commit by searching for that message)
+  - Adapted from: https://github.com/evanw/esbuild/issues/1921#issuecomment-3453406735
+  - This uses the trick of defining a global `require` function
+  - (instead of adding a header which defines it to each module, as in
+    the linked issue above)
+- Coolify attempts to infer your docker-compose listening port from
+  the `ports` directive of the services
+  - But this also means it may expose internal services!
+  - And it puts all your containers on an external-facing network it creates!
+  - So in general don't: just assume that containers can see each other on this external network
+  - To avoid exposing internal services you must explicitly bind them on localhost
+  - and/or use a firewall on the host
+  - then tell Coolify which ports to proxy using the configured
+    application URL (which abuses the port for that, as mentioned
+    above)
+  - For local development, you then need to override the exposed ports
+    - I've done this in a `docker-compose-dev.yml` file, which is
+      loaded as an override by defining `COMPOSE_FILE=docker-compose.yml:docker-compose-dev.yml`
+- Coolify rewrites your docker-compose file!
+  - Find its rewritten version on the deployment server (`dev-3` in this
+    case) at `/data/coolify/applications/<application ID>/` (the ID
+    for the development deployment of Mykomap is
+    `ai41g710i22dh8vj07qoqel5`)
+- I am not convinced that Coolify's build time vs runtime checkboxes
+  for variables/parameters work as expected
+  - My variables needed at built-time only don't get set unless set to be available at runtime
+Your front-end container will need to know its own hostname
+  - And this needs to be supplied at build time (or maybe runtime)
+    from Coolify
+    
+## Troubleshooting tips
+
+- Some tools are frequently pre-installed in the base Docker image
+  - `curl` and `wget` are useful for downloading data via HTTP/FTP
+  - `netstat -plant` is very useful to check what processes are listening on
+    which port
+  - `nmap` is  essential for checking what ports are visible on other
+    containers
+  - `ip link`, `ip a`, `ip route` etc. are useful for checking network
+    device names, addresses, and routes 
+- You can install tools which are not pre-installed into a container
+  using `apk` (assuming they're based on Alpine Linux, else it'll be
+  another package manager)
+  - e.g. `apk add nmap`
+  - they don't persist after a re-build
+- you can `docker exec` into your compose containers to inspect them
+  - This gains terminal access to the containers
+  - It's an alternative to using the Coolify dashboard (which has a
+    pretty shonky terminal with peculiar wrapping, and always logs you
+    in as the app's user, in our case `node`)
+  - For example:
+    - `cd /data/coolify/applications/ai41g710i22dh8vj07qoqel5`
+      (substitute your application ID as required)
+    - `docker compose exec back-end` (substitute your
+      container name as required)
+    - `docker compose exec back-end -u root` gets you in as the root
+      user, and therefore with write access to the whole container
+      filesystem and more.
