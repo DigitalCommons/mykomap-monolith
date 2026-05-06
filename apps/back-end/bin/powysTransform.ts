@@ -139,6 +139,10 @@ const engItems = geocodedItems.map(
   })
 ).sort((a: any, b: any) => (a.name < b.name ? -1 : 1));
 
+Object.keys(engConfig.itemProps).forEach(prop => {
+  engConfig.itemProps[prop].from = prop
+})
+
 const cymItems = geocodedItems.map(
   item => ({
     id: item.ID,
@@ -158,6 +162,10 @@ const cymItems = geocodedItems.map(
     phone: item["Phone number"],
   })
 ).sort((a: any, b: any) => (a.name < b.name ? -1 : 1));
+
+Object.keys(cymConfig.itemProps).forEach(prop => {
+  cymConfig.itemProps[prop].from = prop
+})
 
 await fs.mkdir("./tmp/out");
 await fs.mkdir("./tmp/out/predataset");
