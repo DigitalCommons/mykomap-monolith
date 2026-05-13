@@ -62,8 +62,11 @@ export class Launcher {
   // @fastify/cors will add an onRequest hook and a wildcard options route for this.
   corsOrigin = process.env.FASTIFY_CORS_ORIGIN?.split(/\s+/) || [];
 
-  // The TCP port to the webserver should listen on
+  // The TCP port the webserver should listen on
   listenPort = Number(process.env.FASTIFY_PORT) || 3000;
+
+  // The TCP host the webserver should listen on
+  listenHost = process.env.FASTIFY_ADDRESS || "localhost";
 
   // The API path prefix to set.
   apiPathPrefix = process.env.API_PATH_PREFIX || "/";
@@ -129,7 +132,10 @@ export class Launcher {
   // Returns the result of this.app.listen(), or rethrows whatever was caught in
   // the error block, after logging it.
   async listen(
-    opts: FastifyListenOptions = { port: this.listenPort },
+    opts: FastifyListenOptions = {
+      port: this.listenPort,
+      host: this.listenHost,
+    },
   ): Promise<unknown> {
     // This closes the application with a delay to clear up.
     closeWithGrace(

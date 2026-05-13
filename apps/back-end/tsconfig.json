@@ -4,5 +4,5 @@
     "declaration": true,
     "outDir": "dist"
   },
-  "include": ["vite.config.ts", "src", "bin"]
+  "include": ["vite.config.ts", "src", "bin", "start.ts"]
 }
