@@ -78,50 +78,9 @@ const MapWrapper = () => {
     dispatch(closePopup());
   };
 
-  /*
   useEffect(() => {
-    if (configStatus !== "loaded") {
-      console.log("Waiting for config to be loaded before creating map");
-      return;
-    }
-
-    if (map.current) {
-      try {
-        map.current?.remove();
-      } catch (error) {
-        console.error("Error removing map instance:", error);
-      }
-      map.current = null;
-    }
-
-    map.current = createMap(
-      popupCreatedCallback,
-      popupClosedCallback,
-      () => setMapCreated(true),
-      mapConfig,
-      markerIcons,
-    );
-
-    map.current.on("sourcedata", (e) => {
-      if (e.isSourceLoaded && e.sourceId === "items-geojson") {
-        console.log("Updated GeoJSON source");
-        // We need to wait for the source to be initially loaded before we can update the data
-        setSourceLoaded(true);
-      }
-    });
     dispatch(fetchLocations());
-
-    // Clean up on unmount
-    return () => {
-      if (map.current) {
-        try {
-          map.current.remove();
-        } catch (error) {
-          console.error("Error removing map during component unmount:", error);
-        }
-      }
-    };
-  }, [configStatus]);*/
+  }, [configStatus]);
 
   useEffect(() => {
     if (sourceLoaded) {
@@ -306,7 +265,16 @@ const MapWrapper = () => {
     }
   };
 
-  return mapConfig && <MapLibre mapBounds={mapConfig.mapBounds} />;
+  return (
+    mapConfig &&
+    features && (
+      <MapLibre
+        mapBounds={mapConfig.mapBounds}
+        features={features}
+        markerIcons={markerIcons}
+      />
+    )
+  );
 
   return (
     <div
