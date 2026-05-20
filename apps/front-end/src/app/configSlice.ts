@@ -51,13 +51,6 @@ const initialState: ConfigSliceState = {
   vocabs: {},
   currentLanguage: "en",
   languages: [],
-  map: {
-    mapBounds: [
-      [-169, -49.3],
-      [189, 75.6],
-    ]
-    ,
-  },
   showMapKey: false,
   markerIcons: [],
   logo: {
