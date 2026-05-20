@@ -34,6 +34,7 @@ import {
 } from "../panel/panelSlice";
 import { closeMapKey } from "./mapSlice";
 import { DEVICE_ID, Event, trackEvent } from "../../services/analytics";
+import MapLibre from "./MapLibre";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
@@ -68,7 +69,7 @@ const MapWrapper = () => {
   const DEVICE_ID_PARAM = "ref";
 
   const popupCreatedCallback = (itemIx: number) => {
-     if (!isMedium) dispatch(closeMapKey());
+    if (!isMedium) dispatch(closeMapKey());
     dispatch(openPopup(`@${itemIx}`));
   };
 
@@ -77,6 +78,7 @@ const MapWrapper = () => {
     dispatch(closePopup());
   };
 
+  /*
   useEffect(() => {
     if (configStatus !== "loaded") {
       console.log("Waiting for config to be loaded before creating map");
@@ -119,7 +121,7 @@ const MapWrapper = () => {
         }
       }
     };
-  }, [configStatus]);
+  }, [configStatus]);*/
 
   useEffect(() => {
     if (sourceLoaded) {
@@ -303,6 +305,8 @@ const MapWrapper = () => {
       dispatch(closePopup());
     }
   };
+
+  return mapConfig && <MapLibre mapBounds={mapConfig.mapBounds} />;
 
   return (
     <div

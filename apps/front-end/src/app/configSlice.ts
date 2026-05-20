@@ -55,7 +55,8 @@ const initialState: ConfigSliceState = {
     mapBounds: [
       [-169, -49.3],
       [189, 75.6],
-    ],
+    ]
+    ,
   },
   showMapKey: false,
   markerIcons: [],
