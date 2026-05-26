@@ -1,4 +1,3 @@
-import { createPortal } from "react-dom";
 import Box from "@mui/material/Box";
 import LeftPane from "./leftPane/LeftPane";
 import RightPane from "./rightPane/RightPane";
@@ -10,7 +9,6 @@ import {
   selectPopupIndex,
   closePopup,
 } from "./popupSlice";
-import { POPUP_CONTAINER_ID } from "../map/mapLibre";
 import { selectLocation } from "../map/mapSlice";
 import { selectPopupConfig } from "../../app/configSlice";
 
@@ -64,18 +62,17 @@ const StylePopupInner = styled(Box)(() => ({
   },
 }));
 
-const Popup = () => {
-  const dispatch = useAppDispatch();
+export default function Popup() {
   const open = useAppSelector(selectPopupIsOpen);
   const popupIndex = useAppSelector(selectPopupIndex);
   const hasLocation = !!useAppSelector(selectLocation(popupIndex));
   const data = useAppSelector(selectPopupData);
   const popupConfig = useAppSelector(selectPopupConfig);
 
-  if (open) console.log("Popup data", data);
-
-  const popupComponent =
-    data && popupConfig ? (
+  return (
+    open &&
+    data &&
+    popupConfig && (
       <StyledPopup>
         <StylePopupInner>
           <LeftPane
@@ -92,18 +89,19 @@ const Popup = () => {
           />
         </StylePopupInner>
       </StyledPopup>
-    ) : null;
+    )
+  );
+}
+
+export const NoLocationPopup = () => {
+  const dispatch = useAppDispatch();
+  const open = useAppSelector(selectPopupIsOpen);
+  const popupIndex = useAppSelector(selectPopupIndex);
+  const hasLocation = !!useAppSelector(selectLocation(popupIndex));
 
   return (
     open &&
-    (hasLocation ? (
-      document.getElementById(POPUP_CONTAINER_ID) &&
-      createPortal(
-        popupComponent,
-        document.getElementById(POPUP_CONTAINER_ID)!!,
-      )
-    ) : (
-      // Just show popup in the middle of the screen if no location is available
+    !hasLocation && (
       <div
         style={{
           height: "100vh",
@@ -122,11 +120,9 @@ const Popup = () => {
             maxWidth: 700,
           }}
         >
-          {popupComponent}
+          <Popup />
         </div>
       </div>
-    ))
+    )
   );
 };
-
-export default Popup;

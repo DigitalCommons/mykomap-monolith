@@ -4,13 +4,23 @@ import Map, {
   AttributionControl,
   Source,
   Layer,
+  MapLayerMouseEvent,
+  MapRef,
+  Popup as PopupContainer,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { useDispatch } from "react-redux";
+import Popup from "../popup/Popup";
+
+const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
+  Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
 
 const mapTilerKey = import.meta.env.VITE_MAPTILER_API_KEY;
+const CLUSTER_LAYER_ID = "clusters";
+const UNCLUSTERED_LAYER_ID = "unclustered-point";
 
 const clusterLayer = {
-  id: "clusters",
+  id: CLUSTER_LAYER_ID,
   type: "circle",
   source: "points",
   filter: ["has", "point_count"],
@@ -39,11 +49,56 @@ const clusterCountLayer = {
   },
 };
 
-export default function MapLibre({ mapBounds, features, markerIcons }) {
-  const mapRef = useRef(null);
+export default function MapLibre({
+  mapBounds,
+  features,
+  markerIcons,
+  popupCreatedCallback,
+  popupClosedCallback,
+  popupIndex,
+  popupLocation,
+}) {
+  const dispatch = useDispatch();
+  const mapRef = useRef<MapRef>(null);
   const [markerLayout, setMarkerLayout] = useState();
+  /*
+  const [popupInfo, setPopupInfo] = useState<{
+    lngLat: [number, number];
+    ix: number;
+  } | null>(null);
+   */
   console.log(features);
   console.log(markerIcons);
+
+  function handleClick(e: MapLayerMouseEvent) {
+    const features = e.features;
+    const map: MapRef = mapRef.current;
+
+    if (!features || features.length === 0 || !map) return;
+
+    const feature = features[0];
+
+    if (feature.layer.id === CLUSTER_LAYER_ID) {
+      const clusterId = feature.properties.cluster_id;
+      const [lng, lat] = feature.geometry.coordinates;
+
+      map.flyTo({
+        center: [lng, lat],
+        zoom: map.getZoom() + 1,
+        essential: true,
+      });
+      return;
+    }
+
+    if (feature.layer.id === UNCLUSTERED_LAYER_ID) {
+      popupCreatedCallback(feature.properties.ix);
+      const [lng, lat] = feature.geometry.coordinates;
+
+      map.easeTo({
+        center: [lng, getMapCentreLatOffsetted(lat, map.getZoom())],
+      });
+    }
+  }
 
   async function loadMarkerIcons() {
     if (mapRef.current) {
@@ -68,6 +123,7 @@ export default function MapLibre({ mapBounds, features, markerIcons }) {
           `marker-${markerIcons.length - 1}`, // assumes the final marker in the marker list is the default marker
         ],
         "icon-anchor": "bottom",
+        "icon-size": 1,
       });
     }
   }
@@ -76,16 +132,21 @@ export default function MapLibre({ mapBounds, features, markerIcons }) {
     loadMarkerIcons();
   }, [markerIcons, mapRef.current]);
 
-  const unclusteredLayer = markerLayout && {
-    id: "unclustered-point",
-    type: "symbol",
-    source: "points",
-    filter: ["!", ["has", "point_count"]],
-    layout: markerLayout,
-  };
+  useEffect(() => {
+    if (popupLocation && mapRef.current) {
+      const map = mapRef.current;
+      const [lng, lat] = popupLocation;
+
+      map.easeTo({
+        center: [lng, getMapCentreLatOffsetted(lat, map.getZoom())],
+      });
+    }
+  }, [popupLocation]);
 
   return (
     <Map
+      interactiveLayerIds={[CLUSTER_LAYER_ID, UNCLUSTERED_LAYER_ID]}
+      onClick={handleClick}
       initialViewState={{
         bounds: mapBounds,
       }}
@@ -117,8 +178,32 @@ export default function MapLibre({ mapBounds, features, markerIcons }) {
       >
         <Layer {...clusterLayer} />
         <Layer {...clusterCountLayer} />
-        <Layer {...unclusteredLayer} />
+        {markerLayout && (
+          <Layer
+            id={UNCLUSTERED_LAYER_ID}
+            type={"symbol"}
+            source={"points"}
+            filter={["!", ["has", "point_count"]]}
+            layout={markerLayout}
+            icon-padding={10}
+          />
+        )}
       </Source>
+      {popupLocation && (
+        <PopupContainer
+          key={popupIndex}
+          longitude={popupLocation[0]}
+          latitude={popupLocation[1]}
+          anchor="bottom"
+          closeButton={false}
+          maxWidth="none"
+          offset={20}
+          onClose={popupClosedCallback}
+          className={`popup-ix-${popupIndex}`}
+        >
+          <Popup />
+        </PopupContainer>
+      )}
     </Map>
   );
 }

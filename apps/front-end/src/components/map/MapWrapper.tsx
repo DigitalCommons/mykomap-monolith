@@ -272,15 +272,12 @@ const MapWrapper = () => {
         mapBounds={mapConfig.mapBounds}
         features={features}
         markerIcons={markerIcons}
+        popupCreatedCallback={popupCreatedCallback}
+        popupClosedCallback={popupClosedCallback}
+        popupIndex={popupIndex}
+        popupLocation={popupLocation}
       />
     )
-  );
-
-  return (
-    <div
-      id="map-container"
-      className="absolute bottom-0 left-0 right-0 top-0 overflow-hidden text-center"
-    />
   );
 };
 
