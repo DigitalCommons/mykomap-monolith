@@ -152,11 +152,21 @@ run the following from the mykomap-monolith project root directory:
 
     git branch -D prepare-release-v4.1.3
 
-This automates the manual process, which is roughly as follows. Although note
-that the script intentionally follows a slightly different process involving a
-squash merge, to allow for inspection of failures.
+The point of having `npm run release` is to resolve the chicken-and-egg problem of:
+1. Needing to tag a commit in order for the build to know how to label
+   this release, but...
+2. The very process of building *changes the code*, requiring a new
+   commit!
+3. Thus after running the build, the code has the right label, but tag
+   in the wrong place for checking out that built version.
+4. Which then requires you to re-tag the release in the new place.
 
-The manual process is:
+In other words, `npm run release` automates the somewhat complicated
+manual process of resolving that situation.
+
+This manual process is as follows. *Although note that the script
+intentionally follows a slightly different process involving a squash
+merge, to allow for inspection of failures.*
 
 - Ensure the code builds cleanly:
   `npm run clean && npm ci && npm run build && npm run test`
@@ -171,12 +181,12 @@ The manual process is:
 - Commit that to the same commit:
   `git add -u && git commit --amend -c HEAD`
 
-The reason these all need to be squashed into the one commit with a tag applied
-is so that GitHub (and possibly other usages) will build and archive the actual
-deployable code for that version. If in practise a deployable release needs
-extra changes following the tagged release commit (as they do in practise)
-they'll be omitted from the release archive created by GitHub if they aren't
-squashed into it.
+The reason these all need to be squashed into the one commit with a
+tag applied is so that GitHub (and possibly other usages) will build
+and archive the actual deployable code for that version. If in
+practise a deployable release needs extra changes following the tagged
+release commit (as they do) they'll be omitted from the release
+archive created by GitHub if they aren't squashed into it.
 
 #### Reflections
 
