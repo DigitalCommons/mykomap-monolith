@@ -1,0 +1,1580 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://digitalcommons.github.io/mykomap-monolith/coolify/">
+      
+      
+        <link rel="prev" href="../config/">
+      
+      
+        <link rel="next" href="../data-pipeline/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Coolify / Docker deployment - Mykomap Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#coolify-docker-deployment" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mykomap Docs" class="md-header__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mykomap Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Coolify / Docker deployment
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mykomap Docs" class="md-nav__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mykomap Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client-specific-enhancements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client Specific Enhancements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coolify / Docker deployment
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coolify / Docker deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-docker-compose-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Docker Compose locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Docker Compose locally">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synopsis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-parameters-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker parameters / environment variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mykomap-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mykomap Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-mykomap-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Mykomap Datasets
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing Mykomap Datasets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obtain-the-input-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Obtain the input files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convert-these-into-a-mykomap-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convert these into a Mykomap dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restart-the-back-end-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restart the back-end application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-it-is-working-externally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check it is working externally
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automation-of-this" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation of this
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monorepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-admin-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versioning-and-releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-docker-compose-locally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Running Docker Compose locally
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Docker Compose locally">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#synopsis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synopsis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docker-parameters-environment-variables" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Docker parameters / environment variables
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mykomap-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mykomap Datasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#installing-mykomap-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installing Mykomap Datasets
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installing Mykomap Datasets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#obtain-the-input-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Obtain the input files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#convert-these-into-a-mykomap-dataset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Convert these into a Mykomap dataset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restart-the-back-end-application" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restart the back-end application
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-it-is-working-externally" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check it is working externally
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#automation-of-this" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automation of this
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#building" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="coolify-docker-deployment">Coolify / Docker deployment<a class="headerlink" href="#coolify-docker-deployment" title="Permanent link">#</a></h1>
+<blockquote>
+<p>[!NOTE]</p>
+<p>Dear reader: it is assumed here that you know what "Docker", "Docker
+Compose" and "Dockerfiles" are. If not, see [Writing a Dockerfile][]
+for the basics about Dockerfiles and [What is Docker Compose][] for
+the basic about Docker Compose. These also include links to more
+documentation and references.</p>
+<p>Likewise, it is assumed you know what "Coolify" is. If not, the
+Coolify website is [here][Coolify], and an introduction to it is
+[here][What is Coolify].</p>
+</blockquote>
+<p>For deployment via [Coolify][], we needed to "dockerise" Mykomap.</p>
+<p>Prior to this Mykomap was designed to be installed in a dedicated
+Linux user account, with the public files served by Apache, and the
+back-end API reverse-proxied by Apache to a user-mode [SystemD][]
+service. This worked fine, but could only handle one deployment per
+user account (we had two, one each for the <code>dev</code> and <code>main</code> branches).
+Whereas we found a need to deploy an arbitrary number of feature
+branches for QA on pull-requests. Coolify supports this using
+"[Preview Deployments][]", was available as a Hetzner application
+image, claimed to be a self-hostable, Vercel/Netlify alternative, and
+importantly supported backing-up and upgrading itself - so it seemed a
+viable application to deploy as we do Cloudron - i.e. without using
+infrastructure-as-code tools like Ansible.</p>
+<p>In principle Coolify supports un-dockerised deployment of
+applications using a tool called "Nixpacks" (that shims them into a
+dockerised form). But since an experiment found Nixpacks didn't appear
+to be able to infer all the necessary details from the existing
+information in the <code>mykomap-monolith</code> repository, it seemed expedient
+to provide a Docker Compose configuration and do that explicitly.</p>
+<p>Therefore, the repository now includes:
+- <code>apps/front-end/Dockerfile</code>: this defines how to build a container for the front-end
+- <code>apps/back-end/Dockerfile</code>: ditto, for the back-end application
+- <code>.dockerignore</code>: a file which tells Docker what <em>not</em> to include in images
+- <code>docker-compose.yml</code>: a Docker Compose configuration which supplies
+  the appropriate parameters for the build and defines how to run the
+  containers</p>
+<p>The dockerised Mykomap application can thus be built and run both from
+your repository's working directory, and by Coolify's build system.</p>
+<p>The rest of this document describes those files, how to build and run
+the dockerised Mykomap application locally, how it can be deployed
+using Coolify. Plus some hints and principles for future maintenance.</p>
+<h2 id="running-docker-compose-locally">Running Docker Compose locally<a class="headerlink" href="#running-docker-compose-locally" title="Permanent link">#</a></h2>
+<p>The docker-compose configuration is intended for deploying the Mykomap
+service using Coolify. But you can also be able to use it locally,
+which is necessary for maintaining the Coolify deployment. Using it
+for Mykomap development is a secondary aim at the moment - most
+development to date has been done in the Git working directory, and
+this is expected to continue.</p>
+<h3 id="synopsis">Synopsis<a class="headerlink" href="#synopsis" title="Permanent link">#</a></h3>
+<p>To run the application this way, first ensure the prerequisites are in
+place (see the section below), and the required environment variables
+are defined correctly (ditto: you will need to create a local <code>.env</code>
+file).</p>
+<p>Then in your console, navigate to the project root folder where the
+<code>docker-compose.yml</code> file is, then run the following commands to build
+and start the containers:</p>
+<pre><code>docker compose up -d --build
+</code></pre>
+<p>The application will be available on the host / port you've set in the
+aforementioned <code>.env</code> file.</p>
+<p>But remember to append a <code>datasetId=</code> parameter or you won't see an
+data points! For example, if your host is <code>localhost</code> and port <code>8000</code>:</p>
+<blockquote>
+<p>http://localhost:8000/?datasetId=dataset-A</p>
+</blockquote>
+<p>To halt it (and any lingering containers) use:</p>
+<pre><code>docker compose down --remove-orphans
+</code></pre>
+<blockquote>
+<p>[!INFO]</p>
+<p>If you find docker is failing due to insufficient space after some
+usage, look into using one or all of <code>docker $entity prune</code> where
+<code>$entity</code> can be one of <code>volume</code>, <code>image</code> or <code>system</code>.)</p>
+</blockquote>
+<h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">#</a></h3>
+<blockquote>
+<p>[!NOTE]</p>
+<p>It is assumed you are running on Linux - this may not be required,
+but it has not been tested on other OSes at the time of writing.</p>
+</blockquote>
+<p>First install <code>docker-compose</code>, using the method appropriate to your
+system's requirements. For that, see the documentation
+<a href="https://docs.docker.com/compose/">here</a>.</p>
+<h4 id="docker-parameters-environment-variables">Docker parameters / environment variables<a class="headerlink" href="#docker-parameters-environment-variables" title="Permanent link">#</a></h4>
+<p>There are a number of mandatory parameters which need to be set for
+the application to work correctly. But by design, few if any
+environment variable values are included in the compose file: they
+must be supplied from elsewhere.  Typically this is because they
+depend on your circumstance, and therefore can't reliably be
+predicted, and/or are sensitive values which should not be published
+along with the code.</p>
+<p>When the application is run via Coolify, these values are supplied by
+the build environment, and are manually configured in the Coolify
+dashboard panel for the application - they cannot be supplied in an
+<code>.env</code> file, although you may be able to paste the <code>.env</code> file
+contents using the "developer view". Opt to use Docker secrets if
+possible.</p>
+<p>But when it is being run locally for development, the simplest way is
+to supply an <code>.env</code> file containing all the values needed for the
+application. Docker Compose loads this file prior to interpreting the
+<code>docker-compose.yml</code> file - which means unlike <code>env_file</code> directives,
+they will be available for defining Dockerfile build arguments. (See
+[here][Build args from env_files] and [here][Setting build args using
+env_file])</p>
+<p>As to what to put there, the general principle is: you must supply
+values for all of mandatory the build args named in the
+<code>docker-compose.yml</code> file (those defined with a trailing question
+mark).</p>
+<p>When maintaining the application, try to make sure any new values are
+included here, and any obsolete ones get removed. Ensure that
+mandatory values mandatory - omission should be an error. Validate
+where possible. And obviously, try to keep it all consistent.
+(Apologies for any current inconsistencies!)</p>
+<p>Having said that, here is a brief example with sensible defaults in
+use at the time of writing. However:</p>
+<ul>
+<li>You will need to check and update these values for your time and situation</li>
+<li>Redacted values need to be obtained from other sources. Details can
+  be found elsewhere, for example:</li>
+<li>in each application workspace (back-end and front-end), within these files:<ul>
+<li><code>.env.example</code> </li>
+<li><code>Dockerfile</code> comments</li>
+</ul>
+</li>
+<li>comments within the deploy.sh script in the repository root.</li>
+<li>Values used for Docker/Coolify deployments may differ from those used for code development.</li>
+<li>Commented values are used for those that can be useful, but may be omitted.</li>
+</ul>
+<p>(In general you can find information by searching the code-base for
+the parameter name.)</p>
+<pre><code># Defines the version of node to use. Should match the NodeJS value in .tool-version
+NODE_VERSION=22.4.1
+
+# CADDY_VERSION=2.11
+
+# Support for development (see comments in ./docker-compose-dev.yml)
+COMPOSE_FILE=docker-compose.yml:docker-compose-dev.yml
+CADDY_HOSTNAME=localhost
+
+# Map tiles API key
+MAPTILER_API_KEY=&lt;redacted&gt;
+
+# Glitchtip tracing
+# SENTRY_ORG=digital-commons-coop
+# SENTRY_URL=https://app.glitchtip.com
+# FE_SENTRY_PROJECT=mykomapfront-end
+# FE_GLITCHTIP_KEY=&lt;redacted&gt;
+# FE_SENTRY_AUTH_TOKEN=&lt;redacted&gt;
+# BE_SENTRY_PROJECT=mykomapback-end
+# BE_GLITCHTIP_KEY=&lt;redacted&gt;
+# BE_SENTRY_AUTH_TOKEN=&lt;redacted&gt;
+
+# Umami tracing
+# UMAMI_ID=70f00aee-ba60-4893-bce2-f90a328f5d94
+UMAMI_URL=https://umami.digitalcommons.coop/script.js
+
+# Only ever needed when changing the deployed location
+# BASE_URL_PATH=/cwm/
+# API_PATH_PREFIX=/cwm/api
+
+</code></pre>
+<blockquote>
+<p>[!WARNING]</p>
+<p>I've noticed the back-end tracing values (<code>BE_...</code>) have not been
+added to the Dockerfile at the time of writing. This is not
+important for development but may be for production deployments.
+See TODOs / sub issues on [#141]</p>
+<p>[!WARNING]</p>
+<p>Beware that environment variables are not secure, so (strictly!) API
+keys shouldn't be passed using them. Saying that, historically they
+have been nevertheless: sometimes circumstances makes this hard to
+avoid.  We should be using secure alternatives like Docker compose
+secrets whenever possible.
+See TODOs / sub issues on
+[#141]</p>
+</blockquote>
+<h4 id="mykomap-datasets">Mykomap Datasets<a class="headerlink" href="#mykomap-datasets" title="Permanent link">#</a></h4>
+<p>Once your application is installed, it needs at least one dataset to
+view. See the following section.</p>
+<h3 id="installing-mykomap-datasets">Installing Mykomap Datasets<a class="headerlink" href="#installing-mykomap-datasets" title="Permanent link">#</a></h3>
+<p>Deploying those is currently manual. Automating this is an obvious
+next step, some thoughts about that below.</p>
+<p>Conceptually, the general process is:</p>
+<ul>
+<li>Obtain the input files</li>
+<li>Convert these into a Mykomap dataset</li>
+<li>Deploy this in the folder that Mykomap is configured to load them from</li>
+<li>Restart the back-end application to make it re-load its data.</li>
+</ul>
+<p>However, if you already have a converted dataset - perhaps one in the
+<code>cwm-test-data</code> repository, you have the option of just downloading it
+as-is in the right location.  But because datasets are directory
+trees, typically you'd want to download an archive and unpack it. Then
+you just need to restart the container afterwards.</p>
+<p>You can download an archive from a Github repository using the link at
+the bottom of the "Code" drop-down on the project page. Zip isn't
+installed by default in the back-end container, so if you don't want
+to install it (<code>apk add zip</code>), you can instead download a TAR file:
+simply amend the <code>.zip</code> suffix to <code>.tar.gz</code>, which can be unpacked
+with <code>tar xf &lt;file&gt;</code>.</p>
+<h4 id="obtain-the-input-files">Obtain the input files<a class="headerlink" href="#obtain-the-input-files" title="Permanent link">#</a></h4>
+<p>These are:
+- A CSV with the data you want to display on the map.
+- A <code>config.json</code> file appropriate for the deployed version of
+  Mykomap and the CSV's schema.
+- An <code>about.md</code> file describing the map (ideally this would be
+  included as part of <code>config.json</code>)</p>
+<p>They need to be accessible via an URL on the web, ideally. This is
+most convenient, as they can then just be downloaded using <code>wget</code>.</p>
+<p>The latter two will get copied into the resulting dataset verbatim.</p>
+<h4 id="convert-these-into-a-mykomap-dataset">Convert these into a Mykomap dataset<a class="headerlink" href="#convert-these-into-a-mykomap-dataset" title="Permanent link">#</a></h4>
+<p>Use the <code>dataset</code> CLI application for that which has been built
+and installed in the back-end container.</p>
+<p>To do that, you need to open a root shell in the back-end container.</p>
+<p>When running locally:
+- Make sure you're in the directory in which <code>docker-compose.yml</code> resides
+- Run <code>docker compose exec -u root back-end sh</code></p>
+<p>On a Coolify deployment, do this on the server on which the app is
+deployed (not the Coolify server itself). But because the Coolify UI's
+terminal is always run as the application user (node), you'll need to
+open the terminal from a shell on the server itself... within the
+directory in which Coolify has installed the application's
+docker-compose config.</p>
+<p>Typically this directory is <code>/data/coolify/applications/&lt;application ID&gt;</code></p>
+<p>Having changed into that directory, you can run the <code>docker compose
+exec</code> command (as above).</p>
+<p>The CLI should be installed in the directory the shell opens in by default (<code>/app/</code>)</p>
+<p>Run it like this to get usage help:</p>
+<pre><code>node dataset.js import --help
+</code></pre>
+<p>But for it to have anything to work on, first you need to download the
+input files.</p>
+<p>As root, you can write to the back-end container's filesystem - but it
+will not persist when the container restarts, unless you write into
+the <code>/data</code> directory (on which the <code>datasets</code> volume is mounted).</p>
+<p>You can use <code>wget</code> to download the CSV and the other inputs into the
+container.  You can also use <code>tar</code>, however if you need <code>git</code> or
+<code>zip</code>, those packages can be installed (temporarily!) with:</p>
+<pre><code>apk add git
+apk add zip
+</code></pre>
+<p>Other packages are available, as per the Alpine Linux distribution in use.</p>
+<p>When these are present, you can make the conversion. The CLI takes the
+<code>config.json</code> and the CSV, and will create a dataset folder at the
+location you specify. The name of the folder designates the dataset
+ID - not the contents.  And a stub <code>about.md</code> file will be created -
+you will need to overwrite it with yours.</p>
+<p>Once the dataset folder is complete, move it into <code>/data/datasets/</code> on
+the back-end container.</p>
+<h4 id="restart-the-back-end-application">Restart the back-end application<a class="headerlink" href="#restart-the-back-end-application" title="Permanent link">#</a></h4>
+<p>This will make it re-load its data.</p>
+<p>Use docker compose to do this:</p>
+<pre><code>docker compose restart back-end
+</code></pre>
+<p>Check this has worked with:</p>
+<pre><code>docker compose logs back-end
+</code></pre>
+<p>The dataset(s) should be listed in the logs.</p>
+<h4 id="check-it-is-working-externally">Check it is working externally<a class="headerlink" href="#check-it-is-working-externally" title="Permanent link">#</a></h4>
+<p>Browse to the application, and specify the dataset ID. Locally, this will typically be something like:</p>
+<pre><code>http://localhost/?datasetId=&lt;your ID here&gt;
+</code></pre>
+<p>Although URL will obviously need to be amended accordingly for the case.</p>
+<h4 id="automation-of-this">Automation of this<a class="headerlink" href="#automation-of-this" title="Permanent link">#</a></h4>
+<p>It should be fairly straightforward to automate this - the trickier
+question is how to select available input files in a convenient
+way. There is a repository for Co-op World Map CSVs (these are built
+by an action within the <code>data-pipelines</code> project and so available as
+artifacts for download from there). However, the config.json files or
+about.md files don't have a home, except for those committed into the
+<code>cwm-test-data</code> repository, which I would suggest needs to be retired:
+the size of the data alone makes it very unweildy, and the format of
+the datasets will be specific to the version of Mykomap being
+targetted at the time of deployment. That format is currently not easy
+to infer by inspection. </p>
+<p>So my (Nick's) suggestion is that:
+- The Mykomap API version should be made explicit in the <code>config.json</code> files
+- These files should be published somewhere with their <code>about.md</code>
+  files and any metadata which helps with their use and
+  identification.
+- A MM deployment should include a list of URLs to input files to download and deploy automatically</p>
+<p>Note that when deploying, as the <code>config.json</code> assumes certain CSV
+schema, not all CSV files will work with it. Our CSVs tend to have
+certain preserved fields which can reliably be expected to exist, but
+some maps will require supplemental fields, and of course, this will
+all inevitably evolve over time.</p>
+<h3 id="building">Building<a class="headerlink" href="#building" title="Permanent link">#</a></h3>
+<p>The application is built within the relevant docker containers defined
+by the relevant <code>Dockerfile</code> files, because that is necessary in the
+context of Coolify. Coolify will download the source code, and then
+run <code>docker compose build</code> with the required environment variables
+defined. But it seems not to successfully make any bind mounts you
+might define for run-time operation. Therefore, everything the
+container needs has to be either included in the image itself, via the
+Dockerfile, or installed into Docker volume mounts at runtime, by
+something which runs inside the container.</p>
+<blockquote>
+<p>[!NOTE]</p>
+<p>The front and back end applications have some duplication of build
+steps, because they both need to build shared code. This seems
+only to be avoidable if we built both applications into one
+container, but that goes against the Docker design principle of
+"one proces per container". Although there are ways around that,
+so it might be possible to implemenet in future iterations. This
+might also mean that Docker Compose is not required - although at
+the time of writing, it's not yet clear if that's (enough of) an
+advantage.</p>
+<p>[!NOTE]</p>
+<p>Note that it seems a wise design principle to pass any variables
+needed for the run-time or build-time operation <em>explicitly</em> into
+the Dockerfile as ARGs, as opposed to allowing them to be passed
+out of band as environment variables set here or in Coolify.</p>
+<p>This helps to avoid errors that can be encountered due to
+variables being unset, or lost due to omissions, Dockerfile
+scoping or other problems. All of which can happen due to various
+factors that aren't always obvious and can result in a running app
+which just doesn't quite work right, whilst being hard to track
+down to boot.</p>
+<p>We therefore go to some lengths to ensure these required
+arguments/variables are set by defining them with a trailing
+question mark, making omission an error. Optional variables are also
+included explicitly, for documentation purposes.</p>
+</blockquote>
+<h1 id="first-time-setup-of-coolify">First-time setup of Coolify<a class="headerlink" href="#first-time-setup-of-coolify" title="Permanent link">#</a></h1>
+<p>Coolify can be self-hosted, or rented from the
+<a href="https://coolify.io/cloud">Coolfy cloud SAAS</a>.</p>
+<p>We chose to self-host, using the Hetzner 
+<a href="https://docs.hetzner.com/cloud/apps/list/coolify/">"Apps" image</a> 
+(see that link for more details).</p>
+<p>The process for doing this is fairly straightforward, so I won't go
+into huge detail.</p>
+<p>But just to know what to expect, the steps are:</p>
+<ul>
+<li>Create a new Hetzner Cloud VPS as usual, by going to the list of
+  servers, and selecting the "Add server" button. It doesn't need to
+  have a high-powered specification, in fact I selected the bottom of
+  the range. There's the option of rescaling it later.</li>
+<li>At the bottom of that initial page, before submitting and triggering
+  Hetner to provision the host, where you typically choose the OS to
+  be installed, select the Coolify app instead.</li>
+<li>On provisioning, the host will come up as normal, except that it
+  will be primed to run a deployment script when you first log in.</li>
+<li>This script will ask a few questions, then launch the app and direct
+  you to a URL on a non-standard port on the raw IP address of the
+  host (which typically won't have a hostname assigned yet).</li>
+</ul>
+<p>If you follow this process, you should end up with a running Coolify
+server, and admin access, via a temporary URL.  You can use that to
+continue to set up the Cooify server.</p>
+<p>Prequisites for setting up Coolify futher:
+- An API for the DCC Hezner account we deploy to, on
+  https://console.hetzner.cloud
+- Access to the DCC GitHub organisation account, with "Owner"
+  privileges, so that a GH app can be deployed on it. This is at
+  https://github.com/DigitalCommons
+- Access to the DCC DNS dashboard, on on https://domains.coop</p>
+<p>Log-ins are recorded in the DCC Bitwarden account.</p>
+<p>Once a server is running, you'll be able to get its IP address from
+the dashboard.  You'll need to use this to create some DNS A records
+for it (in the steps below.) To start with I created them all with a
+short TTL of one minute (60 seconds), to allow for rapid mistake
+correction. Later they should all be set to something relatively long
+(typically 86400 seconds, i.e. a day).</p>
+<p>What I did at that point was:
+- Set the hostname to <code>coolify.digitalcommons.coop</code>
+  - This requires creating the <code>coolify</code> A record on the DNS
+    dashboard, pointing to to the server's IP address.
+  - You may want to update the reverse-IP (PTR) record so that the IP maps
+    back to this subdomain - because this is sometimes used as metric
+    of DNS good practice. Do that on the Hetzner dashboard for the
+    server.
+- Created a deployment server called <code>dev-3.digitalcommons.coop</code> -
+  Coolify needs the Hetzner API to do that, but then it can provision
+  it and install Docker Compose, and create a remote control
+  connection to it without manual help.
+  - This requires creating the <code>dev-3</code> A record on the DNS dashboard,
+    as above, although with the appropiate IP.
+  - To facilitate preview deployments, also create a wildcard A record
+    for the subdomain <code>*.dev-3</code>, pointing at the same IP address.
+  - As above you should probably set the reverse-IP record correctly
+    too. 
+- Note: later should add another Coolify deployment server which for
+  production applications (with the hostnames
+  <code>prod-3.digitalcommons.coop</code> and <code>*.prod-3.digitalcommons.coop</code>)
+- Leave the pre-created "localhost" target server as is (we typically won't use it)
+- Leave the pre-created "Root Team" team as is.
+- Created a project: "Testing" (for experimentation, nothing here of import, can be deleted later)
+- Created a project: "DevTeam" (for general DCC use), withing which:
+  - Created a resource "production" (for production apps, nothing here yet)
+  - Created a resource "development" (for development apps), within which:
+    - Created an app
+      <code>mykomap-monolith:containerisation-ai41g710i22dh8vj07qoqel5</code>,
+      using a GitHub app as the source.
+      - This required adding a connection to the DCC GitHub account,
+        via a GitHub app which Coolify can deploy for the purpose. You
+        will need to authorise this, and then make sure it's under the
+        remit of the organisation, not your personal account
+      - In my experience, this was plain sailing the first time, and
+        frustratingly difficult thereafter, for no reason I can
+        explain.
+      - The app source could then be selected from the
+        <code>containerisation</code> branch of <code>mykomap-monolith</code>
+      - Note: It should in future be updated to track the <code>dev</code>
+        branch, when this work is merged. See TODOs / sub issues on
+        [#141]
+      - The app name name was generated by Coolify, and although a better
+        one might be chosen, it will do for now.
+      - The environment variables are set as per instructions
+        elsewhere in this document.
+      - I also enabled Preview builds (more or less with default
+        parameters, and inheriting the same environment as the main
+        build).
+- Ensured that automatic upgrades were enabled (both of Coolify, and
+  the OS underlying it)</p>
+<p>Note that the back-up location needs access to S3 storage, which we
+don't have at the time of writing. But we should add that and enable
+back-ups. See TODOs / sub issues on
+[#141]</p>
+<ul>
+<li>Coolify: https://coolify.io/</li>
+<li>What is Coolify: https://coolify.io/docs/get-started/introduction</li>
+<li>SystemD: https://en.wikipedia.org/wiki/Systemd</li>
+<li>Writing a Dockerfile: https://docs.docker.com/get-started/docker-concepts/building-images/writing-a-dockerfile/</li>
+<li>What is Docker Compose: https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-docker-compose/</li>
+<li>Preview Deployments: https://coolify.io/docs/applications/ci-cd/github/preview-deploy</li>
+<li>Build args from env_files: https://github.com/docker/compose/issues/4618</li>
+<li>Setting build args using env_file: https://stackoverflow.com/a/50593180</li>
+<li>
+<h1 id="141-httpsgithubcomdigitalcommonstechnology-and-infrastructureissues141">141: https://github.com/DigitalCommons/technology-and-infrastructure/issues/141<a class="headerlink" href="#141-httpsgithubcomdigitalcommonstechnology-and-infrastructureissues141" title="Permanent link">#</a></h1>
+</li>
+</ul>
+<h1 id="todo">TODO<a class="headerlink" href="#todo" title="Permanent link">#</a></h1>
+<p>Most of these points have been moved to TODOs / sub issues on [#141],
+but the following are notes on what will require more thought and
+research.</p>
+<ul>
+<li>facilitate better dataset deployment</li>
+<li>dataset publication (standard.csv files or equivalent)</li>
+<li>MM config pulication (config.json+about.md or config.yaml files)</li>
+<li>retire cwm-test-data (instead I suggest publishing the upstream
+    input files listed above and consuming those in a deployment
+    script to generate the correct format dataset for the deployed
+    application)</li>
+<li>taskfile vs Nx? https://taskfile.dev/</li>
+<li>data-pipelines uses Nx, but perhaps taskfiles are simpler?</li>
+<li>either way, perhaps we would benefit from more granular
+    dependencies on the standard.csv files: currently only one needs
+    to change to trigger downloading them all.</li>
+</ul>
+<h1 id="hints-and-suggestions">Hints and Suggestions<a class="headerlink" href="#hints-and-suggestions" title="Permanent link">#</a></h1>
+<p>This is a brain-dump of my (Nick's) thoughts following my post-install
+reflections. They could be used as a prompt for questions at handover,
+but might otherwise be deleted or integrated elsewhere.</p>
+<ul>
+<li>Dockerfiles need to be reachable in the scope of docker-compose.yml
+  (which means docker-compose.yml needs to go in the root directory, not in a subfolder)</li>
+<li>Dockerfiles should do their best to ensure required values are
+  supplied (and ideally also valid)</li>
+<li>prefer <code>${FOO?}</code> over <code>${FOO}</code></li>
+<li>Dockerfiles have their own scoping rules which can sabotage you by rendering variables undefined</li>
+<li>Specifically,<ul>
+<li><code>FROM</code> creates a scope for <code>ARG</code></li>
+<li><code>ENV</code> has a different scope to <code>ARG</code></li>
+<li>Nested script blocks have a scope, but the external scope takes precedence</li>
+</ul>
+</li>
+<li>Dockerfiles should aim to create one process</li>
+<li>Or if not, must manage their own processes WRT unix signals</li>
+<li>This would be relevant if we ever decide to host the API server
+    and an HTTP server in the same container.</li>
+<li>Coolify is a bit fragile/capricious!</li>
+<li>Variables can be duplicated, and thence become hard to delete in
+    the UI<ul>
+<li>Therefore, avoid that!</li>
+</ul>
+</li>
+<li>Preview build variables are common to <em>all</em> previews<ul>
+<li>Therefore, seems you can't put PR deployments on sub-paths, as
+  that requres environment parameters being set to indicate the
+  path to use</li>
+</ul>
+</li>
+<li>Coolify's application/project URLs are "quirky", see https://coolify.io/docs/knowledge-base/domains<ul>
+<li>They're not a literal URL</li>
+<li>For instance, the port component is <em>not</em> literal</li>
+</ul>
+</li>
+<li>The github app deployment went fine the first time (deployed as wu-lee), utter nightmare subsequently (deployed as digitalcommons-coolify).<ul>
+<li>Coolify needs owner perms to deploy it, apparently</li>
+<li>Perhaps these can be turned off afterwards?</li>
+<li>The app needs to be deployed in the organisation, not in the users' "space" (FWOABW)</li>
+</ul>
+</li>
+<li>Avoid localhost for deployment for non-evaluation usage</li>
+<li>Test your docker-compose locally for faster turnaround</li>
+<li>e.g. You can use this to check that variables are being set correctly</li>
+<li>But your docker config needs to work within Coolify's build system</li>
+<li>Some Coolify magic variables can help</li>
+<li>But they don't behave consistently with normal variables (the
+    assignment is a hint to Coolify, not set literally)</li>
+<li>Check the docs for more information.<ul>
+<li>https://coolify.io/docs/knowledge-base/environment-variables#magic-environment-variables</li>
+<li>I tend to agree with criticism here https://news.ycombinator.com/item?id=43594613</li>
+</ul>
+</li>
+<li>Don't load any local bind mount volumes.</li>
+<li>You can't bind-mount your source code, except for the build-time execution.</li>
+<li>With Dockerfiles, you can use multiple <code>FROM</code> directives to create a
+  labelled build image which has more tools and extra data access
+  (i.e. the sourcecode)</li>
+<li>And then create a deploy image which omits these</li>
+<li>This is how you can get node and the source code into a front-end image that needs them for
+    building the deployed JS/HTML files, but ultiately omit them</li>
+<li>See https://stackoverflow.com/questions/49754286/multiple-images-one-dockerfile</li>
+<li>We need to install <code>git</code> during the build</li>
+<li>This allows the build to inspect tags and and set the version info</li>
+<li>Make sure you use the right version of Node and the right Typescript config (etc.) in the container!</li>
+<li>Failing to may mean <code>export.meta</code> is not available</li>
+<li>And/or import does not work</li>
+<li>The code may build but the app will fail at runtime</li>
+<li>When building ESM nodejs bundles using Vite, you may need to work
+  around a bug which results in calls to <code>require</code></li>
+<li>I've added a workaround to avoid 'Error: Dynamic require of "os"
+    is not supported'.</li>
+<li>(Find the commit by searching for that message)</li>
+<li>Adapted from: https://github.com/evanw/esbuild/issues/1921#issuecomment-3453406735</li>
+<li>This uses the trick of defining a global <code>require</code> function</li>
+<li>(instead of adding a header which defines it to each module, as in
+    the linked issue above)</li>
+<li>Coolify attempts to infer your docker-compose listening port from
+  the <code>ports</code> directive of the services</li>
+<li>But this also means it may expose internal services!</li>
+<li>And it puts all your containers on an external-facing network it creates!</li>
+<li>So in general don't: just assume that containers can see each other on this external network</li>
+<li>To avoid exposing internal services you must explicitly bind them on localhost</li>
+<li>and/or use a firewall on the host</li>
+<li>then tell Coolify which ports to proxy using the configured
+    application URL (which abuses the port for that, as mentioned
+    above)</li>
+<li>For local development, you then need to override the exposed ports<ul>
+<li>I've done this in a <code>docker-compose-dev.yml</code> file, which is
+  loaded as an override by defining <code>COMPOSE_FILE=docker-compose.yml:docker-compose-dev.yml</code></li>
+</ul>
+</li>
+<li>Coolify rewrites your docker-compose file!</li>
+<li>Find its rewritten version on the deployment server (<code>dev-3</code> in this
+    case) at <code>/data/coolify/applications/&lt;application ID&gt;/</code> (the ID
+    for the development deployment of Mykomap is
+    <code>ai41g710i22dh8vj07qoqel5</code>)</li>
+<li>I am not convinced that Coolify's build time vs runtime checkboxes
+  for variables/parameters work as expected</li>
+<li>My variables needed at built-time only don't get set unless set to be available at runtime
+Your front-end container will need to know its own hostname</li>
+<li>And this needs to be supplied at build time (or maybe runtime)
+    from Coolify</li>
+</ul>
+<h2 id="troubleshooting-tips">Troubleshooting tips<a class="headerlink" href="#troubleshooting-tips" title="Permanent link">#</a></h2>
+<ul>
+<li>Some tools are frequently pre-installed in the base Docker image</li>
+<li><code>curl</code> and <code>wget</code> are useful for downloading data via HTTP/FTP</li>
+<li><code>netstat -plant</code> is very useful to check what processes are listening on
+    which port</li>
+<li><code>nmap</code> is  essential for checking what ports are visible on other
+    containers</li>
+<li><code>ip link</code>, <code>ip a</code>, <code>ip route</code> etc. are useful for checking network
+    device names, addresses, and routes </li>
+<li>You can install tools which are not pre-installed into a container
+  using <code>apk</code> (assuming they're based on Alpine Linux, else it'll be
+  another package manager)</li>
+<li>e.g. <code>apk add nmap</code></li>
+<li>they don't persist after a re-build</li>
+<li>you can <code>docker exec</code> into your compose containers to inspect them</li>
+<li>This gains terminal access to the containers</li>
+<li>It's an alternative to using the Coolify dashboard (which has a
+    pretty shonky terminal with peculiar wrapping, and always logs you
+    in as the app's user, in our case <code>node</code>)</li>
+<li>For example:<ul>
+<li><code>cd /data/coolify/applications/ai41g710i22dh8vj07qoqel5</code>
+  (substitute your application ID as required)</li>
+<li><code>docker compose exec back-end</code> (substitute your
+  container name as required)</li>
+<li><code>docker compose exec back-end -u root</code> gets you in as the root
+  user, and therefore with write access to the whole container
+  filesystem and more.</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

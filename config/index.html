@@ -1,0 +1,1046 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://digitalcommons.github.io/mykomap-monolith/config/">
+      
+      
+        <link rel="prev" href="../client-specific-enhancements/">
+      
+      
+        <link rel="next" href="../coolify/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Configuration Reference - Mykomap Docs</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#configuration-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Mykomap Docs" class="md-header__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Mykomap Docs
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Configuration Reference
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Mykomap Docs" class="md-nav__button md-logo" aria-label="Mykomap Docs" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Mykomap Docs
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/DigitalCommons/mykomap-monolith" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    DigitalCommons/mykomap-monolith
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Intro
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../automated-testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Automated Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client-specific-enhancements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client Specific Enhancements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#popup-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Popup layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Markers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Markers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directory-panel-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directory Panel Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#map-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map Key
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coolify/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coolify / Docker deployment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mykomap Data
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Deploying
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../monorepo/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Monorepo structure
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-admin-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    In case of server problems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versioning-and-releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Versioning and Releases
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#popup-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Popup layout
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#custom-markers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Markers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Custom Markers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#directory-panel-icons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Directory Panel Icons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#map-key" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Map Key
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="configuration-reference">Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permanent link">#</a></h1>
+<p>Here is a reference for all the options in a map's <code>config.json</code> file, and what they are used for.</p>
+<p>You can also find a working example in the <a href="https://github.com/DigitalCommons/mykomap-monolith/tree/main/apps/back-end/test/data/"><code>back-end test data</code></a>.</p>
+<p>TODO: Fill this out for all config options. We currently just have a reference for popup config (W.I.P.)</p>
+<h2 id="popup-layout">Popup layout<a class="headerlink" href="#popup-layout" title="Permanent link">#</a></h2>
+<p>The <code>popup</code> config field is used to define the layout of the popups, which are displayed when items
+are clicked on the map. The layout config is declarative and designed to be as simple as possible,
+with the front-end handling the conversion of the config into MUI React components.</p>
+<p>There are 4 subfields:</p>
+<ul>
+<li><code>titleProp</code> (required): The ID of the itemProp that should be used as the popup's title</li>
+<li><code>leftPane</code>: a list of itemProps to be displayed in the popup's left pane, from top-to-bottom in the layout, including their style definition (see below for more details).</li>
+<li><code>topRightPane</code>: same as <code>leftPane</code> but for the top-right pane of the popup</li>
+<li><code>bottomRightPane</code>: same as <code>leftPane</code> but for the bottom-right pane of the popup</li>
+</ul>
+<p>And these are the different options to define the style of an itemProp:</p>
+<ul>
+<li><code>valueStyle</code> (defaults to <code>text</code>): This can be one of the following options:</li>
+<li><code>text</code>: The value(s) of the itemProp are displayed as plain text.</li>
+<li><code>address</code>: Used in the case of the itemProp value being an address with comma separators (it must be formatted like this upstream). Each address section is displayed on a new line.</li>
+<li><code>hyperlink</code>: The value(s) of the itemProp are displayed as clickable hyperlinks.</li>
+<li><code>showBullets</code> (defaults to <code>false</code>): If an itemProp has multiple values, they are always displayed on multiple lines. If this option is set to true, bullet points will be shown before each value.</li>
+<li><code>singleColumnLimit</code> (number): If specified, a list will split into 2 columns if the number of values is more than this.</li>
+<li><code>showLabel</code> (defaults to <code>false</code>): If this is set to true, the label of the itemProp (taken from <code>titleUri</code> in the itemProp definition) is displayed as a heading above the value(s).</li>
+<li><code>hyperlinkBaseUri</code> (defaults to None): If <code>valueStyle</code> is <code>hyperlink</code>, this base URI is prepended to the itemProp value, to form the href.</li>
+<li><code>displayText</code> (defaults to None): If <code>valueStyle</code> is <code>hyperlink</code>, this sets the display text of the hyperlink, which will be the same for all popups.</li>
+<li><code>analyticOnClick</code> (defaults to <code>false</code>): If <code>valueStyle</code> is <code>hyperlink</code> and this option is set to true, an analytic event will be sent when a user clicks the link. The event name will be of the form <code>Item_&lt;PropName&gt;Click</code>. The event data will include the dataset item ID and the URL clicked.</li>
+</ul>
+<pre><code>&quot;popup&quot;: {
+    &quot;titleProp&quot;: &quot;name&quot;,
+    &quot;leftPane&quot;: [
+      {&quot;itemProp&quot;: &quot;category&quot;, &quot;valueStyle&quot;: &quot;text&quot;, &quot;showLabel&quot;: true },
+      {&quot;itemProp&quot;: &quot;description&quot;, &quot;valueStyle&quot;: &quot;text&quot; },
+      {&quot;itemProp&quot;: &quot;website&quot;, &quot;valueStyle&quot;: &quot;hyperlink&quot;, &quot;displayText&quot;: &quot;Website&quot;, &quot;analyticOnClick&quot;: true }
+    ],
+    &quot;topRightPane&quot;: [
+      {&quot;itemProp&quot;: &quot;address&quot;, &quot;valueStyle&quot;: &quot;address&quot; },
+      {&quot;itemProp&quot;: &quot;email&quot;, &quot;valueStyle&quot;: &quot;hyperlink&quot;, &quot;baseUri&quot;: &quot;mailto:&quot; }
+    ],
+    &quot;bottomRightPane&quot;: []
+  }
+</code></pre>
+<p><br /></p>
+<hr />
+<p><br /></p>
+<h2 id="custom-markers">Custom Markers<a class="headerlink" href="#custom-markers" title="Permanent link">#</a></h2>
+<p>Custom markers requires that an optional field called <code>customMarkers</code> has 3 things. The name of the property that will determine the marker, the list of marker icon images (which are loaded into the front-end by appending <code>.png</code> to the image name) and a list of which terms map to which icon (which must include a default value).</p>
+<p>In this example, the dataset items are assigned their property based on the <code>food</code> value. Having <code>strawberry</code> results in a red icon, <code>blackberry</code> in a purple icon, and anything else, via <code>default</code>, gets a red icon. They are referencing the position in the list of markerIcons.</p>
+<pre><code>&quot;ui&quot;: {
+    ...
+    &quot;customMarkers&quot;: {
+      &quot;marker_property_name&quot;: &quot;food&quot;,
+      &quot;markerIcons&quot;: [
+        &quot;red&quot;,
+        &quot;purple&quot;
+      ],
+      &quot;termsToIconIndex&quot;: {
+        &quot;strawberry&quot;: 0,
+        &quot;blackberry&quot;: 1,
+        &quot;default&quot;: 0
+      }
+    },
+    ...
+}
+</code></pre>
+<h3 id="directory-panel-icons">Directory Panel Icons<a class="headerlink" href="#directory-panel-icons" title="Permanent link">#</a></h3>
+<p>If a dataset uses <code>customMarkers</code>, top-level directory categories can use the same naming convention to display icons. No additional config is required. Directory icons are derived from the equivalent marker icon name and loaded from the front end using the format:</p>
+<p><code>./assets/icons/icon-[markerIconName].png</code></p>
+<p>For example, if a custom marker icon is named <code>community-growing</code>, the matching directory icon should be:</p>
+<p><code>icon-community-growing.png</code></p>
+<p>This provides alignment between directory panel icons and map markers, without introducing a separate icon mapping in the config.</p>
+<p>Only top-level categories support directory icons. Sub-categories and the <code>Any</code> option do not.</p>
+<p><br /></p>
+<hr />
+<p><br /></p>
+<h2 id="map-key">Map Key<a class="headerlink" href="#map-key" title="Permanent link">#</a></h2>
+<p>The <code>show_map_key</code> field is an optional boolean used to control whether the map key is displayed for a dataset. It is defined within <code>ui</code> and defaults to <code>false</code> when omitted.</p>
+<p>```
+"ui": {
+    ...
+    "show_map_key": true,
+    ...
+}</p>
+<pre><code>
+## Logo
+
+The `logo` config field is a child of the `ui` field and is used to define logo display and position on the map. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
+
+If a config file does not contain a `logo` field, no logo will be displayed on the map.
+
+A new folder has been added `front-end/public/assets/logo` as a central store for logo images.
+
+The `logo` field has 6 subfields
+
+- `largeLogo`: the location of the large logo image e.g.: `/assets/logos/cwm-logo.png`
+- `smallLogo`: similar to above, the location of the small logo
+- `altText`: any alt text to be associated with the logo
+- `smallScreenPosition`: position of the logo on small screens, defined with CSS position properties (top, left)
+- `largeScreenPosition`: position of the logo on large screens, defined with CSS position properties (bottom, right)
+
+### Example of the `logo` config field for **CWM**
+
+</code></pre>
+<p>"ui": {
+  "logo": {
+    "largeLogo": "./assets/logos/cwm-logo.png",
+    "smallLogo": "./assets/logos/cwm-logo-small.png",
+    "altText": "Cooperative World Map",
+    "smallScreenPosition": {
+      "top": "0",
+      "left": "5px"
+    },
+    "largeScreenPosition": {
+      "bottom": "-25px",
+      "right": "-5px"
+    }
+  }
+},</p>
+<pre><code>
+&lt;br /&gt;
+
+---
+
+&lt;br /&gt;
+
+## Map
+
+The `map` config field is also a child of the `ui` field and is used to define the boundaries of a map. If a config contains no `map` field, the whole of the world map will be displayed by default, à la the **CWM**.
+
+The `map` field has 1 subfield
+
+- `mapBounds`: an array the countains the longitude and latitude of the map's boundaries
+
+### The `map` config object including the **Powys** map boundaries
+
+</code></pre>
+<p>"ui": {
+  "map": {
+    "mapBounds": [
+      [-5.5, 51.3],
+      [-2.5, 53.5]
+    ]
+  }
+},</p>
+<pre><code>
+### The `ui` field including the `directory_panel_field`, `filterableFields`, `map` and `logo` child fields
+
+</code></pre>
+<p>"ui": {
+  "directory_panel_field": "country_id",
+  "filterableFields": [
+    "country_id",
+    "primary_activity",
+    "organisational_structure",
+    "typology"
+  ],
+  "map": {
+    "mapBounds": [
+      [-5.5, 51.3],
+      [-2.5, 53.5]
+    ]
+  },
+  "logo": {
+    "largeLogo": "./assets/logos/cwm-logo.png",
+    "smallLogo": "./assets/logos/cwm-logo-small.png",
+    "altText": "Cooperative World Map",
+    "smallScreenPosition": {
+      "top": "0",
+      "left": "5px"
+    },
+    "largeScreenPosition": {
+      "bottom": "-25px",
+      "right": "-5px"
+    }
+  }
+},</p>
+<pre><code>
+&lt;br /&gt;
+
+---
+
+&lt;br /&gt;
+
+## About Panel Content
+
+The about panel displays the content of `about.md` - this is not localised.
+
+To provide translatable panel content add an `about_content` key to each languages `vocabs.ui` term in `config.json`. The value is a markdown string. If present it overrides `about.md`.
+
+</code></pre>
+<p>"ui": {
+    "en": {
+      "terms": {
+        "about_content" : "Welcome to <strong>the map</strong>!\n\nMore details..."
+        ...
+      }
+    }
+}</p>
+<pre><code>
+Markdown is hard to edit in json. You can use jq on the command line to edit it:
+
+`jq --rawfile md about.fr.md '.vocabs.ui.fr.terms.about_content = $md' config.json &gt; t &amp;&amp; mv 
+ t config.json`
+
+Extract the markdown for a language:
+
+`jq -r '.vocabs.ui.en.terms.about_content' config.json &gt; about.en.md`
+
+## Pluralisation
+
+Pluralisation rules can differ per language, requiring the use of extra suffixes. `zero`, `one` and `other` are sufficient for English, Spanish, French and Hindi, and fine for our current instance of CWM. However, Welsh and Arabic have six categories according to **[CLDR ](https://cldr.unicode.org/index/cldr-spec/plural-rules)** and **[i18next](https://www.i18next.com/translation-function/plurals)** follows this:
+
+- `zero` (when n = 0)
+- `one` (when n = 10)
+- `two` (when n = 2)
+- `few` (when n= 3)
+- `many` (when n = 6)
+- `other` (everything else)
+
+Omission of the required plural forms will cause the translation to fallback to the default language. [This tool](https://jsfiddle.net/6bpxsgd4) can be used to determine the necessary plural suffixes, and list of the two letter ISO language codes can be found [here](https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes).
+&lt;br&gt;
+
+### Welsh UI translations including `two`, `few` and `many`
+
+</code></pre>
+<p>"ui": {
+      "cy": {
+        "title": "Cyfieithiadau",
+        "terms": {
+          "directory": "Cyfeiriadur",
+          "food_system_categories": "Categori",
+          "primary_food_system_category": "Categori",
+          "locality": "Tref",
+          "matching_results_zero": "Dim canlyniadau cyfatebol",
+          "matching_results_one": "{{count}} canlyniad cyfatebol",
+          "matching_results_two": "{{count}} canlyniadau cyfatebol",
+          "matching_results_few": "{{count}} canlyniadau cyfatebol",
+          "matching_results_many": "{{count}} canlyniadau cyfatebol",
+          "matching_results_other": "{{count}} canlyniadau cyfatebol",
+          "directory_entries_zero": "Dim cofnodion cyfeiriadur",
+          "directory_entries_one": "{{count}} cofnod cyfeiriadur",
+          "directory_entries_two": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_few": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_many": "{{count}} gofnodion cyfeiriadur",
+          "directory_entries_other": "{{count}} cofnodion cyfeiriadur",
+          "search": "Chwilio",
+          "clear_search": "Clirio'r chwiliad",
+          "any": "Unrhyw",
+          "map": "Map",
+          "about": "Ynghylch",
+          "no_location_available": "Dim lleoliad ar gael"
+        }
+      }
+    }
+```</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
