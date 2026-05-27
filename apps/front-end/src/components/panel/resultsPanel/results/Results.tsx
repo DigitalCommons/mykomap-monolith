@@ -72,7 +72,7 @@ const Results = () => {
       result_count: resultCount,
       page: resultsPage,
     });
-    dispatch(openPopup(`@${itemIx}`));
+    dispatch(openPopup({ idOrIndex: `@${itemIx}`, origin: "directory" }));
 
     dispatch(closePanel());
     if (!isMedium) {

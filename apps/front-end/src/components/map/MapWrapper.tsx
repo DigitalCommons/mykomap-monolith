@@ -16,6 +16,7 @@ import {
   selectPopupIndex,
   selectPopupId,
   selectPopupIsOpen,
+  selectPopupOrigin,
 } from "../popup/popupSlice";
 import {
   selectCurrentLanguage,
@@ -48,6 +49,7 @@ const MapWrapper = () => {
   const popupIndex = useAppSelector(selectPopupIndex);
   const popupId = useAppSelector(selectPopupId);
   const popupLocation = useAppSelector(selectLocation(popupIndex));
+  const popupOrigin = useAppSelector(selectPopupOrigin);
   const language = useAppSelector(selectCurrentLanguage);
   const mapConfig = useAppSelector(selectMapConfig);
   const markerIcons = useAppSelector(selectMarkerIcons);
@@ -70,7 +72,7 @@ const MapWrapper = () => {
 
   const popupCreatedCallback = (itemIx: number) => {
     if (!isMedium) dispatch(closeMapKey());
-    dispatch(openPopup(`@${itemIx}`));
+    dispatch(openPopup({ idOrIndex: `@${itemIx}`, origin: "map" }));
   };
 
   const popupClosedCallback = () => {
@@ -171,7 +173,7 @@ const MapWrapper = () => {
           if (urlPopupId === "") {
             dispatch(closePopup());
           } else {
-            dispatch(openPopup(urlPopupId));
+            dispatch(openPopup({ idOrIndex: urlPopupId, origin: "directory" }));
           }
         }
 
@@ -265,6 +267,15 @@ const MapWrapper = () => {
     }
   };
 
+  const PANEL_WIDTH = 375; // From CSS variable --panel-width-desktop
+  let leftPanelWidth =
+    isMedium && panelOpen
+      ? resultsPanelOpen
+        ? PANEL_WIDTH * 2
+        : PANEL_WIDTH
+      : 0;
+  const mapCenterOffsetPixels = [leftPanelWidth / 2, 0];
+
   return (
     mapConfig &&
     features && (
@@ -276,6 +287,8 @@ const MapWrapper = () => {
         popupClosedCallback={popupClosedCallback}
         popupIndex={popupIndex}
         popupLocation={popupLocation}
+        popupOrigin={popupOrigin}
+        mapCenterOffsetPixels={mapCenterOffsetPixels}
       />
     )
   );

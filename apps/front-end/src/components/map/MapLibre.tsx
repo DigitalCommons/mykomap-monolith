@@ -11,6 +11,7 @@ import Map, {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useDispatch } from "react-redux";
 import Popup from "../popup/Popup";
+import { fitBoundsToFeatures, isLocationNear } from "../../utils/map-utils";
 
 const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
@@ -57,18 +58,12 @@ export default function MapLibre({
   popupClosedCallback,
   popupIndex,
   popupLocation,
+  popupOrigin,
+  mapCenterOffsetPixels,
 }) {
   const dispatch = useDispatch();
   const mapRef = useRef<MapRef>(null);
   const [markerLayout, setMarkerLayout] = useState();
-  /*
-  const [popupInfo, setPopupInfo] = useState<{
-    lngLat: [number, number];
-    ix: number;
-  } | null>(null);
-   */
-  console.log(features);
-  console.log(markerIcons);
 
   function handleClick(e: MapLayerMouseEvent) {
     const features = e.features;
@@ -96,6 +91,7 @@ export default function MapLibre({
 
       map.easeTo({
         center: [lng, getMapCentreLatOffsetted(lat, map.getZoom())],
+        offset: mapCenterOffsetPixels,
       });
     }
   }
@@ -133,13 +129,55 @@ export default function MapLibre({
   }, [markerIcons, mapRef.current]);
 
   useEffect(() => {
-    if (popupLocation && mapRef.current) {
+    if (features.length > 0 && mapRef.current) {
+      const map = mapRef.current;
+
+      const {
+        minLng,
+        minLat,
+        maxLng,
+        maxLat,
+        basePadding,
+        leftPadding,
+        maxZoom,
+      } = fitBoundsToFeatures(features, mapCenterOffsetPixels);
+      map.fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
+        ],
+        {
+          padding: {
+            top: basePadding,
+            bottom: basePadding,
+            left: leftPadding,
+            right: basePadding,
+          },
+          duration: 1000,
+          maxZoom,
+        },
+      );
+    }
+  }, [features]);
+
+  useEffect(() => {
+    if (popupLocation && mapRef.current && popupOrigin === "directory") {
       const map = mapRef.current;
       const [lng, lat] = popupLocation;
 
-      map.easeTo({
-        center: [lng, getMapCentreLatOffsetted(lat, map.getZoom())],
-      });
+      const isNearby = isLocationNear(popupLocation, map);
+
+      if (isNearby) {
+        map.easeTo({
+          center: [lng, getMapCentreLatOffsetted(lat, map.getZoom())],
+          offset: mapCenterOffsetPixels,
+        });
+      } else {
+        map.jumpTo({
+          center: [lng, getMapCentreLatOffsetted(lat, 15)],
+          zoom: 15,
+        });
+      }
     }
   }, [popupLocation]);
 
