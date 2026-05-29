@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Map, {
   NavigationControl,
   AttributionControl,
@@ -6,9 +6,9 @@ import Map, {
   Layer,
   MapLayerMouseEvent,
   Popup as PopupContainer,
+  StyleSpecification,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useDispatch } from "react-redux";
 import Popup from "../popup/Popup";
 import { fitBoundsToFeatures, isLocationNear } from "../../utils/map-utils";
 import { getDatasetId, encodeBase64 } from "../../utils/window-utils";
@@ -18,6 +18,7 @@ const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
 
 const mapTilerKey = import.meta.env.VITE_MAPTILER_API_KEY;
+const STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${mapTilerKey}`;
 const CLUSTER_LAYER_ID = "clusters";
 const UNCLUSTERED_LAYER_ID = "unclustered-point";
 
@@ -65,12 +66,11 @@ export default function MapLibre({
   mapRef,
   mapLoadedCallback,
 }) {
-  const dispatch = useDispatch();
-
   const [markerLayout, setMarkerLayout] = useState();
   const [tooltipCoordinates, setTooltipCoordinates] = useState();
   const [tooltipName, setTooltipName] = useState("");
   const [tooltipOffset, setTooltipOffset] = useState([0, 0]);
+  const [baseStyle, setBaseStyle] = useState<StyleSpecification | null>(null);
 
   async function handleMove(e: MapLayerMouseEvent) {
     const map: MapRef = mapRef.current;
@@ -186,12 +186,6 @@ export default function MapLibre({
     }
   }
 
-  /*
-  useEffect(() => {
-    loadMarkerIcons();
-  }, [markerIcons, mapRef.current]);
-  */
-
   useEffect(() => {
     if (features.length > 0 && mapRef.current) {
       const map = mapRef.current;
@@ -245,6 +239,23 @@ export default function MapLibre({
     }
   }, [popupLocation]);
 
+  useEffect(() => {
+    fetch(STYLE_URL)
+      .then((res) => res.json())
+      .then(setBaseStyle);
+  }, []);
+
+  const patchedStyle = useMemo(() => {
+    if (!baseStyle) return undefined;
+    return JSON.parse(
+      JSON.stringify(baseStyle, (_key, val) =>
+        typeof val === "string"
+          ? val.replace(/name:[a-z]+/g, `name:${language.toLowerCase()}`)
+          : val,
+      ),
+    );
+  }, [baseStyle, language]);
+
   return (
     <Map
       interactiveLayerIds={[CLUSTER_LAYER_ID, UNCLUSTERED_LAYER_ID]}
@@ -271,7 +282,7 @@ export default function MapLibre({
         width: "100%",
         height: "100vh",
       }}
-      mapStyle={`https://api.maptiler.com/maps/streets-v2/style.json?key=${mapTilerKey}`}
+      mapStyle={patchedStyle ?? STYLE_URL}
     >
       <AttributionControl position="top-right" compact />
       <NavigationControl position="top-right" />
