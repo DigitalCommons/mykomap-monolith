@@ -34,7 +34,12 @@ export default defineConfig(({ mode }) => {
     build: {
       sourcemap: true,
     },
-
+    optimizeDeps: {
+      include: ['@mapcomponents/react-maplibre'],
+    },
+    resolve: {
+      dedupe: ['react', 'react-dom', 'react/jsx-runtime'],
+    },
     base: env.VITE_BASE_URL,
     root,
   };

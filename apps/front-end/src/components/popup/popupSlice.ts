@@ -16,6 +16,7 @@ interface PopupSliceState {
   data: {
     [key: string]: any;
   };
+  origin: "map" | "directory";
 }
 
 const initialState: PopupSliceState = {
@@ -25,6 +26,7 @@ const initialState: PopupSliceState = {
   status: "idle",
   itemProps: {},
   data: {},
+  origin: "directory"
 };
 
 export const popupSlice = createAppSlice({
@@ -38,7 +40,8 @@ export const popupSlice = createAppSlice({
       state.data = {};
     }),
     openPopup: create.asyncThunk(
-      async (idOrIndex: string, thunkApi) => {
+      async (data: { idOrIndex: string, origin: "map" | "directory" }, thunkApi) => {
+        const { idOrIndex, origin } = data;
         const { popup } = thunkApi.getState() as { popup: PopupSliceState };
         if (
           (idOrIndex.startsWith("@") &&
@@ -50,6 +53,7 @@ export const popupSlice = createAppSlice({
             index: popup.index,
             id: popup.id,
             ...popup.data,
+            origin
           };
         }
 
@@ -95,6 +99,7 @@ export const popupSlice = createAppSlice({
           state.index = action.payload.index;
           state.id = action.payload.id;
           state.isOpen = true;
+          state.origin = action.meta.arg.origin;
           const { index, ...data } = action.payload;
           state.data = data;
           state.status = "idle";
@@ -103,7 +108,7 @@ export const popupSlice = createAppSlice({
           state.status = "failed";
           // state.allLocations = [];
           console.error(
-            `Error fetching popup content for item ${action.meta.arg}`,
+            `Error fetching popup content for item ${action.meta.arg.idOrIndex}`,
             action.payload,
           );
         },
@@ -120,11 +125,12 @@ export const popupSlice = createAppSlice({
     selectPopupIsOpen: (popup) => popup.isOpen,
     selectPopupIndex: (popup) => popup.index,
     selectPopupId: (popup) => popup.id,
+    selectPopupOrigin: (popup) => popup.origin
   },
 });
 
 export const { openPopup, closePopup } = popupSlice.actions;
-export const { selectPopupIsOpen, selectPopupIndex, selectPopupId } =
+export const { selectPopupIsOpen, selectPopupIndex, selectPopupId, selectPopupOrigin } =
   popupSlice.selectors;
 
 export const selectPopupData = createSelector(

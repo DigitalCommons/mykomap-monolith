@@ -4,7 +4,7 @@ import Panel from "./components/panel/Panel";
 import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
 import { getLanguageFromUrl } from "./utils/window-utils";
-import Popup from "./components/popup/Popup";
+import { NoLocationPopup } from "./components/popup/Popup";
 import Logo from "./components/common/Logo/Logo";
 import MapKey from "./components/map/mapKey/MapKey";
 
@@ -37,7 +37,7 @@ const App = () => {
       <MapWrapper />
       <Logo />
       <Panel />
-      <Popup />
+      <NoLocationPopup />
       <MapKey />
     </div>
   );
