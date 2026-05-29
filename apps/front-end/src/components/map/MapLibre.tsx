@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Map, {
   NavigationControl,
   AttributionControl,
@@ -130,6 +130,24 @@ export default function MapLibre({
     }
 
     if (feature.layer.id === UNCLUSTERED_LAYER_ID) {
+      const [clickedLng, clickedLat] = feature.geometry.coordinates;
+
+      const allFeatures = map.querySourceFeatures("points", {
+        sourceLayer: "",
+        filter: ["!", ["has", "point_count"]],
+      });
+
+      const colocated = allFeatures.filter((f) => {
+        const [lng, lat] = f.geometry.coordinates;
+        return lng === clickedLng && lat === clickedLat;
+      });
+
+      console.log(
+        `Clicked ix=${feature.properties.ix}, colocated count: ${colocated.length}`,
+        colocated.map((f) => f.properties.ix),
+        allFeatures.map((f) => f.properties.ix),
+      );
+
       popupCreatedCallback(feature.properties.ix);
       const [lng, lat] = feature.geometry.coordinates;
 
