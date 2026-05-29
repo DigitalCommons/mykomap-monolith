@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from "react";
-import { createMap, fitBoundsToFeatures, setPanelOpenValues } from "./mapLibre";
+import { MapRef } from "react-map-gl/maplibre";
 import { useSearchParams } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -8,7 +8,6 @@ import {
   selectSearchQuery,
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
-import { Map as MapLibreMap, GeoJSONSource } from "maplibre-gl";
 import { fetchLocations, selectFeatures, selectLocation } from "./mapSlice";
 import {
   closePopup,
@@ -56,11 +55,10 @@ const MapWrapper = () => {
   const configStatus = useAppSelector(selectConfigStatus);
   const panelOpen = useAppSelector(selectPanelOpen);
   const resultsPanelOpen = useAppSelector(selectResultsPanelOpen);
-  const [sourceLoaded, setSourceLoaded] = useState(false);
-  const [mapCreated, setMapCreated] = useState(false);
-  const map = useRef<MapLibreMap | null>(null);
+  const mapRef = useRef<MapRef>(null);
   const dispatch = useAppDispatch();
   const isMedium = useMediaQuery("(min-width: 897px)");
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   // use this to manage popup and search state in the URL
   const [searchParams, setSearchParams] = useSearchParams(
@@ -84,14 +82,6 @@ const MapWrapper = () => {
     dispatch(fetchLocations());
   }, [configStatus]);
 
-  useEffect(() => {
-    if (sourceLoaded) {
-      updateMapData().catch((error) => {
-        console.error("Failed to update map data", error);
-      });
-    }
-  }, [features, sourceLoaded]);
-
   // Keep the mapLibre popup and URL in sync with the Redux state (the latter being the source of truth)
   useEffect(() => {
     const urlPopupId = searchParams.get(POPUP_ID_PARAM) ?? "";
@@ -99,7 +89,7 @@ const MapWrapper = () => {
 
     // First let's update URL parameters if needed, in a single call to avoid conflicts
     if (
-      mapCreated &&
+      mapRef.current &&
       (urlSearchQuery !== searchQuery || urlPopupId !== popupId)
     ) {
       setSearchParams(
@@ -124,23 +114,6 @@ const MapWrapper = () => {
         },
       );
     }
-
-    if (popupIsOpen) {
-      console.log("Redux popup state is open");
-      if (popupLocation) {
-        map?.current?.fire("openPopup", {
-          itemIx: popupIndex,
-          location: popupLocation,
-        });
-      } else {
-        console.log("Open popup for item with no location");
-        map?.current?.fire("closeAllPopups");
-        // The rest is handled in Popup.tsx
-      }
-    } else {
-      console.log("Redux popup state is closed");
-      map?.current?.fire("closeAllPopups");
-    }
   }, [popupIsOpen, popupIndex, searchQuery]);
 
   // On every change of URL params, check if the filter or popup state in the URL matches the Redux
@@ -152,7 +125,7 @@ const MapWrapper = () => {
     const popupStateMismatch = urlPopupId !== popupId;
     const searchStateMismatch = urlSearchQuery !== searchQuery;
 
-    if (mapCreated) {
+    if (mapRef.current) {
       const maybePerformSearch = async () => {
         if (searchStateMismatch) {
           console.log(
@@ -226,46 +199,11 @@ const MapWrapper = () => {
         );
       }
     }
-  }, [mapCreated, searchParams]);
+  }, [mapLoaded, searchParams]);
 
   useEffect(() => {
-    // Keep the mapLibre panel open state in sync with the Redux state
-    setPanelOpenValues(panelOpen, resultsPanelOpen);
-  }, [panelOpen, resultsPanelOpen]);
-
-  useEffect(() => {
-    map.current?.fire("changeLanguage", { language });
+    mapRef.current?.fire("changeLanguage", { language });
   }, [language]);
-
-  const updateMapData = async () => {
-    if (isFilterActive) {
-      console.log(`Found ${visibleIndexes?.length} items that matched`);
-    }
-
-    console.log(
-      `Rendering ${features.length} items that have a location in MapLibreGL`,
-      features,
-    );
-
-    (map.current?.getSource("items-geojson") as GeoJSONSource)?.setData({
-      type: "FeatureCollection",
-      features,
-    });
-
-    // Auto-zoom to fit filtered results
-    if (isFilterActive && features.length > 0 && map.current) {
-      // Wait a brief moment for the map to process the new data before panning
-      setTimeout(() => {
-        if (map.current) {
-          fitBoundsToFeatures(map.current);
-        }
-      }, 100);
-    }
-
-    if (!visibleIndexes.includes(popupIndex)) {
-      dispatch(closePopup());
-    }
-  };
 
   const PANEL_WIDTH = 375; // From CSS variable --panel-width-desktop
   let leftPanelWidth =
@@ -280,6 +218,9 @@ const MapWrapper = () => {
     mapConfig &&
     features && (
       <MapLibre
+        mapRef={mapRef}
+        mapLoadedCallback={() => setMapLoaded(true)}
+        language={language}
         mapBounds={mapConfig.mapBounds}
         features={features}
         markerIcons={markerIcons}

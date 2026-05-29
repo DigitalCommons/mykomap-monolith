@@ -5,13 +5,14 @@ import Map, {
   Source,
   Layer,
   MapLayerMouseEvent,
-  MapRef,
   Popup as PopupContainer,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { useDispatch } from "react-redux";
 import Popup from "../popup/Popup";
 import { fitBoundsToFeatures, isLocationNear } from "../../utils/map-utils";
+import { getDatasetId, encodeBase64 } from "../../utils/window-utils";
+import { getDatasetItem } from "../../services";
 
 const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
@@ -51,6 +52,7 @@ const clusterCountLayer = {
 };
 
 export default function MapLibre({
+  language,
   mapBounds,
   features,
   markerIcons,
@@ -60,10 +62,52 @@ export default function MapLibre({
   popupLocation,
   popupOrigin,
   mapCenterOffsetPixels,
+  mapRef,
+  mapLoadedCallback,
 }) {
   const dispatch = useDispatch();
-  const mapRef = useRef<MapRef>(null);
+
   const [markerLayout, setMarkerLayout] = useState();
+  const [tooltipCoordinates, setTooltipCoordinates] = useState();
+  const [tooltipName, setTooltipName] = useState("");
+  const [tooltipOffset, setTooltipOffset] = useState([0, 0]);
+
+  async function handleMove(e: MapLayerMouseEvent) {
+    const map: MapRef = mapRef.current;
+
+    const layerFeatures = map.queryRenderedFeatures(e.point, {
+      layers: [UNCLUSTERED_LAYER_ID],
+    });
+
+    if (!layerFeatures || layerFeatures.length === 0 || !map || popupLocation) {
+      setTooltipCoordinates(undefined);
+      return;
+    }
+
+    const feature = layerFeatures[0];
+    const { ix } = feature.properties;
+    const datasetId = getDatasetId() as string;
+
+    const response = await getDatasetItem({
+      params: { datasetId, datasetItemIdOrIx: encodeBase64(`@${ix}`) },
+      query: { returnProps: ["name"] },
+    });
+
+    if (response.status === 200 && response.body.name) {
+      const name = response.body.name as string;
+
+      const spiderfyOffset = [0, 0];
+
+      // Shift the tooltip up a bit so it doesn't cover the marker
+      const popupOffset: [number, number] = spiderfyOffset
+        ? [spiderfyOffset[0], spiderfyOffset[1] - 30]
+        : [0, -30];
+
+      setTooltipCoordinates(feature.geometry.coordinates);
+      setTooltipName(name);
+      setTooltipOffset(popupOffset);
+    }
+  }
 
   function handleClick(e: MapLayerMouseEvent) {
     const features = e.features;
@@ -124,9 +168,11 @@ export default function MapLibre({
     }
   }
 
+  /*
   useEffect(() => {
     loadMarkerIcons();
   }, [markerIcons, mapRef.current]);
+  */
 
   useEffect(() => {
     if (features.length > 0 && mapRef.current) {
@@ -185,13 +231,21 @@ export default function MapLibre({
     <Map
       interactiveLayerIds={[CLUSTER_LAYER_ID, UNCLUSTERED_LAYER_ID]}
       onClick={handleClick}
+      onMouseMove={handleMove}
       initialViewState={{
         bounds: mapBounds,
+      }}
+      onLoad={() => {
+        loadMarkerIcons();
+        mapLoadedCallback();
       }}
       ref={mapRef}
       minZoom={1.45}
       maxZoom={18}
       attributionControl={false}
+      dragRotate={false}
+      keyboard={false}
+      touchZoomRotate={false}
       style={{
         position: "absolute",
         top: 0,
@@ -240,6 +294,19 @@ export default function MapLibre({
           className={`popup-ix-${popupIndex}`}
         >
           <Popup />
+        </PopupContainer>
+      )}
+      {tooltipCoordinates && (
+        <PopupContainer
+          longitude={tooltipCoordinates[0]}
+          latitude={tooltipCoordinates[1]}
+          closeButton={false}
+          maxWidth={"none"}
+          className={"marker-tooltip"}
+          anchor={"bottom"}
+          offset={tooltipOffset}
+        >
+          <div className="px-[0.75rem] py-2">{tooltipName}</div>
         </PopupContainer>
       )}
     </Map>
