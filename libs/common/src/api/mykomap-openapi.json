@@ -1016,6 +1016,9 @@
                         "directory_panel_field": {
                           "type": "string"
                         },
+                        "title": {
+                          "type": "string"
+                        },
                         "show_map_key": {
                           "type": "boolean"
                         },

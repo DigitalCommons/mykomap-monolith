@@ -18,6 +18,7 @@ const DatasetPicker = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    document.title = "Mykomap";
     listDatasets()
       .then((response) => {
         if (response.status === 200) setEntries(response.body);
