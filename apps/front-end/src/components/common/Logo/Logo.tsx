@@ -3,6 +3,7 @@ import { styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { selectLogo } from "../../../app/configSlice";
 import { useAppSelector } from "../../../app/hooks";
+import { resolveAssetUrl } from "../../../utils/window-utils";
 
 interface LogoPositionProps {
   smallScreenPosition?: {
@@ -59,8 +60,8 @@ const Logo = () => {
     return null;
   }
 
-  const largeLogo = logoConfig.largeLogo;
-  const smallLogo = logoConfig.smallLogo;
+  const largeLogo = resolveAssetUrl(logoConfig.largeLogo);
+  const smallLogo = resolveAssetUrl(logoConfig.smallLogo);
   const altText = logoConfig.altText;
 
   const smallScreenPosition = logoConfig.smallScreenPosition;
