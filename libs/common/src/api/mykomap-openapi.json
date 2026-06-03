@@ -1019,6 +1019,10 @@
                         "title": {
                           "type": "string"
                         },
+                        "dataLastUpdated": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
                         "show_map_key": {
                           "type": "boolean"
                         },
