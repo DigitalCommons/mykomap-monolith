@@ -36,11 +36,19 @@ export const getDirectoryIconSrc = ({
     return undefined;
   }
 
-  // For URL-like references (http(s) or dataset:) use the resolved URL as the
-  // directory icon too — the same image doubles as marker and directory icon.
-  // For bundled names, keep the original `icon-${name}.png` style
+  // For URL-like references (http(s) or dataset:), derive the directory-icon
+  // URL from the marker URL using the same convention as bundled names —
+  // `…/markers/X.png` becomes `…/icons/icon-X.png`. The dataset must ship both
+  // variants in its assets/ tree (the marker for the map, the icon for the
+  // directory). If only the marker is shipped, the directory icon will 404
+  // and the directory will render a broken image — fix by adding the
+  // matching `assets/icons/icon-X.png` to the dataset.
   if (/^(https?:)?\/\//.test(iconName) || iconName.startsWith("dataset:")) {
-    return resolveAssetUrl(iconName);
+    const iconUrl = iconName.replace(
+      /markers\/([^/]+)\.png$/,
+      "icons/icon-$1.png",
+    );
+    return resolveAssetUrl(iconUrl);
   }
 
   return `./assets/icons/icon-${iconName}.png`;
