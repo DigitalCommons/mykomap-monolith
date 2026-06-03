@@ -79,9 +79,13 @@ EOF
 # Keep ASDF happy when running in DEPLOY_DEST
 cp .tool-versions "$DEPLOY_DEST"
 
+# Install all workspace dependencies from the monorepo root
+# The per workspace installs are commented out below
+npm ci
+
 ( # Front end
   cd apps/front-end
-  npm ci
+  # npm ci
 
   # 2026-04-27 MJS - Write .env before rm -rf dist/ so missing required vars don't take production offline
   echo >.env
@@ -118,7 +122,7 @@ EOF
 )
 ( # back end
   cd apps/back-end
-  npm ci
+  # npm ci
 
 
     echo >"$BE_DEST/.env"
