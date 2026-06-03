@@ -43,6 +43,12 @@ export const initDatasets = (dataRoot: string) => {
   console.log("Loaded datasets:", loadedDatasetIds);
 };
 
+export const listDatasets = (): { id: string; label: string }[] =>
+  Object.entries(datasets).map(([id, dataset]) => ({
+    id,
+    label: dataset.config.ui.logo?.altText ?? id,
+  }));
+
 const getDatasetOrThrow404 = (datasetId: string): Dataset => {
   const dataset = datasets[datasetId];
 

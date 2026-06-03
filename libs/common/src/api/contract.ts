@@ -141,6 +141,7 @@ const ConfigData = z.object({
   languages: z.array(Iso639Set1Code).nonempty(),
   ui: z.object({
     directory_panel_field: z.string(),
+    title: z.string().optional(),
     show_map_key: z.boolean().optional(),
     customMarkers: z.object({
       marker_property_name: z.string(),
@@ -425,6 +426,27 @@ export const contract = c.router({
       200: BuildInfo.openapi({
         description: "information about the current Mykomap server build",
       }),
+    },
+  },
+  listDatasets: {
+    method: "GET",
+    path: "/datasets",
+    summary: "lists the datasets available on this server",
+    description:
+      "Returns an array of the datasets available on this server, each entry " +
+      "carrying the dataset ID and a human-readable label (taken from " +
+      "config.ui.logo.altText, falling back to the ID).",
+    responses: {
+      200: z
+        .array(
+          z.object({
+            id: DatasetId,
+            label: z.string(),
+          }),
+        )
+        .openapi({
+          description: "the list of available datasets",
+        }),
     },
   },
 });

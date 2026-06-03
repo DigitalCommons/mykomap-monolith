@@ -1,4 +1,5 @@
 import { Config } from "../../../services/types";
+import { resolveAssetUrl } from "../../../utils/window-utils";
 
 type CustomMarkers = Config["ui"]["customMarkers"];
 
@@ -33,6 +34,13 @@ export const getDirectoryIconSrc = ({
   // Exclude the default marker from directory icons
   if (!iconName || iconName === "default") {
     return undefined;
+  }
+
+  // For URL-like references (http(s) or dataset:) use the resolved URL as the
+  // directory icon too — the same image doubles as marker and directory icon.
+  // For bundled names, keep the original `icon-${name}.png` style
+  if (/^(https?:)?\/\//.test(iconName) || iconName.startsWith("dataset:")) {
+    return resolveAssetUrl(iconName);
   }
 
   return `./assets/icons/icon-${iconName}.png`;

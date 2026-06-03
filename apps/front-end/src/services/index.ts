@@ -13,6 +13,7 @@ export const {
   getDatasetItem,
   getVersion,
   getTotals,
+  listDatasets,
 } = client;
 
 export type { Config } from "./types";

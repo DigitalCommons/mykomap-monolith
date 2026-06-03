@@ -10,6 +10,7 @@ import {
   getDatasetLocations,
   getTotals,
   initDatasets,
+  listDatasets,
   searchDataset,
 } from "./services/datasetService.js";
 
@@ -132,6 +133,10 @@ export function MykomapRouter(
         status: 200,
         body: __BUILD_INFO__,
       };
+    },
+
+    listDatasets: async () => {
+      return { status: 200, body: listDatasets() };
     },
   };
 }

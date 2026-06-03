@@ -1016,6 +1016,9 @@
                         "directory_panel_field": {
                           "type": "string"
                         },
+                        "title": {
+                          "type": "string"
+                        },
                         "show_map_key": {
                           "type": "boolean"
                         },
@@ -1427,6 +1430,45 @@
                     "nodeEnv"
                   ],
                   "description": "information about the current Mykomap server build"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/datasets": {
+      "get": {
+        "description": "Returns an array of the datasets available on this server, each entry carrying the dataset ID and a human-readable label (taken from config.ui.logo.altText, falling back to the ID).",
+        "summary": "lists the datasets available on this server",
+        "tags": [],
+        "parameters": [],
+        "operationId": "listDatasets",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]+$",
+                        "description": "uniquely specifies the dataset wanted"
+                      },
+                      "label": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "label"
+                    ]
+                  },
+                  "description": "the list of available datasets"
                 }
               }
             }
