@@ -79,6 +79,38 @@ In this example, the dataset items are assigned their property based on the `foo
 }
 ```
 
+### Directory Panel Icons
+
+If a dataset uses `customMarkers`, top-level directory categories can use the same naming convention to display icons. No additional config is required. Directory icons are derived from the equivalent marker icon name and loaded from the front end using the format:
+
+`./assets/icons/icon-[markerIconName].png`
+
+For example, if a custom marker icon is named `community-growing`, the matching directory icon should be:
+
+`icon-community-growing.png`
+
+This provides alignment between directory panel icons and map markers, without introducing a separate icon mapping in the config.
+
+Only top-level categories support directory icons. Sub-categories and the `Any` option do not.
+
+<br />
+
+---
+
+<br />
+
+## Map Key
+
+The `show_map_key` field is an optional boolean used to control whether the map key is displayed for a dataset. It is defined within `ui` and defaults to `false` when omitted.
+
+ ```
+"ui": {
+    ...
+    "show_map_key": true,
+    ...
+}
+```
+
 ## Logo
 
 The `logo` config field is a child of the `ui` field and is used to define logo display and position on the map. The optional `smallScreenPosition` and `largeScreenPosition` subfields also allow for fine tuning of the logo position. These values will override the default positioning.
@@ -180,6 +212,32 @@ The `map` field has 1 subfield
 ---
 
 <br />
+
+## About Panel Content
+
+The about panel displays the content of `about.md` - this is not localised.
+
+To provide translatable panel content add an `about_content` key to each languages `vocabs.ui` term in `config.json`. The value is a markdown string. If present it overrides `about.md`.
+
+```
+"ui": {
+    "en": {
+      "terms": {
+        "about_content" : "Welcome to **the map**!\n\nMore details..."
+        ...
+      }
+    }
+}
+```
+
+Markdown is hard to edit in json. You can use jq on the command line to edit it:
+
+`jq --rawfile md about.fr.md '.vocabs.ui.fr.terms.about_content = $md' config.json > t && mv 
+ t config.json`
+
+Extract the markdown for a language:
+
+`jq -r '.vocabs.ui.en.terms.about_content' config.json > about.en.md`
 
 ## Pluralisation
 

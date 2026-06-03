@@ -9,6 +9,8 @@ import { useAppSelector } from "../../../app/hooks";
 import { selectDirectoryOptions } from "./directorySlice";
 import { getTotals } from "../../../services";
 import { getDatasetId } from "../../../utils/window-utils";
+import { selectCustomMarkers } from "../../../app/configSlice";
+import { getDirectoryIconSrc } from "./getDirectoryIconSrc";
 
 const StyledDirectoryPanel = styled(Box)(() => ({
   width: "100%",
@@ -44,11 +46,21 @@ const fetchResults = async () => {
   }
 };
 
+const isAnyOption = (value: string) => value === "any";
+
+const isSubCategory = (value: string) =>
+  !isAnyOption(value) && value.includes("-");
+
+const getDirectoryLabel = (label: string, isSubCategory: boolean) =>
+  isSubCategory ? label.replace(/^\s*-\s*/, "") : label;
+
 const DirectoryPanel = () => {
   const { t } = useTranslation();
 
   const directoryOptions = useAppSelector(selectDirectoryOptions);
+  const customMarkers = useAppSelector(selectCustomMarkers);
   const activeValue = directoryOptions.value;
+
   const [resultsTotals, setResultsTotals] = useState<Record<string, number>>(
     {},
   );
@@ -65,15 +77,26 @@ const DirectoryPanel = () => {
       <Heading title={t("directory")} />
       <StyledDirectoryPanel>
         <List>
-          {directoryOptions.options.map((option, i) => (
-            <DirectoryItem
-              key={`${i}-${option.value}`}
-              propId={directoryOptions.id}
-              {...option}
-              active={option.value === activeValue}
-              resultsTotal={resultsTotals[option.value]}
-            />
-          ))}
+          {directoryOptions.options.map((option, i) => {
+            const subCategory = isSubCategory(option.value);
+            const iconSrc = getDirectoryIconSrc({
+              optionValue: option.value,
+              customMarkers,
+            });
+
+            return (
+              <DirectoryItem
+                key={`${i}-${option.value}`}
+                propId={directoryOptions.id}
+                value={option.value}
+                label={getDirectoryLabel(option.label, subCategory)}
+                active={option.value === activeValue}
+                resultsTotal={resultsTotals[option.value]}
+                iconSrc={iconSrc}
+                isSubCategory={subCategory}
+              />
+            );
+          })}
         </List>
       </StyledDirectoryPanel>
     </>

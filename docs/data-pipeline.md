@@ -644,17 +644,20 @@ Inside these top-level directories are a number of mandatory data
 files, and a sub-directory named `items` which contains a data file
 for each of the dataset's items.
 
-### `about.md` (mandatory)
+### `about.md` (optional)
+
+> [!NOTE] This has been superseeded by the localised about_config
+> vocab ui term in config.json
+> See the [config](config.md#about-panel-content) ref for more.
 
 This file contains a free-form human-readable description of the
 dataset in Markdown format.
 
+If this file exists and there is no ui term then:
+
 It will be shown in the "about" panel of the map when this dataset is
 selected. You can put anything you like in here, but you should keep
 this viewing context in mind.
-
-> [!WARNING] Currently there is no localisation support for this file,
-> this should be added in future.
 
 ### `config.json` (mandatory)
 

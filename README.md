@@ -6,6 +6,8 @@ Mono-repo home to the FE/BE applications and libraries comprising Mykomap.
 
 See the full technical documentation [here](https://digitalcommons.github.io/mykomap-monolith/).
 
+This is a Digital Commons Cooperative project, please follow the [contribution guidelines](https://github.com/DigitalCommons#-contributing) if you wish to participate in building Mykomaps.
+
 ## Applications
 
 - [Front-end](./apps/front-end/)
@@ -14,6 +16,7 @@ See the full technical documentation [here](https://digitalcommons.github.io/myk
 ## Libraries
 
 - [Common](./libs/common/), which contains the OpenAPI spec and ts-rest contract.
+- [Node Utils](./libs/node-utils), which contains file manipulation functions.
 
 ## How to install a dependency
 
@@ -47,10 +50,10 @@ Note: users on windows will need to use WSL as some of the build steps are unix-
 
 1. `cd libs/node-utils`
 1. `npm ci`
-1. `npm build`
+1. `npm run build`
 1. `cd ../common`
 1. `npm ci`
-1. `npm build`
+1. `npm run build`
 
 ### Back-end
 

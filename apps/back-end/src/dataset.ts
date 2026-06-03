@@ -232,10 +232,14 @@ export class DatasetWriter {
       await searchableFile.write("\n]}");
 
       // Write a stub about.md file
-      writeFileSync(
-        join(dirPath, "about.md"),
-        "created on: " + new Date().toLocaleString() + "\n",
-      );
+      // But only if one wasn't supplied in the dataset
+      const aboutPath = join(dirPath, "about.md");
+      if (!existsSync(aboutPath)) {
+        writeFileSync(
+          aboutPath,
+          "created on: " + new Date().toLocaleString() + "\n",
+        );
+      }
     } catch (e) {
       if (e instanceof ValidationError)
         throw new Error(`validation error parsing item #${stats.counter}`, {

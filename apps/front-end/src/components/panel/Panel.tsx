@@ -26,6 +26,7 @@ import {
   selectIsFilterActive,
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
+import { closeMapKey } from "../map/mapSlice";
 import { useTranslation } from "react-i18next";
 
 const StyledPanel = styled(Drawer)(() => ({
@@ -75,6 +76,7 @@ const Panel = () => {
     if (!isMedium && tab === 0) {
       dispatch(closePanel()); // Hide the panel if Map is selected on mobile
     } else {
+      if (!isMedium) dispatch(closeMapKey());
       dispatch(openPanel()); // Show the panel if any other tab is selected
     }
 

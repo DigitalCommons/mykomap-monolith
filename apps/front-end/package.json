@@ -30,7 +30,7 @@
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.0.2",
     "@mykomap/common": "*",
-    "@nazka/map-gl-js-spiderfy": "github:DigitalCommons/map-gl-js-spiderfy#improvements-for-mykomap",
+    "@nazka/map-gl-js-spiderfy": "github:DigitalCommons/map-gl-js-spiderfy",
     "@reduxjs/toolkit": "^2.0.1",
     "@sentry/browser": "^8.26.0",
     "@sentry/cli": "^2.42.2",

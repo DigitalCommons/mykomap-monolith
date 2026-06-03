@@ -30,13 +30,19 @@ export default defineConfig({
   },
   plugins: [dts()],
   build: {
+    ssr: true,
+    outDir: "dist",
     lib: {
-      // Could also be a dictionary or array of multiple entry points
-      entry: fileURLToPath(import.meta.resolve("./src/index.ts")),
+      entry: {
+        server: fileURLToPath(import.meta.resolve("./start.ts")),
+        dataset: fileURLToPath(import.meta.resolve("./bin/dataset.ts")),
+      },
       name,
       formats: ["es"],
-      fileName: "back-end",
     },
+  },
+  ssr: {
+    noExternal: process.env.NODE_ENV === "production" || undefined,
   },
   server: {
     open: true,

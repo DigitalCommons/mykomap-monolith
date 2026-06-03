@@ -15,7 +15,13 @@ export interface ConfigSliceState {
   popup?: ConfigPopup;
   dataSources?: Config["itemProps"]["data_sources"];
   markerIcons?: NonNullable<Config["ui"]["customMarkers"]>["markerIcons"];
-  markerPropertyName?: NonNullable<Config["ui"]["customMarkers"]>["marker_property_name"];
+  markerPropertyName?: NonNullable<
+    Config["ui"]["customMarkers"]
+  >["marker_property_name"];
+  // Used by MapKey to derive labels locally, rather than storing extra marker state here.
+  customMarkers?: Config["ui"]["customMarkers"];
+  itemProps?: Config["itemProps"];
+  showMapKey?: boolean;
 }
 
 /**
@@ -51,6 +57,7 @@ const initialState: ConfigSliceState = {
       [189, 75.6],
     ],
   },
+  showMapKey: false,
   markerIcons: [],
   logo: {
     largeLogo: undefined,
@@ -119,7 +126,13 @@ export const configSlice = createAppSlice({
       i18n.loadLanguages(action.payload.languages);
 
       state.map = action.payload.ui.map;
+      state.showMapKey = action.payload.ui.show_map_key ?? false;
       state.markerIcons = action.payload.ui.customMarkers?.markerIcons;
+      state.markerPropertyName =
+        action.payload.ui.customMarkers?.marker_property_name;
+
+      state.customMarkers = action.payload.ui.customMarkers;
+      state.itemProps = action.payload.itemProps;
 
       state.logo = action.payload.ui.logo;
 
@@ -141,6 +154,11 @@ export const configSlice = createAppSlice({
     selectMarkerIcons: (state) => state.markerIcons,
     selectConfigStatus: (state) => state.status,
     selectDataSources: (state) => state.dataSources,
+
+    selectCustomMarkers: (state) => state.customMarkers,
+    selectItemProps: (state) => state.itemProps,
+    selectVocabs: (state) => state.vocabs,
+    selectShowMapKey: (state) => state.showMapKey,
   },
 });
 
@@ -156,4 +174,9 @@ export const {
   selectMarkerIcons,
   selectConfigStatus,
   selectDataSources,
+
+  selectCustomMarkers,
+  selectItemProps,
+  selectVocabs,
+  selectShowMapKey,
 } = configSlice.selectors;

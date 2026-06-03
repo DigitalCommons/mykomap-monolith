@@ -72,6 +72,14 @@ The `$DEPLOY_ENV` file defines some _actual_ environment variables
 which the deployment process will use. What those are set to will
 depend on your situation, so this is just a guide.
 
+_Note: More information about these variables can be found inline in
+the top-level `deploy.sh` file and app-specific `.env.example` files,
+although note that names can be slightly different there - for
+instance, prefixed by `VITE_` where they are needed to be hard-coded
+into to the front-end by Vite, and/or missing the disambiguating
+`FE_/BE_` prefix used here to allow front and back-end values to be
+present simultaniously._
+
 Here is an example of how the `$DEPLOY_ENV` file may be created as the
 application user, but with secret values redacted:
 
