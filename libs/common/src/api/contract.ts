@@ -427,4 +427,25 @@ export const contract = c.router({
       }),
     },
   },
+  listDatasets: {
+    method: "GET",
+    path: "/datasets",
+    summary: "lists the datasets available on this server",
+    description:
+      "Returns an array of the datasets available on this server, each entry " +
+      "carrying the dataset ID and a human-readable label (taken from " +
+      "config.ui.logo.altText, falling back to the ID).",
+    responses: {
+      200: z
+        .array(
+          z.object({
+            id: DatasetId,
+            label: z.string(),
+          }),
+        )
+        .openapi({
+          description: "the list of available datasets",
+        }),
+    },
+  },
 });
