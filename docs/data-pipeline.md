@@ -264,6 +264,12 @@ containing the data in a normalised form, with added or refined
 information (typically geocoded locations). This is typically what we
 use as input to the `dataset import` command.
 
+> [!INFO]
+> We have two ways to generate CSVs for the two projects we support.
+> CWM: https://github.com/DigitalCommons/data-pipelines
+> Powys: https://github.com/DigitalCommons/mykomap-monolith/blob/main/apps/back-end/bin/powysTransform.ts
+> The aim is to consolidate both in the data-pipelines project
+
 This CSV file has a set of standard headers. It can also have any
 number of arbitrary optional extras. For historical reasons this
 schema is called the "Standard CSV format", and the file is called

@@ -3,20 +3,24 @@ import MapWrapper from "./components/map/MapWrapper";
 import Panel from "./components/panel/Panel";
 import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
-import { getLanguageFromUrl } from "./utils/window-utils";
+import { getDatasetId, getLanguageFromUrl } from "./utils/window-utils";
 import Popup from "./components/popup/Popup";
 import Logo from "./components/common/Logo/Logo";
 import MapKey from "./components/map/mapKey/MapKey";
+import DatasetPicker from "./components/datasetPicker/DatasetPicker";
 
 const App = () => {
   const dispatch = useAppDispatch();
+  const datasetId = getDatasetId();
 
   /** Startup tasks */
   useEffect(() => {
-    dispatch(fetchConfig()).then(() => {
-      const urlParamLang = getLanguageFromUrl();
-      if (urlParamLang) dispatch(setLanguage(urlParamLang));
-    });
+    if (datasetId) {
+      dispatch(fetchConfig()).then(() => {
+        const urlParamLang = getLanguageFromUrl();
+        if (urlParamLang) dispatch(setLanguage(urlParamLang));
+      });
+    }
 
     fetch(`${import.meta.env.VITE_API_URL}/version`)
       .then((response) => response.json())
@@ -30,7 +34,9 @@ const App = () => {
           import.meta.env.VITE_API_URL,
         );
       });
-  }, []);
+  }, [datasetId]);
+
+  if (!datasetId) return <DatasetPicker />;
 
   return (
     <div>

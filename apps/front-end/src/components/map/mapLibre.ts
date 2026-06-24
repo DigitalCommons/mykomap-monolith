@@ -17,6 +17,7 @@ import {
   getLanguageFromUrl,
   getDatasetId,
   encodeBase64,
+  resolveAssetUrl,
 } from "../../utils/window-utils";
 import { getDatasetItem } from "../../services";
 
@@ -358,7 +359,15 @@ export const createMap = (
     let index = 0;
 
     for (let marker of markerIcons) {
-      const image = await map.loadImage(`./assets/markers/${marker}.png`);
+      // markerIcons entries are either bundled names (e.g. "dotcoop",
+      // "default") that resolve to the front-end's static assets, or full
+      // URLs / `dataset:` references that are served from the dataset
+      const imgSrc =
+        /^(https?:)?\/\//.test(marker) || marker.startsWith("dataset:")
+          ? resolveAssetUrl(marker)
+          : `./assets/markers/${marker}.png`;
+      if (!imgSrc) continue;
+      const image = await map.loadImage(imgSrc);
       const markerName = "marker-" + index;
       map.addImage(markerName, image.data);
       markerList.push(index++);
