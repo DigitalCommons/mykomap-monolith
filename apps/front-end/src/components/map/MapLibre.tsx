@@ -14,7 +14,11 @@ import Map, {
 import "maplibre-gl/dist/maplibre-gl.css";
 import Popup from "../popup/Popup";
 import { fitBoundsToFeatures, isLocationNear } from "../../utils/map-utils";
-import { getDatasetId, encodeBase64 } from "../../utils/window-utils";
+import {
+  getDatasetId,
+  encodeBase64,
+  resolveAssetUrl,
+} from "../../utils/window-utils";
 import { getDatasetItem } from "../../services";
 import { Feature, Point, GeoJsonProperties, Position } from "geojson";
 import { Offset } from "maplibre-gl";
@@ -41,36 +45,6 @@ const mapTilerKey = import.meta.env.VITE_MAPTILER_API_KEY;
 const STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${mapTilerKey}`;
 const CLUSTER_LAYER_ID = "clusters";
 const UNCLUSTERED_LAYER_ID = "unclustered-point";
-
-const clusterLayer: LayerProps = {
-  id: CLUSTER_LAYER_ID,
-  type: "circle",
-  source: "points",
-  filter: ["has", "point_count"],
-  paint: {
-    "circle-color": [
-      "step",
-      ["get", "point_count"],
-      "#51bbd6",
-      100,
-      "#f1f075",
-      750,
-      "#f28cb1",
-    ],
-    "circle-radius": 20,
-  },
-};
-
-const clusterCountLayer: LayerProps = {
-  id: "cluster-count",
-  type: "symbol",
-  source: "points",
-  filter: ["has", "point_count"],
-  layout: {
-    "text-field": "{point_count_abbreviated}",
-    "text-size": 12,
-  },
-};
 
 export default function MapLibre({
   language,
@@ -192,14 +166,20 @@ export default function MapLibre({
   }
 
   async function loadMarkerIcons() {
-    if (mapRef.current && !!markerIcons) {
+    if (!!mapRef.current && !!markerIcons) {
       let index = 0;
       let markerList: (string | number)[] = [];
 
       for (let marker of markerIcons) {
-        const image = await mapRef.current.loadImage(
-          `./assets/markers/${marker}.png`,
-        );
+        // markerIcons entries are either bundled names (e.g. "dotcoop",
+        // "default") that resolve to the front-end's static assets, or full
+        // URLs / `dataset:` references that are served from the dataset
+        const imgSrc =
+          /^(https?:)?\/\//.test(marker) || marker.startsWith("dataset:")
+            ? resolveAssetUrl(marker)
+            : `./assets/markers/${marker}.png`;
+        if (!imgSrc) continue;
+        const image = await mapRef.current.loadImage(imgSrc);
         const markerName = "marker-" + index;
         mapRef.current.addImage(markerName, image.data);
         markerList.push(index++);
@@ -335,13 +315,39 @@ export default function MapLibre({
         clusterMaxZoom={14}
         clusterRadius={50}
       >
-        <Layer {...clusterLayer} />
-        <Layer {...clusterCountLayer} />
+        <Layer
+          id={CLUSTER_LAYER_ID}
+          type="circle"
+          source="points"
+          filter={["has", "point_count"]}
+          paint={{
+            "circle-color": [
+              "step",
+              ["get", "point_count"],
+              "#51bbd6",
+              100,
+              "#f1f075",
+              750,
+              "#f28cb1",
+            ],
+            "circle-radius": 20,
+          }}
+        />
+        <Layer
+          id="cluster-count"
+          type="symbol"
+          source="points"
+          filter={["has", "point_count"]}
+          layout={{
+            "text-field": "{point_count_abbreviated}",
+            "text-size": 12,
+          }}
+        />
         {markerLayout && (
           <Layer
             id={UNCLUSTERED_LAYER_ID}
-            type={"symbol"}
-            source={"points"}
+            type="symbol"
+            source="points"
             filter={["!", ["has", "point_count"]]}
             layout={markerLayout}
             icon-padding={10}

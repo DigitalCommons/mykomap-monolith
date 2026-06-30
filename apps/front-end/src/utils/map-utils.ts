@@ -2,6 +2,11 @@ import { MapRef } from "react-map-gl/maplibre";
 
 const POPUP_INITIAL_ZOOM = 15;
 
+/**
+ * Computes the bounding box of all features in the GeoJSON source and fits the map to those bounds,
+ * with a bit of padding and accounting for the left panel on desktop. This is used to auto-zoom the
+ * map when filters are applied, so that markers are visible and unclustered where possible.
+ */
 export const fitBoundsToFeatures = (
   features: GeoJSON.Feature[],
   mapCenterOffsetPixels: [number, number],
