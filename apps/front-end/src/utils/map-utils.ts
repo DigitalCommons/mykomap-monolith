@@ -1,10 +1,11 @@
-import type {
-  Map
-} from "maplibre-gl";
+import { MapRef } from "react-map-gl/maplibre";
 
 const POPUP_INITIAL_ZOOM = 15;
 
-export const fitBoundsToFeatures = (features: GeoJSON.Feature[], mapCenterOffsetPixels: [number, number]) => {
+export const fitBoundsToFeatures = (
+  features: GeoJSON.Feature[],
+  mapCenterOffsetPixels: [number, number],
+) => {
   // Compute the bounding box of all features
   let minLng = 180;
   let maxLng = -180;
@@ -17,6 +18,10 @@ export const fitBoundsToFeatures = (features: GeoJSON.Feature[], mapCenterOffset
 
   if (features.length === 1) {
     const feature = features[0];
+    console.log(feature.geometry.type);
+    if (feature.geometry.type !== "Point") {
+      return;
+    }
     const [lng, lat] = feature.geometry.coordinates;
     return {
       minLng: lng,
@@ -25,11 +30,15 @@ export const fitBoundsToFeatures = (features: GeoJSON.Feature[], mapCenterOffset
       maxLat: lat,
       basePadding,
       leftPadding,
-      maxZoom: POPUP_INITIAL_ZOOM
-    }
+      maxZoom: POPUP_INITIAL_ZOOM,
+    };
   }
 
   for (const feature of features) {
+    console.log(feature.geometry.type);
+    if (feature.geometry.type !== "Point") {
+      continue;
+    }
     const [lng, lat] = feature.geometry.coordinates;
     minLng = Math.min(minLng, lng);
     maxLng = Math.max(maxLng, lng);
@@ -44,11 +53,11 @@ export const fitBoundsToFeatures = (features: GeoJSON.Feature[], mapCenterOffset
     maxLat,
     basePadding,
     leftPadding,
-    maxZoom: POPUP_INITIAL_ZOOM
-  }
-}
+    maxZoom: POPUP_INITIAL_ZOOM,
+  };
+};
 
-export const isLocationNear = (location: [number, number], map: Map) => {
+export const isLocationNear = (location: [number, number], map: MapRef) => {
   const currentZoom = map.getZoom();
   if (currentZoom < POPUP_INITIAL_ZOOM) {
     return false; // too far out to be considered "near", marker is likely to be clustered

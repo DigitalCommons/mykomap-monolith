@@ -7,12 +7,32 @@ import Map, {
   MapLayerMouseEvent,
   Popup as PopupContainer,
   StyleSpecification,
+  MapRef,
+  LayerProps,
+  LngLatBoundsLike,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Popup from "../popup/Popup";
 import { fitBoundsToFeatures, isLocationNear } from "../../utils/map-utils";
 import { getDatasetId, encodeBase64 } from "../../utils/window-utils";
 import { getDatasetItem } from "../../services";
+import { Feature, Point, GeoJsonProperties, Position } from "geojson";
+import { Offset } from "maplibre-gl";
+
+export interface MapLibreProps {
+  language: string;
+  mapBounds: LngLatBoundsLike | undefined;
+  features: Feature<Point, GeoJsonProperties>[];
+  markerIcons: string[] | undefined;
+  popupCreatedCallback: (itemIx: number) => void;
+  popupClosedCallback: () => void;
+  popupIndex: number;
+  popupLocation: [number, number] | null;
+  popupOrigin: "map" | "directory";
+  mapCenterOffsetPixels: [number, number];
+  mapRef: React.RefObject<MapRef | null>;
+  mapLoadedCallback: () => void;
+}
 
 const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
   Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
@@ -22,7 +42,7 @@ const STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${map
 const CLUSTER_LAYER_ID = "clusters";
 const UNCLUSTERED_LAYER_ID = "unclustered-point";
 
-const clusterLayer = {
+const clusterLayer: LayerProps = {
   id: CLUSTER_LAYER_ID,
   type: "circle",
   source: "points",
@@ -41,7 +61,7 @@ const clusterLayer = {
   },
 };
 
-const clusterCountLayer = {
+const clusterCountLayer: LayerProps = {
   id: "cluster-count",
   type: "symbol",
   source: "points",
@@ -65,15 +85,20 @@ export default function MapLibre({
   mapCenterOffsetPixels,
   mapRef,
   mapLoadedCallback,
-}) {
+}: MapLibreProps) {
   const [markerLayout, setMarkerLayout] = useState();
-  const [tooltipCoordinates, setTooltipCoordinates] = useState();
+  const [tooltipCoordinates, setTooltipCoordinates] = useState<
+    Position | undefined
+  >();
   const [tooltipName, setTooltipName] = useState("");
-  const [tooltipOffset, setTooltipOffset] = useState([0, 0]);
+  const [tooltipOffset, setTooltipOffset] = useState<Offset>([0, 0]);
   const [baseStyle, setBaseStyle] = useState<StyleSpecification | null>(null);
 
   async function handleMove(e: MapLayerMouseEvent) {
-    const map: MapRef = mapRef.current;
+    const map: MapRef | null = mapRef.current;
+    if (map === null) {
+      return;
+    }
 
     const layerFeatures = map.queryRenderedFeatures(e.point, {
       layers: [UNCLUSTERED_LAYER_ID],
@@ -103,7 +128,9 @@ export default function MapLibre({
         ? [spiderfyOffset[0], spiderfyOffset[1] - 30]
         : [0, -30];
 
-      setTooltipCoordinates(feature.geometry.coordinates);
+      if (feature.geometry.type === "Point") {
+        setTooltipCoordinates(feature.geometry.coordinates);
+      }
       setTooltipName(name);
       setTooltipOffset(popupOffset);
     }
@@ -111,13 +138,17 @@ export default function MapLibre({
 
   function handleClick(e: MapLayerMouseEvent) {
     const features = e.features;
-    const map: MapRef = mapRef.current;
+    const map: MapRef | null = mapRef.current;
+    if (map === null) {
+      return;
+    }
 
     if (!features || features.length === 0 || !map) return;
 
     const feature = features[0];
 
     if (feature.layer.id === CLUSTER_LAYER_ID) {
+      if (feature.geometry.type !== "Point") return;
       const clusterId = feature.properties.cluster_id;
       const [lng, lat] = feature.geometry.coordinates;
 
@@ -130,6 +161,7 @@ export default function MapLibre({
     }
 
     if (feature.layer.id === UNCLUSTERED_LAYER_ID) {
+      if (feature.geometry.type !== "Point") return;
       const [clickedLng, clickedLat] = feature.geometry.coordinates;
 
       const allFeatures = map.querySourceFeatures("points", {
@@ -138,6 +170,7 @@ export default function MapLibre({
       });
 
       const colocated = allFeatures.filter((f) => {
+        if (f.geometry.type !== "Point") return false;
         const [lng, lat] = f.geometry.coordinates;
         return lng === clickedLng && lat === clickedLat;
       });
@@ -159,7 +192,7 @@ export default function MapLibre({
   }
 
   async function loadMarkerIcons() {
-    if (mapRef.current) {
+    if (mapRef.current && !!markerIcons) {
       let index = 0;
       let markerList: (string | number)[] = [];
 
@@ -190,6 +223,8 @@ export default function MapLibre({
     if (features.length > 0 && mapRef.current) {
       const map = mapRef.current;
 
+      const bounds = fitBoundsToFeatures(features, mapCenterOffsetPixels);
+      if (!bounds) return;
       const {
         minLng,
         minLat,
@@ -198,7 +233,7 @@ export default function MapLibre({
         basePadding,
         leftPadding,
         maxZoom,
-      } = fitBoundsToFeatures(features, mapCenterOffsetPixels);
+      } = bounds;
       map.fitBounds(
         [
           [minLng, minLat],
@@ -221,6 +256,9 @@ export default function MapLibre({
   useEffect(() => {
     if (popupLocation && mapRef.current && popupOrigin === "directory") {
       const map = mapRef.current;
+      if (!map) {
+        return;
+      }
       const [lng, lat] = popupLocation;
 
       const isNearby = isLocationNear(popupLocation, map);

@@ -212,7 +212,7 @@ const MapWrapper = () => {
         ? PANEL_WIDTH * 2
         : PANEL_WIDTH
       : 0;
-  const mapCenterOffsetPixels = [leftPanelWidth / 2, 0];
+  const mapCenterOffsetPixels: [number, number] = [leftPanelWidth / 2, 0];
 
   return (
     mapConfig &&
@@ -227,7 +227,7 @@ const MapWrapper = () => {
         popupCreatedCallback={popupCreatedCallback}
         popupClosedCallback={popupClosedCallback}
         popupIndex={popupIndex}
-        popupLocation={popupLocation}
+        popupLocation={popupLocation && [popupLocation[0], popupLocation[1]]}
         popupOrigin={popupOrigin}
         mapCenterOffsetPixels={mapCenterOffsetPixels}
       />
