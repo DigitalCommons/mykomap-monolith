@@ -213,6 +213,32 @@ The `map` field has 1 subfield
 
 <br />
 
+## About Panel Content
+
+The about panel displays the content of `about.md` - this is not localised.
+
+To provide translatable panel content add an `about_content` key to each languages `vocabs.ui` term in `config.json`. The value is a markdown string. If present it overrides `about.md`.
+
+```
+"ui": {
+    "en": {
+      "terms": {
+        "about_content" : "Welcome to **the map**!\n\nMore details..."
+        ...
+      }
+    }
+}
+```
+
+Markdown is hard to edit in json. You can use jq on the command line to edit it:
+
+`jq --rawfile md about.fr.md '.vocabs.ui.fr.terms.about_content = $md' config.json > t && mv 
+ t config.json`
+
+Extract the markdown for a language:
+
+`jq -r '.vocabs.ui.en.terms.about_content' config.json > about.en.md`
+
 ## Pluralisation
 
 Pluralisation rules can differ per language, requiring the use of extra suffixes. `zero`, `one` and `other` are sufficient for English, Spanish, French and Hindi, and fine for our current instance of CWM. However, Welsh and Arabic have six categories according to **[CLDR ](https://cldr.unicode.org/index/cldr-spec/plural-rules)** and **[i18next](https://www.i18next.com/translation-function/plurals)** follows this:

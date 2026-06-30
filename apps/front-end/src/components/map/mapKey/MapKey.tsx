@@ -17,6 +17,24 @@ import {
 } from "../../../app/configSlice";
 import { getMarkerLabelsByIconIndex } from "./getMarkerLabelsByIconIndex";
 import { useTranslation } from "react-i18next";
+import { resolveAssetUrl } from "../../../utils/window-utils";
+
+// Marker references in customMarkers.markerIcons may be bundled names
+// ("dotcoop", "default"), full URLs, or `dataset:` paths. For URL-like
+// values, get the translation-lookup key from the file basename so that
+// ".../dotcoop.png" still finds "dotcoopMarkerLabel"
+const isUrlLikeMarker = (name: string) =>
+  name.startsWith("dataset:") || /^(https?:)?\/\//.test(name);
+
+const markerLookupKey = (name: string): string =>
+  isUrlLikeMarker(name)
+    ? (name.split("/").pop()?.replace(/\.[^.]+$/, "") ?? name)
+    : name;
+
+const markerIconSrc = (name: string): string | undefined =>
+  isUrlLikeMarker(name)
+    ? resolveAssetUrl(name)
+    : `./assets/markers/${name}.png`;
 
 type MapKeyEntry = {
   id: string;
@@ -173,29 +191,19 @@ const MapKey = () => {
   // Names come from ui vocan with <iconName>MarkerLabel
   const entries: MapKeyEntry[] = markerIcons.flatMap(
     (iconName: string, iconIndex: number) => {
-      const overrideLabel = t(`${iconName}MarkerLabel`, { defaultValue: "" });
+      const lookupKey = markerLookupKey(iconName);
+      const overrideLabel = t(`${lookupKey}MarkerLabel`, { defaultValue: "" });
+      const iconSrc = markerIconSrc(iconName);
 
-      if (iconName === "default") {
+      if (lookupKey === "default") {
         if (!overrideLabel) return [];
-        return [
-          {
-            id: `m${iconIndex}`,
-            label: overrideLabel,
-            iconSrc: `./assets/markers/${iconName}.png`,
-          },
-        ];
+        return [{ id: `m${iconIndex}`, label: overrideLabel, iconSrc }];
       }
 
       const label =
-        overrideLabel || markerLabelsByIconIndex[iconIndex] || iconName;
+        overrideLabel || markerLabelsByIconIndex[iconIndex] || lookupKey;
 
-      return [
-        {
-          id: `m${iconIndex}`,
-          label,
-          iconSrc: `./assets/markers/${iconName}.png`,
-        },
-      ];
+      return [{ id: `m${iconIndex}`, label, iconSrc }];
     },
   );
 

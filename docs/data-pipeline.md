@@ -264,6 +264,12 @@ containing the data in a normalised form, with added or refined
 information (typically geocoded locations). This is typically what we
 use as input to the `dataset import` command.
 
+> [!INFO]
+> We have two ways to generate CSVs for the two projects we support.
+> CWM: https://github.com/DigitalCommons/data-pipelines
+> Powys: https://github.com/DigitalCommons/mykomap-monolith/blob/main/apps/back-end/bin/powysTransform.ts
+> The aim is to consolidate both in the data-pipelines project
+
 This CSV file has a set of standard headers. It can also have any
 number of arbitrary optional extras. For historical reasons this
 schema is called the "Standard CSV format", and the file is called
@@ -638,17 +644,20 @@ Inside these top-level directories are a number of mandatory data
 files, and a sub-directory named `items` which contains a data file
 for each of the dataset's items.
 
-### `about.md` (mandatory)
+### `about.md` (optional)
+
+> [!NOTE] This has been superseeded by the localised about_config
+> vocab ui term in config.json
+> See the [config](config.md#about-panel-content) ref for more.
 
 This file contains a free-form human-readable description of the
 dataset in Markdown format.
 
+If this file exists and there is no ui term then:
+
 It will be shown in the "about" panel of the map when this dataset is
 selected. You can put anything you like in here, but you should keep
 this viewing context in mind.
-
-> [!WARNING] Currently there is no localisation support for this file,
-> this should be added in future.
 
 ### `config.json` (mandatory)
 

@@ -88,6 +88,9 @@ export const configSlice = createAppSlice({
         if (response.status === 200) {
           console.log("Fetched config", response.body);
           thunkApi.dispatch(configLoaded(response.body));
+          const tabTitle =
+            response.body.ui.title ?? response.body.ui.logo?.altText;
+          if (tabTitle) document.title = tabTitle;
           return response.body;
         } else {
           return thunkApi.rejectWithValue(
