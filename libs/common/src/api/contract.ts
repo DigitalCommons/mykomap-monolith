@@ -159,9 +159,7 @@ const ConfigData = z.object({
             z.tuple([z.number(), z.number()]),
             z.tuple([z.number(), z.number()]),
           ])
-          .optional(),
-      })
-      .optional(),
+      }).optional(),
     logo: z
       .object({
         largeLogo: z.string().optional(),

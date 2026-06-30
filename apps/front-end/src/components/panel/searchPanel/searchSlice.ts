@@ -164,8 +164,8 @@ export const selectFilterOptions = createSelector(
       .map((prop) => {
         const title = prop.titleUri
           ? vocabs[prop.titleUri.split(":")[0]][language].terms[
-              prop.titleUri.split(":")[1]
-            ]
+          prop.titleUri.split(":")[1]
+          ]
           : vocabs[prop.vocabUri][language].title;
 
         // Define sorters for ascending, descending, and no sort
@@ -179,7 +179,7 @@ export const selectFilterOptions = createSelector(
           prop.sorted === false
             ? sorters.noSort
             : (prop.sorted && sorters[prop.sorted as keyof typeof sorters]) ||
-              sorters.asc;
+            sorters.asc;
 
         return {
           id: prop.id,
@@ -195,7 +195,7 @@ export const selectFilterOptions = createSelector(
       }),
 );
 
-export const performSearch = (): AppThunk => {
+export const performSearch = (searchQuery?: SearchQuery): AppThunk => {
   return async (dispatch, getState) => {
     const datasetId = getDatasetId();
     if (datasetId === null) {
@@ -207,31 +207,35 @@ export const performSearch = (): AppThunk => {
 
     const { search } = getState();
 
-    const activeFilters = search.filterableVocabProps.filter(
-      (prop) => prop.value !== PROP_VALUE_ANY,
-    );
-    if (activeFilters.length === 0 && search.text === "") {
-      // empty search query so show all items
+    const activeFilters = searchQuery?.filter
+      ? searchQuery.filter
+      : search.filterableVocabProps
+        .filter((prop) => prop.value !== PROP_VALUE_ANY)
+        .map((prop) => `${prop.id}:${prop.value}`);
+
+    const text = searchQuery?.text ?? search.text.trim().toLowerCase();
+
+    if (activeFilters.length === 0 && !text) {
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
       dispatch(populateSearchResults(0));
       return;
     }
 
-    const searchQuery = {
-      filter: activeFilters.map((prop) => `${prop.id}:${prop.value}`),
-      text: search.text.trim().toLowerCase() || undefined,
+    const resolvedQuery: SearchQuery = {
+      filter: activeFilters,
+      text: text || undefined,
     };
 
     dispatch(setSearchingStatus("loading"));
 
     const response = await searchDataset({
       params: { datasetId },
-      query: searchQuery,
+      query: resolvedQuery,
     });
     if (response.status === 200) {
       dispatch(
         updateVisibleIndexes({
-          searchQuery,
+          searchQuery: resolvedQuery,
           visibleIndexes: response.body as number[],
         }),
       );
@@ -249,6 +253,8 @@ export const performSearchFromQuery = (searchQuery: SearchQuery): AppThunk => {
   return async (dispatch, getState) => {
     const { search } = getState();
 
+    console.log("performing search", searchQuery)
+
     // Set filter values and text to match the given search query
     search.filterableVocabProps.forEach((prop) => {
       const filterStr = searchQuery.filter?.find((f) =>
@@ -264,6 +270,6 @@ export const performSearchFromQuery = (searchQuery: SearchQuery): AppThunk => {
     dispatch(setText(searchQuery.text ?? ""));
 
     // Now perform the search
-    await dispatch(performSearch());
+    await dispatch(performSearch(searchQuery));
   };
 };

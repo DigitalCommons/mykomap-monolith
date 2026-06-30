@@ -3,8 +3,8 @@ import MapWrapper from "./components/map/MapWrapper";
 import Panel from "./components/panel/Panel";
 import { fetchConfig, setLanguage } from "./app/configSlice";
 import { useAppDispatch } from "./app/hooks";
+import { NoLocationPopup } from "./components/popup/Popup";
 import { getDatasetId, getLanguageFromUrl } from "./utils/window-utils";
-import Popup from "./components/popup/Popup";
 import Logo from "./components/common/Logo/Logo";
 import MapKey from "./components/map/mapKey/MapKey";
 import DatasetPicker from "./components/datasetPicker/DatasetPicker";
@@ -43,7 +43,7 @@ const App = () => {
       <MapWrapper />
       <Logo />
       <Panel />
-      <Popup />
+      <NoLocationPopup />
       <MapKey />
     </div>
   );
