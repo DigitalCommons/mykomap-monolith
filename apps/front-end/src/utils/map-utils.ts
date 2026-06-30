@@ -23,7 +23,6 @@ export const fitBoundsToFeatures = (
 
   if (features.length === 1) {
     const feature = features[0];
-    console.log(feature.geometry.type);
     if (feature.geometry.type !== "Point") {
       return;
     }
@@ -40,7 +39,6 @@ export const fitBoundsToFeatures = (
   }
 
   for (const feature of features) {
-    console.log(feature.geometry.type);
     if (feature.geometry.type !== "Point") {
       continue;
     }
@@ -86,3 +84,11 @@ export const isLocationNear = (location: [number, number], map: MapRef) => {
     nearBox.neLat >= location[1]
   );
 };
+
+/**
+ * We need to offset latitude of the map centre slightly above a marker's location when opening a
+ * popup so that it can be fully seen. I've calcluated that this exponential function gives a good
+ * offset.
+ */
+export const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
+  Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));

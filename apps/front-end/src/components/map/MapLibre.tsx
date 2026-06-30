@@ -8,12 +8,15 @@ import Map, {
   Popup as PopupContainer,
   StyleSpecification,
   MapRef,
-  LayerProps,
   LngLatBoundsLike,
 } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
 import Popup from "../popup/Popup";
-import { fitBoundsToFeatures, isLocationNear } from "../../utils/map-utils";
+import {
+  fitBoundsToFeatures,
+  getMapCentreLatOffsetted,
+  isLocationNear,
+} from "../../utils/map-utils";
 import {
   getDatasetId,
   encodeBase64,
@@ -21,7 +24,8 @@ import {
 } from "../../utils/window-utils";
 import { getDatasetItem } from "../../services";
 import { Feature, Point, GeoJsonProperties, Position } from "geojson";
-import { Offset } from "maplibre-gl";
+import { Offset, GeoJSONSource } from "maplibre-gl";
+import Spiderfy from "@nazka/map-gl-js-spiderfy";
 
 export interface MapLibreProps {
   language: string;
@@ -38,13 +42,13 @@ export interface MapLibreProps {
   mapLoadedCallback: () => void;
 }
 
-const getMapCentreLatOffsetted = (lat: number, zoom: number) =>
-  Math.min(90, lat + 87 * Math.exp(-0.704 * zoom));
-
 const mapTilerKey = import.meta.env.VITE_MAPTILER_API_KEY;
 const STYLE_URL = `https://api.maptiler.com/maps/streets-v2/style.json?key=${mapTilerKey}`;
 const CLUSTER_LAYER_ID = "clusters";
 const UNCLUSTERED_LAYER_ID = "unclustered-point";
+
+/** The zoom level at which colocated clusters can be spiderfied */
+const SPIDERFY_ZOOM = 18;
 
 export default function MapLibre({
   language,
@@ -110,7 +114,7 @@ export default function MapLibre({
     }
   }
 
-  function handleClick(e: MapLayerMouseEvent) {
+  async function handleClick(e: MapLayerMouseEvent) {
     const features = e.features;
     const map: MapRef | null = mapRef.current;
     if (map === null) {
@@ -123,12 +127,18 @@ export default function MapLibre({
 
     if (feature.layer.id === CLUSTER_LAYER_ID) {
       if (feature.geometry.type !== "Point") return;
+      const source = map.getSource("points") as GeoJSONSource;
       const clusterId = feature.properties.cluster_id;
       const [lng, lat] = feature.geometry.coordinates;
 
+      const clusterExpansionZoom =
+        await source.getClusterExpansionZoom(clusterId);
+
       map.flyTo({
         center: [lng, lat],
-        zoom: map.getZoom() + 1,
+        zoom: clusterExpansionZoom,
+        offset: mapCenterOffsetPixels,
+        duration: 500,
         essential: true,
       });
       return;
