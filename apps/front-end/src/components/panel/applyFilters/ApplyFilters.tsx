@@ -2,7 +2,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import StandardButton from "../../common/standardButton/StandardButton";
 import { useAppDispatch } from "../../../app/hooks";
-import { clearSearch } from "../searchPanel/searchSlice";
+import { clearSearchAndRefresh } from "../searchPanel/searchSlice";
 
 const StyledButtonContainer = styled(Box)(() => ({
   width: "100%",
@@ -37,7 +37,7 @@ const ApplyFilters = ({
   const dispatch = useAppDispatch();
 
   const handleResetFilters = () => {
-    dispatch(clearSearch());
+    dispatch(clearSearchAndRefresh());
   };
 
   return (

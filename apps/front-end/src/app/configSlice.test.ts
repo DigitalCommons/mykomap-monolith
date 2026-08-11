@@ -6,6 +6,7 @@ import {
   selectLogo,
   selectMapConfig,
   selectConfigStatus,
+  selectSubmap,
   configLoaded,
   fetchConfig,
 } from "./configSlice";
@@ -143,5 +144,57 @@ describe<LocalTestContext>("config reducer", (it) => {
 
     const logo = selectLogo(store.getState());
     expect(logo).toEqual(undefined);
+  });
+});
+
+// Mock up a submap
+describe<LocalTestContext>("submaps", (it) => {
+  const submapConfig = {
+    ...mockConfig,
+    submaps: {
+      "test-submap": {
+        lockedFilter: ["data_sources:DC"],
+        mapBounds: [
+          [-97.5, 43.2],
+          [-89.0, 49.5],
+        ] as [[number, number], [number, number]],
+        title: "Test Submap",
+      },
+    },
+  };
+
+  beforeEach<LocalTestContext>((context) => {
+    context.store = makeStore();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("should find the selected submap and override the map bounds", ({ store }) => {
+    vi.spyOn(windowUtils, "getSubmapId").mockReturnValue("test-submap");
+
+    store.dispatch(configLoaded(submapConfig));
+
+    expect(selectSubmap(store.getState())).toMatchObject({
+      id: "test-submap",
+      lockedFilter: ["data_sources:DC"],
+      title: "Test Submap",
+    });
+    expect(selectMapConfig(store.getState())?.mapBounds).toEqual([
+      [-97.5, 43.2],
+      [-89.0, 49.5],
+    ]);
+  });
+
+  it("should ignore an unknown submap param", ({ store }) => {
+    vi.spyOn(windowUtils, "getSubmapId").mockReturnValue("no-such-submap");
+
+    store.dispatch(configLoaded(submapConfig));
+
+    expect(selectSubmap(store.getState())).toBeUndefined();
+    expect(selectMapConfig(store.getState())?.mapBounds).toEqual(
+      mockConfig.ui.map?.mapBounds,
+    );
   });
 });

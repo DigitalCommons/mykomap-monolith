@@ -6,6 +6,8 @@ const getUrlSearchParam = (param: string): string | null =>
 
 export const getDatasetId = () => getUrlSearchParam("datasetId");
 
+export const getSubmapId = () => getUrlSearchParam("submap");
+
 /**
  * Maps a config-supplied asset reference to a fetchable URL.
  *

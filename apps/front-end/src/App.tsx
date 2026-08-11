@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import MapWrapper from "./components/map/MapWrapper";
 import Panel from "./components/panel/Panel";
 import { fetchConfig, setLanguage } from "./app/configSlice";
+import { performInitialLockedSearch } from "./components/panel/searchPanel/searchSlice";
 import { useAppDispatch } from "./app/hooks";
 import { getDatasetId, getLanguageFromUrl } from "./utils/window-utils";
 import Popup from "./components/popup/Popup";
@@ -19,6 +20,7 @@ const App = () => {
       dispatch(fetchConfig()).then(() => {
         const urlParamLang = getLanguageFromUrl();
         if (urlParamLang) dispatch(setLanguage(urlParamLang));
+        dispatch(performInitialLockedSearch());
       });
     }
 

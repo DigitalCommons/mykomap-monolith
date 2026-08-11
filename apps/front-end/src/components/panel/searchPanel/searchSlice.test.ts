@@ -10,8 +10,11 @@ import {
   selectText,
   selectVisibleIndexes,
   selectIsFilterActive,
+  selectIsUserFilterActive,
   performSearch,
   performSearchFromQuery,
+  performInitialLockedSearch,
+  clearSearchAndRefresh,
 } from "./searchSlice";
 import mockConfig from "../../../mockApiResponses/mockConfig";
 import * as services from "../../../services";
@@ -480,5 +483,125 @@ describe<LocalTestContext>("performSearchFromQuery", (it) => {
     });
     // Empty search shows all items (empty array of visible indexes)
     expect(selectVisibleIndexes(store.getState())).toEqual([]);
+  });
+});
+
+describe<LocalTestContext>("submap locked filter", (it) => {
+  const submapConfig = {
+    ...mockConfig,
+    submaps: {
+      "test-submap": {
+        lockedFilter: ["data_sources:DC"],
+      },
+    },
+  };
+
+  beforeEach<LocalTestContext>((context) => {
+    context.store = makeStore();
+
+    vi.spyOn(windowUtils, "getSubmapId").mockReturnValue("test-submap");
+    vi.spyOn(windowUtils, "getDatasetId").mockReturnValue("test-dataset");
+    vi.spyOn(panelSlice, "populateSearchResults").mockReturnValue({
+      type: "panel/populateSearchResults",
+    } as any);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("should set lockedFilter and hide that from the user filter UI", ({
+    store,
+  }) => {
+    store.dispatch(configLoaded(submapConfig));
+
+    const state = store.getState();
+    expect(state.search.lockedFilter).toEqual(["data_sources:DC"]);
+    expect(
+      state.search.filterableVocabProps.map((prop) => prop.id),
+    ).not.toContain("data_sources");
+    expect(selectIsFilterActive(state)).toBe(true);
+    // The map keeps the submap bounds until the user narrows results
+    expect(selectIsUserFilterActive(state)).toBe(false);
+    store.dispatch(setText("food"));
+    expect(selectIsUserFilterActive(store.getState())).toBe(true);
+    store.dispatch(setText(""));
+  });
+
+  it("should apply the locked filter to an empty search without exposing", async ({
+    store,
+  }) => {
+    store.dispatch(configLoaded(submapConfig));
+
+    const searchSpy = vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [1, 2],
+      headers: new Headers(),
+    });
+
+    await store.dispatch(performSearch());
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      params: { datasetId: "test-dataset" },
+      query: { filter: ["data_sources:DC"] },
+    });
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2]);
+    // The locked filter never goes into searchQuery - so q URL param
+    //   doesn't get it - i.e. if the user shares the map URL
+    expect(store.getState().search.searchQuery).toEqual({});
+  });
+
+  it("should merge the locked filter with user filters and text", async ({
+    store,
+  }) => {
+    store.dispatch(configLoaded(submapConfig));
+
+    const searchSpy = vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [3],
+      headers: new Headers(),
+    });
+
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+    store.dispatch(setText("pears"));
+    await store.dispatch(performSearch());
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      params: { datasetId: "test-dataset" },
+      query: {
+        filter: ["data_sources:DC", "country_id:FR"],
+        text: "pears",
+      },
+    });
+    expect(store.getState().search.searchQuery).toEqual({
+      filter: ["country_id:FR"],
+      text: "pears",
+    });
+  });
+
+  it("clearSearchAndRefresh should re-apply the locked filter", async ({
+    store,
+  }) => {
+    store.dispatch(configLoaded(submapConfig));
+
+    const searchSpy = vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: [1, 2],
+      headers: new Headers(),
+    });
+
+    store.dispatch(setFilterValue({ id: "country_id", value: "FR" }));
+    await store.dispatch(performSearch());
+    searchSpy.mockClear();
+
+    await store.dispatch(clearSearchAndRefresh());
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      params: { datasetId: "test-dataset" },
+      query: { filter: ["data_sources:DC"] },
+    });
+    expect(store.getState().search.searchQuery).toEqual({});
+    expect(selectVisibleIndexes(store.getState())).toEqual([1, 2]);
+    expect(selectIsFilterActive(store.getState())).toBe(true);
   });
 });

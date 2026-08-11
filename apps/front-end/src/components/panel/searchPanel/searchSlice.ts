@@ -2,7 +2,7 @@ import { createSelector, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../../app/createAppSlice";
 import type { Config } from "../../../services/types";
 import { searchDataset } from "../../../services";
-import { configLoaded } from "../../../app/configSlice";
+import { configLoaded, resolveSubmap } from "../../../app/configSlice";
 import { getDatasetId } from "../../../utils/window-utils";
 import { populateSearchResults } from "../panelSlice";
 import { AppThunk } from "../../../app/store";
@@ -28,6 +28,11 @@ export interface SearchSliceState {
   searchingStatus: "idle" | "loading" | "failed";
   filterableVocabProps: FilterableVocabProp[];
   searchQuery: SearchQuery;
+  // Filters from the active submap - sent with every serach
+  // Excluded from filterableVocabProps so they never appear in filter UI
+  //  and they stay after clearSearch and don't do in searchQuery
+  //  so the sharable q URL param doesn't get them (submap URL param does)
+  lockedFilter: string[];
 }
 
 const initialState: SearchSliceState = {
@@ -36,6 +41,7 @@ const initialState: SearchSliceState = {
   searchingStatus: "idle",
   filterableVocabProps: [],
   searchQuery: {},
+  lockedFilter: [],
 };
 
 export const searchSlice = createAppSlice({
@@ -83,8 +89,13 @@ export const searchSlice = createAppSlice({
   extraReducers: (builder) => {
     builder.addCase(configLoaded, (state, action) => {
       const config = action.payload;
+      state.lockedFilter = resolveSubmap(config)?.lockedFilter ?? [];
+      const lockedPropIds = new Set(
+        state.lockedFilter.map((filter) => filter.split(":")[0]),
+      );
       const filterableVocabProps: FilterableVocabProp[] = [];
       Object.entries(config.itemProps).forEach(([propId, propSpec]) => {
+        if (lockedPropIds.has(propId)) return;
         if (propSpec.filter) {
           if (propSpec.type === "vocab") {
             filterableVocabProps.push({
@@ -118,9 +129,22 @@ export const searchSlice = createAppSlice({
       const activeFilters = search.filterableVocabProps.filter(
         (prop) => prop.value !== PROP_VALUE_ANY,
       );
+      return (
+        activeFilters.length > 0 ||
+        search.text.length > 0 ||
+        search.lockedFilter.length > 0
+      );
+    },
+    // Like selectIsFilterActive, but ignoring the submap's locked filter -
+    // true only when the user themselves narrowed the results
+    selectIsUserFilterActive: (search) => {
+      const activeFilters = search.filterableVocabProps.filter(
+        (prop) => prop.value !== PROP_VALUE_ANY,
+      );
       return activeFilters.length > 0 || search.text.length > 0;
     },
     selectSearchQuery: (search) => search.searchQuery,
+    selectLockedFilter: (search) => search.lockedFilter,
   },
 });
 
@@ -138,7 +162,9 @@ export const {
   selectText,
   selectVisibleIndexes,
   selectIsFilterActive,
+  selectIsUserFilterActive,
   selectSearchQuery,
+  selectLockedFilter,
 } = searchSlice.selectors;
 
 type Term = VocabDef["terms"];
@@ -210,23 +236,30 @@ export const performSearch = (): AppThunk => {
     const activeFilters = search.filterableVocabProps.filter(
       (prop) => prop.value !== PROP_VALUE_ANY,
     );
-    if (activeFilters.length === 0 && search.text === "") {
+    const hasUserQuery = activeFilters.length > 0 || search.text !== "";
+    if (!hasUserQuery && search.lockedFilter.length === 0) {
       // empty search query so show all items
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
       dispatch(populateSearchResults(0));
       return;
     }
 
-    const searchQuery = {
-      filter: activeFilters.map((prop) => `${prop.id}:${prop.value}`),
-      text: search.text.trim().toLowerCase() || undefined,
-    };
+    // The user's own query - shared in the URL (excludes submap locked params)
+    const searchQuery = hasUserQuery
+      ? {
+          filter: activeFilters.map((prop) => `${prop.id}:${prop.value}`),
+          text: search.text.trim().toLowerCase() || undefined,
+        }
+      : {};
 
     dispatch(setSearchingStatus("loading"));
 
     const response = await searchDataset({
       params: { datasetId },
-      query: searchQuery,
+      query: {
+        ...searchQuery,
+        filter: [...search.lockedFilter, ...(searchQuery.filter ?? [])],
+      },
     });
     if (response.status === 200) {
       dispatch(
@@ -242,6 +275,25 @@ export const performSearch = (): AppThunk => {
       dispatch(updateVisibleIndexes({ searchQuery: {}, visibleIndexes: [] }));
       dispatch(setSearchingStatus("failed"));
     }
+  };
+};
+
+// Clear user serach - re runs the locked submap search if one is active
+export const clearSearchAndRefresh = (): AppThunk => {
+  return async (dispatch, getState) => {
+    dispatch(clearSearch());
+    if (getState().search.lockedFilter.length > 0) {
+      await dispatch(performSearch());
+    }
+  };
+};
+
+// Runs the inital search for a locked submap filter - map shows locked subset
+export const performInitialLockedSearch = (): AppThunk => {
+  return async (dispatch, getState) => {
+    if (getState().search.lockedFilter.length === 0) return;
+    if (new URLSearchParams(window.location.search).get("q")) return;
+    await dispatch(performSearch());
   };
 };
 
