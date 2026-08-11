@@ -213,6 +213,38 @@ The `map` field has 1 subfield
 
 <br />
 
+## Submaps
+
+A submap is a named view of a dataset that only ever shows the items matching a locker filter.
+
+For example the Cooperative World Map (CWM) can have submaps for each data source - CoMinnesota is the first example of this.
+
+You select a submap by adding the URL param submap=<key> e.g. ?datasetId=cwm-latest&submap=co-minnesota for the CoMinnesota view of the CWM.
+
+You define them in a top-level submaps field in config.json:
+
+```
+"submaps": {
+  "co-minnesota": {
+    "lockedFilter": ["data_sources:COMN"],
+    "mapBounds": [[-97.5, 43.2], [-89.0, 49.5]],
+    "aboutPrefix": "dataset:assets/co-minnesota-about.md",
+    "title": "Co-Minnesota"
+  }
+}
+```
+
+- lockedFilter (required): prop:value filters ANDed into every search. This is removed from the filter UI and applied if the user clears the search or resets the filters and it never appears in the shareable q URL param
+- mapBounds (optional): overrides ui.map.mapBounds so you can change the initial map view for a submap
+- aboutPrefix (optional): markdown rendered above the normal about panel content
+- title (optional): overrides the browser title
+
+Without a submap URL param the map shows everything.
+
+When mapBounds is set those bounds are used for the initial view - once the user filters auto fitting kicks in again.
+
+Submaps are listed on the server's root page as links underneath the parent dataset e.g. Co-Minnesota is listed under Cooperative World Map
+
 ## About Panel Content
 
 The about panel displays the content of `about.md` - this is not localised.
@@ -232,7 +264,7 @@ To provide translatable panel content add an `about_content` key to each languag
 
 Markdown is hard to edit in json. You can use jq on the command line to edit it:
 
-`jq --rawfile md about.fr.md '.vocabs.ui.fr.terms.about_content = $md' config.json > t && mv 
+`jq --rawfile md about.fr.md '.vocabs.ui.fr.terms.about_content = $md' config.json > t && mv
  t config.json`
 
 Extract the markdown for a language:
