@@ -257,6 +257,69 @@ describe("searchDataset", () => {
   });
 });
 
+describe("getTotals", () => {
+  describe("dataset exists", () => {
+    test("unfiltered totals count all items", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/totals",
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual({ any: 7, GB: 4, FR: 1, AU: 2 });
+    });
+
+    test("totals restricted by a multi-prop filter", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/totals?filter=data_sources:CUK",
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual({ any: 4, GB: 4 });
+    });
+
+    test("totals restricted by a single-value filter", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/totals?filter=country_id:AU",
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual({ any: 2, AU: 2 });
+    });
+
+    test("totals with multiple filters ANDed", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/totals?filter=data_sources:DC&filter=country_id:GB",
+      });
+
+      expect(res.statusCode).toBe(200);
+      expect(res.json()).toStrictEqual({ any: 3, GB: 3 });
+    });
+
+    test("unknown filter property returns status code 400", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-A/totals?filter=not_a_prop:XX",
+      });
+
+      expect(res.statusCode).toBe(400);
+    });
+  });
+
+  describe("dataset does not exist", () => {
+    test("status code 404", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/dataset/dataset-in-your-imagination/totals",
+      });
+      expect(res.statusCode).toBe(404);
+    });
+  });
+});
+
 const encodeBase64 = (data: string) => {
   return Buffer.from(data).toString("base64");
 };
@@ -463,6 +526,35 @@ describe("getDatasetItem", () => {
       expect(res.statusCode).toBe(200);
       expect(res.json()).toBeTypeOf("object");
       expect(res.json()).toHaveProperty("version");
+    });
+  });
+
+  describe("listDatasets", () => {
+    test("entries carry labels and submaps where defined", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/datasets",
+      });
+      expect(res.statusCode).toBe(200);
+      const entries = res.json();
+
+      const datasetA = entries.find(
+        (e: { id: string }) => e.id === "dataset-A",
+      );
+      expect(datasetA).toStrictEqual({
+        id: "dataset-A",
+        label: "Cooperative World Map",
+        submaps: [
+          { key: "test-submap", title: "Test Submap" },
+          // A submap without a title falls back to its key
+          { key: "untitled-submap", title: "untitled-submap" },
+        ],
+      });
+
+      // A dataset without submaps has no submaps property at all
+      const powys = entries.find((e: { id: string }) => e.id === "powys-cym");
+      expect(powys).toBeDefined();
+      expect(powys).not.toHaveProperty("submaps");
     });
   });
 });

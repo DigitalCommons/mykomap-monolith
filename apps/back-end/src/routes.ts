@@ -110,8 +110,8 @@ export function MykomapRouter(
       return { status: 200, body: item };
     },
 
-    getTotals: async ({ params: { datasetId } }) => {
-      const body = getTotals(datasetId);
+    getTotals: async ({ params: { datasetId }, query: { filter } }) => {
+      const body = getTotals(datasetId, filter);
 
       return { status: 200, body };
     },
