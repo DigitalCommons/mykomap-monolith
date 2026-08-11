@@ -17,6 +17,7 @@ const {
   PrefixUri,
   Iso639Set1Code,
   ConfigData,
+  SubmapDef,
 } = schemas;
 
 /** Creates expectations on validating each of an array of cases
@@ -339,4 +340,42 @@ test("testing Iso639Set1Code validation", async (t) => {
 test("testing ConfigData validation", async (t) => {
   expectValid(ConfigData, glorpJson("data/validation/vocabIndex/*.good.json"));
   expectInvalid(ConfigData, glorpJson("data/validation/vocabIndex/*.bad.json"));
+});
+
+test("testing SubmapDef validation", async (t) => {
+  expectValid(SubmapDef, [
+    { lockedFilter: ["data_sources:COMN"] },
+    {
+      lockedFilter: ["data_sources:COMN", "country_id:US"],
+      mapBounds: [
+        [-97.5, 43.2],
+        [-89.0, 49.5],
+      ],
+      aboutPrefix: "dataset:assets/co-minnesota-about.md",
+      title: "Co-Minnesota",
+    },
+  ]);
+  expectInvalid(SubmapDef, [
+    {},
+    { lockedFilter: [] },
+    { lockedFilter: ["not a qname"] },
+    {
+      lockedFilter: ["data_sources:COMN"],
+      mapBounds: [[-97.5, 43.2]],
+    },
+  ]);
+});
+
+test("testing ConfigData.submaps validation", async (t) => {
+  // Just the submaps part of ConfigData
+  const SubmapsPart = ConfigData.pick({ submaps: true });
+  expectValid(SubmapsPart, [
+    {},
+    { submaps: {} },
+    { submaps: { "co-minnesota": { lockedFilter: ["data_sources:COMN"] } } },
+  ]);
+  expectInvalid(SubmapsPart, [
+    { submaps: { "co-minnesota": {} } },
+    { submaps: { "co-minnesota": { lockedFilter: "data_sources:COMN" } } },
+  ]);
 });

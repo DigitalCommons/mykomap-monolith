@@ -388,6 +388,24 @@
               "pattern": "^[A-Za-z0-9_-]+$"
             },
             "description": "uniquely specifies the dataset wanted"
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "description": "restricts the totals to items matching these taxonomy filters",
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
           }
         ],
         "operationId": "getTotals",
@@ -1010,6 +1028,31 @@
                       },
                       "minItems": 1
                     },
+                    "submaps": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                          "lockedFilter": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "minItems": 1
+                          },
+                          "mapBounds": {},
+                          "aboutPrefix": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "lockedFilter"
+                        ]
+                      }
+                    },
                     "ui": {
                       "type": "object",
                       "properties": {
@@ -1443,7 +1486,7 @@
     },
     "/datasets": {
       "get": {
-        "description": "Returns an array of the datasets available on this server, each entry carrying the dataset ID and a human-readable label (taken from config.ui.logo.altText, falling back to the ID).",
+        "description": "Returns an array of the datasets available on this server, each entry carrying the dataset ID, a human-readable label (taken from config.ui.logo.altText, falling back to the ID), and the dataset's submaps (key and title), if any.",
         "summary": "lists the datasets available on this server",
         "tags": [],
         "parameters": [],
@@ -1465,6 +1508,24 @@
                       },
                       "label": {
                         "type": "string"
+                      },
+                      "submaps": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "key": {
+                              "type": "string"
+                            },
+                            "title": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "key",
+                            "title"
+                          ]
+                        }
                       }
                     },
                     "required": [
