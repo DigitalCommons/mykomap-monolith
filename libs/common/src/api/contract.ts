@@ -134,32 +134,46 @@ const PopupItem = z.object({
 });
 
 const TotalsData = z.record(z.string(), z.number());
+// The two decimal lat, lng pairs defining the starting view of the map
+const MapBounds = z.tuple([
+  z.tuple([z.number(), z.number()]),
+  z.tuple([z.number(), z.number()]),
+]);
+// A named view of a dataset, selected with the **submap** URL param
+// lockedFilter is applied to every search to only show the subset
+// mapBounds - optional - is the starting view of the map
+// aboutPrefix - optional - is text to prefix to the about box
+// title - optional - adjusts the map title
+const SubmapDef = z.object({
+  lockedFilter: z.array(QName).nonempty(),
+  mapBounds: MapBounds.optional(),
+  aboutPrefix: z.string().optional(),
+  title: z.string().optional(),
+});
 const ConfigData = z.object({
   prefixes: PrefixIndex,
   vocabs: VocabIndex,
   itemProps: PropSpecs,
   languages: z.array(Iso639Set1Code).nonempty(),
+  submaps: z.record(z.string(), SubmapDef).optional(),
   ui: z.object({
     directory_panel_field: z.string(),
     title: z.string().optional(),
     dataLastUpdated: z.string().datetime().optional(),
     show_map_key: z.boolean().optional(),
-    customMarkers: z.object({
-      marker_property_name: z.string(),
-      markerIcons: z.array(z.string()),
-      termsToIconIndex: z.intersection(
-        z.object({ "default": z.number() }),
-        z.record(z.number())
-      )
-    }).optional(),
+    customMarkers: z
+      .object({
+        marker_property_name: z.string(),
+        markerIcons: z.array(z.string()),
+        termsToIconIndex: z.intersection(
+          z.object({ default: z.number() }),
+          z.record(z.number()),
+        ),
+      })
+      .optional(),
     map: z
       .object({
-        mapBounds: z
-          .tuple([
-            z.tuple([z.number(), z.number()]),
-            z.tuple([z.number(), z.number()]),
-          ])
-          .optional(),
+        mapBounds: MapBounds.optional(),
       })
       .optional(),
     logo: z
@@ -220,6 +234,7 @@ export const schemas = {
   PropSpec,
   PropSpecs,
   QName,
+  SubmapDef,
   ValuePropSpec,
   BuildInfo,
   VocabDef,
@@ -263,7 +278,7 @@ export const contract = c.router({
       text: z.string().optional().openapi({
         description: "a text fragment to match",
       }),
-      // Promote singular parameters to arrays (so that a single filter is possible!),
+      // Change singular params to arrays (so that a single filter is possible!)
       // see https://github.com/ts-rest/ts-rest/issues/290#issuecomment-1658983510
       filter: z
         .array(QName)
@@ -356,6 +371,17 @@ export const contract = c.router({
         description: "uniquely specifies the dataset wanted",
       }),
     }),
+    query: z.object({
+      // Promote singular parameters to arrays, as in searchDataset
+      filter: z
+        .array(QName)
+        .or(QName.transform((v: string) => [v]))
+        .optional()
+        .openapi({
+          description:
+            "restricts the totals to items matching these taxonomy filters",
+        }),
+    }),
     responses: {
       200: TotalsData.openapi({
         description: "the total result numbers for a map",
@@ -435,14 +461,18 @@ export const contract = c.router({
     summary: "lists the datasets available on this server",
     description:
       "Returns an array of the datasets available on this server, each entry " +
-      "carrying the dataset ID and a human-readable label (taken from " +
-      "config.ui.logo.altText, falling back to the ID).",
+      "carrying the dataset ID, a human-readable label (taken from " +
+      "config.ui.logo.altText, falling back to the ID), and the dataset's " +
+      "submaps (key and title), if any.",
     responses: {
       200: z
         .array(
           z.object({
             id: DatasetId,
             label: z.string(),
+            submaps: z
+              .array(z.object({ key: z.string(), title: z.string() }))
+              .optional(),
           }),
         )
         .openapi({

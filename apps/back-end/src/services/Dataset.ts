@@ -152,17 +152,26 @@ export class Dataset {
   getLocations = (): fs.ReadStream =>
     fs.createReadStream(path.join(this.folderPath, "locations.json"), "utf8");
 
-  getTotals = () => {
+  // Totals per directory_panel_field value
+  // Takes filters with propName:value to restrict items e.g. for a submap's
+  //   locked filters
+  getTotals = (filters?: string[]) => {
     const totals: Record<string, number> = {
       any: 0,
     };
 
-    // TODO: make this an argument of getTotals, so it can be used for filters as well as the
-    // directory panel
     const propId = this.config.ui.directory_panel_field;
     const propIndex = this.searchablePropIndexMap[propId];
+    const propMatchers = this.makeFilterMatchers(filters);
 
     this.searchablePropValues.forEach((itemValues) => {
+      if (
+        !propMatchers.every((matcher) =>
+          matcher.propMatcher(itemValues[matcher.propIndex]),
+        )
+      )
+        return;
+
       const value = itemValues[propIndex];
       // if value is a single string, wrap it in an array
       const valuesToCount = typeof value === "string" ? [value] : value;
@@ -179,19 +188,15 @@ export class Dataset {
   /**
    * Returns an array of item indexes that match the given criteria, or an array of objects if
    * returnProps is specified. Also supports pagination, if `page` and pageSize are defined
+   * If filters is given builds a matcher for each propName:value
    */
-  search = (
+  private makeFilterMatchers = (
     filters?: string[],
-    text?: string,
-    returnProps?: string[],
-    page?: number,
-    pageSize?: number,
-  ): (number | { [prop: string]: unknown })[] => {
-    const propMatchers: {
-      propIndex: number;
-      propMatcher: (value: string | string[]) => boolean;
-    }[] =
-      filters?.map((filter) => {
+  ): {
+    propIndex: number;
+    propMatcher: (value: string | string[]) => boolean;
+  }[] =>
+    filters?.map((filter) => {
         // ts-rest + Zod have already validated that the filter is a valid QName
         const splitQName = filter.split(":");
         const [propName, valueRequired] = splitQName;
@@ -233,6 +238,20 @@ export class Dataset {
           propMatcher,
         };
       }) ?? [];
+
+  /**
+   * Returns an array of item indexes that match the criteria - or an
+   * array of objects if returnProps is specified. Also supports pagination,
+   * if page and pageSize are defined
+   */
+  search = (
+    filters?: string[],
+    text?: string,
+    returnProps?: string[],
+    page?: number,
+    pageSize?: number,
+  ): (number | { [prop: string]: unknown })[] => {
+    const propMatchers = this.makeFilterMatchers(filters);
 
     if (text) {
       const normalisedText = TextSearch.normalise(text);

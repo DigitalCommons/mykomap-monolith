@@ -18,7 +18,7 @@
     ],
     "map": {
       "mapBounds": [
-        [-169, -49.3],
+        [169, -49.3],
         [189, 75.6]
       ]
     },
@@ -272,5 +272,28 @@
       }
     ],
     "bottomRightPane": []
+  },
+  "submaps": {
+    "test-submap": {
+      "lockedFilter": [
+        "data_sources:NFCA"
+      ],
+      "mapBounds": [
+        [
+          -97.5,
+          43.2
+        ],
+        [
+          -89.0,
+          49.5
+        ]
+      ],
+      "title": "Test Submap"
+    },
+    "untitled-submap": {
+      "lockedFilter": [
+        "country_id:GB"
+      ]
+    }
   }
 }

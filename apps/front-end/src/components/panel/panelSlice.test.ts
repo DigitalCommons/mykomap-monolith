@@ -1,6 +1,8 @@
 import type { AppStore } from "../../app/store";
 import { makeStore } from "../../app/store";
+import { configLoaded } from "../../app/configSlice";
 import {
+  populateSearchResults,
   setSelectedTab,
   togglePanel,
   toggleResultsPanel,
@@ -15,10 +17,124 @@ import {
   selectResultsPage,
   selectResults,
 } from "./panelSlice";
+import { updateVisibleIndexes } from "./searchPanel/searchSlice";
+import mockConfig from "../../mockApiResponses/mockConfig";
+import { Config } from "../../services/types";
+import * as services from "../../services";
+import * as windowUtils from "../../utils/window-utils";
 
 interface LocalTestContext {
   store: AppStore;
 }
+
+describe<LocalTestContext>("populateSearchResults", (it) => {
+  const submapConfig: Config = {
+    ...mockConfig,
+    submaps: {
+      "test-submap": {
+        lockedFilter: ["data_sources:DC"],
+      },
+    },
+  };
+
+  const mockResults = [
+    { index: 1, name: "Coop One", data_sources: ["DC"] },
+    { index: 2, name: "Coop Two", data_sources: ["DC"] },
+  ];
+
+  beforeEach<LocalTestContext>((context) => {
+    context.store = makeStore();
+
+    vi.spyOn(windowUtils, "getDatasetId").mockReturnValue("test-dataset");
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("should fetch results without a filter when there is no submap", async ({
+    store,
+  }) => {
+    store.dispatch(configLoaded(mockConfig));
+
+    const searchSpy = vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: mockResults,
+      headers: new Headers(),
+    });
+
+    await store.dispatch(populateSearchResults(0));
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      params: { datasetId: "test-dataset" },
+      query: {
+        filter: [],
+        returnProps: ["name", "data_sources"],
+        page: 0,
+        pageSize: 50,
+      },
+    });
+    expect(selectResults(store.getState())).toEqual(mockResults);
+  });
+
+  it("should apply the submap's locked filter to an empty user search", async ({
+    store,
+  }) => {
+    vi.spyOn(windowUtils, "getSubmapId").mockReturnValue("test-submap");
+    store.dispatch(configLoaded(submapConfig));
+
+    const searchSpy = vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: mockResults,
+      headers: new Headers(),
+    });
+
+    await store.dispatch(populateSearchResults(0));
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      params: { datasetId: "test-dataset" },
+      query: {
+        filter: ["data_sources:DC"],
+        returnProps: ["name", "data_sources"],
+        page: 0,
+        pageSize: 50,
+      },
+    });
+    expect(selectResults(store.getState())).toEqual(mockResults);
+  });
+
+  it("should merge the locked filter with the user's search query", async ({
+    store,
+  }) => {
+    vi.spyOn(windowUtils, "getSubmapId").mockReturnValue("test-submap");
+    store.dispatch(configLoaded(submapConfig));
+    store.dispatch(
+      updateVisibleIndexes({
+        searchQuery: { filter: ["country_id:FR"], text: "pears" },
+        visibleIndexes: [1, 2],
+      }),
+    );
+
+    const searchSpy = vi.spyOn(services, "searchDataset").mockResolvedValue({
+      status: 200,
+      body: mockResults,
+      headers: new Headers(),
+    });
+
+    await store.dispatch(populateSearchResults(1));
+
+    expect(searchSpy).toHaveBeenCalledWith({
+      params: { datasetId: "test-dataset" },
+      query: {
+        filter: ["data_sources:DC", "country_id:FR"],
+        text: "pears",
+        returnProps: ["name", "data_sources"],
+        page: 1,
+        pageSize: 50,
+      },
+    });
+  });
+});
 
 describe<LocalTestContext>("panel reducer", (it) => {
   beforeEach<LocalTestContext>((context) => {

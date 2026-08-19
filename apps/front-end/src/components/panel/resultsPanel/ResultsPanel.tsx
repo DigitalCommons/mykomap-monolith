@@ -13,7 +13,7 @@ import {
   selectResultsPanelOpen,
   closeResultsPanel,
 } from "../panelSlice";
-import { clearSearch } from "../searchPanel/searchSlice";
+import { clearSearchAndRefresh } from "../searchPanel/searchSlice";
 import { useTranslation } from "react-i18next";
 import { keyframes } from "@emotion/react";
 
@@ -99,7 +99,7 @@ const ResultsPanel = () => {
 
   const handleClearSearch = () => {
     dispatch(closeResultsPanel());
-    dispatch(clearSearch());
+    dispatch(clearSearchAndRefresh());
   };
 
   return (

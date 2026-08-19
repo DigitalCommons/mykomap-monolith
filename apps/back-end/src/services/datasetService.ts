@@ -43,11 +43,25 @@ export const initDatasets = (dataRoot: string) => {
   console.log("Loaded datasets:", loadedDatasetIds);
 };
 
-export const listDatasets = (): { id: string; label: string }[] =>
-  Object.entries(datasets).map(([id, dataset]) => ({
-    id,
-    label: dataset.config.ui.logo?.altText ?? id,
-  }));
+// List datasets and include their submaps, if any
+export const listDatasets = (): {
+  id: string;
+  label: string;
+  submaps?: { key: string; title: string }[];
+}[] =>
+  Object.entries(datasets).map(([id, dataset]) => {
+    const submapDefs = Object.entries(dataset.config.submaps ?? {});
+    return {
+      id,
+      label: dataset.config.ui.logo?.altText ?? id,
+      ...(submapDefs.length > 0 && {
+        submaps: submapDefs.map(([key, def]) => ({
+          key,
+          title: def.title ?? key,
+        })),
+      }),
+    };
+  });
 
 const getDatasetOrThrow404 = (datasetId: string): Dataset => {
   const dataset = datasets[datasetId];
@@ -90,9 +104,9 @@ export const getDatasetLocations = (datasetId: string): fs.ReadStream => {
   return dataset.getLocations();
 };
 
-export const getTotals = (datasetId: string) => {
+export const getTotals = (datasetId: string, filter?: string[]) => {
   const dataset = getDatasetOrThrow404(datasetId);
-  return dataset.getTotals();
+  return dataset.getTotals(filter);
 };
 
 export const searchDataset = (

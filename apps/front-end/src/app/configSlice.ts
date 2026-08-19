@@ -2,7 +2,7 @@ import { createAction, type PayloadAction } from "@reduxjs/toolkit";
 import { createAppSlice } from "./createAppSlice";
 import { getConfig } from "../services";
 import { Config, ConfigPopup, ConfigPopupItemRaw } from "../services/types";
-import { getDatasetId } from "../utils/window-utils";
+import { getDatasetId, getSubmapId } from "../utils/window-utils";
 import i18n from "../i18n";
 
 export interface ConfigSliceState {
@@ -22,7 +22,19 @@ export interface ConfigSliceState {
   customMarkers?: Config["ui"]["customMarkers"];
   itemProps?: Config["itemProps"];
   showMapKey?: boolean;
+  submap?: ActiveSubmap;
 }
+
+export type ActiveSubmap = NonNullable<Config["submaps"]>[string] & {
+  id: string;
+};
+
+// Get the active submap from the URL param (submap), optional in config
+export const resolveSubmap = (config: Config): ActiveSubmap | undefined => {
+  const submapId = getSubmapId();
+  const submapDef = submapId ? config.submaps?.[submapId] : undefined;
+  return submapDef ? { ...submapDef, id: submapId ?? "" } : undefined;
+};
 
 /**
  * When building the popup UI, we need to know whether each itemProp is of type "multi" or not.
@@ -95,7 +107,9 @@ export const configSlice = createAppSlice({
           console.log("Fetched config", response.body);
           thunkApi.dispatch(configLoaded(response.body));
           const tabTitle =
-            response.body.ui.title ?? response.body.ui.logo?.altText;
+            resolveSubmap(response.body)?.title ??
+            response.body.ui.title ??
+            response.body.ui.logo?.altText;
           if (tabTitle) document.title = tabTitle;
           return response.body;
         } else {
@@ -128,7 +142,11 @@ export const configSlice = createAppSlice({
       state.currentLanguage = action.payload.languages[0];
       i18n.loadLanguages(action.payload.languages);
 
+      state.submap = resolveSubmap(action.payload);
       state.map = action.payload.ui.map;
+      if (state.submap?.mapBounds) {
+        state.map = { ...state.map, mapBounds: state.submap.mapBounds };
+      }
       state.showMapKey = action.payload.ui.show_map_key ?? false;
       state.markerIcons = action.payload.ui.customMarkers?.markerIcons;
       state.markerPropertyName =
@@ -162,6 +180,7 @@ export const configSlice = createAppSlice({
     selectItemProps: (state) => state.itemProps,
     selectVocabs: (state) => state.vocabs,
     selectShowMapKey: (state) => state.showMapKey,
+    selectSubmap: (state) => state.submap,
   },
 });
 
@@ -182,4 +201,5 @@ export const {
   selectItemProps,
   selectVocabs,
   selectShowMapKey,
+  selectSubmap,
 } = configSlice.selectors;

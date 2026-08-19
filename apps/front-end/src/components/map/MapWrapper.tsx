@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   performSearchFromQuery,
   selectIsFilterActive,
+  selectIsUserFilterActive,
   selectSearchQuery,
   selectVisibleIndexes,
 } from "../panel/searchPanel/searchSlice";
@@ -21,7 +22,11 @@ import {
   selectCurrentLanguage,
   selectMarkerIcons,
 } from "../../app/configSlice";
-import { selectMapConfig, selectConfigStatus } from "../../app/configSlice";
+import {
+  selectMapConfig,
+  selectConfigStatus,
+  selectSubmap,
+} from "../../app/configSlice";
 import { useMediaQuery } from "@mui/material";
 import {
   closePanel,
@@ -37,6 +42,8 @@ import { DEVICE_ID, Event, trackEvent } from "../../services/analytics";
 
 const MapWrapper = () => {
   const isFilterActive = useAppSelector(selectIsFilterActive);
+  const isUserFilterActive = useAppSelector(selectIsUserFilterActive);
+  const submap = useAppSelector(selectSubmap);
   // If there is no filter active , visible indexes is undefined to show all features
   const visibleIndexes = useAppSelector(selectVisibleIndexes);
   const features = useAppSelector((state) =>
@@ -68,7 +75,7 @@ const MapWrapper = () => {
   const DEVICE_ID_PARAM = "ref";
 
   const popupCreatedCallback = (itemIx: number) => {
-     if (!isMedium) dispatch(closeMapKey());
+    if (!isMedium) dispatch(closeMapKey());
     dispatch(openPopup(`@${itemIx}`));
   };
 
@@ -289,8 +296,16 @@ const MapWrapper = () => {
       features,
     });
 
-    // Auto-zoom to fit filtered results
-    if (isFilterActive && features.length > 0 && map.current) {
+    // Auto-zoom to fit filtered results.
+    // If a submap defines mapBounds and the user hasn't narrowed the
+    // view themselves then stick to the submap mapBounds
+    const keepSubmapBounds = submap?.mapBounds && !isUserFilterActive;
+    if (
+      isFilterActive &&
+      !keepSubmapBounds &&
+      features.length > 0 &&
+      map.current
+    ) {
       // Wait a brief moment for the map to process the new data before panning
       setTimeout(() => {
         if (map.current) {

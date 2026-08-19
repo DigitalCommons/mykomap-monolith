@@ -3,11 +3,15 @@ import Heading from "../heading/Heading";
 import ContentPanel from "../contentPanel/ContentPanel";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { getDatasetId } from "../../../utils/window-utils";
+import { getDatasetId, resolveAssetUrl } from "../../../utils/window-utils";
+import { useAppSelector } from "../../../app/hooks";
+import { selectSubmap } from "../../../app/configSlice";
 
 const AboutPanel = () => {
   const { t, i18n } = useTranslation();
   const [aboutMarkdownContent, setAboutMarkdownContent] = useState("");
+  const [prefixMarkdownContent, setPrefixMarkdownContent] = useState("");
+  const submap = useAppSelector(selectSubmap);
 
   // Fetching the markdown to render in the about panel from the ui vocab
   // string t("about_content") - if this exists it overwrites the
@@ -27,6 +31,19 @@ const AboutPanel = () => {
     }
   });
 
+  // An active submap can prepend its own markdown above the standard about
+  // content, without replacing it
+  useEffect(() => {
+    const prefixUrl = resolveAssetUrl(submap?.aboutPrefix);
+    if (!prefixUrl) return;
+    fetch(prefixUrl)
+      .then((response) => (response.ok ? response.text() : ""))
+      .then(setPrefixMarkdownContent)
+      .catch((error) => {
+        console.error("Error fetching submap about prefix", error);
+      });
+  }, [submap?.aboutPrefix]);
+
   const content = hasAboutContentInConfig
     ? t("about_content")
     : aboutMarkdownContent;
@@ -34,6 +51,9 @@ const AboutPanel = () => {
     <>
       <Heading title={t("about")} />
       <ContentPanel>
+        {prefixMarkdownContent && (
+          <MuiMarkdown>{prefixMarkdownContent}</MuiMarkdown>
+        )}
         <MuiMarkdown>{content}</MuiMarkdown>
       </ContentPanel>
     </>

@@ -77,6 +77,12 @@ export const panelSlice = createAppSlice({
           params: { datasetId },
           query: {
             ...search.searchQuery,
+            // The submap's locked filter is kept out of searchQuery, so
+            // merge it in here like performSearch does
+            filter: [
+              ...search.lockedFilter,
+              ...(search.searchQuery.filter ?? []),
+            ],
             returnProps,
             page: page,
             pageSize: RESULTS_PER_PAGE,

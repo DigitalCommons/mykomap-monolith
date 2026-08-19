@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../../../app/hooks";
 import { selectDirectoryOptions } from "./directorySlice";
+import { selectLockedFilter } from "../searchPanel/searchSlice";
 import { getTotals } from "../../../services";
 import { getDatasetId } from "../../../utils/window-utils";
 import { selectCustomMarkers } from "../../../app/configSlice";
@@ -25,13 +26,18 @@ const StyledDirectoryPanel = styled(Box)(() => ({
   },
 }));
 
-const fetchResults = async () => {
+const fetchResults = async (lockedFilter: string[]) => {
   const datasetId = getDatasetId();
   if (datasetId == null) {
     return { failed: true };
   }
 
-  const response = await getTotals({ params: { datasetId } });
+  const response = await getTotals({
+    params: { datasetId },
+    query: {
+      filter: lockedFilter.length > 0 ? lockedFilter : undefined,
+    },
+  });
 
   switch (response.status) {
     case 200: {
@@ -59,6 +65,7 @@ const DirectoryPanel = () => {
 
   const directoryOptions = useAppSelector(selectDirectoryOptions);
   const customMarkers = useAppSelector(selectCustomMarkers);
+  const lockedFilter = useAppSelector(selectLockedFilter);
   const activeValue = directoryOptions.value;
 
   const [resultsTotals, setResultsTotals] = useState<Record<string, number>>(
@@ -66,11 +73,11 @@ const DirectoryPanel = () => {
   );
 
   useEffect(() => {
-    fetchResults().then((results) => {
+    fetchResults(lockedFilter).then((results) => {
       if (results && !results.failed && results.resultsTotals)
         setResultsTotals(results.resultsTotals);
     });
-  }, []);
+  }, [lockedFilter]);
 
   return (
     <>
