@@ -215,7 +215,7 @@ The `map` field has 1 subfield
 
 ## Submaps
 
-A submap is a named view of a dataset that only ever shows the items matching a locker filter.
+A submap is a named view of a dataset that only ever shows the items matching a locked filter.
 
 For example the Cooperative World Map (CWM) can have submaps for each data source - CoMinnesota is the first example of this.
 
@@ -234,7 +234,7 @@ You define them in a top-level submaps field in config.json:
 }
 ```
 
-- lockedFilter (required): prop:value filters ANDed into every search. This is removed from the filter UI and applied if the user clears the search or resets the filters and it never appears in the shareable q URL param
+- lockedFilter (required): prop:value filters ANDed into every search. This is removed from the filter UI and applied if the user clears the search or resets the filters and it never appears in the shareable q URL param (it is instead shared through the submap filter)
 - mapBounds (optional): overrides ui.map.mapBounds so you can change the initial map view for a submap
 - aboutPrefix (optional): markdown rendered above the normal about panel content
 - title (optional): overrides the browser title
