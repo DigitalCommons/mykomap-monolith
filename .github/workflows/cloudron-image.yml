@@ -1,0 +1,107 @@
+# Builds the Cloudron app image and pushes it to the registry at
+# ghcr.io/digitalcommons/mykomaps
+# Tags:
+# - the branch name for pushes to main
+# - pr-<n> for pull requests
+# - sha-<short> for a fixed build
+# - X.Y.Z for vX.Y.Z release tags
+# Pull requests are only built when the branch is in this repository (so
+# from someone with write access) and not for dependabot. Fork PRs are
+# skipped: they get a read-only token and would run untrusted code.
+
+
+name: Cloudron image
+
+on:
+  push:
+    branches: [main, dev]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: cloudron-image-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE: ghcr.io/digitalcommons/mykomaps
+
+jobs:
+  build:
+    if: >-
+      github.event_name != 'pull_request' ||
+      (github.event.pull_request.head.repo.full_name == github.repository &&
+       github.actor != 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # DL3018/DL3008 (pin package versions) ignored, same as LandExplorer
+      - name: Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: cloudron/Dockerfile
+          ignore: DL3018,DL3008
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+            type=semver,pattern={{version}}
+
+      # Build into local docker daemon first for smoke test then push build
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: cloudron/Dockerfile
+          load: true
+          tags: ${{ env.IMAGE }}:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Start the image with the BE test datasets and check health check,
+      # config.js and dataset listing responds
+      - name: Smoke test
+        run: |
+          cp -r apps/back-end/test/data "$RUNNER_TEMP/data"
+          docker run -d --name mykomaps -p 8000:8000 -e MAPTILER_API_KEY=test \
+            -v "$RUNNER_TEMP/data:/app/data" "$IMAGE:test"
+          for _ in $(seq 1 30); do
+            curl -sf localhost:8000/api/version && break
+            sleep 1
+          done
+          echo
+          curl -sf localhost:8000/config.js | grep MAPTILER_API_KEY
+          curl -sf localhost:8000/api/datasets | grep dataset-A
+          curl -sf -o /dev/null localhost:8000/
+          docker logs mykomaps
+          docker rm -f mykomaps
+
+      - name: Push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: cloudron/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
