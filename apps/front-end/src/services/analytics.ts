@@ -1,5 +1,6 @@
 import mixpanel from "mixpanel-browser";
 import { getDatasetId } from "../utils/window-utils";
+import { config } from "../config";
 
 let initialized = false;
 
@@ -8,14 +9,13 @@ export let DEVICE_ID: string;
 // Initialize Mixpanel
 const datasetId = getDatasetId();
 if (datasetId) {
-  if (import.meta.env.VITE_MIXPANEL_TOKEN) {
-    mixpanel.init(import.meta.env.VITE_MIXPANEL_TOKEN, {
+  if (config.mixpanelToken) {
+    mixpanel.init(config.mixpanelToken, {
       debug: import.meta.env.DEV,
       api_host: "https://api-eu.mixpanel.com",
       track_pageview: false, // We'll manually track page views
       persistence: "localStorage",
-      record_sessions_percent:
-        import.meta.env.VITE_MIXPANEL_SESSION_RECORDING_PERCENT ?? 0,
+      record_sessions_percent: config.mixpanelSessionRecordingPercent,
     });
 
     DEVICE_ID = mixpanel.get_distinct_id();
