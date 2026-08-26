@@ -1,0 +1,18 @@
+{
+  "id": "coop.digitalcommons.mykomaps",
+  "title": "MykoMaps",
+  "author": "Digital Commons Cooperative",
+  "description": "file://cloudron/DESCRIPTION.md",
+  "tagline": "Maps for the solidarity economy",
+  "version": "4.1.0",
+  "manifestVersion": 2,
+  "healthCheckPath": "/api/version",
+  "httpPort": 8000,
+  "addons": {
+    "localstorage": {}
+  },
+  "memoryLimit": 1073741824,
+  "website": "https://digitalcommons.coop/mykomaps/",
+  "documentationUrl": "https://github.com/DigitalCommons/mykomap-monolith",
+  "postInstallMessage": "file://cloudron/POSTINSTALL.md"
+}

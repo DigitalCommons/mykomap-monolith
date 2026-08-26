@@ -23,6 +23,8 @@
 **/docker-compose*
 **/compose.y*ml
 **/Dockerfile*
+# Don't ignore the Cloudron dockerfile - the Cloudron CLI needs it
+!cloudron/Dockerfile
 **/node_modules
 **/npm-debug.log
 **/obj
