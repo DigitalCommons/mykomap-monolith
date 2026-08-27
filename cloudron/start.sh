@@ -25,12 +25,12 @@ node -e '
 ' > /run/mykomap/config.js
 chown -R cloudron:cloudron /run/caddy /run/mykomap
 
-echo "==> Starting MykoMap back-end"
+echo "-> Starting MykoMaps back-end"
 gosu cloudron:cloudron node /app/code/back-end/server.js &
 
-echo "==> Starting Caddy"
+echo "-> Starting Caddy"
 gosu cloudron:cloudron caddy run --config /app/code/Caddyfile --adapter caddyfile &
 
 wait -n
-echo "==> A service exited, stopping app" >&2
+echo "-> A service exited, stopping app" >&2
 exit 1

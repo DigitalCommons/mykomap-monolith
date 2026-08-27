@@ -2,9 +2,23 @@
   "id": "coop.digitalcommons.mykomaps",
   "title": "MykoMaps",
   "author": "Digital Commons Cooperative",
+  "contactEmail": "hello@digitalcommons.coop",
+  "packagerName": "Digital Commons Cooperative",
+  "packagerUrl": "https://digitalcommons.coop",
   "description": "file://cloudron/DESCRIPTION.md",
+  "changelog": "file://cloudron/CHANGELOG",
   "tagline": "Maps for the solidarity economy",
+  "iconUrl": "https://raw.githubusercontent.com/DigitalCommons/mykomap-monolith/main/cloudron/icon.png",
+  "mediaLinks": [
+    "https://raw.githubusercontent.com/DigitalCommons/mykomap-monolith/main/cloudron/screenshot-1.png"
+  ],
+  "tags": [
+    "maps",
+    "directory",
+    "cooperatives"
+  ],
   "version": "4.1.0",
+  "minBoxVersion": "9.1.0",
   "manifestVersion": 2,
   "healthCheckPath": "/api/version",
   "httpPort": 8000,
