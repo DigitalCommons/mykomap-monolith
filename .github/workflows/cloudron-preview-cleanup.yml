@@ -1,0 +1,38 @@
+# Removes the PR build installed by cloudron-image.yml when a PR is closed
+# See cloudron-image.yml for secrets and variables
+
+name: Cloudron preview cleanup
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+env:
+  CLOUDRON_SERVER: ${{ vars.CLOUDRON_SERVER }}
+  APP: pr-${{ github.event.pull_request.number }}.${{ vars.PREVIEW_DOMAIN_SUFFIX }}
+
+jobs:
+  uninstall:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDRON_TOKEN: ${{ secrets.CLOUDRON_TOKEN }}
+      DEPLOY: ${{ secrets.CLOUDRON_TOKEN != '' && vars.CLOUDRON_SERVER != '' && vars.PREVIEW_DOMAIN_SUFFIX != '' }}
+    steps:
+      - uses: actions/setup-node@v4
+        if: env.DEPLOY == 'true'
+        with:
+          node-version: 22.x
+      - name: Uninstall the preview app
+        if: env.DEPLOY == 'true'
+        run: |
+          npm install -g cloudron
+          alias cloudron="cloudron --server $CLOUDRON_SERVER --token $CLOUDRON_TOKEN"
+          shopt -s expand_aliases
+          if cloudron list | grep -q "$APP"; then
+            cloudron uninstall --app "$APP"
+          else
+            echo "No preview app $APP"
+          fi

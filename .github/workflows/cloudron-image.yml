@@ -1,22 +1,41 @@
 # Builds the Cloudron app image and pushes it to the registry at
 # ghcr.io/digitalcommons/mykomaps
-# Tags:
-# - the branch name for pushes to main
-# - pr-<n> for pull requests
-# - sha-<short> for a fixed build
-# - X.Y.Z for vX.Y.Z release tags
-# Pull requests are only built when the branch is in this repository (so
-# from someone with write access) and not for dependabot. Fork PRs are
-# skipped: they get a read-only token and would run untrusted code.
+# and deploys it to a Cloudron server
+#
+# Events:
+# - push to main
+#  - deployed to DEV_DOMAIN
+#  - pull request
+#   - deployed to pr-<n>.PREVIEW_DOMAIN_SUFFIX
+# - release published
+#  - deployed to STAGE_DOMAIN
+#  - build added to CloudronVersions.json
+#  - marked as testing in CloudronVersions.json so Cloudron doesn't auto update
+# - release promoted via cloudron-promote.yml
+#  - testing flag removed so Cloudron autoupdates servers
+#  - deployed to PROD_DOMAIN
+#
+# Pull requests are only built when the branch is in this repository
+# and not for dependabot.
+#
+# Repository secrets needed:
+# - CLOUDRON_TOKEN - from a Cloudron admin's profile page
+# Repository variables needed
+#   (Settings -> Secrets and variables -> Actions -> Variables):
+# - CLOUDRON_SERVER - the Cloudron server, e.g. my.example.coop
+# - DEV_DOMAIN - dev app location, following main, e.g. dev.example.coop
+# - STAGE_DOMAIN - staging app, updated on release, e.g. staging.example.coop
+# - PREVIEW_DOMAIN_SUFFIX - PRs builds are up at pr-<n>.PREVIEW_DOMAIN_SUFFIX
 
 
 name: Cloudron image
 
 on:
   push:
-    branches: [main, dev]
-    tags: ["v*"]
+    branches: [main]
   pull_request:
+  release:
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -29,6 +48,11 @@ concurrency:
 
 env:
   IMAGE: ghcr.io/digitalcommons/mykomaps
+  CLOUDRON_SERVER: ${{ vars.CLOUDRON_SERVER }}
+  DEV_DOMAIN: ${{ vars.DEV_DOMAIN }}
+  STAGE_DOMAIN: ${{ vars.STAGE_DOMAIN }}
+  PREVIEW_DOMAIN_SUFFIX: ${{ vars.PREVIEW_DOMAIN_SUFFIX }}
+  TRUNK: main
 
 jobs:
   build:
@@ -37,8 +61,13 @@ jobs:
       (github.event.pull_request.head.repo.full_name == github.repository &&
        github.actor != 'dependabot[bot]')
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
     steps:
+      # Full history so the build can run git describe for /api/version
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # DL3018/DL3008 (pin package versions) ignored, same as LandExplorer
       - name: Hadolint
@@ -56,11 +85,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      # No "latest" tag: Cloudron installs pin an exact version
       - name: Image tags
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.IMAGE }}
+          flavor: latest=false
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -105,3 +136,139 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
+
+  # Every merge to main updates the dev app
+  dev:
+    if: github.event_name == 'push'
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      CLOUDRON_TOKEN: ${{ secrets.CLOUDRON_TOKEN }}
+      DEPLOY: ${{ secrets.CLOUDRON_TOKEN != '' && vars.CLOUDRON_SERVER != '' && vars.DEV_DOMAIN != '' }}
+    steps:
+      - uses: actions/setup-node@v4
+        if: env.DEPLOY == 'true'
+        with:
+          node-version: 22.x
+      - name: Update the dev app
+        if: env.DEPLOY == 'true'
+        run: |
+          npm install -g cloudron
+          cloudron --server "$CLOUDRON_SERVER" --token "$CLOUDRON_TOKEN" \
+            update --app "$DEV_DOMAIN" --image "$IMAGE:main" --no-backup
+
+  # A preview app for each pull request, removed by cloudron-preview-cleanup.yml
+  preview:
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      CLOUDRON_TOKEN: ${{ secrets.CLOUDRON_TOKEN }}
+      DEPLOY: ${{ secrets.CLOUDRON_TOKEN != '' && vars.CLOUDRON_SERVER != '' && vars.PREVIEW_DOMAIN_SUFFIX != '' }}
+      GH_TOKEN: ${{ github.token }}
+      APP: pr-${{ github.event.pull_request.number }}.${{ vars.PREVIEW_DOMAIN_SUFFIX }}
+      TAG: pr-${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v4
+        if: env.DEPLOY == 'true'
+      - uses: actions/setup-node@v4
+        if: env.DEPLOY == 'true'
+        with:
+          node-version: 22.x
+      # First push installs the app and loads the BE test datasets, later
+      # pushes update the image in place, keeping /app/data
+      - name: Install or update the preview app
+        if: env.DEPLOY == 'true'
+        run: |
+          npm install -g cloudron
+          alias cloudron="cloudron --server $CLOUDRON_SERVER --token $CLOUDRON_TOKEN"
+          shopt -s expand_aliases
+          if cloudron list | grep -q "$APP"; then
+            cloudron update --app "$APP" --image "$IMAGE:$TAG" --no-backup
+          else
+            cloudron install --image "$IMAGE:$TAG" --location "$APP"
+            cloudron push --app "$APP" apps/back-end/test/data/datasets /app/data
+            cloudron restart --app "$APP"
+            gh pr comment "${{ github.event.pull_request.number }}" \
+              --body "Preview app: https://$APP (test datasets, removed when the PR closes)"
+          fi
+
+  # On a release, add the image to CloudronVersions.json (the community app
+  # catalogue) as testing (so cloudron doesn't auto update)
+  # The release notes become the Cloudron changelog entry
+  publish:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      CLOUDRON_TOKEN: ${{ secrets.CLOUDRON_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+      VERSION: ${{ needs.build.outputs.version }}
+      RELEASE_BODY: ${{ github.event.release.body }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TRUNK }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - run: npm install -g cloudron
+
+      # Get the manifest version from the tag
+      # Get the changelog from the GitHub release notes
+      # The code turns the GitHub release notes into a short bullet list as
+      #   required by Cloudron just taking the titles of the PRs
+      - name: Set the manifest version and changelog
+        run: |
+          jq --indent 2 --arg v "$VERSION" '.version = $v' CloudronManifest.json > manifest.tmp
+          mv manifest.tmp CloudronManifest.json
+          {
+            echo "[$VERSION]"
+            printf '%s\n' "$RELEASE_BODY" | tr -d '\r' | awk '
+              /^## What.s Changed/ { inlist = 1; next }
+              /^\*\*Full Changelog/ { next }
+              /^#/ { next }
+              /^\* / { sub(/ by @[^ ]+ in https:\/\/[^ ]+\/pull\//, " (#"); if ($0 ~ /\(#[0-9]+$/) $0 = $0 ")"; print; next }
+              !inlist && NF { print "* " $0 }
+            '
+            echo
+            cat cloudron/CHANGELOG
+          } > changelog.tmp
+          mv changelog.tmp cloudron/CHANGELOG
+          head -20 cloudron/CHANGELOG
+
+      - name: Add the version to the catalogue
+        run: |
+          cloudron versions add --image "$IMAGE:$VERSION" --state testing
+          cloudron versions verify
+          cloudron versions list
+
+      # Open a pull request to update the Cloudron manifest and versions file
+      #  with the new version numbers - this PR must be merged before testing
+      # The email address is the standard one for GitHub github-actions[bot]
+      - name: Open a pull request
+        run: |
+          BRANCH="cloudron-catalogue-$VERSION"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b "$BRANCH"
+          git add CloudronVersions.json CloudronManifest.json cloudron/CHANGELOG
+          git commit -m "Add $VERSION to the Cloudron catalogue as testing [skip ci]"
+          git push origin "$BRANCH"
+          gh pr create --base "$TRUNK" --head "$BRANCH" \
+            --title "Add $VERSION to the Cloudron catalogue as testing" \
+            --body "Image $IMAGE:$VERSION from release ${{ github.event.release.html_url }}. Merge to make it installable in testing state, then promote with the Cloudron promote workflow."
+
+      - name: Update the staging app
+        if: env.CLOUDRON_TOKEN != '' && env.CLOUDRON_SERVER != '' && env.STAGE_DOMAIN != ''
+        run: |
+          cloudron --server "$CLOUDRON_SERVER" --token "$CLOUDRON_TOKEN" \
+            update --app "$STAGE_DOMAIN" --image "$IMAGE:$VERSION"
