@@ -1,0 +1,87 @@
+# Promote a version (which must already exist) in CloudronVersions.json
+#  from staging to production
+# Opens a PR to the trunk with the Cloudron catalogue changes
+# Run after the version has been smoke tested on staging
+#
+# Rollback: run again with the previous version
+#
+# Production secrets (gh secret set CLOUDRON_PROD_TOKEN):
+# - CLOUDRON_PROD_TOKEN - from a Cloudron admin's profile page
+# And repo vars (Settings -> Secrets and variables -> Actions -> Variables):
+# - CLOUDRON_PROD_SERVER - the prod Cloudron server, e.g. my.example.coop
+# - PROD_DOMAIN - the production domain, e.g. example.coop
+
+
+name: Cloudron promote
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to promote, e.g. 4.2.0 (no v prefix)"
+        required: true
+      state:
+        description: "New state"
+        type: choice
+        default: published
+        options: [published, revoked]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  IMAGE: ghcr.io/digitalcommons/mykomaps
+  CLOUDRON_PROD_SERVER: ${{ vars.CLOUDRON_PROD_SERVER }}
+  PROD_DOMAIN: ${{ vars.PROD_DOMAIN }}
+  TRUNK: main
+  VERSION: ${{ inputs.version }}
+  STATE: ${{ inputs.state }}
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDRON_PROD_TOKEN: ${{ secrets.CLOUDRON_PROD_TOKEN }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TRUNK }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - run: npm install -g cloudron
+
+      # Use jq to edit the version number
+      - name: Update the catalogue
+        run: |
+          jq -e --arg v "$VERSION" '.versions[$v]' CloudronVersions.json > /dev/null \
+            || { echo "$VERSION is not in CloudronVersions.json"; exit 1; }
+          jq --indent 4 --arg v "$VERSION" --arg s "$STATE" --arg ts "$(date -Ru)" \
+            '.versions[$v].publishState = $s | .versions[$v].ts = $ts' \
+            CloudronVersions.json > versions.tmp
+          mv versions.tmp CloudronVersions.json
+          cloudron versions verify
+          cloudron versions list
+
+      - name: Open a pull request
+        run: |
+          BRANCH="cloudron-catalogue-$VERSION-$STATE"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git checkout -b "$BRANCH"
+          git add CloudronVersions.json
+          git commit -m "Mark $VERSION as $STATE in the Cloudron catalogue [skip ci]"
+          git push origin "$BRANCH"
+          gh pr create --base "$TRUNK" --head "$BRANCH" \
+            --title "Mark $VERSION as $STATE in the Cloudron catalogue" \
+            --body "Merge to make the change visible to installed Cloudrons."
+
+      - name: Update the production app
+        if: env.CLOUDRON_PROD_TOKEN != '' && env.CLOUDRON_PROD_SERVER != '' && env.PROD_DOMAIN != '' && env.STATE == 'published'
+        run: |
+          cloudron --server "$CLOUDRON_PROD_SERVER" --token "$CLOUDRON_PROD_TOKEN" \
+            update --app "$PROD_DOMAIN" --image "$IMAGE:$VERSION"

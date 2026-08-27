@@ -7,7 +7,7 @@
 **/.classpath
 **/.dockerignore
 **/.env
-**/.git
+# Keep .git so the build can run git describe to get the version
 **/.gitignore
 **/.project
 **/.settings
