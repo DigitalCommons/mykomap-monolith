@@ -44,7 +44,7 @@
     "diff": "^8.0.2",
     "fastify-openapi-glue": "^4.7.0",
     "fastify-plugin": "^4.5.1",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.4.1",
     "lodash": "^4.17.21",
     "minimist": "^1.2.8",
     "qs": "^6.14.0",
@@ -62,15 +62,15 @@
     "c8": "^10.1.2",
     "cross-env": "^7.0.3",
     "dir-compare": "^5.0.0",
-    "fastify": "^4.28.1",
+    "fastify": "^5.12.1",
     "fastify-cli": "^6.3.0",
     "nodemon": "^3.1.4",
     "rimraf": "^6.0.1",
     "typescript": "^5.5.4",
-    "vite": "^5.4.18",
+    "vite": "^8.2.2",
     "vite-node": "^3.0.9",
     "vite-plugin-dts": "^4.1.0",
-    "vitest": "^3.0.9"
+    "vitest": "^4.1.11"
   },
   "config": {
     "sentry": {
