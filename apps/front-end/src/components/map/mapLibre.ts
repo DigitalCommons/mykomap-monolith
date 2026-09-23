@@ -1,4 +1,5 @@
 import * as MapLibreGL from "maplibre-gl";
+import { config } from "../../config";
 import {
   AttributionControl,
   NavigationControl,
@@ -303,7 +304,7 @@ export const createMap = (
 
   const map = new MapLibreGL.Map({
     container: "map-container",
-    style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${import.meta.env.VITE_MAPTILER_API_KEY}`,
+    style: `https://api.maptiler.com/maps/streets-v2/style.json?key=${config.maptilerApiKey}`,
     minZoom: 1.45,
     maxZoom: 18,
     bounds: initialBounds,
