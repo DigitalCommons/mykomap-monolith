@@ -5,9 +5,9 @@ name: Node.js CI
 
 on:
   push:
-    branches: ["main", "dev"]
+    branches: ["main"]
   pull_request:
-    branches: ["main", "dev"]
+    branches: ["main"]
 
 jobs:
   build:
@@ -35,3 +35,4 @@ jobs:
         continue-on-error: true # at least until the failures are eradicated
       - run: npm run build --workspaces --if-present
       - run: npm test
+      - run: sh docker/datasets/fetch-datasets.test.sh

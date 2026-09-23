@@ -1,0 +1,27 @@
+name: Promote to production
+
+# Promotion is redeploying an existing tag to production: move the `production`
+# pointer-branch to the chosen tag; Coolify (tracking `production`) auto-deploys.
+# Rollback = run this again with the previous tag. See
+# technology-and-infrastructure ADR-001/ADR-002.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Version tag to promote to production (e.g. v4.2.1)"
+        required: true
+
+jobs:
+  point-production:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.tag }}
+      - name: Point production at ${{ inputs.tag }}
+        run: |
+          echo "Pointing production -> ${{ inputs.tag }} ($(git rev-parse --short HEAD))"
+          git push --force origin "HEAD:refs/heads/production"

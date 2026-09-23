@@ -1,0 +1,24 @@
+name: Release to staging
+
+# Coolify can't deploy tags directly, so a version tag (vX.Y.Z) moves the
+# `staging` pointer-branch to the tagged commit; Coolify (tracking `staging`)
+# then auto-deploys it. See technology-and-infrastructure ADR-001/ADR-002.
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  point-staging:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # HEAD is the tagged commit; force-move `staging` to it.
+      - name: Point staging at ${{ github.ref_name }}
+        run: |
+          echo "Pointing staging -> ${GITHUB_REF_NAME} ($(git rev-parse --short HEAD))"
+          git push --force origin "HEAD:refs/heads/staging"

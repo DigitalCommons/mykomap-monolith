@@ -1,7 +1,10 @@
 # Coolify / Docker deployment
 
+This file is out of date - I have tried to update it for the new
+Coolify deployment on 2029-09-19 but it needs a full rewrite - MJS.
+
 > [!NOTE]
-> 
+>
 > Dear reader: it is assumed here that you know what "Docker", "Docker
 > Compose" and "Dockerfiles" are. If not, see [Writing a Dockerfile][]
 > for the basics about Dockerfiles and [What is Docker Compose][] for
@@ -18,7 +21,8 @@ Prior to this Mykomap was designed to be installed in a dedicated
 Linux user account, with the public files served by Apache, and the
 back-end API reverse-proxied by Apache to a user-mode [SystemD][]
 service. This worked fine, but could only handle one deployment per
-user account (we had two, one each for the `dev` and `main` branches).
+user account (we had two, one each for the then `dev` and `main` branches
+- we only have main now).
 Whereas we found a need to deploy an arbitrary number of feature
 branches for QA on pull-requests. Coolify supports this using
 "[Preview Deployments][]", was available as a Hetzner application
@@ -41,6 +45,12 @@ Therefore, the repository now includes:
 - `docker-compose.yml`: a Docker Compose configuration which supplies
   the appropriate parameters for the build and defines how to run the
   containers
+- `apps/front-end/Caddyfile` and `apps/front-end/docker-entrypoint.sh`:
+  the web server config for the front-end container, and the script
+  which writes the front-end settings to `/config.js` from environment
+  variables when the container starts
+- `docker/datasets/`: a container which fills the data volume in one shot
+  from the `cwm-test-data` repository before the back-end starts
 
 The dockerised Mykomap application can thus be built and run both from
 your repository's working directory, and by Coolify's build system.
@@ -85,7 +95,7 @@ To halt it (and any lingering containers) use:
     docker compose down --remove-orphans
 
 > [!INFO]
-> 
+>
 > If you find docker is failing due to insufficient space after some
 > usage, look into using one or all of `docker $entity prune` where
 > `$entity` can be one of `volume`, `image` or `system`.)
@@ -145,7 +155,7 @@ use at the time of writing. However:
 - Redacted values need to be obtained from other sources. Details can
   be found elsewhere, for example:
   - in each application workspace (back-end and front-end), within these files:
-     - `.env.example` 
+     - `.env.example`
      - `Dockerfile` comments
   - comments within the deploy.sh script in the repository root.
 - Values used for Docker/Coolify deployments may differ from those used for code development.
@@ -155,47 +165,46 @@ use at the time of writing. However:
 the parameter name.)
 
 ```
-# Defines the version of node to use. Should match the NodeJS value in .tool-version
-NODE_VERSION=22.4.1
-
-# CADDY_VERSION=2.11
-
 # Support for development (see comments in ./docker-compose-dev.yml)
 COMPOSE_FILE=docker-compose.yml:docker-compose-dev.yml
-CADDY_HOSTNAME=localhost
+EXPOSE_PORT=8000
 
-# Map tiles API key
+# Map tiles API key (required)
 MAPTILER_API_KEY=<redacted>
 
-# Glitchtip tracing
-# SENTRY_ORG=digital-commons-coop
-# SENTRY_URL=https://app.glitchtip.com
-# FE_SENTRY_PROJECT=mykomapfront-end
+# Which datasets to serve, from which branch of cwm-test-data. Leave
+# DATASETS unset to get the small test datasets from the repo instead
+# (needs no token).
+# DATASETS=cwm-latest dotcoop-latest powys-eng powys-cym workers-coop
+# DATA_REPO_URL=https://x-access-token:<token>@github.com/DigitalCommons/cwm-test-data.git
+# DATA_REPO_REF=master
+
+# Glitchtip error reporting, off when unset. The environment tags
+# errors as dev, staging or production
 # FE_GLITCHTIP_KEY=<redacted>
-# FE_SENTRY_AUTH_TOKEN=<redacted>
-# BE_SENTRY_PROJECT=mykomapback-end
 # BE_GLITCHTIP_KEY=<redacted>
-# BE_SENTRY_AUTH_TOKEN=<redacted>
+# DEPLOYMENT_ENVIRONMENT=dev
 
-# Umami tracing
+# Umami and Mixpanel analytics
+# UMAMI_URL=https://umami.digitalcommons.coop/script.js
 # UMAMI_ID=70f00aee-ba60-4893-bce2-f90a328f5d94
-UMAMI_URL=https://umami.digitalcommons.coop/script.js
+# UMAMI_RECORDER_URL=
+# MIXPANEL_TOKEN=
+# MIXPANEL_SESSION_RECORDING_PERCENT=0
 
-# Only ever needed when changing the deployed location
-# BASE_URL_PATH=/cwm/
-# API_PATH_PREFIX=/cwm/api
-
+# Origins allowed to call the API from other sites, * for any
+# FASTIFY_CORS_ORIGIN=*
 ```
+
+The front-end reads its settings when its container starts (they are
+served to the browser as `/config.js`, see
+`apps/front-end/public/config.js`), so changing them only needs a
+restart, not a rebuild. Only `API_URL` and `BASE_URL` are baked in at
+build time, as Dockerfile build args, and their defaults (`/api` and
+`/`) match the Caddyfile.
 
 > [!WARNING]
 >
-> I've noticed the back-end tracing values (`BE_...`) have not been
-> added to the Dockerfile at the time of writing. This is not
-> important for development but may be for production deployments.
-> See TODOs / sub issues on [#141]
-
-> [!WARNING]
-> 
 > Beware that environment variables are not secure, so (strictly!) API
 > keys shouldn't be passed using them. Saying that, historically they
 > have been nevertheless: sometimes circumstances makes this hard to
@@ -211,10 +220,21 @@ view. See the following section.
 
 ### Installing Mykomap Datasets
 
-Deploying those is currently manual. Automating this is an obvious
-next step, some thoughts about that below.
+Datasets are fetched automatically by the `datasets` service in
+`docker-compose.yml`: on every deploy it clones or pulls the
+`cwm-test-data` repository (branch `DATA_REPO_REF`, using the token in
+`DATA_REPO_URL`) into the `data` volume, checks out only the datasets
+named in `DATASETS`, and exits, and then the back-end starts. So
+putting new data live is a commit to `cwm-test-data` followed by a
+redeploy. PR previews inherit the `mm-dev` preview variables, so they
+serve the real datasets too. With `DATASETS` unset, as for local
+development, it copies the small test datasets from
+`apps/back-end/test/data/datasets` instead.
+See `docker/datasets/fetch-datasets.sh` for the details and
+`docker/datasets/fetch-datasets.test.sh` for its tests.
 
-Conceptually, the general process is:
+The rest of this section describes doing it by hand, for a dataset
+that is not in `cwm-test-data`. Conceptually, the general process is:
 
 - Obtain the input files
 - Convert these into a Mykomap dataset
@@ -287,7 +307,7 @@ the `/data` directory (on which the `datasets` volume is mounted).
 You can use `wget` to download the CSV and the other inputs into the
 container.  You can also use `tar`, however if you need `git` or
 `zip`, those packages can be installed (temporarily!) with:
- 
+
     apk add git
     apk add zip
 
@@ -298,10 +318,10 @@ When these are present, you can make the conversion. The CLI takes the
 location you specify. The name of the folder designates the dataset
 ID - not the contents.  And a stub `about.md` file will be created -
 you will need to overwrite it with yours.
- 
+
 Once the dataset folder is complete, move it into `/data/datasets/` on
 the back-end container.
-  
+
 #### Restart the back-end application
 
 This will make it re-load its data.
@@ -321,36 +341,16 @@ The dataset(s) should be listed in the logs.
 Browse to the application, and specify the dataset ID. Locally, this will typically be something like:
 
     http://localhost/?datasetId=<your ID here>
-    
-    
+
+
 Although URL will obviously need to be amended accordingly for the case.
 
 #### Automation of this
 
-It should be fairly straightforward to automate this - the trickier
-question is how to select available input files in a convenient
-way. There is a repository for Co-op World Map CSVs (these are built
-by an action within the `data-pipelines` project and so available as
-artifacts for download from there). However, the config.json files or
-about.md files don't have a home, except for those committed into the
-`cwm-test-data` repository, which I would suggest needs to be retired:
-the size of the data alone makes it very unweildy, and the format of
-the datasets will be specific to the version of Mykomap being
-targetted at the time of deployment. That format is currently not easy
-to infer by inspection. 
-
-So my (Nick's) suggestion is that:
-- The Mykomap API version should be made explicit in the `config.json` files
-- These files should be published somewhere with their `about.md`
-  files and any metadata which helps with their use and
-  identification.
-- A MM deployment should include a list of URLs to input files to download and deploy automatically
-
-Note that when deploying, as the `config.json` assumes certain CSV
-schema, not all CSV files will work with it. Our CSVs tend to have
-certain preserved fields which can reliably be expected to exist, but
-some maps will require supplemental fields, and of course, this will
-all inevitably evolve over time.
+Done by the `datasets` service described at the top of this section,
+for datasets committed to `cwm-test-data`. Converting a CSV and
+`config.json` into a dataset is still a manual step, done with the
+`dataset` CLI or by the `data-pipelines` project.
 
 
 ### Building
@@ -400,11 +400,20 @@ something which runs inside the container.
 
 # First-time setup of Coolify
 
+> [!NOTE]
+>
+> The DCC Coolify (cool.digitalcommons.coop with the staging-3 and
+> prod-3 servers) is set up and documented in the
+> technology-and-infrastructure repository, in `docs/coolify.md` and
+> `docs/coolify-runbook.md`, including how the MykoMaps resources were
+> created there. What follows are the notes from the first experiment
+> on a separate server, kept for reference.
+
 Coolify can be self-hosted, or rented from the
 [Coolfy cloud SAAS](https://coolify.io/cloud).
 
-We chose to self-host, using the Hetzner 
-["Apps" image](https://docs.hetzner.com/cloud/apps/list/coolify/) 
+We chose to self-host, using the Hetzner
+["Apps" image](https://docs.hetzner.com/cloud/apps/list/coolify/)
 (see that link for more details).
 
 The process for doing this is fairly straightforward, so I won't go
@@ -463,7 +472,7 @@ What I did at that point was:
   - To facilitate preview deployments, also create a wildcard A record
     for the subdomain `*.dev-3`, pointing at the same IP address.
   - As above you should probably set the reverse-IP record correctly
-    too. 
+    too.
 - Note: later should add another Coolify deployment server which for
   production applications (with the hostnames
   `prod-3.digitalcommons.coop` and `*.prod-3.digitalcommons.coop`)
@@ -485,7 +494,7 @@ What I did at that point was:
         explain.
       - The app source could then be selected from the
         `containerisation` branch of `mykomap-monolith`
-      - Note: It should in future be updated to track the `dev`
+      - Note: It should in future be updated to track the `main`
         branch, when this work is merged. See TODOs / sub issues on
         [#141]
       - The app name name was generated by Coolify, and although a better
@@ -511,7 +520,7 @@ back-ups. See TODOs / sub issues on
 - Preview Deployments: https://coolify.io/docs/applications/ci-cd/github/preview-deploy
 - Build args from env_files: https://github.com/docker/compose/issues/4618
 - Setting build args using env_file: https://stackoverflow.com/a/50593180
-- #141: https://github.com/DigitalCommons/technology-and-infrastructure/issues/141 
+- #141: https://github.com/DigitalCommons/technology-and-infrastructure/issues/141
 
 # TODO
 
@@ -626,7 +635,7 @@ but might otherwise be deleted or integrated elsewhere.
 Your front-end container will need to know its own hostname
   - And this needs to be supplied at build time (or maybe runtime)
     from Coolify
-    
+
 ## Troubleshooting tips
 
 - Some tools are frequently pre-installed in the base Docker image
@@ -636,7 +645,7 @@ Your front-end container will need to know its own hostname
   - `nmap` is  essential for checking what ports are visible on other
     containers
   - `ip link`, `ip a`, `ip route` etc. are useful for checking network
-    device names, addresses, and routes 
+    device names, addresses, and routes
 - You can install tools which are not pre-installed into a container
   using `apk` (assuming they're based on Alpine Linux, else it'll be
   another package manager)

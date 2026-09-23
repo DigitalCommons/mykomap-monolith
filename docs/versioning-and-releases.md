@@ -115,16 +115,14 @@ by external systems. Which is clearly the main sense a semantic
 versioning system would apply here. Therefore we should be tagging our
 releases to reflect changes in that.
 
-A second consideration is the idea that we are (at least in practice)
-aiming to use a modified version of ["trunk based
-development"][TrunkBasedDevelopment]. I say "modified" as we now seem
-to have a distinct `dev` branch as well as a `main` branch, but the
-former should always be a fast-forward-merge away from the latter, so
-can be seen as a continuous branch.
+A second consideration is that we use ["trunk based
+development"][TrunkBasedDevelopment]: `main` is the only long-lived
+branch. It is protected, and changes reach it only via pull requests
+from short-lived feature branches. (There used to be a separate `dev`
+branch; it was removed in August 2026.)
 
-Tags should be placed on this branch. The semantics of `main` are such
-that anything on that branch is (or could be) deployed in production,
-and so should be given a release tag.
+Tags are placed on `main`. Anything on `main` is (or could be) deployed
+in production, and so should be given a release tag.
 
 So to sum up, I think we should:
 
@@ -190,32 +188,10 @@ archive created by GitHub if they aren't squashed into it.
 
 #### Reflections
 
-A consequence is that deployments using `dev` will have the version of
-the last production build, just with a different build specification.
-
-Possibly this is unhelpful - in retrospect I wonder if we should
-adjust our build labelling to special-case this region beyond `main`
-and give them release tags which clearly identify them as different,
-and "in development".
-
-An alternative might be to extend the semantic versioning beyond
-`main` and onto `dev`, with the idea that this is a continuous
-process. That would however beg the question about why we need `dev`,
-perhaps we only need `main`.
-
-A third might be to adopt the even/odd versioning schemes used by some
-software: minor version numbers which are even are considered
-"development releases", and those which are odd are "production
-releases". Then the `dev` branch would be tagged with even minor
-versions, and a transition to releasing for production would require
-switching to odd minor versions. But I think this would imply we
-should change our deployment and sprints processes accordingly, to
-acknowledge this distinction and partitioned our work into attending
-to development of new features, release of those features to
-production, and post-release bug-fixes.
-
-Disclaimer: all of these reflections are beyond the scope of current
-work, and need to be discussed by the team.
+A consequence is that deployments of untagged commits on `main` (or of
+feature branches) report the version of the last release, just with a
+different build description (`v4.1.3-23-b3dfba0`). The commit count and
+ID in the build description are what distinguish them.
 
 ### Preparing the code for a deploy
 

@@ -8,6 +8,7 @@
 export interface RuntimeConfig {
   MAPTILER_API_KEY?: string;
   GLITCHTIP_KEY?: string;
+  DEPLOYMENT_ENVIRONMENT?: string;
   UMAMI_URL?: string;
   UMAMI_ID?: string;
   UMAMI_RECORDER_URL?: string;
@@ -33,6 +34,10 @@ export const config = {
     import.meta.env.VITE_MAPTILER_API_KEY,
   ),
   glitchtipKey: pick(runtime.GLITCHTIP_KEY, import.meta.env.VITE_GLITCHTIP_KEY),
+  deploymentEnvironment: pick(
+    runtime.DEPLOYMENT_ENVIRONMENT,
+    import.meta.env.VITE_DEPLOYMENT_ENVIRONMENT,
+  ),
   umamiUrl: pick(runtime.UMAMI_URL, import.meta.env.VITE_UMAMI_URL),
   umamiRecorderUrl: runtime.UMAMI_RECORDER_URL ?? "",
   umamiId: pick(runtime.UMAMI_ID, import.meta.env.VITE_UMAMI_ID),
