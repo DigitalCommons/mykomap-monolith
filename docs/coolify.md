@@ -1,7 +1,9 @@
 # Coolify / Docker deployment
 
-This file is out of date - I have tried to update it for the new
-Coolify deployment on 2029-09-19 but it needs a full rewrite - MJS.
+> [!WARNING]
+>
+> This file contains everything you need to know about Coolify but for
+> internal DCC releases refer to the docs in technology-and-infrastructure.
 
 > [!NOTE]
 >

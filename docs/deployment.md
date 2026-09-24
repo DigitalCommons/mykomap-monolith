@@ -1,5 +1,8 @@
 # Deploying
 
+A [Coolify package](coolify.md) was created in September 2026 but is not
+kept up to date, so it may no longer work.
+
 Conceptually, installation of these applications require:
 
 - deploying the front-end as content to be served on the web
