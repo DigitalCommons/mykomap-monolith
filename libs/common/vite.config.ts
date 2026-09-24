@@ -1,17 +1,19 @@
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
-import { ReadonlyBuildInfo } from "./src/index.js";
+import { changelogVersion, ReadonlyBuildInfo } from "./src/index.js";
+import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import pkg from "./package.json" with { type: "json" };
 
-// Get the package name and build info
+// Get the package name, the version from CHANGELOG.md, and describe the build
 const __BUILD_INFO__ = new ReadonlyBuildInfo({
   name: pkg.name,
+  version: changelogVersion(
+    readFileSync(new URL("../../CHANGELOG.md", import.meta.url), "utf8"),
+  ),
   exec: (cmd, args) => spawnSync(cmd, args).stdout.toString(),
+  env: process.env,
 });
-
-// Write the version and sentry release into package.json
-__BUILD_INFO__.updatePackageJson();
 
 export default defineConfig({
   define: {

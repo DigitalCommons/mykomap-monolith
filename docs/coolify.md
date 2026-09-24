@@ -598,8 +598,8 @@ but might otherwise be deleted or integrated elsewhere.
   - This is how you can get node and the source code into a front-end image that needs them for
     building the deployed JS/HTML files, but ultiately omit them
   - See https://stackoverflow.com/questions/49754286/multiple-images-one-dockerfile
-- We need to install `git` during the build
-  - This allows the build to inspect tags and and set the version info
+- The build does not need `git`: the version comes from `CHANGELOG.md`
+  and the commit from the `SOURCE_COMMIT` build argument Coolify sets
 - Make sure you use the right version of Node and the right Typescript config (etc.) in the container!
   - Failing to may mean `export.meta` is not available
   - And/or import does not work

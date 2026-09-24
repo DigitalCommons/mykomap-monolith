@@ -21,6 +21,25 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ inputs.tag }}
+      # The version served by /api/version is the first line of CHANGELOG.md,
+      # written by changelog-generator.sh in a release PR before tagging, so a
+      # tag that disagrees with it, or has no notes, is a mistake.
+      - name: Check CHANGELOG.md starts with the tag
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          first=$(head -1 CHANGELOG.md)
+          case "$first" in
+            "# $TAG - "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;;
+            *)
+              echo "::error::CHANGELOG.md must start with '# $TAG - YYYY-MM-DD', found '$first'"
+              exit 1 ;;
+          esac
+          notes=$(sed -n '2,/^# /p' CHANGELOG.md | grep -v '^# ' | grep -c '[^[:space:]]' || true)
+          if [ "$notes" -eq 0 ]; then
+            echo "::error::CHANGELOG.md has no notes under $TAG"
+            exit 1
+          fi
       - name: Point production at ${{ inputs.tag }}
         run: |
           echo "Pointing production -> ${{ inputs.tag }} ($(git rev-parse --short HEAD))"

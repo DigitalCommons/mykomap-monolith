@@ -1,6 +1,6 @@
 {
   "name": "@mykomap/back-end",
-  "version": "4.1.0",
+  "version": "0.0.0",
   "description": "Server API for Mykomap application clients",
   "author": "Digital Commons Cooperative",
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
@@ -71,10 +71,5 @@
     "vite-node": "^3.0.9",
     "vite-plugin-dts": "^4.1.0",
     "vitest": "^3.0.9"
-  },
-  "config": {
-    "sentry": {
-      "release": "@mykomapback-end@4.1.0"
-    }
   }
 }

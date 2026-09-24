@@ -4,10 +4,33 @@ import { BuildInfo, sentryDist, sentryRelease } from "./index.js";
 /** A method which executes a command and returns its output */
 export type Exec = (cmd: string, args: string[]) => string;
 
-/** This describes certain parameters of the build of a software project managed by git.
+/** Environment variables, as in process.env */
+export type Env = Record<string, string | undefined>;
+
+/** The version from the first line of CHANGELOG.md.
  *
- * It is an immutable implementation of BuildInfo, which gets its version and
- * commitDesc information from `git-describe` (by default).
+ * The file starts with a heading for the current release, e.g.
+ * `# v4.2.0 - 2026-09-24`, so the version is read from the code rather than
+ * from git tags. Throws when the first line is not in that form.
+ */
+export function changelogVersion(changelog: string): string {
+  const firstLine = changelog.split(/\r?\n/, 1)[0] ?? "";
+  const match = firstLine.match(
+    /^# v(\d+\.\d+\.\d+(?:\+\d+)?) - \d{4}-\d{2}-\d{2}$/,
+  );
+  if (!match)
+    throw new Error(
+      `CHANGELOG.md must start with "# vX.Y.Z - YYYY-MM-DD", found "${firstLine}"`,
+    );
+  return match[1];
+}
+
+/** Describes a build of a software project.
+ *
+ * An immutable implementation of BuildInfo. The version is the one in the
+ * project's package.json, passed in by the caller. The commit description
+ * comes from `git describe` when building in a git checkout, otherwise from
+ * the SOURCE_COMMIT environment variable that Coolify sets for image builds.
  */
 export class ReadonlyBuildInfo implements BuildInfo {
   // https://github.com/microsoft/TypeScript/issues/3841#issuecomment-2415542548
@@ -22,6 +45,9 @@ export class ReadonlyBuildInfo implements BuildInfo {
    */
   private readonly exec: Exec;
 
+  /** The environment variables to consult, typically process.env */
+  private readonly env: Env;
+
   /** The name of the software component */
   readonly name: string;
 
@@ -31,9 +57,8 @@ export class ReadonlyBuildInfo implements BuildInfo {
   /** The commit descriptor. Should be a string as returned by gitDescribe() */
   readonly commitDesc: string;
 
-  /** The tagged version. Should be a numeric array as returned by
-   * gitVersion() */
-  readonly version: readonly number[];
+  /** The version from package.json, e.g. "4.2.0" or "4.2.1+1" for a hotfix */
+  readonly version: string;
 
   /** The build environment. A string, typically 'development' or 'production',
    * but may be an empty string if nothing is set */
@@ -49,53 +74,7 @@ export class ReadonlyBuildInfo implements BuildInfo {
     return sentryDist(this);
   }
 
-  /** Obtain a numeric version array from git tags.
-   *
-   * Calls `git-describe` to search backwards in the git history for the last
-   * "versiony" tag. Meaning, a match for any tag beginning with a `v`, followed
-   * by one or more unsigned decimal numbers delimited by single periods.
-   *
-   * It then attempts to parse that by splitting on non-numeric characters and
-   * converting to a list of positive integers.
-   *
-   * Assumes the code is running in a git working directory!
-   *
-   * If we can't find any matching tags, we return an array with a single zero:
-   * `[0]`
-   *
-   */
-  gitVersion(): number[] {
-    /*
-      This matches the glob pattern `v[0-9]*`, but excludes matches with: any
-      non-decimal-non-period characters after that; double periods; or ending with
-      a period. This is about the best we can do globs to match cases
-      like `v1`, `v1.2`, `v10.111.12` etc. but exclude `v.1`, `v1.` or `v1..2`.
-
-      (Although double periods or trailing periods seem to be invalid tags in any
-      case.)
-    */
-    const versionStr = this.exec("git", [
-      "describe",
-      "--tags",
-      "--match=v[0-9]*",
-      "--exclude=v*[^0-9.]*",
-      "--exclude=*..*",
-      "--exclude=*.",
-      "--abbrev=0",
-    ]).trim();
-
-    const version =
-      typeof versionStr === "string"
-        ? versionStr.substring(1).split(".").map(Number)
-        : [0];
-
-    return version;
-  }
-
   /** Get the git-describe commit information.
-   *
-   * This provides version information for a more discerning audience. It uses
-   * `git-describe` to search back through the history for any tag at all.
    *
    * The result will be a string with the format: "[<TAG>-<COUNT>-]<COMMIT-ID>[-dirty]"
    * - Items in square brackets may be absent.
@@ -107,52 +86,64 @@ export class ReadonlyBuildInfo implements BuildInfo {
    * - Note that TAG may contain any character a tag can, including a hyphen.
    * - Therefore it might not be a version string.
    *
-   * (See the docs for `gitVersion` for the meaning of "versiony".)
+   * A "versiony" tag begins with a `v` followed by decimal numbers delimited
+   * by single periods.
+   *
+   * Returns an empty string when git is not available or this is not a git
+   * checkout.
    */
   gitDescribe(): string {
-    const commitDesc = this.exec("git", [
-      "describe",
-      "--tags",
-      "--match=v[0-9]*",
-      "--exclude=v*[^0-9.]*",
-      "--always",
-      "--long",
-      "--dirty",
-    ]).trim();
-
-    return commitDesc;
+    try {
+      return this.exec("git", [
+        "describe",
+        "--tags",
+        "--match=v[0-9]*",
+        "--exclude=v*[^0-9.]*",
+        "--always",
+        "--long",
+        "--dirty",
+      ]).trim();
+    } catch {
+      return "";
+    }
   }
 
-  updatePackageJson(): void {
-    const { version, sentryRelease } = this;
-    this.exec("npm", [
-      "pkg",
-      "set",
-      "version=" + version.join("."),
-      "config.sentry.release=" + sentryRelease,
-    ]);
+  /** Describe the commit from the environment when there is no git checkout.
+   *
+   * Coolify sets SOURCE_COMMIT to the full commit ID when it builds an image
+   * and the Dockerfiles pass it through as a build argument. It is shortened
+   * to match the abbreviated ID `git describe` gives.
+   */
+  envDescribe(): string {
+    const commit = this.env.SOURCE_COMMIT?.trim() ?? "";
+    return commit.substring(0, 7);
   }
 
   /** Constuctor.
    *
-   * The `name` parameter is required, all others have defaults inferred from `git-describe`
+   * `name` and `version` are required and come from package.json. The commit
+   * description is inferred from git, then SOURCE_COMMIT, unless given.
    */
   constructor(
-    buildInfo: Pick<BuildInfo, "name"> & Partial<BuildInfo> & { exec: Exec },
+    buildInfo: Pick<BuildInfo, "name" | "version"> &
+      Partial<BuildInfo> & { exec: Exec; env: Env },
   ) {
-    // Get the Vite env mode. Commented - this should typechecking, but seems not to be?
-    //const envMode = envMode: import.meta.env.MODE ?? '';
-
     this.exec = buildInfo.exec;
+    this.env = buildInfo.env;
     this.name = buildInfo.name;
-    this.buildTime = buildInfo?.buildTime ?? new Date().toISOString(); // should be UTC
-    this.commitDesc = buildInfo?.commitDesc ?? this.gitDescribe();
-    this.version = buildInfo?.version ?? this.gitVersion();
-    this.nodeEnv = buildInfo?.nodeEnv ?? process.env.NODE_ENV ?? "";
+    this.version = buildInfo.version;
+    this.buildTime = buildInfo.buildTime ?? new Date().toISOString(); // should be UTC
+    this.commitDesc =
+      buildInfo.commitDesc ||
+      this.gitDescribe() ||
+      this.envDescribe() ||
+      "unknown";
+    this.nodeEnv = buildInfo.nodeEnv ?? this.env.NODE_ENV ?? "";
 
-    // Mark the `exec` property unenumerable, so that this class is
+    // Mark the helper properties unenumerable, so that this class is
     // stringifiable - a requirement for it to be used as a Vite build-time
     // define value.
     Object.defineProperty(this, "exec", { enumerable: false });
+    Object.defineProperty(this, "env", { enumerable: false });
   }
 }

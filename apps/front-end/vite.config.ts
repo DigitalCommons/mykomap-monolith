@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
-import { ReadonlyBuildInfo } from "@mykomap/common";
+import { changelogVersion, ReadonlyBuildInfo } from "@mykomap/common";
+import { readFileSync } from "node:fs";
 import react from "@vitejs/plugin-react";
 import { spawnSync } from "node:child_process";
 
@@ -7,20 +8,23 @@ import { spawnSync } from "node:child_process";
 // the original typescript is compiled into a javascript file and run from elsewhere.
 const root = process.cwd();
 
-/* Get the package name.
+/* Get the package name, set by npm from package.json, and the version
+ * from CHANGELOG.md.
  *
- * This could also be done by importing package.json, but that involves
+ * The name could also be got by importing package.json, but that involves
  * some tsconfig.json gymnastics which I'd rather avoid:
  * https://github.com/vitejs/vite/discussions/17726
  */
 const name = process.env.npm_package_name!;
+const version = changelogVersion(
+  readFileSync(new URL("../../CHANGELOG.md", import.meta.url), "utf8"),
+);
 const __BUILD_INFO__ = new ReadonlyBuildInfo({
   name,
+  version,
   exec: (cmd: string, args: string[]) => spawnSync(cmd, args).stdout.toString(),
+  env: process.env,
 });
-
-// Write the version and sentry release into package.json
-__BUILD_INFO__.updatePackageJson();
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {

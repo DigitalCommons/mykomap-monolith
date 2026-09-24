@@ -207,7 +207,7 @@ const ConfigData = z.object({
 const BuildInfo = z.object({
   name: z.string(),
   buildTime: z.string().datetime({ offset: false }),
-  version: z.array(z.number()).min(1).readonly(),
+  version: z.string(),
   commitDesc: z.string(),
   nodeEnv: z.string(),
 });

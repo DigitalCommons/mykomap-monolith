@@ -10,8 +10,12 @@ ARG NODE_VERSION=nonesuch
 # Use this node image for building
 FROM node:${NODE_VERSION}-alpine AS build
 
+# The commit being built, set by Coolify. The version itself comes from
+# CHANGELOG.md so the build needs no git checkout.
+ARG SOURCE_COMMIT=
+ENV SOURCE_COMMIT=${SOURCE_COMMIT}
+
 # Copy source in. Note, .dockerignore should exclude node_modules and dist dirs
-# but keeps .git so the build can read the version from the last release tag.
 COPY .  /srv/src
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
@@ -19,10 +23,6 @@ COPY .  /srv/src
 # Use a bind mount to access the source code
 RUN --mount=type=cache,target=/root/.npm <<SCRIPT
 set -e
-
-# Git is needed for the build info
-apk add --no-cache git
-
 cd /srv/src
 npm ci
 cd apps/back-end/

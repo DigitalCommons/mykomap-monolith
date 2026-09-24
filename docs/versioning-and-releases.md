@@ -43,183 +43,121 @@ So in order to get _legible source code_ when viewing the report:
 
 To facilitate that:
 
-- All Mykomap modules use the same mechanism to deduce the build info
-  at build time and insert it into the source code.
-- This is reported by the back-end module's `version` endpoint, the on
+- The version is the first line of `CHANGELOG.md`, a heading of the
+  form `# v4.2.0 - 2026-09-24`. All modules share it. The `"version"`
+  fields in the `package.json` files are unused and stay at `0.0.0`.
+- All Mykomap modules use the same mechanism to combine that with the
+  build details at build time and insert it into the source code
+  (`ReadonlyBuildInfo` in `libs/common`).
+- This is reported by the back-end module's `version` endpoint, and on
   the console in the front-end.
-- The version is inferred from the last git tag with the format
-  `v<semantic-version>` where the semantic version is a sequence of
-  positive integers delimited with periods. e.g. `v4.1.3`
-- The "build description" is generated using `git describe` and has
-  the form `v<semantic-version>-<commits>-g<commit-id>[-dirty]`,
-  e.g. `v4.1.3-23-b3dfba0`, where:
-  - `v<semantic-version>` is the last matching version tag
-  - `<commits>` is the number of commits on this branch since that tagged commit
+- The "build description" identifies the commit. In a git checkout it
+  is generated using `git describe` and has the form
+  `v<semantic-version>-<commits>-g<commit-id>[-dirty]`,
+  e.g. `v4.1.3-23-gb3dfba0`, where:
+  - `v<semantic-version>` is the last version tag reachable from the commit
+  - `<commits>` is the number of commits since that tagged commit
   - `<commit-id>` is the current truncated commit ID, containing 7 or
     more characters.
   - `-dirty` is appended if the repository working directory has any
     modifications on build.
-- The semantic version is inserted into each modules' `package.json`
-  as the `"version"` attribute.
-- The Sentry API release tag is derived from it, and has the form
-  `<module-name>@<semantic-version>`, where the former is the module
-  name, modified to follow the rules defined [here][ReleaseTag] and
-  the latter is the semantic version above.
-  e.g. `@mykomapfront-end@4.0.0` (the slash after `@mykomap/` is
+- Docker image builds have no git checkout, so there the build
+  description is the truncated commit ID from the `SOURCE_COMMIT`
+  build argument, which Coolify sets and `docker-compose.yml` passes
+  to the Dockerfiles. It is `unknown` when neither is available.
+- The Sentry API release tag is derived from the version, and has the
+  form `<module-name>@<semantic-version>`, where the former is the
+  module name, modified to follow the rules defined [here][ReleaseTag].
+  e.g. `@mykomapfront-end@4.2.0` (the slash after `@mykomap/` is
   illegal and is removed.) The former is included to distinguish the
   modules.
-- It is inserted into the front end module's `package.json` in the
-  attribute `"config.sentry.release"`.
 
-## Process
+## Releases
 
-This outlines a process for versioning and releases. The concepts are still
-important - however, an `npm` run-script has been added to help automate this,
-see the section below, [Automation of release tagging](#automation-of-release-tagging-npm-run-release).
-
-### Tagging releases
-
-The remainder of this process assumes that commits the repository will
-have periodic [semantic versioning][SemVer] tags applied, of the form `v<dotted
-integers>`. "Semantic versioning" boils down to:
+Releases follow the technology-and-infrastructure repository's ADR-001
+(trunk based development on `main`, tagged releases) and ADR-002
+(semantic versioning, `staging` and `production` pointer branches moved
+by GitHub Actions). In short:
 
 > Given a version number `MAJOR.MINOR.PATCH`, increment the:
 >
 > 1. MAJOR version when you make incompatible API changes
 > 2. MINOR version when you add functionality in a backward compatible manner
 > 3. PATCH version when you make backward compatible bug fixes
->
-> Additional labels for pre-release and build metadata are available
-> as extensions to the `MAJOR.MINOR.PATCH` format. \_[Presumably as
->
-> > supplemental dotted integers, in our scheme]\_
 
-The current version of Mykomap has a major version of 4, following on
-from previous versions, of which it is an entire rewrite, as well as
-incompatible to (insofar as it even had an API).
+Mykomap's major version is 4, following on from previous versions, of
+which it is an entire rewrite. The API exposed by the back-end is what
+the version describes: the front-end, back-end and libraries live in one
+monorepo and share the one version.
 
-Our version of Mykomap does have an API, exposed by the back-end, and
-consumed by the front end. As these are intended to interoperate, we
-store both, plus libraries with shared data, in a "monorepo" - a
-single repository containing all of the related projects. Although we
-would like to maintain some independence between the components, and
-possibly allow them to be split apart again in the future, this does
-mean there is in practice a form of strong coupling between them - if
-not explicit, then possibly inadvertent couplings are likely to exist.
+### Writing the changelog
 
-And as such all components naturally have the same semantic version,
-stamped in their `package.json` files' `"version"` attribute.
+The version lives in the code, so a release starts with a small pull
+request that adds a section to the top of `CHANGELOG.md`. The
+`changelog-generator.sh` script writes it, with notes generated by
+GitHub from the pull requests merged since the last release:
 
-However, the API _is_ intended to be consumed - or to be able to be -
-by external systems. Which is clearly the main sense a semantic
-versioning system would apply here. Therefore we should be tagging our
-releases to reflect changes in that.
+```sh
+git switch main
+git pull
+git switch -c release-v4.2.0
+./changelog-generator.sh v4.2.0
+git diff
+git add CHANGELOG.md
+git commit -m "Release v4.2.0"
+git push -u origin release-v4.2.0
+gh pr create --base main --title "Release v4.2.0" --body "Release PR"
+```
 
-A second consideration is that we use ["trunk based
-development"][TrunkBasedDevelopment]: `main` is the only long-lived
-branch. It is protected, and changes reach it only via pull requests
-from short-lived feature branches. (There used to be a separate `dev`
-branch; it was removed in August 2026.)
+Edit the generated notes before committing if they need it. The first
+line must stay in the form `# vX.Y.Z - YYYY-MM-DD` because the build and
+the release workflows read it. A hotfix of a released version uses build
+metadata as in ADR-002, e.g. `./changelog-generator.sh v4.2.1+1`.
 
-Tags are placed on `main`. Anything on `main` is (or could be) deployed
-in production, and so should be given a release tag.
+### Tagging
 
-So to sum up, I think we should:
+Once the version bump is merged, tag `main` by creating a GitHub
+release. The tag must be the version on the first line of `CHANGELOG.md`:
 
-- Create a new version tag every time something is deployed to
-  production
-- Use the semantic versioning rules above to guide the selection of
-  these versions
+```sh
+git switch main
+git pull
+gh release create v4.2.0 --generate-notes --notes "Summary of the release" --prerelease
+```
 
-#### Automation of release tagging: `npm run release`
+Pushing the tag runs `release-staging.yml`, which checks the tag matches
+the first line of `CHANGELOG.md` and that there are notes under it, then
+points the `staging` branch at it,
+so Coolify deploys it to staging. Check it with:
 
-The TL:DR; here is that to create a release with a tagged commit, you can now
-run the following from the mykomap-monolith project root directory:
+```sh
+curl -s https://stage.maps.coop/api/version
+```
 
-    # To tag a new release with a sem-ver v4.1.3:
-    npm run release v4.1.3
+After smoke testing, promote the same tag to production. The promote
+workflow makes the same changelog check before moving the pointer:
 
-...Which will tag the repository and rebuild it, updating the `package.json` and
-`package-lock.json` files for you, then squash the result into one commit tagged
-`v4.1.3`. After which, you can manually push the result:
+```sh
+gh workflow run release-promote.yml -f tag=v4.2.0
+gh release edit v4.2.0 --prerelease=false --latest
+```
 
-    git push
-    git push --tags
+Rolling back is running `release-promote.yml` with the previous tag.
 
-...Or, inspect and delete the temporary branch created:
+### Builds between releases
 
-    git branch -D prepare-release-v4.1.3
+A build of an untagged commit reports the version at the top of
+`CHANGELOG.md` with a different build description, e.g.
+`v4.2.0-23-gb3dfba0` locally or the commit ID in an image. The commit ID
+is what distinguishes it from the release.
 
-The point of having `npm run release` is to resolve the chicken-and-egg problem of:
-1. Needing to tag a commit in order for the build to know how to label
-   this release, but...
-2. The very process of building *changes the code*, requiring a new
-   commit!
-3. Thus after running the build, the code has the right label, but tag
-   in the wrong place for checking out that built version.
-4. Which then requires you to re-tag the release in the new place.
+### Uploading source maps
 
-In other words, `npm run release` automates the somewhat complicated
-manual process of resolving that situation.
-
-This manual process is as follows. *Although note that the script
-intentionally follows a slightly different process involving a squash
-merge, to allow for inspection of failures.*
-
-- Ensure the code builds cleanly:
-  `npm run clean && npm ci && npm run build && npm run test`
-- Ensure any changes are committed, if this succeeds:
-  `git add -u && git commit -m "...your commit message here..."`
-- Tag the commit with the version:
-  `git tag v4.1.3`
-- Rebuild to apply the tags to the `package.json` files:
-  `npm run build`
-- Updateg the `package-lock.json` with the tags too:
-  `npm install --package-lock-only`
-- Commit that to the same commit:
-  `git add -u && git commit --amend -c HEAD`
-
-The reason these all need to be squashed into the one commit with a
-tag applied is so that GitHub (and possibly other usages) will build
-and archive the actual deployable code for that version. If in
-practise a deployable release needs extra changes following the tagged
-release commit (as they do) they'll be omitted from the release
-archive created by GitHub if they aren't squashed into it.
-
-#### Reflections
-
-A consequence is that deployments of untagged commits on `main` (or of
-feature branches) report the version of the last release, just with a
-different build description (`v4.1.3-23-b3dfba0`). The commit count and
-ID in the build description are what distinguish them.
-
-### Preparing the code for a deploy
-
-When preparing to deploy, locally in the development working
-directory, we need to:
-
-- Ensure the tests all run successfully. `npm run tests`
-- Apply any Git version tag you want to appear in the build, first (in
-  the format described above). e.g. `git tag v4.1.3`.
-- Run the build - the version attributes will be updated in all the
-  `package.json` files, and the Sentry release tag in the front-end's.
-- Commit these changes to Git.
-- `git push` the changes.
-
-### Deploying
-
-On the server where the code is being deployed:
-
-- Ensure `apps/front-end/.env` includes the environment parameters (as described below).
-- Check out the correct commit.
-- Ensure there are no other uncommitted changes (to avoid the `-dirty`
-  suffix).
-- Run the build - the code will be tagged with the correct build info,
-  including the commit ID.
-- Invoke the front-end module's run-script `upload-sourcemaps` to
-  upload the source-map files via the Sentry API.
-
-The environment parameters needed by `npm run upload-sourcemaps` are:
+For the Sentry API to show un-minified front-end code, the source maps
+for a release need uploading with the front-end module's run-script
+`upload-sourcemaps`. It labels them with the release tag derived from
+the version in `CHANGELOG.md`, so run it from the tagged commit. The
+environment parameters needed are:
 
 - `GLITCHTIP_KEY` - obtain this from our Glitchtip account, it's the
   alphanumeric code set in the `glitchtip_key` parameter of the
@@ -231,12 +169,6 @@ The environment parameters needed by `npm run upload-sourcemaps` are:
 - `SENTRY_URL` - typically `https://app.glitchtip.com`
 - `SENTRY_ORG` - should be `digital-commons-coop`
 - `SENTRY_PROJECT` - should be `mykomapfront-end`
-
-> [!NOTE]
->
-> The environment parameters set in the `deploy.sh` script are
-> slightly different, because of the wider context there. See the
-> comments in the script itself for details.
 
 > [!NOTE]
 >
