@@ -1,112 +1,86 @@
-# SYNOPSIS
-# ========
+# Deployment stack for Coolify. See docs/coolify.md.
 #
-# This docker-compose configuration is intended for deploying the
-# Mykomap service using Docker / Coolify. You may also be able to use
-# it for development, but this is a secondary aim at the moment - most
-# development to date has been done in the Git working directory, and
-# this is expected to continue.
+# Coolify builds every service from the repo root, supplies the environment
+#  variables below from its dashboard and routes domains through its own
+#  proxy, so no host ports are published here (publishing one would bypass
+#  the proxy and its HTTPS). ${VAR:?} is required and fails the deploy when
+#  unset, ${VAR:-} is optional.
 #
-# > [!INFO]
-# > 
-# > See [docs/COOLIFY.md](./docs/COOLIFY.md) for more information.
-# >
-# > For more information about the ARGs declared below, see the
-# > relevant Dockerfiles.
+# To run locally see docker-compose-dev.yml
 #
-# > [!WARNING]
-# >
-# > Ports should *not* be exposed in the services below via the
-# > `ports` directive, as you would normally expect in Docker Compose
-# > - else perversely Coolify will expose them on the host server
-# > directly, rather than via the the proxy. Besides the fact that
-# > this can fail if the ports are already in use on the host, it also
-# > creates a back-door to the application that circumvents HTTPS.
-# >
-# > But not doing this creates problems accessing the service when
-# > running outside the context of Coolify, as the port is exposed on
-# > an arbitrary internal IP address selected unpredictably by Docker.
-# > Even though we *can* access that locally, the `CADDY_HOSTNAME`
-# > variable needs to be set in advance when building to tell Caddy to
-# > respond to that hostname, otherwise we get a blank page. And this
-# > isn't very convenient, since we won't know the IP until after we
-# > build...
-# >
-# > A work-around is to override the exposed ports: see the comments in
-# > [`docker-compose-dev.yml`](./docker-compose-dev.yml).
+# ${SERVICE_NAME_<SVC>} are Coolify magic variables giving the real compose
+#  service name, which is suffixed -pr-N in PR previews. The :- fallbacks
+#  keep plain docker compose working
+#
+# No container_name and no custom network: fixed names collide when Coolify
+#  runs PR previews next to the main stack, and a second network gives each
+#  container two addresses, one of which Coolify's proxy cannot reach
+
+name: mykomap
 
 services:
+  # Fills the data volume from the cwm-test-data repo, or with the bundled
+  #  test datasets when DATASETS is empty, before the BE is update
+  # Restarts on every deploy - so redeploy to get new data
+  # See docker/datasets/fetch-datasets.sh for the variables
+  datasets:
+    build:
+      context: .
+      dockerfile: docker/datasets/Dockerfile
+    environment:
+      DATASETS: ${DATASETS:-}
+      DATA_REPO_URL: ${DATA_REPO_URL:-}
+      DATA_REPO_REF: ${DATA_REPO_REF:-master}
+    volumes:
+      - data:/data
+    restart: "no"
 
-  # The back-end is a Node service which runs the pre-built Mykomap
-  # API application on port 3000, with an API_PATH_PREFIX of
-  # `/api`. Mykomap data is mounted via the `datasets:` volume under
-  # `/data`, but expected to reside in subfolders: `/data/datasets/*`.
+  # The Mykomap API on port 3000 under /api, reading datasets from
+  #  /data/datasets/*. NODE_VERSION is the major version from .tool-versions
   back-end:
     build:
+      context: .
       dockerfile: apps/back-end/Dockerfile
       args:
-        NODE_VERSION: ${NODE_VERSION?}
-    container_name: back-end
-    restart: unless-stopped
-    networks:
-      - api_network
+        NODE_VERSION: "22"
+    environment:
+      # GlitchTip error reporting, off when unset. The environment tags
+      # errors as dev, staging or production
+      GLITCHTIP_KEY: ${BE_GLITCHTIP_KEY:-}
+      DEPLOYMENT_ENVIRONMENT: ${DEPLOYMENT_ENVIRONMENT:-}
+      # Space separated origins allowed to call the API from other sites,
+      # * for any. Unset means same origin only
+      FASTIFY_CORS_ORIGIN: ${FASTIFY_CORS_ORIGIN:-}
     volumes:
-      - datasets:/data/datasets/
-      
-  # The front-end is just a Caddy server with some minor tweaks to
-  # server the front-end application files/assets and a Caddyfile
-  # config to reverse proxy the path `/api/*` to the back-end
-  # application (above) on http://back-end:3000/api.
-  #
-  # We don't use HTTPS. Caddy can fetch or generate a certificate to
-  # use for HTTPS, however, in this context we will be
-  # reverse-proxied-to by the HTTP server which will implement its own
-  # HTTPS, so we explicitly disable it and use HTTP.
-  #
-  # The CADDY_VERSION here should be (cautiously) bumped to newer
-  # versions when these become available. It's defined in full for
-  # build repeatability.
-  #
-  # API_URL should not be changed, unless you also change the
-  # assumptions elsewhere in this file and the other application's
-  # Dockerfile.
-  #
+      - data:/data:ro
+    depends_on:
+      datasets:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  # Caddy serving the built front-end on port 80 and proxying /api/* to the
+  #  back-end. The settings below are read at start and served as /config.js,
+  #  see apps/front-end/public/config.js for what each one does
   front-end:
     build:
+      context: .
       dockerfile: apps/front-end/Dockerfile
       args:
-        NODE_VERSION: ${NODE_VERSION?}
-        CADDY_VERSION: ${CADDY_VERSION:-2.11}
-        CADDY_HOSTNAME: ${CADDY_HOSTNAME?}
-        MAPTILER_API_KEY: ${MAPTILER_API_KEY?}
-        GLITCHTIP_KEY: ${FE_GLITCHTIP_KEY?}
-        UMAMI_URL: ${UMAMI_URL?}
-        UMAMI_ID: ${UMAMI_ID?}
-        API_URL: ${API_URL:-/api}
-        BASE_URL: ${BASE_URL:-/}
-    container_name: front-end
-    restart: unless-stopped
+        NODE_VERSION: "22"
+    environment:
+      API_UPSTREAM: ${SERVICE_NAME_BACK_END:-back-end}:3000
+      MAPTILER_API_KEY: ${MAPTILER_API_KEY:?MapTiler key for the base map}
+      GLITCHTIP_KEY: ${FE_GLITCHTIP_KEY:-}
+      DEPLOYMENT_ENVIRONMENT: ${DEPLOYMENT_ENVIRONMENT:-}
+      UMAMI_URL: ${UMAMI_URL:-}
+      UMAMI_ID: ${UMAMI_ID:-}
+      UMAMI_RECORDER_URL: ${UMAMI_RECORDER_URL:-}
+      MIXPANEL_TOKEN: ${MIXPANEL_TOKEN:-}
+      MIXPANEL_SESSION_RECORDING_PERCENT: ${MIXPANEL_SESSION_RECORDING_PERCENT:-}
     depends_on:
       - back-end
-    cap_add:
-      - NET_ADMIN
-    networks:
-      - api_network
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
+    restart: unless-stopped
 
 volumes:
-  # Any Mykomap datasets need to be installed here, under `datasets/`
-  datasets:
-  # An volume populated by Caddy for its own purposes
-  caddy_data:
-  # Another volume used by Caddy, likewise
-  caddy_config:
-
-networks:
-  # A network shared between the front-end and back-end. Note that
-  # Coolify will "helpfiully" define its own shared network too, but
-  # we include this one explicitly so that this compose config will
-  # work independently of Coolify.
-  api_network:
+  # The cwm-test-data checkout, with the datasets under datasets/
+  data:

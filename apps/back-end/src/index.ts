@@ -89,7 +89,10 @@ export class Launcher {
       console.log("Initialising Sentry...");
       await this.app.register(fastifySentryPlugin, {
         dsn: `https://${process.env.GLITCHTIP_KEY}@app.glitchtip.com/9203`,
-        environment: process.env.NODE_ENV,
+        // NODE_ENV is production on all deployed builds (by convention in
+        // Node it is development only on a developer's local build)
+        // DEPLOYMENT_ENVIRONMENT distinguishes dev, staging and production
+        environment: process.env.DEPLOYMENT_ENVIRONMENT || process.env.NODE_ENV,
         release: sentryRelease(__BUILD_INFO__),
         // We don't supply `dist` as we don't currently need that level of specificity
 

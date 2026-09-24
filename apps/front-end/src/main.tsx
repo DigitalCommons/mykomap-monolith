@@ -23,9 +23,11 @@ const sentryParams = {
   release: sentryRelease(__BUILD_INFO__),
   // We don't supply `dist` as we don't currently need that level of specificity
 
-  // Use Vite's concept of mode to set the environment for Glitchtip
-  // (Mode != NODE_ENV, see https://vitejs.dev/guide/env-and-mode#modes)
-  environment: import.meta.env.MODE,
+  // Mode is "production" for every deployed build
+  // Becauase by convention NODE_ENV=development is for a developer's local build
+  // So the runtime setting distinguishes dev, staging and production
+  // See https://vitejs.dev/guide/env-and-mode#modes
+  environment: config.deploymentEnvironment || import.meta.env.MODE,
 
   // Enable automatic instrumentation
   integrations: [Sentry.browserTracingIntegration()],

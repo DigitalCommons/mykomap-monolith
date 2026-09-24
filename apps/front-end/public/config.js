@@ -16,6 +16,9 @@ window.MYKOMAP_CONFIG = {
    //// Get it: Settings -> Projects -> MykomapFrontEnd (create this)
    ////   -> Security Endpoint URL
    //GLITCHTIP_KEY: "abc123",
+   //// Which deployment GlitchTip errors are reported from
+   ////  dev, staging or production
+   //DEPLOYMENT_ENVIRONMENT: "production",
    //// Umami analytics - you can self host and change the host
    //UMAMI_URL: "https://umami.is/script.js",
    //UMAMI_ID: "00000000-0000-0000-0000-000000000000",

@@ -1,0 +1,38 @@
+# Caddy config for the front-end container.
+#
+# HTTPS is terminated by the reverse proxy in front of the container
+# (Coolify's proxy), so this serves plain HTTP on 80 for any hostname.
+# API_UPSTREAM is an environment variable, see the Dockerfile.
+
+{
+	admin off
+	auto_https off
+	persist_config off
+}
+
+:80 {
+	encode gzip
+
+	# Runtime settings, written by docker-entrypoint.sh
+	handle /config.js {
+		root * /run/mykomap
+		file_server
+	}
+
+	handle /api/* {
+		reverse_proxy {$API_UPSTREAM}
+	}
+
+	# The app was served under /cwm/ on maps.coop, keep those links working.
+	# handle_path strips the prefix so {uri} is the rest of the path plus the
+	# query string, e.g. /cwm/?datasetId=powys-eng becomes /?datasetId=powys-eng
+	rewrite /cwm /cwm/
+	handle_path /cwm/* {
+		redir * {uri} permanent
+	}
+
+	handle {
+		root * /usr/share/caddy
+		file_server
+	}
+}

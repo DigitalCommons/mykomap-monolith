@@ -11,6 +11,7 @@ ARG NODE_VERSION=nonesuch
 FROM node:${NODE_VERSION}-alpine AS build
 
 # Copy source in. Note, .dockerignore should exclude node_modules and dist dirs
+# but keeps .git so the build can read the version from the last release tag.
 COPY .  /srv/src
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
@@ -20,7 +21,7 @@ RUN --mount=type=cache,target=/root/.npm <<SCRIPT
 set -e
 
 # Git is needed for the build info
-apk add git
+apk add --no-cache git
 
 cd /srv/src
 npm ci
@@ -42,7 +43,7 @@ ENV API_PATH_PREFIX=/api
 ENV SERVER_DATA_ROOT=/data
 
 # Copy the built application files from the build image into this image.
-COPY --from=build /srv/src/apps/back-end/package.json /srv/src/apps/back-end/dist/ .
+COPY --from=build /srv/src/apps/back-end/package.json /srv/src/apps/back-end/dist/ ./
 
 # Run the application as a non-root user.
 USER node
@@ -51,4 +52,4 @@ USER node
 EXPOSE ${FASTIFY_PORT}
 
 # Run the application.
-CMD node server.js
+CMD ["node", "server.js"]

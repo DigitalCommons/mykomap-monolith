@@ -1,20 +1,20 @@
 # This file can be used as a means to override the front-end's exposed
 # port when running locally.
+# Publishes the FE port which Coolify must not do
 #
-# The easiest means is to set these environment variables in your `.env`
-# file:
+# Set these in your .env file:
 #
 #     COMPOSE_FILE=docker-compose.yml:docker-compose-dev.yml
-#     CADDY_HOSTNAME=localhost
 #     EXPOSE_PORT=8000
+#     MAPTILER_API_KEY=<your key>
 #
-# ...before building and running `docker compose up -d --build` as
-# normal. Then the service should be accessible on http://localhost:8000/.
+# then build and run with `docker compose up -d --build` as normal, and
+# the app is on http://localhost:8000/?datasetId=dataset-A (DATASETS is
+# unset so the bundled test datasets are used)
 #
 # Credit: https://frankwiles.com/til/easy-compose-overrides/
 
 services:
-
   front-end:
     ports:
-      - "${CADDY_HOSTNAME:-localhost}:${EXPOSE_PORT:-8000}:80"
+      - "127.0.0.1:${EXPOSE_PORT:-8000}:80"

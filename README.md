@@ -34,6 +34,9 @@ npm i @fastify/cors -w @mykomap/back-end --save
 
 See [deployment docs](https://digitalcommons.github.io/mykomap-monolith/deployment/).
 
+A [Coolify package](docs/coolify.md) was created in September 2026 but is
+not kept up to date, so it may no longer work.
+
 ## Quick Local Set-up
 
 There are 4 codebases and 1 data source to setup. Follow the order as written here.

@@ -18,7 +18,7 @@ mkdir -p /run/caddy/config /run/caddy/data /run/mykomap
 # FE settings from the env vars, served as /config.js
 # See apps/front-end/public/config.js for explanations of each var
 node -e '
-  const keys = ["MAPTILER_API_KEY", "GLITCHTIP_KEY", "UMAMI_URL", "UMAMI_ID",
+  const keys = ["MAPTILER_API_KEY", "GLITCHTIP_KEY", "DEPLOYMENT_ENVIRONMENT", "UMAMI_URL", "UMAMI_ID",
     "UMAMI_RECORDER_URL", "MIXPANEL_TOKEN", "MIXPANEL_SESSION_RECORDING_PERCENT"];
   const config = Object.fromEntries(keys.map((k) => [k, process.env[k] ?? ""]));
   console.log("window.MYKOMAP_CONFIG = " + JSON.stringify(config, null, 2) + ";");
