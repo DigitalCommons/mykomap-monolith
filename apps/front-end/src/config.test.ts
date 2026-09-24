@@ -14,7 +14,7 @@ describe("runtime config", () => {
     vi.unstubAllEnvs();
   });
 
-  it("takes the GlitchTip environment from config.js", async () => {
+  it("takes the deployment environment from config.js", async () => {
     window.MYKOMAP_CONFIG = { DEPLOYMENT_ENVIRONMENT: "staging" };
     expect((await load()).deploymentEnvironment).toBe("staging");
   });
