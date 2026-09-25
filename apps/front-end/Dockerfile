@@ -25,18 +25,18 @@ ARG BASE_URL=/
 ENV VITE_API_URL=${API_URL?}
 ENV VITE_BASE_URL=${BASE_URL?}
 
+# The commit being built, set by Coolify. The version itself comes from
+#  CHANGELOG.md so the build needs no git checkout
+ARG SOURCE_COMMIT=
+ENV SOURCE_COMMIT=${SOURCE_COMMIT}
+
 # Copy the source in
-# .dockerignore excludes node_modules and dist but keeps .git so the build
-#   read the version from the last release tag
+# .dockerignore excludes node_modules and dist
 COPY .  /srv/src
 
 # Use a cache mount to /root/.npm to speed up subsequent builds.
 RUN --mount=type=cache,target=/root/.npm <<SCRIPT
 set -e
-
-# Git is needed for the build info
-apk add --no-cache git
-
 cd /srv/src
 npm ci
 cd apps/front-end/

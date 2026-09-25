@@ -9,7 +9,8 @@
 # To run locally see docker-compose-dev.yml
 #
 # ${SERVICE_NAME_<SVC>} are Coolify magic variables giving the real compose
-#  service name, which is suffixed -pr-N in PR previews. The :- fallbacks
+#  service name, which is suffixed -pr-N in PR previews, and ${SOURCE_COMMIT}
+#  is the commit being deployed, reported by /api/version. The :- fallbacks
 #  keep plain docker compose working
 #
 # No container_name and no custom network: fixed names collide when Coolify
@@ -43,6 +44,7 @@ services:
       dockerfile: apps/back-end/Dockerfile
       args:
         NODE_VERSION: "22"
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-}
     environment:
       # GlitchTip error reporting, off when unset. The environment tags
       # errors as dev, staging or production
@@ -67,6 +69,7 @@ services:
       dockerfile: apps/front-end/Dockerfile
       args:
         NODE_VERSION: "22"
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-}
     environment:
       API_UPSTREAM: ${SERVICE_NAME_BACK_END:-back-end}:3000
       MAPTILER_API_KEY: ${MAPTILER_API_KEY:?MapTiler key for the base map}

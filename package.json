@@ -1,13 +1,12 @@
 {
   "name": "mykomap-monolith",
-  "version": "4.1.0",
+  "version": "0.0.0",
   "type": "module",
   "workspaces": [
     "apps/*",
     "libs/*"
   ],
   "bin": {
-    "do-release": "bin/do-release",
     "dataset": "apps/back-end/dist/dataset.js"
   },
   "files": [
@@ -23,12 +22,10 @@
     "prettier:check": "prettier -cu --no-color .",
     "prettier:format": "prettier -wu --no-color .",
     "prepare": "npm run build",
-    "release": "bin/do-release",
     "test": "npm run test --workspaces"
   },
   "devDependencies": {
     "editorconfig": "^2.0.1",
-    "rimraf": "^6.1.3",
-    "zx": "^8.8.5"
+    "rimraf": "^6.1.3"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@mykomap/front-end",
-  "version": "4.1.0",
+  "version": "0.0.0",
   "description": "A React web application for mapping Solidarity Economy organisations",
   "author": "Digital Commons Cooperative",
   "homepage": "https://digitalcommons.github.io/mykomap-monolith",
@@ -21,7 +21,7 @@
     "type-check": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "upload-sourcemaps": "sentry-cli sourcemaps --release $npm_package_config_sentry_release upload --url-prefix /assets/ dist/assets/"
+    "upload-sourcemaps": "sentry-cli sourcemaps --release @mykomapfront-end@$(sed -n '1s/^# v\\([^ ]*\\) .*/\\1/p' ../../CHANGELOG.md) upload --url-prefix /assets/ dist/assets/"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -92,10 +92,5 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.18",
     "vitest": "^3.0.9"
-  },
-  "config": {
-    "sentry": {
-      "release": "@mykomapfront-end@4.1.0"
-    }
   }
 }

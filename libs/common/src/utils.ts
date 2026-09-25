@@ -405,7 +405,7 @@ export function splitField(
  * Here we just remove all whitespace, and forward or backslashes.
  */
 export function sentryRelease(bi: BuildInfo): string {
-  return bi.name.replace(/[\/\\\s]+/g, "") + "@" + bi.version.join(".");
+  return bi.name.replace(/[\/\\\s]+/g, "") + "@" + bi.version;
 }
 
 /** Make a Sentry-compatible dist name.

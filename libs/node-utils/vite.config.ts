@@ -1,22 +1,23 @@
 import { defineConfig } from "vitest/config";
 import dts from "vite-plugin-dts";
 import { fileURLToPath } from "node:url";
-import { ReadonlyBuildInfo } from "@mykomap/common";
+import { changelogVersion, ReadonlyBuildInfo } from "@mykomap/common";
+import { readFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 import pkg from "./package.json" with { type: "json" };
 
 // Get the Vite env mode. This should typechecking, but seems not to be?
 //const envMode = envMode: import.meta.env.MODE ?? '';
 
-// Get the package name and build info
-const name = pkg.name;
+// Get the package name, the version from CHANGELOG.md, and describe the build
 const __BUILD_INFO__ = new ReadonlyBuildInfo({
-  name,
+  name: pkg.name,
+  version: changelogVersion(
+    readFileSync(new URL("../../CHANGELOG.md", import.meta.url), "utf8"),
+  ),
   exec: (cmd: string, args: string[]) => spawnSync(cmd, args).stdout.toString(),
+  env: process.env,
 });
-
-// Write the version and sentry release into package.json
-__BUILD_INFO__.updatePackageJson();
 
 // https://vitejs.dev/config/
 export default defineConfig({

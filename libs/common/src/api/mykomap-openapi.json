@@ -1461,7 +1461,9 @@
                       "type": "string",
                       "format": "date-time"
                     },
-                    "version": {},
+                    "version": {
+                      "type": "string"
+                    },
                     "commitDesc": {
                       "type": "string"
                     },
