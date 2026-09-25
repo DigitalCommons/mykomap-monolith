@@ -25,6 +25,8 @@ if head -1 CHANGELOG.md | grep -q "^# $tag "; then
   exit 1
 fi
 
+# Check if github cli tool gh is installed and show where to install it if not
+command -v gh >/dev/null 2>&1 || { echo "Please install the GitHub CLI tool from https://cli.github.com/" >&2; exit 1; }
 repo=$(gh repo view --json nameWithOwner --jq .nameWithOwner)
 if ! notes=$(gh api "repos/$repo/releases/generate-notes" \
   -f tag_name="$tag" -f target_commitish="$branch" --jq .body); then
