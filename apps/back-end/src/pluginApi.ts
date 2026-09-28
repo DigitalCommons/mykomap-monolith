@@ -3,7 +3,6 @@ import { MykomapRouterConfig, MykomapRouter } from "./routes.js";
 import { initServer } from "@ts-rest/fastify";
 import { contract } from "@mykomap/common";
 import { FastifyInstance, FastifyPluginCallback } from "fastify";
-import fp from "fastify-plugin";
 import { createReadStream, statSync } from "node:fs";
 import { extname, resolve, sep } from "node:path";
 
@@ -32,7 +31,10 @@ const pluginApi: FastifyPluginCallback<MykomapRouterConfig> = async (
   opts: MykomapRouterConfig,
 ) => {
   // Tease apart Mykomap option from all others
-  const { mykomap, ...fastifyOpts } = opts;
+  // Fastify applies the prefix to the plugin's routes
+  // Leave it out of the options passed on so we get the
+  // route without the /api prefix for example
+  const { mykomap, prefix: _prefix, ...fastifyOpts } = opts;
 
   // Streaming static-file route for per-dataset assets. Registered as a plain
   // Fastify route (rather than via the ts-rest contract) because the contract
@@ -92,5 +94,7 @@ const pluginApi: FastifyPluginCallback<MykomapRouterConfig> = async (
   fastify.register(plugin, fastifyOpts);
 };
 
-/** Export our prepared plugin */
-export default fp(pluginApi);
+/** Export our prepared plugin without the fastify-plugin wrapper
+ *  so Fastify applies the prefix to all routes including assets
+ */
+export default pluginApi;
