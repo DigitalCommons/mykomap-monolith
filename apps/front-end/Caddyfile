@@ -31,6 +31,17 @@
 		redir * {uri} permanent
 	}
 
+	# MykoMaps v3 maps used to be served from the same server as v4
+	# They are no longer but the iframe embeds on the other sites still
+	#  point here - we redirect them from maps.coop/<map> to a new
+	#  site for MykoMaps v3 maps - mm3.maps.coop
+	# Temporary so browsers do not cache it and we can move it
+	# Over time we will migrate these maps to point directly at the
+	#  new site and then can remove these redirects
+	# See coolify.md in techonology-and-infrastructure
+	@v3Maps path /ica /ica/* /workers-coop /workers-coop/* /newbridge /newbridge/* /mersey-green /mersey-green/* /obo-public /obo-public/* /dotcoop /dotcoop/*
+	redir @v3Maps https://mm3.maps.coop{uri} temporary
+
 	handle {
 		root * /usr/share/caddy
 		file_server
