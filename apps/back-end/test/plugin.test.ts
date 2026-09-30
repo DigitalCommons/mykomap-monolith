@@ -558,3 +558,42 @@ describe("getDatasetItem", () => {
     });
   });
 });
+
+describe("getDatasetAsset", () => {
+  test("status code 200 and the file with its content type", async () => {
+    const res = await fastify.inject({
+      method: "GET",
+      url: "/dataset/dataset-A/assets/markers/test-marker.svg",
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.headers["content-type"]).toBe("image/svg+xml");
+    expect(res.body).toContain("<svg");
+  });
+
+  test("missing asset returns status code 404", async () => {
+    const res = await fastify.inject({
+      method: "GET",
+      url: "/dataset/dataset-A/assets/markers/no-such-marker.png",
+    });
+    expect(res.statusCode).toBe(404);
+  });
+
+  // Deployments serve the API under /api (API_PATH_PREFIX), and the assets
+  // route must get the prefix like the other routes
+  test("is served under the API path prefix", async () => {
+    const prefixed = Fastify({ querystringParser: (str) => qs.parse(str) });
+    prefixed.register(fastifyPlugin, { ...opts, prefix: "/api" });
+
+    const asset = await prefixed.inject({
+      method: "GET",
+      url: "/api/dataset/dataset-A/assets/markers/test-marker.svg",
+    });
+    expect(asset.statusCode).toBe(200);
+
+    const about = await prefixed.inject({
+      method: "GET",
+      url: "/api/dataset/dataset-A/about",
+    });
+    expect(about.statusCode).toBe(200);
+  });
+});
