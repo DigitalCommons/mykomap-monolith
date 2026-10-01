@@ -58,12 +58,7 @@ const DatasetPicker = () => {
           {hideAliasTargets(entries).map(({ id, label, aliasOf, submaps }) => (
             <ListItem key={id} disableGutters sx={{ display: "list-item" }}>
               <Link href={buildHref(id)} underline="hover">
-                <Typography component="span">
-                  {label}{" "}
-                  <Typography component="span" color="text.secondary">
-                    ({id})
-                  </Typography>
-                </Typography>
+                <Typography component="span">{label}</Typography>
               </Link>
               {aliasOf && (
                 <Chip
@@ -73,9 +68,14 @@ const DatasetPicker = () => {
                   component="a"
                   href={buildHref(aliasOf)}
                   clickable
-                  sx={{ ml: 1 }}
+                  sx={{ ml: 1, borderRadius: "2px" }}
                 />
-              )}
+              )}{" "}
+              <Link href={buildHref(id)} underline="hover">
+                <Typography component="span" color="text.secondary">
+                  ({id})
+                </Typography>
+              </Link>
               {submaps && submaps.length > 0 && (
                 <List
                   dense
