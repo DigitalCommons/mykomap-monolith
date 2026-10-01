@@ -57,25 +57,33 @@ const DatasetPicker = () => {
         <List sx={{ pl: 3, listStyleType: "disc" }}>
           {hideAliasTargets(entries).map(({ id, label, aliasOf, submaps }) => (
             <ListItem key={id} disableGutters sx={{ display: "list-item" }}>
-              <Link href={buildHref(id)} underline="hover">
-                <Typography component="span">{label}</Typography>
-              </Link>
-              {aliasOf && (
-                <Chip
-                  label={aliasOf}
-                  size="small"
-                  variant="outlined"
-                  component="a"
-                  href={buildHref(aliasOf)}
-                  clickable
-                  sx={{ ml: 1, borderRadius: "2px" }}
-                />
-              )}{" "}
-              <Link href={buildHref(id)} underline="hover">
-                <Typography component="span" color="text.secondary">
-                  ({id})
-                </Typography>
-              </Link>
+              {/* The theme makes links full-width blocks, so the row is a
+                  flex box and the link only as wide as its text */}
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Link
+                  href={buildHref(id)}
+                  underline="hover"
+                  sx={{ width: "auto" }}
+                >
+                  <Typography component="span">
+                    {label}{" "}
+                    <Typography component="span" color="text.secondary">
+                      ({id})
+                    </Typography>
+                  </Typography>
+                </Link>
+                {aliasOf && (
+                  <Chip
+                    label={aliasOf}
+                    size="small"
+                    variant="outlined"
+                    component="a"
+                    href={buildHref(aliasOf)}
+                    clickable
+                    sx={{ borderRadius: "2px" }}
+                  />
+                )}
+              </Box>
               {submaps && submaps.length > 0 && (
                 <List
                   dense
