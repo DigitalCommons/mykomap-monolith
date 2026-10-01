@@ -13,13 +13,13 @@
 #                      empty: copy the bundled test datasets instead (local dev, tests)
 #   DATA_REPO_URL      git URL, with a token for a private repo, e.g.
 #                      https://x-access-token:<token>@github.com/DigitalCommons/cwm-test-data.git
-#   DATA_REPO_REF      branch to track (default master)
+#   DATA_REPO_REF      branch to track (default main)
 #   TEST_DATASETS_DIR  bundled test datasets (default /test-datasets)
 set -eu
 
 : "${DATA_DIR:=/data}"
 : "${DATASETS:=}"
-: "${DATA_REPO_REF:=master}"
+: "${DATA_REPO_REF:=main}"
 : "${TEST_DATASETS_DIR:=/test-datasets}"
 
 if [ -z "$DATASETS" ]; then

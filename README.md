@@ -46,7 +46,6 @@ Note: users on windows will need to use WSL as some of the build steps are unix-
 ### Data
 
 1. Download data by cloning this repository: https://github.com/DigitalCommons/cwm-test-data 
-1. Navigate into the directory and do `git checkout dev` to use the dev branch of the data
 1. Note the path to the datasets directory from the Mykomap directory because you'll need this later for the back-end .env file
 
 ### Node Utils & Common Types

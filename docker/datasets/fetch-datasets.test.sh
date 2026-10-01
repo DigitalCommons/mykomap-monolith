@@ -21,9 +21,10 @@ commit() {
   git -C "$src" -c user.name=test -c user.email=test@example.com commit -q -m "$1"
 }
 
-# Fixture data repo. allowFilter lets a file:// remote serve partial clones.
+# Fixture data repo on the default branch, so DATA_REPO_REF is left unset.
+# allowFilter lets a file:// remote serve partial clones.
 src="$tmp/src"
-git init -q -b master "$src"
+git init -q -b main "$src"
 git -C "$src" config uploadpack.allowFilter true
 mkdir -p "$src/datasets/cwm-20260101/items" "$src/datasets/other"
 echo '{"id":1}' > "$src/datasets/cwm-20260101/items/1.json"
@@ -34,7 +35,7 @@ ln -s other "$src/datasets/other-latest"
 commit "first"
 
 run() {
-  DATA_DIR="$1" DATA_REPO_URL="file://$src" DATA_REPO_REF=master DATASETS="$2" \
+  DATA_DIR="$1" DATA_REPO_URL="file://$src" DATASETS="$2" \
     sh "$here/fetch-datasets.sh" >"$tmp/out.log" 2>&1 || {
       cat "$tmp/out.log"
       fail "fetch-datasets.sh exited non-zero"

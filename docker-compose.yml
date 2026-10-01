@@ -31,7 +31,7 @@ services:
     environment:
       DATASETS: ${DATASETS:-}
       DATA_REPO_URL: ${DATA_REPO_URL:-}
-      DATA_REPO_REF: ${DATA_REPO_REF:-master}
+      DATA_REPO_REF: ${DATA_REPO_REF:-main}
     volumes:
       - data:/data
     restart: "no"
