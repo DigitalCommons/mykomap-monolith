@@ -179,7 +179,7 @@ MAPTILER_API_KEY=<redacted>
 # (needs no token).
 # DATASETS=cwm-latest dotcoop-latest powys-eng powys-cym workers-coop
 # DATA_REPO_URL=https://x-access-token:<token>@github.com/DigitalCommons/cwm-test-data.git
-# DATA_REPO_REF=master
+# DATA_REPO_REF=main
 
 # Glitchtip error reporting, off when unset. The environment tags
 # errors as dev, staging or production

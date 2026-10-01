@@ -463,13 +463,16 @@ export const contract = c.router({
       "Returns an array of the datasets available on this server, each entry " +
       "carrying the dataset ID, a human-readable label (taken from " +
       "config.ui.logo.altText, falling back to the ID), and the dataset's " +
-      "submaps (key and title), if any.",
+      "submaps (key and title), if any. A dataset that is a symlink to " +
+      "another dataset (such as cwm-latest) also carries aliasOf, the ID of " +
+      "the dataset it points at.",
     responses: {
       200: z
         .array(
           z.object({
             id: DatasetId,
             label: z.string(),
+            aliasOf: DatasetId.optional(),
             submaps: z
               .array(z.object({ key: z.string(), title: z.string() }))
               .optional(),

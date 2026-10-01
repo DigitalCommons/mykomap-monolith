@@ -1488,7 +1488,7 @@
     },
     "/datasets": {
       "get": {
-        "description": "Returns an array of the datasets available on this server, each entry carrying the dataset ID, a human-readable label (taken from config.ui.logo.altText, falling back to the ID), and the dataset's submaps (key and title), if any.",
+        "description": "Returns an array of the datasets available on this server, each entry carrying the dataset ID, a human-readable label (taken from config.ui.logo.altText, falling back to the ID), and the dataset's submaps (key and title), if any. A dataset that is a symlink to another dataset (such as cwm-latest) also carries aliasOf, the ID of the dataset it points at.",
         "summary": "lists the datasets available on this server",
         "tags": [],
         "parameters": [],
@@ -1510,6 +1510,11 @@
                       },
                       "label": {
                         "type": "string"
+                      },
+                      "aliasOf": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]+$",
+                        "description": "uniquely specifies the dataset wanted"
                       },
                       "submaps": {
                         "type": "array",
