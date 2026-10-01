@@ -25,7 +25,7 @@
     "test": "npm run test --workspaces"
   },
   "devDependencies": {
-    "editorconfig": "^2.0.1",
+    "editorconfig": "^3.0.2",
     "rimraf": "^6.1.3"
   }
 }
