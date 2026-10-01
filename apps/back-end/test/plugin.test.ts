@@ -556,6 +556,30 @@ describe("getDatasetItem", () => {
       expect(powys).toBeDefined();
       expect(powys).not.toHaveProperty("submaps");
     });
+
+    test("a symlinked dataset names the dataset it points at", async (t) => {
+      const res = await fastify.inject({
+        method: "GET",
+        url: "/datasets",
+      });
+      expect(res.statusCode).toBe(200);
+      const entries = res.json();
+
+      const latest = entries.find(
+        (e: { id: string }) => e.id === "dataset-A-latest",
+      );
+      expect(latest).toMatchObject({
+        id: "dataset-A-latest",
+        label: "Cooperative World Map",
+        aliasOf: "dataset-A",
+      });
+
+      // A dataset that is a directory has no aliasOf property at all
+      const datasetA = entries.find(
+        (e: { id: string }) => e.id === "dataset-A",
+      );
+      expect(datasetA).not.toHaveProperty("aliasOf");
+    });
   });
 });
 

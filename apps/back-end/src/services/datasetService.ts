@@ -14,15 +14,29 @@ type SearchDatasetBody = ServerInferResponseBody<
 
 const datasets: { [id: string]: Dataset } = {};
 
+// For each dataset that is a symlink to another dataset directory, the ID of
+// the dataset it points at
+const aliases: { [id: string]: string } = {};
+
 /**
  * This method instantiates a Dataset object for each of the datasets in the dataRoot/datasets
  * directory in the filesystem.
  */
 export const initDatasets = (dataRoot: string) => {
-  const datasetIds = fs
-    .readdirSync(path.join(dataRoot, "datasets"), { withFileTypes: true })
-    .filter((f) => f.isDirectory() || f.isSymbolicLink())
-    .map((f) => f.name);
+  const datasetsDir = path.resolve(dataRoot, "datasets");
+  const datasetFiles = fs
+    .readdirSync(datasetsDir, { withFileTypes: true })
+    .filter((f) => f.isDirectory() || f.isSymbolicLink());
+  const datasetIds = datasetFiles.map((f) => f.name);
+
+  for (const f of datasetFiles.filter((f) => f.isSymbolicLink())) {
+    const target = path.resolve(
+      datasetsDir,
+      fs.readlinkSync(path.join(datasetsDir, f.name)),
+    );
+    if (path.dirname(target) === datasetsDir)
+      aliases[f.name] = path.basename(target);
+  }
 
   console.log("Found datasets:", datasetIds);
 
@@ -43,10 +57,12 @@ export const initDatasets = (dataRoot: string) => {
   console.log("Loaded datasets:", loadedDatasetIds);
 };
 
-// List datasets and include their submaps, if any
+// List datasets and include their submaps, if any, and for a symlinked
+// dataset the ID of the dataset it points at
 export const listDatasets = (): {
   id: string;
   label: string;
+  aliasOf?: string;
   submaps?: { key: string; title: string }[];
 }[] =>
   Object.entries(datasets).map(([id, dataset]) => {
@@ -54,6 +70,7 @@ export const listDatasets = (): {
     return {
       id,
       label: dataset.config.ui.logo?.altText ?? id,
+      ...(aliases[id] && { aliasOf: aliases[id] }),
       ...(submapDefs.length > 0 && {
         submaps: submapDefs.map(([key, def]) => ({
           key,

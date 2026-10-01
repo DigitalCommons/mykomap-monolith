@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { Box, Link, List, ListItem, Typography } from "@mui/material";
+import { Box, Chip, Link, List, ListItem, Typography } from "@mui/material";
 import { listDatasets } from "../../services";
+import { hideAliasTargets } from "./hideAliasTargets";
 
 interface DatasetEntry {
   id: string;
   label: string;
+  aliasOf?: string;
   submaps?: { key: string; title: string }[];
 }
 
@@ -32,7 +34,8 @@ const DatasetPicker = () => {
       });
   }, []);
 
-  // List the datasets with their submaps in sub-lists below them
+  // List the datasets with their submaps in sub-lists below them. An alias
+  // and the dataset it points at are one entry, tagged with the latter's ID.
   return (
     <Box sx={{ maxWidth: 640, mx: "auto", p: 4 }}>
       <Typography
@@ -52,7 +55,7 @@ const DatasetPicker = () => {
       )}
       {entries !== null && entries.length > 0 && (
         <List sx={{ pl: 3, listStyleType: "disc" }}>
-          {entries.map(({ id, label, submaps }) => (
+          {hideAliasTargets(entries).map(({ id, label, aliasOf, submaps }) => (
             <ListItem key={id} disableGutters sx={{ display: "list-item" }}>
               <Link href={buildHref(id)} underline="hover">
                 <Typography component="span">
@@ -62,6 +65,17 @@ const DatasetPicker = () => {
                   </Typography>
                 </Typography>
               </Link>
+              {aliasOf && (
+                <Chip
+                  label={aliasOf}
+                  size="small"
+                  variant="outlined"
+                  component="a"
+                  href={buildHref(aliasOf)}
+                  clickable
+                  sx={{ ml: 1 }}
+                />
+              )}
               {submaps && submaps.length > 0 && (
                 <List
                   dense
