@@ -281,6 +281,11 @@ datasets, but this is not useful for `dataset import`.
 > [!INFO]
 > This step is performed by code in the [open-data] and [se-open-data]
 > projects, and typically published on http://data.digitalcommons.coop/
+> Automated pipeline execution is managed by `tools/deploy/cronjob` in [open-data].
+> Inactive datasets or providers whose contracts are not currently active (such as
+> `newbridge` and `mersey-green`, ref [#322](https://github.com/DigitalCommons/mykomap-monolith/issues/322))
+> are excluded via `SEOD_IGNORE_DIRS` to ensure pipeline stability, and can be
+> overridden via `SEOD_DIRS` or re-enabled when renewed.
 
 In the current incarnation of the schema, the standard headers are:
 
